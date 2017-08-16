@@ -23,7 +23,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <name>UnifiedPush Servers Parent</name>
+    <name>AeroBase Servers Parent</name>
     <description />
     <modelVersion>4.0.0</modelVersion>
     <artifactId>unifiedpush-servers</artifactId>

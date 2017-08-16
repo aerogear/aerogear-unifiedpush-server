@@ -17,23 +17,24 @@
 
 package org.jboss.aerogear.unifiedpush.rest;
 
-import org.jboss.aerogear.unifiedpush.service.PushSearchService;
-import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for all RESTful endpoints. Offers hooks for common features like validation
@@ -46,9 +47,6 @@ public abstract class AbstractBaseEndpoint extends AbstractEndpoint {
     private Validator validator;
 
     @Inject
-    private SearchManager searchManager;
-
-    @Context
     private HttpServletRequest httpServletRequest;
 
     /**
@@ -81,13 +79,26 @@ public abstract class AbstractBaseEndpoint extends AbstractEndpoint {
                            .entity(responseObj);
     }
 
-    /**
-     * offers PushSearchService to subclasses
-     *
-     * @return the push search service
-     */
-    protected PushSearchService getSearch(){
-        return searchManager.getSearchService();
+	/**
+	 * Extract the username to be used in multiple queries
+	 *
+	 * @return current logged in user
+	 */
+    protected LoggedInUser extractUsername() {
+    	return extractUsername(httpServletRequest);
+	}
+
+    public static LoggedInUser extractUsername(HttpServletRequest httpServletRequest) {
+		KeycloakPrincipal<?> p = (KeycloakPrincipal<?>) httpServletRequest.getUserPrincipal();
+
+		// Null check for automation scenarios.
+		if (p != null) {
+			KeycloakSecurityContext kcSecurityContext = p.getKeycloakSecurityContext();
+			return new LoggedInUser(kcSecurityContext.getToken().getPreferredUsername());
+		}
+
+
+		return new LoggedInUser("NULL");
     }
 
 }

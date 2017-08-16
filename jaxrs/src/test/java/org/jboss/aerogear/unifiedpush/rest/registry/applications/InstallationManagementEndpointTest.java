@@ -5,16 +5,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.inject.Inject;
+
+import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
+import org.jboss.aerogear.unifiedpush.rest.WebConfigTest;
 import org.jboss.resteasy.spi.Link;
 import org.jboss.resteasy.spi.LinkHeader;
 import org.jboss.resteasy.spi.ResteasyUriInfo;
 import org.junit.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 /**
  */
-public class InstallationManagementEndpointTest {
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { WebConfigTest.class })
+public class InstallationManagementEndpointTest extends RestEndpointTest {
 
-	private final InstallationManagementEndpoint endpoint = new InstallationManagementEndpoint();
+	@Inject
+	private InstallationManagementEndpoint endpoint;
 
 	@Test
 	public void shouldGenerateHeaderLinksFirstPage() throws URISyntaxException {
@@ -76,4 +84,5 @@ public class InstallationManagementEndpointTest {
 	private ResteasyUriInfo getUriInfo() throws URISyntaxException {
 		return new ResteasyUriInfo(new URI("/"), new URI("http://localhost"));
 	}
+
 }

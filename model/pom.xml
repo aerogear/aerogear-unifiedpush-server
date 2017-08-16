@@ -18,7 +18,7 @@
 
 	<artifactId>unifiedpush-model-parent</artifactId>
 	<packaging>pom</packaging>
-	<name>UnifiedPush Model Layer</name>
+	<name>AeroBase Model Layer</name>
 
 	<modules>
 		<module>api</module>

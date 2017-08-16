@@ -20,31 +20,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.ejb.Asynchronous;
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
-import org.jboss.aerogear.unifiedpush.service.KeycloakService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 import com.datastax.driver.core.utils.UUIDs;
 
-@Stateless
+@Service
 public class AliasServiceImpl implements AliasService {
 	private final Logger logger = LoggerFactory.getLogger(AliasServiceImpl.class);
 
 	@Inject
 	private AliasCrudService aliasCrudService;
 	@Inject
-	@Wrapper
-	private KeycloakService keycloakService;
+	private IKeycloakService keycloakService;
 	@Inject
 	private PushApplicationService pushApplicationService;
 
@@ -210,7 +208,7 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	@Override
-	@Asynchronous
+	@Async
 	public void createAsynchronous(Alias alias) {
 		create(alias);
 	}

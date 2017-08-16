@@ -1,5 +1,6 @@
 package org.jboss.aerogear.unifiedpush;
 
+import org.jboss.aerogear.unifiedpush.jpa.JPAConfig;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class DBMaintenance {
@@ -18,7 +19,7 @@ public class DBMaintenance {
 
 	public static AnnotationConfigApplicationContext createApplicationContext() {
 		final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		ctx.register(PersistenceJPAConfig.class);
+		ctx.register(JPAConfig.class);
 		ctx.refresh();
 
 		return ctx;
@@ -26,7 +27,7 @@ public class DBMaintenance {
 
 	public static AnnotationConfigApplicationContext inititializeApplicationContext() {
 		final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		ctx.register(PersistenceJPAConfig.class);
+		ctx.register(JPAConfig.class);
 		ctx.refresh();
 
 		return ctx;

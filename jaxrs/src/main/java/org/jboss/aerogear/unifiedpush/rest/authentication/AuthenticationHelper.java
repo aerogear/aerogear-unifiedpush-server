@@ -2,7 +2,6 @@ package org.jboss.aerogear.unifiedpush.rest.authentication;
 
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,8 +19,9 @@ import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
-@ApplicationScoped
+@Controller
 public class AuthenticationHelper {
 	private static final Logger logger = LoggerFactory.getLogger(AuthenticationHelper.class);
 
@@ -150,7 +150,7 @@ public class AuthenticationHelper {
 						variant.getVariantID(), request.getRequestURI());
 			} else {
 				// Variant is missing to anonymous/otp mode
-				logger.warn("UnAuthorized basic authentication using token-id {}", request.getRequestURI());
+				logger.warn("UnAuthorized basic authentication using token-id {} API: {}", deviceToken, request.getRequestURI());
 				return null;
 			}
 		}

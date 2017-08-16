@@ -28,20 +28,20 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration;
-import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
-import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Test;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.datastax.driver.core.utils.UUIDs;
 
-public class AliasServiceTest extends AbstractBaseServiceTest {
+public class AliasServiceTest extends AbstractCassandraServiceTest {
 
 	@Inject
 	private AliasService aliasService;
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void testMultipleSync() throws IOException {
 		PushApplication pushApplication = new PushApplication();
 		UUID pushAppId = UUID.fromString(pushApplication.getPushApplicationID());
@@ -69,7 +69,7 @@ public class AliasServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void testAddAll() throws IOException {
 		PushApplication pushApplication = new PushApplication();
 		UUID pushAppId = UUID.fromString(pushApplication.getPushApplicationID());
@@ -97,7 +97,7 @@ public class AliasServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void testRemoveAlias() throws IOException {
 		PushApplication pushApplication = new PushApplication();
 		UUID pushAppId = UUID.fromString(pushApplication.getPushApplicationID());
@@ -124,7 +124,7 @@ public class AliasServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void addPushApplication() {
 		String domain = "aerobase.com";
 		String appName = "xxx";
@@ -136,7 +136,7 @@ public class AliasServiceTest extends AbstractBaseServiceTest {
 		UUID pushAppId = UUID.randomUUID();
 		pushApplication.setPushApplicationID(pushAppId.toString());
 
-		pushApplicationService.addPushApplication(pushApplication);
+		pushApplicationService.addPushApplication(pushApplication, new LoggedInUser(DEFAULT_USER));
 
 		Alias[] aliases = new Alias[] { new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroBase.org"),
 				new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroBase.org"),

@@ -27,15 +27,14 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
-import org.jboss.arquillian.transaction.api.annotation.Transactional;
+import org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService;
 import org.junit.Test;
+import org.springframework.transaction.annotation.Transactional;
 
-public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
+public class PushMessageMetricServiceTest extends AbstractCassandraServiceTest {
 
     @Inject
-    private PushMessageMetricsService pushMessageMetricsService;
+    private IPushMessageMetricsService pushMessageMetricsService;
 
     @Inject
     private VariantDao variantDao;
@@ -64,7 +63,7 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
     }
 
     @Test
-    @Transactional(TransactionMode.ROLLBACK)
+    @Transactional
     public void updateAnalyticsTest() {
         pushMessageMetricsService.updateAnalytics(pushMessageInformation.getId());
         FlatPushMessageInformation updatedPushInformation = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
@@ -76,7 +75,7 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
     }
 
     @Test
-    @Transactional(TransactionMode.ROLLBACK)
+    @Transactional
     public void errorCounter() {
         pushMessageMetricsService.appendError(pushMessageInformation, variantDao.findByVariantID("321"), "Really big failure");
         pushMessageMetricsService.updatePushMessageInformation(pushMessageInformation);

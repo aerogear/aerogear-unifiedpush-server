@@ -18,7 +18,6 @@ package org.jboss.aerogear.unifiedpush.service.metrics;
 
 import java.util.Date;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
@@ -29,13 +28,16 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service class to handle different aspects of the Push Message Information metadata for the "Push Message History" view
  * on the Admin UI.
  */
-@Stateless
-public class PushMessageMetricsService {
+@Service
+@Transactional
+public class PushMessageMetricsService implements IPushMessageMetricsService {
 
     // system property name used as the configurable maximum days the message information objects are stored
     public static final String AEROGEAR_METRICS_STORAGE_MAX_DAYS = "aerogear.metrics.storage.days";
@@ -43,7 +45,11 @@ public class PushMessageMetricsService {
     @Inject
     private FlatPushMessageInformationDao flatPushMessageInformationDao;
 
-    public FlatPushMessageInformation storeNewRequestFrom(String pushAppId, String json, String ipAddress, String clientIdentifier) {
+    /* (non-Javadoc)
+	 * @see org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService#storeNewRequestFrom(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+    @Override
+	public FlatPushMessageInformation storeNewRequestFrom(String pushAppId, String json, String ipAddress, String clientIdentifier) {
         final FlatPushMessageInformation information = new FlatPushMessageInformation();
 
         information.setRawJsonMessage(json);
@@ -57,36 +63,45 @@ public class PushMessageMetricsService {
         return information;
     }
 
-    public void updatePushMessageInformation(FlatPushMessageInformation pushMessageInformation) {
+    /* (non-Javadoc)
+	 * @see org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService#updatePushMessageInformation(org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation)
+	 */
+    @Override
+	public void updatePushMessageInformation(FlatPushMessageInformation pushMessageInformation) {
         flatPushMessageInformationDao.update(pushMessageInformation);
     }
 
-    public void appendError(final FlatPushMessageInformation pushMessageInformation, final Variant variant, final String errorMessage) {
+    /* (non-Javadoc)
+	 * @see org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService#appendError(org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation, org.jboss.aerogear.unifiedpush.api.Variant, java.lang.String)
+	 */
+    @Override
+	public void appendError(final FlatPushMessageInformation pushMessageInformation, final Variant variant, final String errorMessage) {
         final VariantErrorStatus ves = new VariantErrorStatus(pushMessageInformation, variant, errorMessage);
         pushMessageInformation.getErrors().add(ves);
         flatPushMessageInformationDao.update(pushMessageInformation);
     }
 
-    public PageResult<FlatPushMessageInformation, MessageMetrics> findAllFlatsForPushApplication(String pushApplicationID, String search, boolean sorting, Integer page, Integer pageSize) {
+    /* (non-Javadoc)
+	 * @see org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService#findAllFlatsForPushApplication(java.lang.String, java.lang.String, boolean, java.lang.Integer, java.lang.Integer)
+	 */
+    @Override
+	public PageResult<FlatPushMessageInformation, MessageMetrics> findAllFlatsForPushApplication(String pushApplicationID, String search, boolean sorting, Integer page, Integer pageSize) {
         return flatPushMessageInformationDao.findAllForPushApplication(pushApplicationID, search, sorting, page, pageSize);
     }
 
-    /**
-     * Returns number of push messages for given push application ID
-     *
-     * @param pushApplicationId the push app ID
-     *
-     * @return the number of message for the given push application
-     */
-    public long countMessagesForPushApplication(String pushApplicationId) {
+    /* (non-Javadoc)
+	 * @see org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService#countMessagesForPushApplication(java.lang.String)
+	 */
+    @Override
+	public long countMessagesForPushApplication(String pushApplicationId) {
         return flatPushMessageInformationDao.getNumberOfPushMessagesForPushApplication(pushApplicationId);
     }
 
-    /**
-     *  We trigger a delete of all {@link org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation} objects that are
-     *  <i>older</i> than 30 days!
-     */
-    public void deleteOutdatedFlatPushInformationData() {
+    /* (non-Javadoc)
+	 * @see org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService#deleteOutdatedFlatPushInformationData()
+	 */
+    @Override
+	public void deleteOutdatedFlatPushInformationData() {
         final Date historyDate = DateUtils.calculatePastDate(ConfigurationUtils.tryGetIntegerProperty(AEROGEAR_METRICS_STORAGE_MAX_DAYS, 30));
         flatPushMessageInformationDao.deletePushInformationOlderThan(historyDate);
     }
@@ -95,7 +110,11 @@ public class PushMessageMetricsService {
         return flatPushMessageInformationDao.find(id);
     }
 
-    public void updateAnalytics(String aerogearPushId) {
+    /* (non-Javadoc)
+	 * @see org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService#updateAnalytics(java.lang.String)
+	 */
+    @Override
+	public void updateAnalytics(String aerogearPushId) {
         FlatPushMessageInformation pushMessageInformation = this.getPushMessageInformation(aerogearPushId);
 
         if (pushMessageInformation != null) { //if we are here, app has been opened due to a push message

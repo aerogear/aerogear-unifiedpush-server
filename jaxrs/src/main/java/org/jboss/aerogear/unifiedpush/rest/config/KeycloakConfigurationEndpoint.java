@@ -7,21 +7,21 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
-import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
 import org.keycloak.representations.adapters.config.AdapterConfig;
 import org.keycloak.util.SystemPropertiesJsonParserFactory;
+import org.springframework.stereotype.Controller;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Controller
 @Path("/keycloak/config")
 public class KeycloakConfigurationEndpoint {
 
 	@Inject
-	@Wrapper
-	private ConfigurationService configurationService;
+	private IConfigurationService configurationService;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

@@ -9,11 +9,11 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
-import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
-import org.jboss.arquillian.transaction.api.annotation.Transactional;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
 import org.junit.Test;
+import org.springframework.transaction.annotation.Transactional;
 
-public class VerificyingClientInstallationServiceTest extends AbstractBaseServiceTest {
+public class VerificyingClientInstallationServiceTest extends AbstractCassandraServiceTest {
 
 	@Inject
 	private VerificationService verificationService;
@@ -33,18 +33,18 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		androidVariant.setGoogleKey("Key");
 		androidVariant.setName("Android");
 		androidVariant.setDeveloper("me");
-		variantService.addVariant(androidVariant);
+		variantService.addVariant(androidVariant, new LoggedInUser(DEFAULT_USER));
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void testSendCorrectVerificationCode() {
 		Installation device = new Installation();
 		device.setAlias("myalias");
 		device.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
 		device.setVariant(androidVariant);
 
-		clientInstallationService.addInstallationSynchronously(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device);
 
 		String verificationCode = verificationService.initiateDeviceVerification(device, androidVariant);
 		assertNotNull(verificationCode);
@@ -58,14 +58,14 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void testSendCorrectVerificationCodeAndFakeDeviceToken() {
 		Installation device = new Installation();
 		device.setAlias("myalias");
 		device.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
 		device.setVariant(androidVariant);
 		device.setEnabled(false);
-		clientInstallationService.addInstallationSynchronously(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device);
 
 		String verificationCode = verificationService.initiateDeviceVerification(device, androidVariant);
 
@@ -83,13 +83,13 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void testSendWrongVerificationCode() {
 		Installation device = new Installation();
 		device.setAlias("myalias");
 		device.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
 		device.setVariant(androidVariant);
-		clientInstallationService.addInstallationSynchronously(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device);
 
 		String verificationCode = verificationService.initiateDeviceVerification(device, androidVariant);
 		assertNotNull(verificationCode);
@@ -105,7 +105,7 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void testResendVerificationCode() {
 		final String deviceToken = TestUtils.generateFakedDeviceTokenString();
 		Installation device = new Installation();
@@ -113,7 +113,7 @@ public class VerificyingClientInstallationServiceTest extends AbstractBaseServic
 		device.setDeviceToken(deviceToken);
 		device.setVariant(androidVariant);
 
-		clientInstallationService.addInstallationSynchronously(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device);
 
 		String verificationCode = verificationService.initiateDeviceVerification(device, androidVariant);
 		assertNotNull(verificationCode);

@@ -16,6 +16,32 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+import javax.ws.rs.core.UriBuilder;
+
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.Message;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.windows.Windows;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationAsyncService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import ar.com.fernandospr.wns.WnsService;
 import ar.com.fernandospr.wns.exceptions.WnsException;
 import ar.com.fernandospr.wns.model.WnsBadge;
@@ -29,31 +55,9 @@ import ar.com.fernandospr.wns.model.builders.WnsBadgeBuilder;
 import ar.com.fernandospr.wns.model.builders.WnsRawBuilder;
 import ar.com.fernandospr.wns.model.builders.WnsTileBuilder;
 import ar.com.fernandospr.wns.model.builders.WnsToastBuilder;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
-import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.Message;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.windows.Windows;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.UriBuilder;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-@SenderType(VariantType.WINDOWS_WNS)
+@Service
+@Qualifier(value = VariantType.WINDOWSWNSQ)
 public class WNSPushNotificationSender implements PushNotificationSender {
 
     private final Logger logger = LoggerFactory.getLogger(WNSPushNotificationSender.class);
@@ -63,7 +67,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
     private String pushMessageInformationId;
 
     @Inject
-    private ClientInstallationService clientInstallationService;
+    private ClientInstallationAsyncService clientInstallationAsyncService;
 
     @Override
     public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
@@ -111,10 +115,10 @@ public class WNSPushNotificationSender implements PushNotificationSender {
 
             logger.info(String.format("Sent push notification to WNS for %d  tokens", channelUris.size()));
 
-            expiredClientIdentifiers.addAll(responses.stream().filter(response -> response.code == HttpServletResponse.SC_GONE).map(response -> response.channelUri).collect(Collectors.toList()));
+            expiredClientIdentifiers.addAll(responses.stream().filter(response -> response.code == 410).map(response -> response.channelUri).collect(Collectors.toList()));
             if (!expiredClientIdentifiers.isEmpty()) {
                 logger.info(String.format("Deleting '%d' expired WNS installations", expiredClientIdentifiers.size()));
-                clientInstallationService.removeInstallationsForVariantByDeviceTokens(variant.getVariantID(), expiredClientIdentifiers);
+                clientInstallationAsyncService.removeInstallationsForVariantByDeviceTokens(variant.getVariantID(), expiredClientIdentifiers);
             }
             logger.debug("Message to WNS has been submitted");
             senderCallback.onSuccess();

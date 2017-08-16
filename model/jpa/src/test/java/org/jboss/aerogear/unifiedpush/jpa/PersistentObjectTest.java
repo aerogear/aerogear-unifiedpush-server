@@ -16,49 +16,32 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.persistence.PersistenceException;
+
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
-import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.After;
-import org.junit.Before;
+import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-import java.util.UUID;
+import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 
-@RunWith(Arquillian.class)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { JPAConfig.class })
+@Transactional
 public class PersistentObjectTest {
 
     @Inject
-    private EntityManager entityManager;
-    @Inject
-    private JPAVariantDao variantDao;
-
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return DaoDeployment.createDeployment();
-    }
+    private VariantDao variantDao;
 
     @Rule
     public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("AndroidVariant.xml");
-
-    @Before
-    public void setUp() {
-        entityManager.getTransaction().begin();
-    }
-
-    @After
-    public void tearDown() {
-        entityManager.getTransaction().rollback();
-    }
 
     @Test
     public void saveObject() {

@@ -28,19 +28,19 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
-import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 
-@RunWith(Arquillian.class)
+
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { JPAConfig.class })
+@Transactional
 public class VariantDaoTest {
 
     @Inject
@@ -48,23 +48,8 @@ public class VariantDaoTest {
     @Inject
     private VariantDao variantDao;
 
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return DaoDeployment.createDeployment();
-    }
-
     @Rule
     public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("Variant.xml");
-
-    @Before
-    public void setUp() {
-        entityManager.getTransaction().begin();
-    }
-
-    @After
-    public void tearDown() {
-        entityManager.getTransaction().rollback();
-    }
 
     @Test
     public void findVariantByIdForDeveloper() {

@@ -16,15 +16,16 @@
  */
 package org.jboss.aerogear.unifiedpush.service.metrics;
 
-import javax.ejb.Schedule;
-import javax.ejb.Singleton;
 import javax.inject.Inject;
 
-@Singleton
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+@Service
 public class DeleteOldPushMessageInformationScheduler {
 
     @Inject
-    private PushMessageMetricsService service;
+    private IPushMessageMetricsService service;
 
     /**
      * Job that triggers a delete of outdated metric information from the Server.
@@ -32,8 +33,8 @@ public class DeleteOldPushMessageInformationScheduler {
      * Note: Occurring every day at midnight in the default time zone associated with the container
      * in which the application is executing. These are the default values from the @Schedule annotation.
      */
-    @Schedule
-    public void deleteOutdatedFlatMetrics(){
-        service.deleteOutdatedFlatPushInformationData();
-    }
+    @Scheduled(cron = "0 24 * * *")
+	public void deleteOutdatedFlatMetrics() {
+		service.deleteOutdatedFlatPushInformationData();
+	}
 }

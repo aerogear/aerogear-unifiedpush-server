@@ -23,13 +23,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.rest.AbstractManagementEndpoint;
 import org.jboss.resteasy.annotations.GZIP;
+import org.springframework.stereotype.Controller;
 
 import com.qmino.miredot.annotations.ReturnType;
 
+@Controller
 @Path("/export")
-public class ExportEndpoint extends AbstractBaseEndpoint {
+public class ExportEndpoint extends AbstractManagementEndpoint {
 
     /**
      * Endpoint for exporting as JSON file device installations for a given variant.

@@ -90,4 +90,11 @@ public class MessageHolderWithVariants extends AbstractMessageHolder {
     public String getLastTokenFromPreviousBatch() {
         return lastTokenFromPreviousBatch;
     }
+
+	@Override
+	public String toString() {
+		return "MessageHolderWithVariants [variantType=" + variantType + ", variants=" + variants + ", lastSerialId="
+				+ lastSerialId + ", lastTokenFromPreviousBatch=" + lastTokenFromPreviousBatch + "]";
+	}
+
 }

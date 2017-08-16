@@ -16,7 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.jpa;
 
-import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantErrorStatus;
@@ -24,27 +31,21 @@ import org.jboss.aerogear.unifiedpush.dao.FlatPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
-import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
 import org.jboss.aerogear.unifiedpush.utils.TestUtils;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 //import static org.assertj.core.api.Assertions.tuple;
 
-@RunWith(Arquillian.class)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { JPAConfig.class })
+@Transactional
 public class FlatPushMessageInformationDaoTest {
 
     @Inject
@@ -56,36 +57,17 @@ public class FlatPushMessageInformationDaoTest {
     @Inject
     private VariantDao variantDao;
 
-//    @Inject
-//    private JPAVariantMetricInformationDao variantMetricInformationDao;
     private String pushMessageInformationID = "1";
 
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return DaoDeployment.createDeployment();
-    }
-
     @Rule
-    public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("FlatPushMessageInformation.xml");
+	public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("FlatPushMessageInformation.xml");
 
-
-    @Before
-    public void setUp() {
-        // start the shindig
-        entityManager.getTransaction().begin();
-
-    }
 
     private void flushAndClear() {
         // flush to be sure that it's in the database
         entityManager.flush();
         // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
         entityManager.clear();
-    }
-
-    @After
-    public void tearDown() {
-        entityManager.getTransaction().rollback();
     }
 
     @Test

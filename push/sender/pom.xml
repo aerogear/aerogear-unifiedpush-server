@@ -17,7 +17,7 @@
 	</parent>
 
 	<artifactId>unifiedpush-push-sender</artifactId>
-	<name>UnifiedPush Push Notification Networks</name>
+	<name>AeroBase Push Notification Networks</name>
 
 	<dependencies>
 		<dependency>
@@ -33,68 +33,41 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.jboss.spec.javax.servlet</groupId>
-			<artifactId>jboss-servlet-api_3.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Import the EJB API, we use provided scope as the API is included in
-			JBoss -->
-		<dependency>
-			<groupId>org.jboss.spec.javax.ejb</groupId>
-			<artifactId>jboss-ejb-api_3.2_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.spec.javax.jms</groupId>
-			<artifactId>jboss-jms-api_2.0_spec</artifactId>
-			<scope>provided</scope>
+			<groupId>org.jboss.aerogear.unifiedpush</groupId>
+			<artifactId>unifiedpush-common</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.aerogear.unifiedpush</groupId>
-            <artifactId>unifiedpush-common</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.aerogear.unifiedpush</groupId>
 			<artifactId>unifiedpush-model-api</artifactId>
-			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.aerogear.unifiedpush</groupId>
 			<artifactId>unifiedpush-service</artifactId>
-            <version>${project.version}</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.aerogear.unifiedpush</groupId>
 			<artifactId>unifiedpush-push-model</artifactId>
-            <version>${project.version}</version>
 		</dependency>
 
-        <dependency>
-            <groupId>net.jodah</groupId>
-            <artifactId>expiringmap</artifactId>
-            <version>0.5.8</version>
-        </dependency>
+		<dependency>
+			<groupId>net.jodah</groupId>
+			<artifactId>expiringmap</artifactId>
+			<version>0.5.8</version>
+		</dependency>
 
-        <dependency>
-            <groupId>com.turo</groupId>
-            <artifactId>pushy</artifactId>
-            <version>0.10.1</version>
-        </dependency>
+		<dependency>
+			<groupId>com.turo</groupId>
+			<artifactId>pushy</artifactId>
+			<version>0.10.1</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.google.gcm</groupId>
 			<artifactId>gcm-server</artifactId>
-			<version>${gcm-server.version}</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -218,35 +191,16 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<version>2.19.1</version>
-						<configuration>
-							<excludes>
-								<exclude>**/TestAbstractServiceHolderClustered.java</exclude>
-							</excludes>
-						</configuration>
 					</plugin>
 				</plugins>
 			</build>
 
 			<dependencies>
-				<dependency>
-					<groupId>org.jboss.aerogear.unifiedpush</groupId>
-					<artifactId>unifiedpush-service</artifactId>
-					<type>test-jar</type>
-					<scope>test</scope>
-				</dependency>
-
-                <!-- Assert dependencies -->
-                <dependency>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.assertj</groupId>
-                    <artifactId>assertj-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
+			     <dependency>
+		            <groupId>org.jboss.aerogear.unifiedpush</groupId>
+		            <artifactId>unifiedpush-service</artifactId>
+		            <type>test-jar</type>
+		        </dependency>
 
 				<dependency>
 					<groupId>org.mockito</groupId>
@@ -255,91 +209,70 @@
 				</dependency>
 
 				<dependency>
-					<groupId>org.jboss.arquillian.junit</groupId>
-					<artifactId>arquillian-junit-container</artifactId>
+					<groupId>com.h2database</groupId>
+					<artifactId>h2</artifactId>
 					<scope>test</scope>
 				</dependency>
+
+				<!-- Cassandra dependencies -->
 				<dependency>
-					<groupId>org.arquillian.container</groupId>
-					<artifactId>arquillian-container-chameleon</artifactId>
+					<groupId>org.apache.cassandra</groupId>
+					<artifactId>cassandra-all</artifactId>
 					<scope>test</scope>
 				</dependency>
 
 				<dependency>
-					<groupId>org.jboss.arquillian.extension</groupId>
-					<artifactId>arquillian-transaction-jta</artifactId>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-all</artifactId>
 					<scope>test</scope>
 				</dependency>
 
-                <!-- Spring cql test -->
+				<dependency>
+					<groupId>org.hectorclient</groupId>
+					<artifactId>hector-core</artifactId>
+					<scope>test</scope>
+				</dependency>
+
+				<!-- Assert dependencies -->
+				<dependency>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.assertj</groupId>
+					<artifactId>assertj-core</artifactId>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.el</groupId>
+					<artifactId>javax.el-api</artifactId>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.glassfish.web</groupId>
+					<artifactId>javax.el</artifactId>
+					<scope>test</scope>
+				</dependency>
+
+                <!-- Spring test -->
                 <dependency>
-                    <groupId>org.springframework.data</groupId>
-                    <artifactId>spring-cql</artifactId>
-                    <type>test-jar</type>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-test</artifactId>
+                    <version>${springframework.version}</version>
                     <scope>test</scope>
                 </dependency>
 
-                <!-- Cassandra dependencies -->
                 <dependency>
-                    <groupId>org.apache.cassandra</groupId>
-                    <artifactId>cassandra-all</artifactId>
+                    <groupId>org.cassandraunit</groupId>
+                    <artifactId>cassandra-unit-spring</artifactId>
+                    <version>3.1.4.0-SNAPSHOT</version>
                     <scope>test</scope>
                 </dependency>
 
-                <dependency>
-                    <groupId>io.netty</groupId>
-                    <artifactId>netty-all</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.hectorclient</groupId>
-                    <artifactId>hector-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-				<dependency>
-					<groupId>org.wildfly.extras.creaper</groupId>
-					<artifactId>creaper-core</artifactId>
-					<exclusions>
-						<exclusion>
-							<groupId>org.jboss.as</groupId>
-							<artifactId>jboss-as-controller-client</artifactId>
-						</exclusion>
-						<exclusion>
-							<groupId>org.jboss.as</groupId>
-							<artifactId>jboss-as-cli</artifactId>
-						</exclusion>
-					</exclusions>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.wildfly.extras.creaper</groupId>
-					<artifactId>creaper-commands</artifactId>
-					<exclusions>
-						<exclusion>
-							<groupId>org.wildfly</groupId>
-							<artifactId>wildfly-patching</artifactId>
-						</exclusion>
-					</exclusions>
-					<scope>test</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>org.wildfly.core</groupId>
-					<artifactId>wildfly-controller-client</artifactId>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.wildfly.core</groupId>
-					<artifactId>wildfly-cli</artifactId>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.wildfly.core</groupId>
-					<artifactId>wildfly-patching</artifactId>
-					<scope>test</scope>
-				</dependency>
 			</dependencies>
 		</profile>
 

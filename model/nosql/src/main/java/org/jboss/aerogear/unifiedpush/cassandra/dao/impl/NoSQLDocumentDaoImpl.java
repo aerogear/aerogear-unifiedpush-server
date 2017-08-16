@@ -16,6 +16,8 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.model.Database;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DatabaseQueryKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.cassandra.core.CassandraOperations;
+import org.springframework.data.cassandra.repository.support.CassandraRepositoryFactory;
 import org.springframework.stereotype.Repository;
 
 import com.datastax.driver.core.querybuilder.Delete;
@@ -32,8 +34,9 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 	@Autowired
 	private AliasDao aliasDao;
 
-	public NoSQLDocumentDaoImpl() {
-		super(DocumentContent.class);
+	public NoSQLDocumentDaoImpl(@Autowired CassandraOperations operations) {
+		super(DocumentContent.class, new CassandraRepositoryFactory(operations).getEntityInformation(DocumentContent.class),
+				operations);
 	}
 
 	@Override

@@ -24,7 +24,7 @@
     </parent>
 
     <artifactId>unifiedpush-dist</artifactId>
-    <name>UnifiedPush Server Distribution Package</name>
+    <name>AeroBase Server Distribution Package</name>
     <packaging>pom</packaging>
     <properties>
         <finalName>aerogear-unifiedpush-server-${project.version}</finalName>

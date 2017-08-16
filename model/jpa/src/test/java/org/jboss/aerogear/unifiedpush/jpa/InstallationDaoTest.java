@@ -31,8 +31,6 @@ import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
-import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
-
 import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
@@ -42,23 +40,24 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.dto.Count;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
-import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
 import org.jboss.aerogear.unifiedpush.utils.TestUtils;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-@RunWith(Arquillian.class)
+import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
+
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { JPAConfig.class })
+@Transactional
 public class InstallationDaoTest {
 
     public static final String DEVICE_TOKEN_1 = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
@@ -69,28 +68,13 @@ public class InstallationDaoTest {
     @Inject
     private EntityManager entityManager;
     @Inject
-    private JPAInstallationDao installationDao;
+    private InstallationDao installationDao;
 
     private String androidVariantID = "1";
     private String simplePushVariantID = "2";
 
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return DaoDeployment.createDeployment();
-    }
-
     @Rule
     public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("Installations.xml");
-
-    @Before
-    public void setUp() {
-        entityManager.getTransaction().begin();
-    }
-
-    @After
-    public void tearDown() {
-        entityManager.getTransaction().rollback();
-    }
 
     @Test
     public void countDevicesForLoginName() {
@@ -126,6 +110,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findDeviceTokensOfVariant() {
         List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, null, null);
         assertThat(tokens).hasSize(4);
@@ -133,6 +118,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findOldGCMDeviceTokensOfVariant() {
         List<String> tokens = findAllOldGCMDeviceTokenForVariantIDByCriteria(androidVariantID, null, null, null);
         assertThat(tokens).hasSize(2);
@@ -140,6 +126,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findDeviceTokensForAliasOfVariant() {
         String[] alias = { "foo@bar.org" };
         List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
@@ -148,6 +135,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findNoDeviceTokensForAliasOfVariant() {
         String[] alias = { "bar@foo.org" };
         List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
@@ -155,6 +143,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findDeviceTokensForAliasAndDeviceType() {
         String[] alias = { "foo@bar.org" };
         String[] types = { "Android Tablet" };
@@ -164,6 +153,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findNoDeviceTokensForAliasAndUnusedDeviceType() {
         String[] alias = { "foo@bar.org" };
         String[] types = { "Android Clock" };
@@ -172,6 +162,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findZeroDeviceTokensForAliasAndCategoriesAndDeviceType() {
         String[] alias = { "foo@bar.org" };
         String[] types = { "Android Tablet" };
@@ -182,6 +173,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findOneDeviceTokensForAliasAndCategoriesAndDeviceType() {
         String[] alias = { "foo@bar.org" };
         String[] types = { "Android Phone" };
@@ -192,6 +184,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findTwoDeviceTokensForAliasAndCategories() {
         String[] alias = { "foo@bar.org" };
         String[] cats = { "soccer", "news", "weather" };
@@ -200,6 +193,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findTwoDeviceTokensCategories() {
         String[] cats = { "soccer", "news", "weather" };
         List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), null, null);
@@ -207,6 +201,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findAndDeleteOneInstallation() {
         final Set<String> tokenz = new HashSet<>();
         tokenz.add(DEVICE_TOKEN_1);
@@ -224,6 +219,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findAndDeleteTwoInstallations() {
         final Set<String> tokenz = new HashSet<>();
         tokenz.add(DEVICE_TOKEN_1);
@@ -240,6 +236,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void deleteNonExistingInstallation() {
         Installation installation = new Installation();
         installation.setId("2345");
@@ -248,6 +245,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void mergeCategories() {
         //given
         final SimplePushVariant variant = new SimplePushVariant();
@@ -275,6 +273,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findPushEndpointsForAlias() {
         String[] alias = { "foo@bar.org" };
         List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, Arrays.asList(alias), null);
@@ -284,6 +283,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findZeroPushEndpointsForAliasAndCategories() {
         String[] alias = { "foo@bar.org" };
         String[] categories = { "US Football" };
@@ -292,6 +292,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findOnePushEndpointForAliasAndCategories() {
         String[] alias = { "foo@bar.org" };
         String[] cats = { "soccer", "weather" };
@@ -302,6 +303,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findThreePushEndpointsForAliasAndCategories() {
         String[] alias = { "foo@bar.org" };
         String[] cats = { "soccer", "news", "weather" };
@@ -313,6 +315,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findThreePushEndpointsForCategories() {
         String[] cats = { "soccer", "news", "weather" };
         List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), null, null);
@@ -323,6 +326,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findPushEndpointsWithDeviceType() {
         String[] types = {"JavaFX Monitor"};
         List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, null, Arrays.asList(types));
@@ -331,6 +335,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void findPushEndpointsWithoutDeviceType() {
         List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, null, null);
         assertThat(tokens).hasSize(3);
@@ -338,6 +343,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void shouldValidateDeviceId() {
         // given
         final Installation installation = new Installation();
@@ -367,6 +373,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void shouldSaveWhenValidateDeviceIdIOS() {
         // given
         final Installation installation = new Installation();
@@ -381,6 +388,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void shouldSaveWhenValidateDeviceIdWindows() {
         // given
         final Installation installation = new Installation();
@@ -398,6 +406,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void shouldSaveWhenValidateDeviceIdAdm() {
         // given
         final Installation installation = new Installation();
@@ -419,6 +428,7 @@ public class InstallationDaoTest {
     }
 
     @Test(expected = ConstraintViolationException.class)
+    @Transactional
     public void shouldNotSaveWhenSimplePushTokenInvalid() {
         // given
         final Installation installation = new Installation();
@@ -432,6 +442,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void shouldSaveWhenValidateDeviceIdMPNSWindows() {
         // given
         final Installation installation = new Installation();
@@ -447,6 +458,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void shouldSaveWhenSimplePushTokenValid() {
         // given
         final Installation installation = new Installation();
@@ -460,6 +472,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void shouldSaveWhenValidateDeviceIdAndroid() {
         // given
         final Installation installation = new Installation();
@@ -477,6 +490,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void shouldSaveWhenValidateDeviceIdFromAndroidEmulator() {
         // given
         final Installation installation = new Installation();
@@ -494,6 +508,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void shouldSaveWhenValidateDeviceIdFromFirebase() {
         // given
         final Installation installation = new Installation();
@@ -511,6 +526,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void shouldSaveWhitAndroidInstanceIDtoken() {
         // given
         final Installation installation = new Installation();
@@ -537,6 +553,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void primaryKeyUnmodifiedAfterUpdate() {
         Installation android1 = new Installation();
         android1.setAlias("foo@bar.org");
@@ -648,6 +665,7 @@ public class InstallationDaoTest {
     }
 
     @Test
+    @Transactional
     public void testLongDeviceToken() {
         AndroidVariant variant = new AndroidVariant();
         variant.setName("Android Name");

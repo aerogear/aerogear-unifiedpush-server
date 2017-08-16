@@ -28,12 +28,15 @@ import org.jboss.aerogear.windows.mpns.notifications.TileNotification;
 import org.jboss.aerogear.windows.mpns.notifications.ToastNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-@SenderType(VariantType.WINDOWS_MPNS)
+@Service
+@Qualifier(value = VariantType.WINDOWSMPNSQ)
 public class MPNSPushNotificationSender implements PushNotificationSender {
 
     private final Logger logger = LoggerFactory.getLogger(MPNSPushNotificationSender.class);

@@ -7,8 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
 import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -24,16 +22,17 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCodeKey;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
-import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
-import org.jboss.aerogear.unifiedpush.service.KeycloakService;
-import org.jboss.aerogear.unifiedpush.service.VerificationGatewayService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
-import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.IVerificationGatewayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@Singleton
-@Startup
+@Service
+@Transactional
 public class VerificationServiceImpl implements VerificationService {
 	private final static int VERIFICATION_CODE_LENGTH = 5;
 	private final Logger logger = LoggerFactory.getLogger(VerificationServiceImpl.class);
@@ -41,14 +40,11 @@ public class VerificationServiceImpl implements VerificationService {
 	private ConcurrentMap<Object, Set<Object>> deviceToToken;
 
 	@Inject
-	@Wrapper
-	private ConfigurationService configuration;
+	private IConfigurationService configuration;
 	@Inject
-	@Wrapper
-	private VerificationGatewayService verificationService;
+	private IVerificationGatewayService verificationService;
 	@Inject
-	@Wrapper
-	private KeycloakService keycloakService;
+	private IKeycloakService keycloakService;
 	@Inject
 	private InstallationDao installationDao;
 	@Inject

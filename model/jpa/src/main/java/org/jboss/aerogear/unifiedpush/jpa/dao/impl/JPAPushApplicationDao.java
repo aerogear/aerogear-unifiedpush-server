@@ -28,7 +28,9 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dto.Count;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> implements PushApplicationDao {
 
     @Override

@@ -10,9 +10,12 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.springframework.stereotype.Controller;
+
 import com.datastax.driver.core.utils.UUIDs;
 import com.qmino.miredot.annotations.ReturnType;
 
+@Controller
 @Path("/heartbeat")
 public class HeartbeatEndpoint extends AbstractBaseEndpoint {
 

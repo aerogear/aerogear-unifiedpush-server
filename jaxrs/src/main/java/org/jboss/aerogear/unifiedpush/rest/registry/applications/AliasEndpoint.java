@@ -19,7 +19,6 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import java.util.List;
 import java.util.UUID;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -53,17 +52,20 @@ import org.jboss.aerogear.unifiedpush.service.impl.ServiceConstraintViolationExc
 import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import com.qmino.miredot.annotations.ReturnType;
 
+@Controller
 @Path("/alias")
 public class AliasEndpoint extends AbstractBaseEndpoint {
 	private final Logger logger = LoggerFactory.getLogger(AliasEndpoint.class);
 
-	@Inject
+	@Autowired
 	private PushApplicationService pushAppService;
 
-	@Inject
+	@Autowired
 	private AliasService aliasService;
 
 	/**

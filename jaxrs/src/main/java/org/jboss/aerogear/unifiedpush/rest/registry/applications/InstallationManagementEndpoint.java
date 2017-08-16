@@ -33,21 +33,19 @@ import javax.ws.rs.core.UriInfo;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dto.Count;
+import org.jboss.aerogear.unifiedpush.rest.AbstractManagementEndpoint;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.resteasy.spi.Link;
 import org.jboss.resteasy.spi.LinkHeader;
+import org.springframework.stereotype.Controller;
 
 import com.qmino.miredot.annotations.ReturnType;
 
-
+@Controller
 @Path("/applications/{variantID}/installations/")
-public class InstallationManagementEndpoint {
+public class InstallationManagementEndpoint extends AbstractManagementEndpoint {
     private static final int MAX_PAGE_SIZE = 50;
     private static final int DEFAULT_PAGE_SIZE = 25;
-
-    @Inject
-    private SearchManager searchManager;
 
     @Inject
     private ClientInstallationService clientInstallationService;
@@ -90,12 +88,12 @@ public class InstallationManagementEndpoint {
         }
 
         //Find the variant using the variantID
-        if (!searchManager.getSearchService().existsVariantIDForDeveloper(variantId)) {
+        if (!getSearch().existsVariantIDForDeveloper(variantId)) {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
         //Find the installations using the variantID
-        PageResult<Installation, Count> pageResult = searchManager.getSearchService().findAllInstallationsByVariantForDeveloper(variantId, page, pageSize, search);
+        PageResult<Installation, Count> pageResult = getSearch().findAllInstallationsByVariantForDeveloper(variantId, page, pageSize, search);
 
         final long totalPages = pageResult.getAggregate().getCount() / pageSize;
         LinkHeader header = getLinkHeader(page, totalPages, uri);

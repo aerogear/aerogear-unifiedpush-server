@@ -16,28 +16,43 @@
  */
 package org.jboss.aerogear.unifiedpush.message.cache;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
 import com.turo.pushy.apns.ApnsClient;
+
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.jodah.expiringmap.ExpirationListener;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import reactor.core.publisher.WorkQueueProcessor;
 
-import javax.annotation.PreDestroy;
-import javax.ejb.Singleton;
-import javax.enterprise.event.Observes;
-import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.TimeUnit;
-
-@Singleton
+@Service
 public class SimpleApnsClientCache {
 
     private final Logger logger = LoggerFactory.getLogger(SimpleApnsClientCache.class);
+
+    @Inject
+    private WorkQueueProcessor<iOSVariantUpdateEvent> variantUpdateEventEvent;
+
+    @PostConstruct
+    public void subscribe(){
+		for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
+			variantUpdateEventEvent.take(1).repeat().subscribe(s -> disconnectOnChange(s));
+		}
+    }
 
     final ConcurrentMap<String, ApnsClient> apnsClientExpiringMap;
     {
@@ -91,14 +106,18 @@ public class SimpleApnsClientCache {
      * Receives iOS variant change event to remove client from the cache and also tear down the connection.
      * @param iOSVariantUpdateEvent event fired when updating the variant
      */
-    public void disconnectOnChange(@Observes final iOSVariantUpdateEvent iOSVariantUpdateEvent) {
+    public void disconnectOnChange(final iOSVariantUpdateEvent iOSVariantUpdateEvent) {
         final iOSVariant variant = iOSVariantUpdateEvent.getiOSVariant();
         final String connectionKey = extractConnectionKey(variant);
         final ApnsClient client = apnsClientExpiringMap.remove(connectionKey);
         logger.debug("Removed client from cache for {}", variant.getVariantID());
-        if (client != null) {
-            tearDownApnsHttp2Connection(client);
-        }
+        try{
+	        if (client != null) {
+	            tearDownApnsHttp2Connection(client);
+	        }
+        }catch (Throwable e) {
+        	logger.error("Error while disconnecting ios variant", e);
+		}
     }
 
     private String extractConnectionKey(final iOSVariant iOSVariant) {

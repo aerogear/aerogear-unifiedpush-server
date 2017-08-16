@@ -18,10 +18,12 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class JPACategoryDao extends JPABaseDao<Category, Integer> implements CategoryDao {
 
     @Override

@@ -31,9 +31,11 @@ import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
 import com.qmino.miredot.annotations.ReturnType;
 
+@Controller
 @Path("/database")
 public class DatabaseApplicationEndpoint extends AbstractEndpoint {
 	private final Logger logger = LoggerFactory.getLogger(DatabaseApplicationEndpoint.class);

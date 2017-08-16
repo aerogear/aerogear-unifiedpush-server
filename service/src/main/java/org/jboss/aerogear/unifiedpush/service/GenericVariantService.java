@@ -17,18 +17,20 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
+import org.springframework.cache.annotation.Cacheable;
 
 /**
  * Service class that offers functionality to deal with the different variants (e.g. Android, iOS or SimplePush variants).
  */
 public interface GenericVariantService {
-
+	public static final String CACHE_NAME = "variant-by-id";
     /**
      * Store a new Variant object on the database.
      *
      * @param variant the variant
      */
-    void addVariant(Variant variant);
+    void addVariant(Variant variant, LoggedInUser user);
 
     /**
      * Performs an update/merge on the given entity.
@@ -52,6 +54,7 @@ public interface GenericVariantService {
      * @param clientId keycloak client id
      * @return the variant
      */
+    @Cacheable(value = GenericVariantService.CACHE_NAME, unless = "#result == null")
     Variant findVariantByKeycloakClientID(String clientId);
 
     /**

@@ -348,6 +348,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	/*
 	 * String domain name and separator and return subdomain as application
 	 * name.
+	 * TODO - Make sure domain separators '-' and '.' and disallowed with application name.
 	 */
 	public String strip(String fqdn) {
 		String domain = conf.getRooturlDomain();

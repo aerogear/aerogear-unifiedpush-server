@@ -20,10 +20,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.ejb.Asynchronous;
-import javax.ejb.DependsOn;
-import javax.ejb.Stateless;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -40,20 +36,20 @@ import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
-import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
-import org.jboss.aerogear.unifiedpush.service.util.GCMTopicManager;
-import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
+import org.jboss.aerogear.unifiedpush.service.util.FCMTopicManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * (Default) implementation of the {@code ClientInstallationService} interface.
  * Delegates work to an injected DAO object.
  */
-@Stateless
-@DependsOn(value={"VerificationServiceImpl"})
+@Service
+@Transactional
 public class ClientInstallationServiceImpl implements ClientInstallationService {
 	private final Logger logger = LoggerFactory.getLogger(ClientInstallationServiceImpl.class);
 
@@ -70,15 +66,10 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	private PushApplicationDao pushApplicationDao;
 
 	@Inject
-	@LoggedIn
-	private Instance<String> developer;
-
-	@Inject
 	private VerificationService verificationService;
 
 	@Inject
-	@Wrapper
-	private ConfigurationService configuration;
+	private IConfigurationService configuration;
 
 	@Override
 	public Variant associateInstallation(Installation installation, Variant currentVariant) {
@@ -122,12 +113,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	}
 
 	@Override
-	public void addInstallationSynchronously(Variant variant, Installation entity) {
-		this.addInstallation(variant, entity);
-	}
-
-	@Override
-	@Asynchronous
 	public void addInstallation(Variant variant, Installation entity) {
     	boolean shouldVerifiy = configuration.isVerificationEnabled();
 
@@ -168,12 +153,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	}
 
 	@Override
-	public void addInstallationsSynchronously(Variant variant, List<Installation> installations) {
-		this.addInstallations(variant, installations);
-	}
-
-	@Override
-	@Asynchronous
 	public void addInstallations(Variant variant, List<Installation> installations) {
 
 		// don't bother
@@ -265,7 +244,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	}
 
 	@Override
-	@Asynchronous
 	public void removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens) {
 		// collect inactive installations for the given variant:
 		List<Installation> inactiveInstallations = installationDao.findInstallationsForVariantByDeviceTokens(variantID,
@@ -275,12 +253,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	}
 
 	@Override
-	public void removeInstallationForVariantByDeviceTokenSynchronously(String variantID, String deviceToken) {
-		this.removeInstallationForVariantByDeviceToken(variantID, deviceToken);
-	}
-
-	@Override
-	@Asynchronous
 	public void removeInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
 		removeInstallation(findInstallationForVariantByDeviceToken(variantID, deviceToken));
 	}
@@ -291,9 +263,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	}
 
 	@Override
-	@Asynchronous
 	public void unsubscribeOldTopics(Installation installation) {
-		GCMTopicManager topicManager = new GCMTopicManager((AndroidVariant) installation.getVariant());
+		FCMTopicManager topicManager = new FCMTopicManager((AndroidVariant) installation.getVariant());
 		Set<String> oldCategories = topicManager.getSubscribedCategories(installation);
 		// Remove current categories from the set of old ones
 		oldCategories.removeAll(convertToNames(installation.getCategories()));
@@ -394,5 +365,9 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
 	public List<Installation> findByAlias(String alias){
 		return installationDao.findInstallationsByAlias(alias);
+	}
+
+	public long getNumberOfDevicesForVariantID(String variantId){
+		return installationDao.getNumberOfDevicesForVariantID(variantId);
 	}
 }

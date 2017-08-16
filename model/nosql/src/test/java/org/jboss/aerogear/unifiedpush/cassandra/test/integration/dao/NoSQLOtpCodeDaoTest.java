@@ -8,11 +8,10 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCode;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCodeKey;
 import org.jboss.aerogear.unifiedpush.cassandra.test.integration.FixedKeyspaceCreatingIntegrationTest;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cassandra.core.WriteOptions;
+import org.springframework.data.cassandra.core.InsertOptions;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -22,11 +21,6 @@ public class NoSQLOtpCodeDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 
 	@Autowired
 	private OtpCodeDao codeDao;
-
-	@Before
-	public void setupTemplate() {
-		execute("cassandra-test-cql-dataload.cql", this.keyspace);
-	}
 
 	// Create Simple otp code.
 	@Test
@@ -41,8 +35,7 @@ public class NoSQLOtpCodeDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 	public void testCreateWithTTL() {
 		UUID variantId = UUID.randomUUID();
 		OtpCodeKey key = new OtpCodeKey(variantId, UUID.randomUUID().toString(), "123456");
-		WriteOptions options = new WriteOptions();
-		options.setTtl(2);
+		InsertOptions options = InsertOptions.builder().ttl(2).build();
 		OtpCode code1 = new OtpCode(key);
 		codeDao.save(code1, options);
 

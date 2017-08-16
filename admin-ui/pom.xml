@@ -26,7 +26,7 @@
 
     <artifactId>unifiedpush-admin-ui</artifactId>
     <packaging>jar</packaging>
-    <name>UnifiedPush Admin UI</name>
+    <name>AeroBase Admin UI</name>
 
     <build>
 
@@ -95,6 +95,7 @@
 					<descriptors>
 						<descriptor>src/main/assembly/assembly.xml</descriptor>
 					</descriptors>
+					<finalName>${project.artifactId}</finalName>
 				</configuration>
 				<executions>
 					<execution>

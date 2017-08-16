@@ -2,8 +2,8 @@ package org.jboss.aerogear.unifiedpush.cassandra.dao.model;
 
 import javax.validation.constraints.NotNull;
 
-import org.springframework.data.cassandra.mapping.PrimaryKey;
-import org.springframework.data.cassandra.mapping.Table;
+import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

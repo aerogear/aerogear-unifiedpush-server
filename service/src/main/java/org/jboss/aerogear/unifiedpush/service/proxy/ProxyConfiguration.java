@@ -16,19 +16,19 @@
  */
 package org.jboss.aerogear.unifiedpush.service.proxy;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
 import java.net.Authenticator;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.stereotype.Service;
 
 
 /**
  * responsible for handling authentication challenges from outbound HTTP_PROXY
  */
-@Startup
-@Singleton
+@Service
 public class ProxyConfiguration {
 
     @PostConstruct

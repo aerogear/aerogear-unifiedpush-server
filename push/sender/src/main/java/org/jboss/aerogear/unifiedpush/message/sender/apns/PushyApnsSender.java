@@ -24,8 +24,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -39,10 +37,11 @@ import org.jboss.aerogear.unifiedpush.message.apns.APNs;
 import org.jboss.aerogear.unifiedpush.message.cache.SimpleApnsClientCache;
 import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
-import org.jboss.aerogear.unifiedpush.message.sender.SenderType;
 import org.jboss.aerogear.unifiedpush.service.proxy.ProxyConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.ApnsClientBuilder;
@@ -53,9 +52,10 @@ import com.turo.pushy.apns.util.ApnsPayloadBuilder;
 import com.turo.pushy.apns.util.SimpleApnsPushNotification;
 
 import io.netty.util.concurrent.Future;
+import reactor.core.publisher.WorkQueueProcessor;
 
-@Stateless
-@SenderType(VariantType.IOS)
+@Service
+@Qualifier(value = VariantType.IOSQ)
 public class PushyApnsSender implements PushNotificationSender {
 
     private final Logger logger = LoggerFactory.getLogger(PushyApnsSender.class);
@@ -65,12 +65,12 @@ public class PushyApnsSender implements PushNotificationSender {
     private static final String customAerogearApnsPushHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
     private static final Integer customAerogearApnsPushPort = tryGetIntegerProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
 
-    private final ConcurrentSkipListSet<String> invalidTokens = new ConcurrentSkipListSet();
+    private final ConcurrentSkipListSet<String> invalidTokens = new ConcurrentSkipListSet<>();
 
     @Inject
     private SimpleApnsClientCache simpleApnsClientCache;
     @Inject
-    private Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
+    private WorkQueueProcessor<iOSVariantUpdateEvent> variantUpdateEventEvent;
 
     @Override
     public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final String pushMessageInformationId, final NotificationSenderCallback senderCallback) {
@@ -127,7 +127,7 @@ public class PushyApnsSender implements PushNotificationSender {
         } else {
             logger.error("Unable to send notifications, client is not connected. Removing from cache pool");
             senderCallback.onError("Unable to send notifications, client is not connected");
-            variantUpdateEventEvent.fire(new iOSVariantUpdateEvent(iOSVariant));
+            variantUpdateEventEvent.onNext(new iOSVariantUpdateEvent(iOSVariant));
         }
     }
 

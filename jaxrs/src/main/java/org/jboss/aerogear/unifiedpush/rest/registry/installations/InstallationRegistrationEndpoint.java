@@ -49,22 +49,24 @@ import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.authentication.AuthenticationHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationAsyncService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
+import org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
 
+@Controller
 @Path("/registry/device")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
@@ -75,14 +77,15 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	@Inject
 	private ClientInstallationService clientInstallationService;
 	@Inject
+	private ClientInstallationAsyncService clientInstallationAsyncService;
+	@Inject
 	private GenericVariantService genericVariantService;
 	@Inject
-	private PushMessageMetricsService metricsService;
+	private IPushMessageMetricsService metricsService;
 	@Inject
 	private VerificationService verificationService;
 	@Inject
-	@Wrapper
-	private ConfigurationService configuration;
+	private IConfigurationService configuration;
 	@Inject
 	private AuthenticationHelper authenticationHelper;
 
@@ -217,15 +220,15 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 		// The token has changed, remove the old one
 		if (!oldToken.isEmpty() && !oldToken.equals(entity.getDeviceToken())) {
 			logger.info(String.format("Deleting old device token %s", oldToken));
-			clientInstallationService.removeInstallationForVariantByDeviceToken(variant.getVariantID(), oldToken);
+			clientInstallationAsyncService.removeInstallationForVariantByDeviceToken(variant.getVariantID(), oldToken);
 		}
 
 		// In some cases (automation & verification a.k.a OTP), we need to
 		// make sure device is synchronously registered.
 		if (synchronously || shouldVerifiy)
-			clientInstallationService.addInstallationSynchronously(variant, entity);
-		else
 			clientInstallationService.addInstallation(variant, entity);
+		else
+			clientInstallationAsyncService.addInstallation(variant, entity);
 
 		return appendAllowOriginHeader(Response.ok(entity), request);
 	}
@@ -453,7 +456,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
 		logger.info("Devices to import: {}", devices.size());
 
-		clientInstallationService.addInstallations(variant, devices);
+		clientInstallationAsyncService.addInstallations(variant, devices);
 
 		// return directly, the above is async and may take a bit :-)
 		return Response.ok(EmptyJSON.STRING).build();

@@ -53,6 +53,12 @@ public enum VariantType {
      */
     ADM("adm");
 
+    public static final String ANDROIDQ = "ANDROID";
+    public static final String ADMQ = "ADM";
+    public static final String IOSQ = "IOS";
+    public static final String SIMPLEPUSHQ = "SIMPLE_PUSH";
+    public static final String WINDOWSMPNSQ = "WINDOWS_MPNS";
+    public static final String WINDOWSWNSQ = "WINDOWS_WNS";
 
     private final String typeName;
 

@@ -16,31 +16,32 @@
  */
 package org.jboss.aerogear.unifiedpush.message.util;
 
-import com.turo.pushy.apns.ApnsClient;
+import static org.jboss.aerogear.unifiedpush.message.sender.apns.PushyApnsSender.CUSTOM_AEROGEAR_APNS_PUSH_HOST;
+import static org.jboss.aerogear.unifiedpush.message.sender.apns.PushyApnsSender.CUSTOM_AEROGEAR_APNS_PUSH_PORT;
+import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetIntegerProperty;
+import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetProperty;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Future;
+
 import org.jboss.aerogear.unifiedpush.message.HealthNetworkService;
 import org.jboss.aerogear.unifiedpush.message.sender.fcm.ConfigurableFCMSender;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
 import org.jboss.aerogear.unifiedpush.service.impl.health.Ping;
 import org.jboss.aerogear.unifiedpush.service.impl.health.PushNetwork;
 import org.jboss.aerogear.unifiedpush.service.impl.health.Status;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.stereotype.Service;
 
-import javax.ejb.AsyncResult;
-import javax.ejb.Asynchronous;
-import javax.ejb.Stateless;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Future;
-
-import static org.jboss.aerogear.unifiedpush.message.sender.apns.PushyApnsSender.CUSTOM_AEROGEAR_APNS_PUSH_HOST;
-import static org.jboss.aerogear.unifiedpush.message.sender.apns.PushyApnsSender.CUSTOM_AEROGEAR_APNS_PUSH_PORT;
-import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetIntegerProperty;
-import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetProperty;
+import com.turo.pushy.apns.ApnsClient;
 
 /**
  * Checks the health of the push networks.
  */
-@Stateless
+@Service
 public class HealthNetworkServiceImpl implements HealthNetworkService {
     private static final String customAerogearApnsPushHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
     private static final Integer customAerogearApnsPushPort = tryGetIntegerProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
@@ -63,7 +64,7 @@ public class HealthNetworkServiceImpl implements HealthNetworkService {
         }
     }
 
-    @Asynchronous
+    @Async
     @Override
     public Future<List<HealthDetails>> networkStatus() {
         final List<HealthDetails> results = new ArrayList<>(PUSH_NETWORKS.size());

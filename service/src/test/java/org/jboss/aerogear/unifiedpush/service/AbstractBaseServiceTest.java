@@ -19,14 +19,9 @@ package org.jboss.aerogear.unifiedpush.service;
 import static org.mockito.Mockito.when;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 
-import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
-import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
-import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushServiceArchive;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
+import org.jboss.aerogear.unifiedpush.spring.ServiceConfig;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.keycloak.KeycloakPrincipal;
@@ -34,13 +29,15 @@ import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.representations.AccessToken;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(Arquillian.class)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { ServiceConfig.class })
 public abstract class AbstractBaseServiceTest {
 
-	@Mock
-	protected HttpServletRequest httpServletRequest = Mockito.mock(HttpServletRequest.class);
-
+	protected static final String DEFAULT_USER = "admin";
 	@Mock
 	protected KeycloakSecurityContext context = Mockito.mock(KeycloakSecurityContext.class);
 
@@ -48,50 +45,34 @@ public abstract class AbstractBaseServiceTest {
 	protected KeycloakPrincipal keycloakPrincipal = Mockito.mock(KeycloakPrincipal.class);
 
 	@Inject
-	protected SearchManager searchManager;
-
-	@Inject
 	protected PushApplicationService pushApplicationService;
-
 	@Inject
-	protected PushSearchByDeveloperServiceImpl searchApplicationService;
-
-	@Deployment
-	public static WebArchive archive() {
-		return UnifiedPushServiceArchive.forTestClass(AbstractBaseServiceTest.class) //
-				.withServices() //
-				.withCassandra() //
-				.withAssert() //
-				.withModelJPA() //
-				.withTestDS() //
-				.withTestResources() //
-				.withMockito() //
-				.as(WebArchive.class);
-	}
+	@Qualifier("PushSearchByDeveloperServiceImpl")
+	protected PushSearchService searchApplicationService;
 
 	/**
 	 * Basic setup stuff, needed for all the UPS related service classes
 	 */
 	@Before
 	public void setUp() {
+		searchApplicationService.setLoginName(new LoggedInUser(DEFAULT_USER));
+
 		// Keycloak test environment
 		AccessToken token = new AccessToken();
-        //The current developer will always be the admin in this testing scenario
-		token.setPreferredUsername("admin");
+		// The current developer will always be the admin in this testing
+		// scenario
+		token.setPreferredUsername(DEFAULT_USER);
 		when(context.getToken()).thenReturn(token);
 		when(keycloakPrincipal.getKeycloakSecurityContext()).thenReturn(context);
-		when(httpServletRequest.getUserPrincipal()).thenReturn(keycloakPrincipal);
-
-		// glue it to serach mgr
-		searchManager.setHttpServletRequest(httpServletRequest);
+		// when(httpServletRequest.getUserPrincipal()).thenReturn(keycloakPrincipal);
 
 		// more to setup ?
 		specificSetup();
 	}
 
 	/**
-     * Enforced to override to make sure test-case specific
-     * setup is done inside here!
+	 * Enforced to override to make sure test-case specific setup is done inside
+	 * here!
 	 */
 	protected abstract void specificSetup();
 

@@ -42,11 +42,12 @@ import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
 
-
+@Controller
 @Path("/sender")
 public class PushNotificationSenderEndpoint extends AbstractEndpoint {
     private final Logger logger = LoggerFactory.getLogger(PushNotificationSenderEndpoint.class);

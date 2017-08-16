@@ -22,12 +22,14 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Date;
 import java.util.List;
 
+@Repository
 public class JPAFlatPushMessageInformationDao extends JPABaseDao<FlatPushMessageInformation, String> implements FlatPushMessageInformationDao{
 
     private static final String ASC = "ASC";

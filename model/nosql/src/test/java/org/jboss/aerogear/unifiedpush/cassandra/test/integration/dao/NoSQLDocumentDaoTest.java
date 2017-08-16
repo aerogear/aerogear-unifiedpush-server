@@ -15,7 +15,6 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.cassandra.test.integration.FixedKeyspaceCreatingIntegrationTest;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +32,6 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 
 	@Autowired
 	private AliasDao aliasDao;
-
-	@Before
-	public void setupTemplate() {
-		execute("cassandra-test-cql-dataload.cql", this.keyspace);
-	}
 
 	@Test
 	public void testCreateGlobalDocuemnt() {

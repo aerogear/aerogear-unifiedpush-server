@@ -19,7 +19,7 @@
 
 	<artifactId>unifiedpush-package</artifactId>
 	<packaging>pom</packaging>
-	<name>UnifiedPush tar.gz Package</name>
+	<name>AeroBase tar.gz Package</name>
 
 	<properties>
 		<resources.home>${project.build.outputDirectory}</resources.home>

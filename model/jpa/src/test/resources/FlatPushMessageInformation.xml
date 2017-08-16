@@ -63,12 +63,14 @@
 
     <table name="SA.VARIANT">
         <column>id</column>
+        <column>name</column>
         <column>VARIANT_TYPE</column>
         <column>api_key</column>
         <column>type</column>
         <column>developer</column>
         <row>
             <value>1</value>
+            <value>android-name</value>
             <value>android</value>
             <value>231543432432</value>
             <value>0</value>
@@ -76,6 +78,7 @@
         </row>
         <row>
             <value>2</value>
+            <value>android-name</value>
             <value>android</value>
             <value>23154343243333</value>
             <value>0</value>
@@ -83,6 +86,7 @@
         </row>
         <row>
             <value>3</value>
+            <value>android-name</value>
             <value>android</value>
             <value>231543432434</value>
             <value>0</value>
@@ -90,6 +94,7 @@
         </row>
         <row>
             <value>4</value>
+            <value>android-name</value>
             <value>android</value>
             <value>213</value>
             <value>0</value>

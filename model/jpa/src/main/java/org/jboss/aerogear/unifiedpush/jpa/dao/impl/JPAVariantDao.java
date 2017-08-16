@@ -18,10 +18,12 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
+import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.List;
 
+@Repository
 public class JPAVariantDao extends JPABaseDao<Variant, String> implements VariantDao {
 
 

@@ -30,17 +30,19 @@ import javax.ws.rs.core.Response;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService;
+import org.springframework.stereotype.Component;
 
 import com.qmino.miredot.annotations.ReturnType;
 
+@Component
 @Path("/metrics/messages")
 public class PushMetricsEndpoint {
     private static final int MAX_PAGE_SIZE = 100;
     private static final int DEFAULT_PAGE_SIZE = 25;
 
     @Inject
-    private PushMessageMetricsService metricsService;
+    private IPushMessageMetricsService metricsService;
 
     /**
      * GET info about submitted push messages for the given Push Application

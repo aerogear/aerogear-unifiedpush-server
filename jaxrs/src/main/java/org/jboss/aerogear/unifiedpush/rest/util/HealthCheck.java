@@ -20,6 +20,7 @@ import org.jboss.aerogear.unifiedpush.message.HealthNetworkService;
 import org.jboss.aerogear.unifiedpush.service.HealthDBService;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthStatus;
+import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -40,6 +41,7 @@ import java.util.jar.Manifest;
 /**
  * A class to test 'health' of the server
  */
+@Controller
 @Path("/sys/info")
 public class HealthCheck {
 

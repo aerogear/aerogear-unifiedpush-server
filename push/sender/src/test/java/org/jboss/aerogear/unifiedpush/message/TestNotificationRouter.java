@@ -28,8 +28,6 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
@@ -39,46 +37,45 @@ import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.FlatPushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.message.TestNotificationRouter.VariantTypesHolderConfig;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
-import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
-import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
+import org.jboss.aerogear.unifiedpush.service.AbstractNoCassandraServiceTest;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushSenderArchive;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
-import org.jboss.arquillian.transaction.api.annotation.Transactional;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
-@RunWith(Arquillian.class)
-public class TestNotificationRouter {
+import reactor.core.publisher.TopicProcessor;
 
-	@Deployment
-	public static WebArchive archive() {
-		return UnifiedPushSenderArchive.forTestClass(TestNotificationRouter.class) //
-				.withMessaging() //
-				.addClasses(NotificationRouter.class, //
-						PushNotificationSender.class) //
-				.as(WebArchive.class); //
-	}
+@ContextConfiguration(classes = { SenderConfig.class, VariantTypesHolderConfig.class })
+public class TestNotificationRouter extends AbstractNoCassandraServiceTest {
 
 	@Inject
 	private NotificationRouter router;
 	@Inject
 	private VariantTypesHolder variantTypeHolder;
+	@Inject
+	private FlatPushMessageInformationDao pushMessageInformationDao;
+	@Inject
+	private GenericVariantService variantService;
+	@Inject
+	private TopicProcessor<MessageHolderWithVariants> nextBatchEvent;
 
 	private static CountDownLatch countDownLatch;
 
 	private PushApplication app;
 	private InternalUnifiedPushMessage message;
 
-	@Before
-	public void setUp() {
+	public void specificSetup() {
 		app = new PushApplication();
 		message = new InternalUnifiedPushMessage();
+		variantTypeHolder.clear();
+
+		if (nextBatchEvent.downstreamCount()==1)
+			nextBatchEvent.take(Runtime.getRuntime().availableProcessors()).repeat()
+					.subscribe(s -> variantTypeHolder.addVariantType(s.getVariantType()));
 	}
 
 	@Test
@@ -90,6 +87,7 @@ public class TestNotificationRouter {
 	}
 
 	@Test
+	@Transactional
 	public void testTwoVariantsOfSameType() throws InterruptedException {
 		countDownLatch = new CountDownLatch(1);
 		app.getVariants().add(new SimplePushVariant());
@@ -100,6 +98,7 @@ public class TestNotificationRouter {
 	}
 
 	@Test
+	@Transactional
 	public void testThreeVariantsOfDifferentType() throws InterruptedException {
 		countDownLatch = new CountDownLatch(3);
 		app.getVariants().add(new AndroidVariant());
@@ -112,8 +111,8 @@ public class TestNotificationRouter {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
-    public void testInvokesMetricsService(FlatPushMessageInformationDao pushMessageInformationDao) {
+	@Transactional
+	public void testInvokesMetricsService() {
 		router.submit(app, message);
 		FlatPushMessageInformation messageInformation = new FlatPushMessageInformation();
 		messageInformation.setPushApplicationId(app.getPushApplicationID());
@@ -121,7 +120,8 @@ public class TestNotificationRouter {
 	}
 
 	@Test
-	public void testVariantIDsSpecified(GenericVariantService variantService) throws InterruptedException {
+	@Transactional
+	public void testVariantIDsSpecified() throws InterruptedException {
 		// given
 		countDownLatch = new CountDownLatch(2);
 
@@ -142,9 +142,9 @@ public class TestNotificationRouter {
 		androidVariant.setGoogleKey("xxx-xxx-xxx-xxx");
 		androidVariant.setProjectNumber("1234567890");
 
-		variantService.addVariant(simplePushVariant);
-		variantService.addVariant(iOSVariant);
-		variantService.addVariant(androidVariant);
+		variantService.addVariant(simplePushVariant, new LoggedInUser(DEFAULT_USER));
+		variantService.addVariant(iOSVariant, new LoggedInUser(DEFAULT_USER));
+		variantService.addVariant(androidVariant, new LoggedInUser(DEFAULT_USER));
 
 		app.getVariants().addAll(Arrays.asList(simplePushVariant, iOSVariant, androidVariant));
 		message.getCriteria().setVariants(Arrays.asList(iOSVariant.getVariantID(), androidVariant.getVariantID()));
@@ -154,21 +154,27 @@ public class TestNotificationRouter {
 		assertEquals(variants(VariantType.ANDROID, VariantType.IOS), variantTypeHolder.getVariantTypes());
 	}
 
-	public void observeMessageHolderWithVariants(@Observes @DispatchToQueue MessageHolderWithVariants msg) {
-		variantTypeHolder.addVariantType(msg.getVariantType());
-		countDownLatch.countDown();
+	public static class VariantTypesHolderConfig {
+		@Bean
+		public VariantTypesHolder getVariantTypesHolder() {
+			return new VariantTypesHolder();
+		}
 	}
 
-	@RequestScoped
 	public static class VariantTypesHolder {
 		private Set<VariantType> variantTypes = new HashSet<>();
 
 		public void addVariantType(VariantType variantType) {
 			this.variantTypes.add(variantType);
+			countDownLatch.countDown();
 		}
 
 		public Set<VariantType> getVariantTypes() {
 			return variantTypes;
+		}
+
+		public void clear() {
+			variantTypes = new HashSet<>();
 		}
 	}
 
@@ -176,23 +182,22 @@ public class TestNotificationRouter {
 		return new HashSet<>(Arrays.asList(types));
 	}
 
+	/**
+	 * The store read by this method was copied from
+	 * https://github.com/notnoop/java-apns/tree/master/src/test/resources
+	 */
+	public static byte[] readCertificate(String cert) throws Exception {
+		return asByteArray(TestNotificationRouter.class.getResourceAsStream(cert));
+	}
 
-    /**
-     * The store read by this method was copied from
-     * https://github.com/notnoop/java-apns/tree/master/src/test/resources
-     */
-    public static byte[] readCertificate(String cert) throws Exception {
-        return asByteArray(TestNotificationRouter.class.getResourceAsStream(cert));
-    }
-
-    private static byte[] asByteArray(final InputStream is) throws IOException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        int reads = is.read();
-        while (reads != -1) {
-            baos.write(reads);
-            reads = is.read();
-        }
-        return baos.toByteArray();
-    }
+	private static byte[] asByteArray(final InputStream is) throws IOException {
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		int reads = is.read();
+		while (reads != -1) {
+			baos.write(reads);
+			reads = is.read();
+		}
+		return baos.toByteArray();
+	}
 
 }

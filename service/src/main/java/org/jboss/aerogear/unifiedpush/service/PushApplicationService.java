@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
 
 public interface PushApplicationService {
 
@@ -28,7 +29,7 @@ public interface PushApplicationService {
      *
      * @param pushApp the push application object
      */
-    void addPushApplication(PushApplication pushApp);
+    void addPushApplication(PushApplication pushApp, LoggedInUser user);
 
     /**
      * Performs an update/merge on the given entity.

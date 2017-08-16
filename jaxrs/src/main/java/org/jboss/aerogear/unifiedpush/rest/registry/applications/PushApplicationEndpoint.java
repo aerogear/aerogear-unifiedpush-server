@@ -39,17 +39,19 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dto.Count;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.rest.AbstractManagementEndpoint;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService;
+import org.springframework.stereotype.Controller;
 
 import com.qmino.miredot.annotations.ReturnType;
 
+@Controller
 @Path("/applications")
-public class PushApplicationEndpoint extends AbstractBaseEndpoint {
+public class PushApplicationEndpoint extends AbstractManagementEndpoint {
     private static final int MAX_PAGE_SIZE = 25;
     private static final int DEFAULT_PAGE_SIZE = 8;
 
@@ -57,11 +59,10 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     private PushApplicationService pushAppService;
 
     @Inject
-    private PushMessageMetricsService metricsService;
+    private IPushMessageMetricsService metricsService;
 
     @Inject
-    private InstallationDao installationDao;
-    
+    private ClientInstallationService installationService;
     /**
      * Create Push Application
      *
@@ -88,7 +89,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             return builder.build();
         }
 
-        pushAppService.addPushApplication(pushApp);
+        pushAppService.addPushApplication(pushApp, extractUsername());
 
         return Response.created(UriBuilder.fromResource(PushApplicationEndpoint.class).path(String.valueOf(pushApp.getPushApplicationID())).build()).entity(pushApp)
                 .build();
@@ -187,7 +188,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     private void putDeviceCountIntoResponseHeaders(PushApplication app, ResponseBuilder response) {
         long appCount = 0;
         for (Variant variant : app.getVariants()) {
-            long variantCount = installationDao.getNumberOfDevicesForVariantID(variant.getVariantID());
+            long variantCount = installationService.getNumberOfDevicesForVariantID(variant.getVariantID());
             appCount += variantCount;
             response.header("deviceCount_variant_" + variant.getVariantID(), variantCount);
         }
@@ -253,8 +254,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.api.PushApplication")
     public Response resetMasterSecret(@PathParam("pushAppID") String pushApplicationID) {
-
-        //PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
         PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp != null) {

@@ -20,6 +20,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.springframework.stereotype.Controller;
 
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
@@ -34,6 +35,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+@Controller
 @Path("/applications/{pushAppID}/adm")
 public class AdmVariantEndpoint extends AbstractVariantEndpoint {
 
@@ -77,7 +79,7 @@ public class AdmVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // store the Adm variant:
-        variantService.addVariant(admVariant);
+        variantService.addVariant(admVariant, extractUsername());
         // add Adm variant, and merge:
         pushAppService.addVariant(pushApp, admVariant);
 

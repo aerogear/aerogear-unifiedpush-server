@@ -19,9 +19,12 @@ package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import org.springframework.stereotype.Repository;
+
 /**
  * Simple dao that checks if the database is available by running select 1 query.
  */
+@Repository
 public class JPAHealthDao {
     @Inject
     private EntityManager entityManager;

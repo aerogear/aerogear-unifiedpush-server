@@ -16,61 +16,75 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
+import java.util.Collection;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
-import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.message.token.TokenLoader;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService;
+import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.BeanFactoryAnnotationUtils;
+import org.springframework.context.ApplicationContext;
 
-import javax.ejb.Stateless;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import java.util.Collection;
+import reactor.core.publisher.WorkQueueProcessor;
 
 /**
  * Receives a request for dispatching push notifications to specified devices from {@link TokenLoader}
  */
-@Stateless
+@Service
 public class NotificationDispatcher {
 
     private final Logger logger = LoggerFactory.getLogger(NotificationDispatcher.class);
 
     @Inject
-    @Any
-    private Instance<PushNotificationSender> senders;
+    private ApplicationContext context;
 
     @Inject
-    private PushMessageMetricsService pushMessageMetricsService;
+    private IPushMessageMetricsService pushMessageMetricsService;
 
+	@Inject
+	private WorkQueueProcessor<MessageHolderWithTokens> messages;
+
+	@PostConstruct
+	public void subscribe() {
+		messages.repeat().subscribe(m -> sendMessagesToPushNetwork(m));
+	}
     /**
      * Receives a {@link UnifiedPushMessage} and list of device tokens that the message should be sent to, selects appropriate sender implementation that
      * the push notifications are submitted to.
      *
      * @param msg object containing details about the payload and the related device tokens
      */
-    public void sendMessagesToPushNetwork(@Observes @Dequeue MessageHolderWithTokens msg) {
+    public void sendMessagesToPushNetwork(MessageHolderWithTokens msg) {
         final Variant variant = msg.getVariant();
         final UnifiedPushMessage unifiedPushMessage = msg.getUnifiedPushMessage();
         final Collection<String> deviceTokens = msg.getDeviceTokens();
 
-        logger.info(String.format("Received UnifiedPushMessage from JMS queue, will now trigger the Push Notification delivery for the %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
+        logger.info(String.format("Received UnifiedPushMessage from queue, will now trigger the Push Notification delivery for the %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
 
-        senders.select(new SenderTypeLiteral(variant.getType())).get()
-                            .sendPushMessage(variant, deviceTokens, unifiedPushMessage, msg.getPushMessageInformation().getId(),
-                                    new SenderServiceCallback(
-                                            variant,
-                                            deviceTokens.size(),
-                                            msg.getPushMessageInformation()
-                                    )
-                            );
+        try {
+        	// Any Unhandled exception will break this Flux stream
+    		BeanFactoryAnnotationUtils.qualifiedBeanOfType(
+    				context.getAutowireCapableBeanFactory(), PushNotificationSender.class, variant.getType().name())
+			    		.sendPushMessage(variant, deviceTokens, unifiedPushMessage, msg.getPushMessageInformation().getId(),
+			                    new SenderServiceCallback(
+			                            variant,
+			                            deviceTokens.size(),
+			                            msg.getPushMessageInformation()
+			                    )
+			    		);
+        } catch (Throwable e) {
+        	logger.error("Unable to send push notification for %s variant ", variant.getName());
+        	// TODO - implement retry policy
+		}
     }
 
     private class SenderServiceCallback implements NotificationSenderCallback {

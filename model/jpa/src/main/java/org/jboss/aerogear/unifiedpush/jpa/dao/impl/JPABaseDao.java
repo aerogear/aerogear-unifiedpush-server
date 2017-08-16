@@ -20,8 +20,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.LockModeType;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.hibernate.Session;
@@ -66,7 +66,7 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
     public T find(K id) {
         return entityManager.find(getType(), id);
     }
-    
+
     @SuppressWarnings("unchecked")
 	public List<T> findAll() {
         return entityManager.createQuery("Select t from " + getType().getSimpleName() + " t").getResultList();

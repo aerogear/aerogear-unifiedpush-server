@@ -24,27 +24,21 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Category;
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPACategoryDao;
-import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.aerogear.unifiedpush.dao.CategoryDao;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 
-@RunWith(Arquillian.class)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { JPAConfig.class })
 public class CategoryDaoTest {
 
     @Inject
-    private JPACategoryDao categoryDao;
-
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return DaoDeployment.createDeployment();
-    }
+    private CategoryDao categoryDao;
 
     @Rule
     public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("Categories.xml");

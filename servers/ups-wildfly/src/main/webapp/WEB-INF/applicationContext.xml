@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file is in used by spring web-mvc - DO NOT delete it !!! -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <context:annotation-config />
+
+    <context:component-scan base-package="org.jboss.aerogear.unifiedpush.rest"/>
+
+    <!-- first, define our individual @Configuration classes as beans -->
+    <bean class="org.jboss.aerogear.unifiedpush.rest.WebConfig"/>
+    <bean class="org.jboss.aerogear.unifiedpush.cassandra.CassandraConfig"/>
+    <bean class="org.jboss.aerogear.unifiedpush.spring.ServiceCacheConfig"/>
+
+</beans>

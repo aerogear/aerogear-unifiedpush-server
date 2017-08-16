@@ -25,46 +25,29 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
-
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
-import org.jboss.aerogear.unifiedpush.utils.DaoDeployment;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-@RunWith(Arquillian.class)
+import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
+
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { JPAConfig.class })
+@Transactional
 public class PushApplicationDaoTest {
 
     @Inject
     private EntityManager entityManager;
     @Inject
     private PushApplicationDao pushApplicationDao;
-
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return DaoDeployment.createDeployment();
-    }
-
-    @Before
-    public void setUp() {
-        // start the shindig
-        entityManager.getTransaction().begin();
-    }
-
-    @After
-    public void tearDown() {
-        entityManager.getTransaction().rollback();
-    }
 
     @Rule
     public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("PushApplications.xml");

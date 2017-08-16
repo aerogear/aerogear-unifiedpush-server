@@ -18,22 +18,22 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.util.concurrent.Future;
 
-import javax.ejb.AsyncResult;
-import javax.ejb.Asynchronous;
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAHealthDao;
 import org.jboss.aerogear.unifiedpush.service.HealthDBService;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
 import org.jboss.aerogear.unifiedpush.service.impl.health.Status;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.stereotype.Service;
 
-@Stateless
+@Service
 public class HealthServiceImpl implements HealthDBService {
     @Inject
     private JPAHealthDao healthDao;
 
-    @Asynchronous
+    @Async
     @Override
     public Future<HealthDetails> dbStatus() {
         HealthDetails details = new HealthDetails();

@@ -27,10 +27,13 @@ import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-@SenderType(VariantType.ADM)
+@Service
+@Qualifier(VariantType.ADMQ)
 public class AdmPushNotificationSender implements PushNotificationSender {
     private final Logger logger = LoggerFactory.getLogger(AdmPushNotificationSender.class);
 

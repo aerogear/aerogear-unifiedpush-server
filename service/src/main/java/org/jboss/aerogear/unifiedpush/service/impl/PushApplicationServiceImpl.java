@@ -19,8 +19,6 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.ejb.Stateless;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -29,9 +27,12 @@ import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
-import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@Stateless
+@Service
+@Transactional
 public class PushApplicationServiceImpl implements PushApplicationService {
 	@Inject
 	private PushApplicationDao pushApplicationDao;
@@ -41,17 +42,13 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 	@Inject
 	private AliasService aliasService;
 
-	@Inject
-	@LoggedIn
-	private Instance<String> loginName;
-
 	public PushApplicationServiceImpl() {
 	}
 
 	@Override
-	public void addPushApplication(PushApplication pushApp) {
+	public void addPushApplication(PushApplication pushApp, LoggedInUser user) {
 
-		pushApp.setDeveloper(loginName.get());
+		pushApp.setDeveloper(user.get());
 		pushApplicationDao.create(pushApp);
 	}
 

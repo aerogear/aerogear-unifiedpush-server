@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.interceptor.SimpleKey;
+import org.springframework.data.cassandra.core.CassandraOperations;
+import org.springframework.data.cassandra.repository.support.CassandraRepositoryFactory;
 import org.springframework.stereotype.Repository;
 
 import com.datastax.driver.core.Row;
@@ -42,9 +44,11 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		months = Arrays.stream(Month.values()).map(month -> month.getValue()).collect(Collectors.toList());
 	}
 
-	public NoSQLUserDaoImpl() {
-		super(User.class);
+	public NoSQLUserDaoImpl(@Autowired CassandraOperations operations) {
+		super(User.class, new CassandraRepositoryFactory(operations).getEntityInformation(User.class),
+				operations);
 	}
+
 
 	@Override
 	public List<User> create(Alias alias) {
