@@ -83,12 +83,6 @@ function routerFactory($$rootRouter, $rootScope, $location, $$grammar, $controll
     $$grammar.config(name, config);
   });
 
-  $rootScope.$watch(function () {
-    return $location.path();
-  }, function (newUrl) {
-    $$rootRouter.navigate(newUrl);
-  });
-
   var nav = $$rootRouter.navigate;
   $$rootRouter.navigate = function (url) {
     return nav.call(this, url).then(function (newUrl) {
