@@ -17,9 +17,12 @@
 package org.jboss.aerogear.unifiedpush.rest.sender;
 
 import io.prometheus.client.Counter;
+
+import net.wessendorf.kafka.SimpleKafkaProducer;
+import net.wessendorf.kafka.cdi.annotation.Producer;
+
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
@@ -48,11 +51,15 @@ public class PushNotificationSenderEndpoint {
             .help("Total number of push requests.")
             .register();
 
+
+    public static final String KAFKA_PUSH_MESSAGE_PROCESSING_TOPIC = "agpush_pushMessageProcessing";
+    
     @Inject
     private PushApplicationService pushApplicationService;
-    @Inject
-    private NotificationRouter notificationRouter;
 
+    @Producer
+    private SimpleKafkaProducer<PushApplication, InternalUnifiedPushMessage> pushMessageProcessingProducer;
+    
     /**
      * RESTful API for sending Push Notifications.
      * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>PushApplicationID:masterSecret</code>).
@@ -108,9 +115,11 @@ public class PushNotificationSenderEndpoint {
 
         // add the client identifier
         message.setClientIdentifier(HttpRequestUtil.extractAeroGearSenderInformation(request));
-
-        // submitted to EJB:
-        notificationRouter.submit(pushApplication, message);
+        
+        // start the producer and push a message to "agpush_pushMessageProcessing" topic
+        pushMessageProcessingProducer.send(KAFKA_PUSH_MESSAGE_PROCESSING_TOPIC, pushApplication, message);
+        
+        
         logger.debug(String.format("Push Message Request from [%s] API was internally submitted for further processing", message.getClientIdentifier()));
 
         return Response.status(Status.ACCEPTED).entity(EmptyJSON.STRING).build();
