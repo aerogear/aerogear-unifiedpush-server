@@ -23,36 +23,41 @@ import java.util.Properties;
 import org.apache.kafka.clients.consumer.OffsetResetStrategy;
 import io.debezium.kafka.KafkaCluster;
 import io.debezium.util.Testing;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
+
+import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
 
 /**
  * Kafka cluster wrapper class that adds useful methods for using it in the test environment.
  */
 public class KafkaClusterWrapper {
 
-    public static final String KAFKA_HOST = "localhost";
-    public static final Integer KAFKA_PORT = 5001;
-    
     private File dataDir;
     private KafkaCluster cluster;
 
     public void start() throws IOException {
         dataDir = Testing.Files.createTestingDirectory("cluster");
         cluster = new KafkaCluster().usingDirectory(dataDir)
-                .withPorts(5000, KAFKA_PORT);
+                .withPorts(5000, ConfigurationUtils.tryGetIntegerProperty("KAFKA_PORT", 5001));
         cluster.addBrokers(1).startup();
     }
 
     public Properties producerProperties() {
-        Properties props = cluster.useTo().getProducerProperties(null);
-        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        final Properties props = cluster.useTo().getProducerProperties(null);
+        props.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         return props;
     }
 
     public Properties consumerPropperties() {
-        Properties props = cluster.useTo().getConsumerProperties("10", null, OffsetResetStrategy.EARLIEST);
-        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        final Properties props = cluster.useTo().getConsumerProperties("10", null, OffsetResetStrategy.EARLIEST);
+        props.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         return props;
     }
 
