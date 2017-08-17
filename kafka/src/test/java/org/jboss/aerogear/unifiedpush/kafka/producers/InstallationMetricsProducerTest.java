@@ -52,8 +52,6 @@ public class InstallationMetricsProducerTest extends BasicKafkaTest {
 
     @Deployment
     public static JavaArchive createDeployment() {
-        // initialize system variables that will be used by kafka cluster
-        init();
         // deploy a jar
         return ShrinkWrap.create(JavaArchive.class)
                 // add kafka configuration

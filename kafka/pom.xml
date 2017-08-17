@@ -27,6 +27,22 @@
     <artifactId>unifiedpush-kafka</artifactId>
     <name>UnifiedPush Kafka</name>
 
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <KAFKA_HOST>localhost</KAFKA_HOST>
+                        <KAFKA_PORT>5001</KAFKA_PORT>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
     
         <dependency>

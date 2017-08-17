@@ -29,15 +29,6 @@ import org.junit.Before;
 public class BasicKafkaTest {
 
     protected KafkaClusterWrapper kafkaCluster = new KafkaClusterWrapper();
-
-    /**
-     * Set system variables.
-     */
-    public static void init(){
-        System.setProperty("KAFKA_HOST", KafkaClusterWrapper.KAFKA_HOST);
-        System.setProperty("KAFKA_PORT", Integer.toString(KafkaClusterWrapper.KAFKA_PORT));    
-    }
-    
     /**
      * Starts up Kafka cluster before each test case.
      */
