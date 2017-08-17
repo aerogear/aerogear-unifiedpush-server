@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,19 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.kafka;
 
-import net.wessendorf.kafka.cdi.annotation.KafkaConfig;
-
-@KafkaConfig(bootstrapServers = "#{KAFKA_HOST}:#{KAFKA_PORT}")
-public class KafkaClusterConfig {
-
-    /**
-     * Consumer's topic.
-     */
-    public static final String KAFKA_INSTALLATION_TOPIC = "agpush_installationMetrics";
-
-    /**
-     * Consumer's groupId.
-     */
-    public static final String KAFKA_INSTALLATION_TOPIC_CONSUMER_GROUP_ID = "agpush_installationMetricsGroup";
+/**
+ * Empty event fired when a message is consumed and processed by a Kafka consumer. Used mainly in tests. See usage
+ * {@link InstallationMetricsConsumer#consume(String)}.
+ */
+public class MessageConsumedEvent {
 
 }

@@ -16,8 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.kafka.consumers;
 
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.jboss.aerogear.unifiedpush.kafka.KafkaClusterConfig;
+import org.jboss.aerogear.unifiedpush.kafka.MessageConsumedEvent;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +31,9 @@ import static org.jboss.aerogear.unifiedpush.kafka.KafkaClusterConfig.KAFKA_INST
 import static org.jboss.aerogear.unifiedpush.kafka.KafkaClusterConfig.KAFKA_INSTALLATION_TOPIC_CONSUMER_GROUP_ID;
 
 /**
- * Kafka Consumer that reads the VariantID from "agpush_installationMetrics" and updates analytics by
- * invocation of {@link PushMessageMetricsService#updateAnalytics(String)}.
- * 
+ * Kafka Consumer that reads PushMessageID from {@link KafkaClusterConfig#KAFKA_INSTALLATION_TOPIC} topic and updates analytics
+ * by invocation of {@link PushMessageMetricsService#updateAnalytics(String)}. When a message is consumed and processed
+ * {@link MessageConsumedEvent} is fired.
  */
 public class InstallationMetricsKafkaConsumer {
 
@@ -39,12 +42,18 @@ public class InstallationMetricsKafkaConsumer {
     @Inject
     private PushMessageMetricsService metricsService;
 
+    @Inject
+    private Event<MessageConsumedEvent> updateAnalyticsEvent;
+
     /**
      * Update metrics analytics based on push message id from the consumed record.
      */
     @Consumer(topic = KAFKA_INSTALLATION_TOPIC, groupId = KAFKA_INSTALLATION_TOPIC_CONSUMER_GROUP_ID)
-    public void receiver(final String pushMessageId) {
-        logger.info("Update metric analytics for push message's ID {}", pushMessageId);
-        metricsService.updateAnalytics(pushMessageId);
+    public void consume(final String aerogearPushId) {
+        logger.info("Update metric analytics for aerogear push ID {}.", aerogearPushId);
+        metricsService.updateAnalytics(aerogearPushId);
+
+        // inform observers that metrics are updated - used in tests
+        updateAnalyticsEvent.fire(new MessageConsumedEvent());
     }
 }
