@@ -48,7 +48,7 @@ public class InstallationMetricsKafkaConsumer {
     /**
      * Update metrics analytics based on push message id from the consumed record.
      */
-    @Consumer(topic = KAFKA_INSTALLATION_TOPIC, groupId = KAFKA_INSTALLATION_TOPIC_CONSUMER_GROUP_ID)
+    @Consumer(topics = KAFKA_INSTALLATION_TOPIC, groupId = KAFKA_INSTALLATION_TOPIC_CONSUMER_GROUP_ID)
     public void consume(final String aerogearPushId) {
         logger.info("Update metric analytics for aerogear push ID {}.", aerogearPushId);
         metricsService.updateAnalytics(aerogearPushId);
