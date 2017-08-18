@@ -1,3 +1,19 @@
+/**
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jboss.aerogear.unifiedpush.kafka.streams;
 
 import javax.annotation.PostConstruct;
@@ -34,7 +50,16 @@ import java.util.Properties;
 
 import static org.jboss.aerogear.unifiedpush.api.VariantType.*;
 
-
+/**
+ * Class that will be initialized on startup, which reads messages from the input topic
+ * {@link KafkaClusterConfig#NOTIFICATION_ROUTER_STREAMS_INPUT_TOPIC} containing key/value pair (PushApplication, InternalUnifiedPushMessage).
+ *
+ * These records are split into subrecords, based on the message's variants. This allows messages to be processed separately,
+ * giving attention to limitations and requirements of specific push networks.
+ *
+ * Once processing is performed, records are streamed to output topics based on their variant type for further processing
+ * in {@link org.jboss.aerogear.unifiedpush.message.token.TokenLoader}.
+ */
 @Singleton
 @Startup
 public class NotificationRouterStreamsHook {
@@ -64,6 +89,13 @@ public class NotificationRouterStreamsHook {
     @Inject
     private Instance<GenericVariantService> genericVariantService;
 
+    /**
+     * Records of type (PushApplication, InternalUnifiedPushMessage) are split into subrecords based on the message's
+     * variants.
+     *
+     * Each subrecord is transformed into a record with key/value pair (InternalUnifiedPushMessage, Variant)
+     * and streamed to an output topic based on its variant type.
+     */
     @PostConstruct
     private void startup() {
         Properties props = new Properties();
