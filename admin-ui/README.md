@@ -2,12 +2,35 @@
 
 ### Setting Up The Development Environment
 
-Pre-reqs:
+**Server Pre-Reqs (skip DB setup if not needed):**
+* ### DB Setup:
+* Install docker compose (if you have docker engine installed it should be included in that, run `docker-compose --version` to check)
+* cd into `aerogear-unifiedpush-server/databases/docker`
+* To run the DBs run `docker-compose -f docker-compose.yml up`
+* Now run `mvn clean install` (need to have maven installed (and jdk setup for maven too))
 
+---
+
+* ### Server Setup:
+* Download jboss server [here](https://s3-eu-west-1.amazonaws.com/fh-builds/eap/jboss-eap-6.4.15.zip)
+* Copy over the `auth-server` war file into the jboss server => `cp aerogear-unifiedpush-server/servers/auth-server/target/auth-server.war /JBOSS_DIR/standalone/deployments/`
+* For the ag-push war file you need the exploded (unarchived) war file for live reload to work so copy over the ag-push directory and name it ag-push.war => `cp -r aerogear-unifiedpush-server/servers/ups-as7/target/ag-push /JBOSS_DIR/standalone/deployments/ag-push.war`
+* To run the server cd into `/JBOSS_DIR/` and run `./bin/standalone.sh --server-config=standalone-full.xml`
+* Configure the JMS destination for UnifiedPush Server [here](https://aerogear.org/docs/unifiedpush/ups_userguide/index/#confjms)
+* Generate the UnifiedPush Database and Datasource for mySQL [here](https://aerogear.org/docs/unifiedpush/ups_userguide/index/#gendbds) (Only do steps 1, 2, 4 ) 
+Note: In step 1, make sure you don’t have an extra slash at the end of `/com`
+* Update `mysql-database-config.cli` (found in `aerogear-unifiedpush-server/databases`) to use the url and ports of your dbs running in docker. 
+* Now continue to step 5 (the eap script).
+* The UnifiedPush Server Console can now be accessed at `http://localhost:8080/ag-push/`
+* To login `username:admin` and `password:123` (it will prompt you to change password on first login)
+
+---
+
+**Admin-UI Pre-Reqs:**
 * Node.js - [Download Here](http://nodejs.org/)
 * Bower( version >= 0.9.1 ) - [Download Here](http://bower.io/)
 
-Once the pre-reqs have been taken care of, run:
+Once the pre-reqs have been taken care of, cd into `Admin-UI` and run:
 
     npm install -g grunt-cli bower
     
