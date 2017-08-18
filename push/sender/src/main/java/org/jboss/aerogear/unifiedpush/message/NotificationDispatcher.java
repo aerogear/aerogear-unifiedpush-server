@@ -16,10 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
+import net.wessendorf.kafka.cdi.annotation.Consumer;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.jboss.aerogear.unifiedpush.message.kafka.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.Stateless;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -50,27 +49,41 @@ public class NotificationDispatcher {
     @Inject
     private PushMessageMetricsService pushMessageMetricsService;
 
+    private final String ADM_TOPIC = "agpush_AdmTokenTopic";
+
+    private final String APNS_TOPIC = "agpush_APNsTokenTopic";
+
+    private final String FCM_TOPIC = "agpush_FCMTokenTopic";
+
+    private final String MPNS_TOPIC = "agpush_MPNSTokenTopic";
+
+    private final String MOZ_TOPIC = "agpush_SimplePushTokenTopic";
+
+    private final String WNS_TOPIC = "agpush_WNSTokenTopic";
+
     /**
-     * Receives a {@link UnifiedPushMessage} and list of device tokens that the message should be sent to, selects appropriate sender implementation that
-     * the push notifications are submitted to.
+     * Consumes a record of type {@link UnifiedPushMessage} with a list of device tokens that the message should
+     * be sent to, and selects the appropriate sender implementation that the push notifications
+     * are submitted to.
      *
      * @param msg object containing details about the payload and the related device tokens
      */
-    public void sendMessagesToPushNetwork(@Observes @Dequeue MessageHolderWithTokens msg) {
+    @Consumer(topics = {ADM_TOPIC, APNS_TOPIC, FCM_TOPIC, MPNS_TOPIC, MOZ_TOPIC, WNS_TOPIC}, groupId = "NotificationDispatcherKafkaConsumer_group")
+    public void sendMessagesToPushNetwork(final MessageHolderWithTokens msg) {
         final Variant variant = msg.getVariant();
         final UnifiedPushMessage unifiedPushMessage = msg.getUnifiedPushMessage();
         final Collection<String> deviceTokens = msg.getDeviceTokens();
 
-        logger.info(String.format("Received UnifiedPushMessage from JMS queue, will now trigger the Push Notification delivery for the %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
+        logger.info("UnifiedPushMessage was successfully received. Push Notification delivery for the {} variant ({}) will now be triggered.", variant.getType().getTypeName(), variant.getVariantID());
 
         senders.select(new SenderTypeLiteral(variant.getType())).get()
-                            .sendPushMessage(variant, deviceTokens, unifiedPushMessage, msg.getPushMessageInformation().getId(),
-                                    new SenderServiceCallback(
-                                            variant,
-                                            deviceTokens.size(),
-                                            msg.getPushMessageInformation()
-                                    )
-                            );
+                .sendPushMessage(variant, deviceTokens, unifiedPushMessage, msg.getPushMessageInformation().getId(),
+                        new SenderServiceCallback(
+                                variant,
+                                deviceTokens.size(),
+                                msg.getPushMessageInformation()
+                        )
+                );
     }
 
     private class SenderServiceCallback implements NotificationSenderCallback {
@@ -86,12 +99,12 @@ public class NotificationDispatcher {
 
         @Override
         public void onSuccess() {
-            logger.debug(String.format("Sent '%s' message to '%d' devices", variant.getType().getTypeName(), tokenSize));
+            logger.debug("Sent '{}' message to '{}' devices", variant.getType().getTypeName(), tokenSize);
         }
 
         @Override
         public void onError(final String reason) {
-            logger.warn(String.format("Error on '%s' delivery: %s", variant.getType().getTypeName(), reason));
+            logger.warn("Error on '{}' delivery: {}", variant.getType().getTypeName(), reason);
             pushMessageMetricsService.appendError(pushMessageInformation, variant, reason);
         }
     }
