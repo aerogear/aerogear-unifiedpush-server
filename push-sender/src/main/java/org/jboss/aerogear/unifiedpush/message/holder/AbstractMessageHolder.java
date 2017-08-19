@@ -17,7 +17,7 @@
 package org.jboss.aerogear.unifiedpush.message.holder;
 
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 
 import java.io.Serializable;
 
@@ -29,9 +29,13 @@ public abstract class AbstractMessageHolder implements Serializable {
     private static final long serialVersionUID = 8204829162844896312L;
 
     private FlatPushMessageInformation pushMessageInformation;
-    private UnifiedPushMessage unifiedPushMessage;
+    private InternalUnifiedPushMessage unifiedPushMessage;
 
-    public AbstractMessageHolder(FlatPushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage) {
+    public AbstractMessageHolder() {
+
+    }
+
+    public AbstractMessageHolder(FlatPushMessageInformation pushMessageInformation, InternalUnifiedPushMessage unifiedPushMessage) {
         this.pushMessageInformation = pushMessageInformation;
         this.unifiedPushMessage = unifiedPushMessage;
     }
@@ -40,7 +44,7 @@ public abstract class AbstractMessageHolder implements Serializable {
         return pushMessageInformation;
     }
 
-    public UnifiedPushMessage getUnifiedPushMessage() {
+    public InternalUnifiedPushMessage getUnifiedPushMessage() {
         return unifiedPushMessage;
     }
 

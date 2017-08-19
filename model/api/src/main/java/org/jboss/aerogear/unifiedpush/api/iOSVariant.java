@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
@@ -33,11 +32,9 @@ public class iOSVariant extends Variant {
 
     @NotNull
     @Size(max = 255, message = "Passphrase must be 1-255 characters long")
-    @JsonIgnore
     private String passphrase;
 
     @NotNull(message = "Certificate must be provided")
-    @JsonIgnore
     private String certificateData;
 
     /**
@@ -64,7 +61,6 @@ public class iOSVariant extends Variant {
      *
      * @return the passphrase
      */
-    @JsonIgnore
     public String getPassphrase() {
         return this.passphrase;
     }
@@ -80,7 +76,6 @@ public class iOSVariant extends Variant {
      *
      * @return the certificate
      */
-    @JsonIgnore
     public byte[] getCertificate() {
         return Base64.getDecoder().decode(certificateData);
     }
