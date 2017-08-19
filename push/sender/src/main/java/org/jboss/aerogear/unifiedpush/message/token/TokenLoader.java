@@ -29,7 +29,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.jms.JMSException;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
@@ -39,11 +38,10 @@ import org.jboss.aerogear.unifiedpush.message.Criteria;
 import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.configuration.SenderConfiguration;
-import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
-import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
-import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
+import org.jboss.aerogear.unifiedpush.message.kafka.Dequeue;
+import org.jboss.aerogear.unifiedpush.message.kafka.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.slf4j.Logger;
@@ -211,28 +209,9 @@ public class TokenLoader {
         try {
             dispatchTokensEvent.fire(msg);
             return true;
-        } catch (MessageDeliveryException e) {
-            Throwable cause = e.getCause();
-            if (isQueueFullException(cause)) {
-                return false;
-            }
+        } catch (Exception e) {
+            logger.error("Failed to load batch of tokens", e);
             throw e;
         }
-    }
-
-    /*
-     * When queue is full, ActiveMQ/Artemis throws an instance of org.apache.activemq.artemis.api.core.ActiveMQAddressFullException
-     * In order to avoid hard dependency on that API for this check, we detect that queue is full by analyzing the name of the thrown exception.
-     *
-     * @param e throwable thrown when JMS message delivery fails
-     * @return true if exceptions represents state when queue is full; false otherwise
-     */
-    private static boolean isQueueFullException(Throwable e) {
-        if (e instanceof JMSException && e.getCause() != null) {
-            if ("ActiveMQAddressFullException".equals(e.getCause().getClass().getSimpleName())) {
-                return true;
-            }
-        }
-        return false;
     }
 }
