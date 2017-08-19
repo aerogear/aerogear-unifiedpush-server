@@ -16,24 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.test.archive;
 
-import java.io.File;
-
-import org.jboss.aerogear.unifiedpush.message.AbstractJMSTest;
 import org.jboss.aerogear.unifiedpush.message.Config;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.Priority;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageListener;
-import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageProducer;
-import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
-import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
-import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithTokensConsumer;
-import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithTokensProducer;
-import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithVariantsConsumer;
-import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithVariantsProducer;
-import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -58,28 +46,6 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
     @Override
     public UnifiedPushArchive addMavenDependencies(String... deps) {
         return addAsLibraries(resolver.resolve(deps).withTransitivity().asFile());
-    }
-
-    @Override
-    public UnifiedPushArchive withMessaging() {
-        return withApi()
-            .withUtils()
-            .withMessageModel()
-            .withDAOs()
-            .withServices()
-            .addPackage(org.jboss.aerogear.unifiedpush.message.holder.AbstractMessageHolder.class.getPackage())
-            .addPackage(org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException.class.getPackage())
-            .addClasses(AbstractJMSMessageProducer.class, AbstractJMSMessageListener.class)
-            .addClasses(AbstractJMSTest.class, JmsClient.class)
-            .addClasses(DispatchToQueue.class, Dequeue.class);
-    }
-
-    @Override
-    public UnifiedPushArchive withMessageDrivenBeans() {
-        return addClasses(AbstractJMSMessageListener.class)
-                .addClasses(MessageHolderWithVariantsConsumer.class, MessageHolderWithVariantsProducer.class)
-                .addClasses(MessageHolderWithTokensConsumer.class, MessageHolderWithTokensProducer.class)
-                .addAsWebInfResource(new File(WEB_RESOURCE_PATH + "jboss-ejb3.xml"), "jboss-ejb3.xml");
     }
 
     @Override
