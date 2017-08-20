@@ -1,9 +1,20 @@
 language: java
 
-sudo: false
+sudo: required
+
+# required for oraclejdk9
+dist: trusty
+
+# required for oraclejdk9
+group: edge
 
 jdk:
   - oraclejdk8
+  - oraclejdk9
+
+matrix:
+  allow_failures:
+    - jdk: oraclejdk9
 
 notifications:
   irc: "irc.freenode.org#aerogear"
