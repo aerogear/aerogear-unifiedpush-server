@@ -68,7 +68,7 @@ public class NotificationDispatcher {
      *
      * @param msg object containing details about the payload and the related device tokens
      */
-    @Consumer(topics = {ADM_TOPIC, APNS_TOPIC, FCM_TOPIC, MPNS_TOPIC, MOZ_TOPIC, WNS_TOPIC}, groupId = "NotificationDispatcherKafkaConsumer_group")
+    @Consumer(topics = {ADM_TOPIC, APNS_TOPIC, FCM_TOPIC, MPNS_TOPIC, MOZ_TOPIC, WNS_TOPIC}, groupId = "agpush_notificationDispatcherConsumerGroup")
     public void sendMessagesToPushNetwork(final MessageHolderWithTokens msg) {
         final Variant variant = msg.getVariant();
         final UnifiedPushMessage unifiedPushMessage = msg.getUnifiedPushMessage();
