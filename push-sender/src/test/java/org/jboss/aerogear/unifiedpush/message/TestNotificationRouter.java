@@ -16,7 +16,27 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import org.jboss.aerogear.unifiedpush.api.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
+import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.FlatPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.message.kafka.DispatchToQueue;
@@ -33,20 +53,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(Arquillian.class)
 @Ignore
 public class TestNotificationRouter {
@@ -54,26 +60,24 @@ public class TestNotificationRouter {
     @Deployment
     public static WebArchive archive() {
         return UnifiedPushArchive.forTestClass(TestNotificationRouter.class)
-                    .addClasses(NotificationRouter.class, PushNotificationSender.class)
-                    .addClasses(PushMessageMetricsService.class)
-                    .addClasses(InternalUnifiedPushMessage.class)
+                .addClasses(PushNotificationSender.class)
+                .addClasses(PushMessageMetricsService.class)
+                .addClasses(InternalUnifiedPushMessage.class)
                 // withKafka() ?
-                    .withApi()
-                    .withUtils()
+                .withApi()
+                .withUtils()
                 .withMessageModel()
                 .withDAOs()
                 .withServices()
                 .addMavenDependencies("net.wessendorf.kafka:kafka-cdi-extension")
                 .addMavenDependencies("org.apache.kafka:kafka-clients")
-                    .addPackage(DispatchToQueue.class.getPackage())
+                .addPackage(DispatchToQueue.class.getPackage())
 
                 .withMockito()
-                    .addClasses(MockProviders.class)
+                .addClasses(MockProviders.class)
                 .as(WebArchive.class);
     }
 
-    @Inject
-    private NotificationRouter router;
 
     @Inject
     private VariantTypesHolder variantTypeHolder;
@@ -93,7 +97,7 @@ public class TestNotificationRouter {
     public void testNoVariants() {
         countDownLatch = new CountDownLatch(1);
         assertTrue("variants are empty", app.getVariants().isEmpty());
-        router.submit(app, message);
+        // router.submit(app, message);
         assertEquals(variants(), variantTypeHolder.getVariantTypes());
     }
 
@@ -102,7 +106,7 @@ public class TestNotificationRouter {
         countDownLatch = new CountDownLatch(1);
         app.getVariants().add(new WindowsWNSVariant());
         app.getVariants().add(new WindowsWNSVariant());
-        router.submit(app, message);
+        //router.submit(app, message);
         countDownLatch.await(3, TimeUnit.SECONDS);
         assertEquals(variants(VariantType.WINDOWS_WNS), variantTypeHolder.getVariantTypes());
     }
@@ -113,14 +117,14 @@ public class TestNotificationRouter {
         app.getVariants().add(new AndroidVariant());
         app.getVariants().add(new iOSVariant());
         app.getVariants().add(new WindowsWNSVariant());
-        router.submit(app, message);
+        //router.submit(app, message);
         countDownLatch.await(3, TimeUnit.SECONDS);
         assertEquals(variants(VariantType.ANDROID, VariantType.IOS, VariantType.WINDOWS_WNS), variantTypeHolder.getVariantTypes());
     }
 
     @Test
     public void testInvokesMetricsService(FlatPushMessageInformationDao pushMessageInformationDao) {
-        router.submit(app, message);
+        //  router.submit(app, message);
         verify(pushMessageInformationDao).create(Mockito.any(FlatPushMessageInformation.class));
     }
 
@@ -140,7 +144,7 @@ public class TestNotificationRouter {
         when(genericVariantService.findByVariantID("id-android-variant")).thenReturn(androidVariant);
 
         // when
-        router.submit(app, message);
+       // router.submit(app, message);
         countDownLatch.await(3, TimeUnit.SECONDS);
         assertEquals(variants(VariantType.ANDROID, VariantType.IOS), variantTypeHolder.getVariantTypes());
     }
@@ -165,6 +169,5 @@ public class TestNotificationRouter {
     private Set<VariantType> variants(VariantType... types) {
         return new HashSet<>(Arrays.asList(types));
     }
-
 
 }
