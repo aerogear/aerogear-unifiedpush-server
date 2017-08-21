@@ -33,20 +33,21 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.kafka.KafkaClusterConfig;
 import org.jboss.aerogear.unifiedpush.kafka.serdes.InternalUnifiedPushMessageSerde;
 import org.jboss.aerogear.unifiedpush.kafka.serdes.PushApplicationSerde;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static org.jboss.aerogear.unifiedpush.api.VariantType.*;
 
@@ -89,6 +90,9 @@ public class NotificationRouterStreamsHook {
     @Inject
     private Instance<GenericVariantService> genericVariantService;
 
+    @Inject
+    private PushMessageMetricsService metricsService;
+
     /**
      * Records of type (PushApplication, InternalUnifiedPushMessage) are split into subrecords based on the message's
      * variants.
@@ -105,8 +109,8 @@ public class NotificationRouterStreamsHook {
         props.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG, InternalUnifiedPushMessageSerde.class);
 
         // Initialize specific serdes to be used later
-        final Serde<InternalUnifiedPushMessage> pushMessageSerde = CafdiSerdes.serdeFrom(InternalUnifiedPushMessage.class);
-        final Serde<Variant> variantSerde = CafdiSerdes.serdeFrom(Variant.class);
+        final Serde<MessageHolderWithVariants> messageHolderSerde = CafdiSerdes.serdeFrom(MessageHolderWithVariants.class);
+        final Serde<VariantType> variantTypeSerde = CafdiSerdes.serdeFrom(VariantType.class);
 
         KStreamBuilder builder = new KStreamBuilder();
 
@@ -115,8 +119,8 @@ public class NotificationRouterStreamsHook {
 
         // For each push message, get its variants and create records for each one with
         // key/value pair (InternalUnifiedPushMessage, Variant)
-        KStream<InternalUnifiedPushMessage, Variant> getVariants = source.flatMap(
-                (app, message) -> {
+        KStream<VariantType, MessageHolderWithVariants> getVariants = source.flatMap(
+                (pushApplication, message) -> {
                     // collections for all the different variants:
                     final List<Variant> variants = new ArrayList<>();
                     final List<String> variantIDs = message.getCriteria().getVariants();
@@ -133,14 +137,29 @@ public class NotificationRouterStreamsHook {
                     } else {
                         // No specific variants have been requested,
                         // we get all the variants, from the given PushApplicationEntity:
-                        variants.addAll(app.getVariants());
+                        variants.addAll(pushApplication.getVariants());
                     }
 
                     logger.warn("got variants.." + variants.toString());
 
-                    List<KeyValue<InternalUnifiedPushMessage, Variant>> result = new LinkedList<>();
+                    // TODO: Not sure the transformation should be done here...
+                    // There are likely better places to check if the metadata is way to long
+                    String jsonMessageContent = message.toStrippedJsonString() ;
+                    if (jsonMessageContent != null && jsonMessageContent.length() >= 4500) {
+                        jsonMessageContent = message.toMinimizedJsonString();
+                    }
+
+                    final FlatPushMessageInformation pushMessageInformation =
+                            metricsService.storeNewRequestFrom(
+                                    pushApplication.getPushApplicationID(),
+                                    jsonMessageContent,
+                                    message.getIpAddress(),
+                                    message.getClientIdentifier()
+                            );
+
+                    List<KeyValue<VariantType, MessageHolderWithVariants>> result = new LinkedList<>();
                     variants.forEach((variant) -> {
-                        result.add(KeyValue.pair(message, variant));
+                        result.add(KeyValue.pair(variant.getType(), new MessageHolderWithVariants(pushMessageInformation, message, variant.getType(), Arrays.asList(variant))));
                     });
 
                     return result;
@@ -148,22 +167,22 @@ public class NotificationRouterStreamsHook {
         );
 
         // Branch based on variant types
-        KStream<InternalUnifiedPushMessage, Variant>[] branches = getVariants.branch(
-                (message, variant) -> variant.getType().equals(ADM),
-                (message, variant) -> variant.getType().equals(ANDROID),
-                (message, variant) -> variant.getType().equals(IOS),
-                (message, variant) -> variant.getType().equals(SIMPLE_PUSH),
-                (message, variant) -> variant.getType().equals(WINDOWS_MPNS),
-                (message, variant) -> variant.getType().equals(WINDOWS_WNS)
+        KStream<VariantType, MessageHolderWithVariants>[] branches = getVariants.branch(
+                (variantType, holder) -> variantType.equals(ADM),
+                (variantType, holder) -> variantType.equals(ANDROID),
+                (variantType, holder) -> variantType.equals(IOS),
+                (variantType, holder) -> variantType.equals(SIMPLE_PUSH),
+                (variantType, holder) -> variantType.equals(WINDOWS_MPNS),
+                (variantType, holder) -> variantType.equals(WINDOWS_WNS)
         );
 
         // Stream each branch to respective topic
-        branches[0].to(pushMessageSerde, variantSerde, ADM_TOPIC);
-        branches[1].to(pushMessageSerde, variantSerde, ANDROID_TOPIC);
-        branches[2].to(pushMessageSerde, variantSerde, IOS_TOPIC);
-        branches[3].to(pushMessageSerde, variantSerde, SIMPLE_PUSH_TOPIC);
-        branches[4].to(pushMessageSerde, variantSerde, WINDOWS_MPNS_TOPIC);
-        branches[5].to(pushMessageSerde, variantSerde, WINDOWS_WNS_TOPIC);
+        branches[0].to(variantTypeSerde, messageHolderSerde, ADM_TOPIC);
+        branches[1].to(variantTypeSerde, messageHolderSerde, ANDROID_TOPIC);
+        branches[2].to(variantTypeSerde, messageHolderSerde, IOS_TOPIC);
+        branches[3].to(variantTypeSerde, messageHolderSerde, SIMPLE_PUSH_TOPIC);
+        branches[4].to(variantTypeSerde, messageHolderSerde, WINDOWS_MPNS_TOPIC);
+        branches[5].to(variantTypeSerde, messageHolderSerde, WINDOWS_WNS_TOPIC);
 
         streams = new KafkaStreams(builder, props);
         streams.start();
