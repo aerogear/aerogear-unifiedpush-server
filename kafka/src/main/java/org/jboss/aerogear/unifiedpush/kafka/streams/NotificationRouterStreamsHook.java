@@ -103,7 +103,7 @@ public class NotificationRouterStreamsHook {
     @PostConstruct
     private void startup() {
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "notification-router-streams");
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "agpush_notificationRouterStreams");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, net.wessendorf.kafka.cdi.extension.VerySimpleEnvironmentResolver.simpleBootstrapServerResolver("#{KAFKA_HOST}:#{KAFKA_PORT}"));
         props.put(StreamsConfig.KEY_SERDE_CLASS_CONFIG, PushApplicationSerde.class);
         props.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG, InternalUnifiedPushMessageSerde.class);
