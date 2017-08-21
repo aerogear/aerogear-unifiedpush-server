@@ -35,7 +35,6 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
-import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.configuration.SenderConfiguration;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
@@ -48,7 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Receives a request for sending a push message to given variants from {@link NotificationRouter}.
+ * Receives a request for sending a push message to given variants via Kafka.
  *
  * Loads device token batches from a database and queues them for processing inside a message holder.
  *
