@@ -16,12 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.kafka.streams;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -47,9 +45,18 @@ import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
 
-import static org.jboss.aerogear.unifiedpush.api.VariantType.*;
+import static org.jboss.aerogear.unifiedpush.api.VariantType.ADM;
+import static org.jboss.aerogear.unifiedpush.api.VariantType.ANDROID;
+import static org.jboss.aerogear.unifiedpush.api.VariantType.IOS;
+import static org.jboss.aerogear.unifiedpush.api.VariantType.SIMPLE_PUSH;
+import static org.jboss.aerogear.unifiedpush.api.VariantType.WINDOWS_MPNS;
+import static org.jboss.aerogear.unifiedpush.api.VariantType.WINDOWS_WNS;
 
 /**
  * Class that will be initialized on startup, which reads messages from the input topic
@@ -61,8 +68,7 @@ import static org.jboss.aerogear.unifiedpush.api.VariantType.*;
  * Once processing is performed, records are streamed to output topics based on their variant type for further processing
  * in {@link org.jboss.aerogear.unifiedpush.message.token.TokenLoader}.
  */
-@Singleton
-@Startup
+@ApplicationScoped
 public class NotificationRouterStreamsHook {
 
     private final static Logger logger = LoggerFactory.getLogger(NotificationRouterStreamsHook.class);
@@ -71,21 +77,18 @@ public class NotificationRouterStreamsHook {
 
     private final String STREAMS_INPUT_TOPIC = KafkaClusterConfig.NOTIFICATION_ROUTER_STREAMS_INPUT_TOPIC;
 
-    public final String ADM_TOPIC = "agpush_admPushMessageTopic";
+    private final String ADM_TOPIC = "agpush_admPushMessageTopic";
 
-    public final String ANDROID_TOPIC = "agpush_gcmPushMessageTopic";
+    private final String ANDROID_TOPIC = "agpush_gcmPushMessageTopic";
 
-    public final String IOS_TOPIC = "agpush_apnsPushMessageTopic";
+    private final String IOS_TOPIC = "agpush_apnsPushMessageTopic";
 
-    public final String SIMPLE_PUSH_TOPIC = "agpush_simplePushMessageTopic";
+    private final String SIMPLE_PUSH_TOPIC = "agpush_simplePushMessageTopic";
 
-    public final String WINDOWS_MPNS_TOPIC = "agpush_mpnsPushMessageTopic";
+    private final String WINDOWS_MPNS_TOPIC = "agpush_mpnsPushMessageTopic";
 
-    public final String WINDOWS_WNS_TOPIC = "agpush_wnsPushMessageTopic";
+    private final String WINDOWS_WNS_TOPIC = "agpush_wnsPushMessageTopic";
 
-
-    @Resource(name = "DefaultManagedExecutorService")
-    private ManagedExecutorService executor;
 
     @Inject
     private Instance<GenericVariantService> genericVariantService;
@@ -100,8 +103,7 @@ public class NotificationRouterStreamsHook {
      * Each subrecord is transformed into a record with key/value pair (InternalUnifiedPushMessage, Variant)
      * and streamed to an output topic based on its variant type.
      */
-    @PostConstruct
-    private void startup() {
+    private void startup(@Observes @Initialized(ApplicationScoped.class) Object init) {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "agpush_notificationRouterStreams");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, net.wessendorf.kafka.cdi.extension.VerySimpleEnvironmentResolver.simpleBootstrapServerResolver("#{KAFKA_HOST}:#{KAFKA_PORT}"));
@@ -112,14 +114,14 @@ public class NotificationRouterStreamsHook {
         final Serde<MessageHolderWithVariants> messageHolderSerde = CafdiSerdes.serdeFrom(MessageHolderWithVariants.class);
         final Serde<VariantType> variantTypeSerde = CafdiSerdes.serdeFrom(VariantType.class);
 
-        KStreamBuilder builder = new KStreamBuilder();
+        final KStreamBuilder builder = new KStreamBuilder();
 
         // Read from the source stream
-        KStream<PushApplication, InternalUnifiedPushMessage> source = builder.stream(STREAMS_INPUT_TOPIC);
+        final KStream<PushApplication, InternalUnifiedPushMessage> source = builder.stream(STREAMS_INPUT_TOPIC);
 
         // For each push message, get its variants and create records for each one with
         // key/value pair (InternalUnifiedPushMessage, Variant)
-        KStream<VariantType, MessageHolderWithVariants> getVariants = source.flatMap(
+        final KStream<VariantType, MessageHolderWithVariants> getVariants = source.flatMap(
                 (pushApplication, message) -> {
                     // collections for all the different variants:
                     final List<Variant> variants = new ArrayList<>();
@@ -157,7 +159,7 @@ public class NotificationRouterStreamsHook {
                                     message.getClientIdentifier()
                             );
 
-                    List<KeyValue<VariantType, MessageHolderWithVariants>> result = new LinkedList<>();
+                    final List<KeyValue<VariantType, MessageHolderWithVariants>> result = new LinkedList<>();
                     variants.forEach((variant) -> {
                         result.add(KeyValue.pair(variant.getType(), new MessageHolderWithVariants(pushMessageInformation, message, variant.getType(), Arrays.asList(variant))));
                     });
@@ -167,7 +169,7 @@ public class NotificationRouterStreamsHook {
         );
 
         // Branch based on variant types
-        KStream<VariantType, MessageHolderWithVariants>[] branches = getVariants.branch(
+        final KStream<VariantType, MessageHolderWithVariants>[] branches = getVariants.branch(
                 (variantType, holder) -> variantType.equals(ADM),
                 (variantType, holder) -> variantType.equals(ANDROID),
                 (variantType, holder) -> variantType.equals(IOS),
