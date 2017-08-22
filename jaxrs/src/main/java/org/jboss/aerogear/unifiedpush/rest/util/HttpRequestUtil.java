@@ -32,22 +32,6 @@ public final class HttpRequestUtil {
     private static final Pattern IP_ADDR_PATTERN = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
 
     /**
-     * Returns FALSE when sorting query value matches 'desc', otherwise it returns TRUE.
-     *
-     * @param sorting the sorting value from the http header
-     *
-     * @return false for 'desc; or true for 'asc'
-     */
-    public static Boolean extractSortingQueryParamValue(String sorting) {
-
-        if ("desc".equalsIgnoreCase(sorting)) {
-            return Boolean.FALSE;
-        } else {
-            return Boolean.TRUE;
-        }
-    }
-
-    /**
      * Extracts the IP address from the given {@link javax.servlet.http.HttpServletRequest}.
      *
      * @param request to inspect

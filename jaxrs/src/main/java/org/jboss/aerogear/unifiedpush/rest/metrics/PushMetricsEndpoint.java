@@ -16,10 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
-import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractSortingQueryParamValue;
 import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 import javax.inject.Inject;
@@ -31,7 +31,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
+import static org.jboss.aerogear.unifiedpush.rest.util.CommonUtils.isAscendingOrder;
 
 @Path("/metrics/messages")
 public class PushMetricsEndpoint {
@@ -79,7 +79,7 @@ public class PushMetricsEndpoint {
         }
 
         PageResult<FlatPushMessageInformation, MessageMetrics> pageResult =
-                metricsService.findAllFlatsForPushApplication(id, search, extractSortingQueryParamValue(sorting), page, pageSize);
+                metricsService.findAllFlatsForPushApplication(id, search, isAscendingOrder(sorting), page, pageSize);
 
         return Response.ok(pageResult.getResultList())
                 .header("total", pageResult.getAggregate().getCount())
