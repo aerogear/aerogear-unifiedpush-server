@@ -33,6 +33,12 @@
             <scope>provided</scope>
         </dependency>
 
+         <dependency>
+            <groupId>net.wessendorf.kafka</groupId>
+            <artifactId>kafka-cdi-extension</artifactId>
+            <version>${kafka.cdi.version}</version>
+        </dependency>
+        
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
@@ -178,14 +184,13 @@
                     <artifactId>arquillian-junit-container</artifactId>
                     <scope>test</scope>
                 </dependency>
+                
                 <dependency>
                     <groupId>org.arquillian.container</groupId>
                     <artifactId>arquillian-container-chameleon</artifactId>
                     <version>1.0.0.Beta1</version>
                     <scope>test</scope>
                 </dependency>
-
-
 
                 <dependency>
                     <groupId>org.wildfly.extras.creaper</groupId>
@@ -203,6 +208,7 @@
                     </exclusions>
                     <scope>test</scope>
                 </dependency>
+                
                 <dependency>
                     <groupId>org.wildfly.extras.creaper</groupId>
                     <artifactId>creaper-commands</artifactId>
@@ -222,12 +228,14 @@
                     <version>2.2.0.Final</version>
                     <scope>test</scope>
                 </dependency>
+                
                 <dependency>
                     <groupId>org.wildfly.core</groupId>
                     <artifactId>wildfly-cli</artifactId>
                     <version>2.2.0.Final</version>
                     <scope>test</scope>
                 </dependency>
+                
                 <dependency>
                     <groupId>org.wildfly.core</groupId>
                     <artifactId>wildfly-patching</artifactId>
