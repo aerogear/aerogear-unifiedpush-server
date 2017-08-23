@@ -26,7 +26,7 @@ import org.junit.Before;
  * Basic class that starts up a Kafka cluster before each test case and stops it afterwards. Each test class that uses embedded
  * Kafka cluster has to extend this. See usage {@link InstallationMetricsConsumerTest}.
  */
-public class BasicKafkaTest {
+public class BaseKafkaTest {
 
     protected KafkaClusterWrapper kafkaCluster = new KafkaClusterWrapper();
     /**
