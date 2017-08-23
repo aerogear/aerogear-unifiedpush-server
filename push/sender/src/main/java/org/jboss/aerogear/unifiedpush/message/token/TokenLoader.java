@@ -25,22 +25,20 @@ import javax.annotation.Resource;
 import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import net.wessendorf.kafka.cdi.annotation.Consumer;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
-import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.configuration.SenderConfiguration;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
-import org.jboss.aerogear.unifiedpush.message.kafka.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.kafka.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
@@ -48,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Receives a request for sending a push message to given variants from {@link NotificationRouter}.
+ * Receives a request for sending a push message to given variants via Kafka.
  *
  * Loads device token batches from a database and queues them for processing inside a message holder.
  *
@@ -76,8 +74,23 @@ public class TokenLoader {
     @Resource
     private EJBContext context;
 
+
+    public final String ADM_TOPIC = "agpush_admPushMessageTopic";
+
+    public final String ANDROID_TOPIC = "agpush_gcmPushMessageTopic";
+
+    public final String IOS_TOPIC = "agpush_apnsPushMessageTopic";
+
+    public final String SIMPLE_PUSH_TOPIC = "agpush_simplePushMessageTopic";
+
+    public final String WINDOWS_MPNS_TOPIC = "agpush_mpnsPushMessageTopic";
+
+    public final String WINDOWS_WNS_TOPIC = "agpush_wnsPushMessageTopic";
+
+
     /**
-     * Receives request for processing a {@link UnifiedPushMessage} and loads tokens for devices that match requested parameters from database.
+     * Consumes records from {@link org.jboss.aerogear.unifiedpush.kafka.streams.NotificationRouterStreamsHook} output topics
+     * and loads tokens for devices that match requested parameters from database.
      *
      * Device tokens are loaded in a stream and split to batches of configured size (see {@link SenderConfiguration#batchSize()}).
      * Once the pre-configured number of batches (see {@link SenderConfiguration#batchesToLoad()}) is reached, this method resends message to the same queue it took the request from,
@@ -85,7 +98,8 @@ public class TokenLoader {
      *
      * @param msg holder object containing the payload and info about the effected variants
      */
-    public void loadAndQueueTokenBatch(@Observes @Dequeue MessageHolderWithVariants msg) throws IllegalStateException {
+    @Consumer(topics = {ADM_TOPIC, ADM_TOPIC, ANDROID_TOPIC, IOS_TOPIC, SIMPLE_PUSH_TOPIC, WINDOWS_MPNS_TOPIC, WINDOWS_WNS_TOPIC}, groupId = "agpush_tokenLoaderConsumerGroup")
+    public void loadAndQueueTokenBatch(final MessageHolderWithVariants msg) throws IllegalStateException {
         final UnifiedPushMessage message = msg.getUnifiedPushMessage();
         final VariantType variantType = msg.getVariantType();
         final Collection<Variant> variants = msg.getVariants();
