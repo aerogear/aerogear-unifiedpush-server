@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.jboss.aerogear.unifiedpush.kafka.BasicKafkaTest;
+import org.jboss.aerogear.unifiedpush.kafka.BaseKafkaTest;
 import org.jboss.aerogear.unifiedpush.kafka.KafkaClusterConfig;
 import org.jboss.aerogear.unifiedpush.kafka.utils.MockProviders;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
@@ -36,6 +36,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,9 +44,7 @@ import org.junit.runner.RunWith;
  * Test cases for {@link InstallationRegistrationEndpoint#getInstallationMetricsProducer()} object.
  */
 @RunWith(Arquillian.class)
-public class InstallationMetricsProducerTest extends BasicKafkaTest {
-
-    private KafkaConsumer<?, ?> consumer;
+public class InstallationMetricsProducerTest extends BaseKafkaTest {
 
     @Inject
     InstallationRegistrationEndpoint installationRegistrationEndpoint;
@@ -72,7 +71,7 @@ public class InstallationMetricsProducerTest extends BasicKafkaTest {
         installationRegistrationEndpoint.getInstallationMetricsProducer().send(KafkaClusterConfig.KAFKA_INSTALLATION_TOPIC,
                 randomPushMessageId);
 
-        consumer = new KafkaConsumer<>(kafkaCluster.consumerPropperties());
+        KafkaConsumer<?, ?> consumer = new KafkaConsumer<>(kafkaCluster.consumerPropperties());
         consumer.subscribe(Arrays.asList(KafkaClusterConfig.KAFKA_INSTALLATION_TOPIC));
         
         // wait 1 sec to consume the messages 
@@ -86,5 +85,10 @@ public class InstallationMetricsProducerTest extends BasicKafkaTest {
         }
 
         consumer.close();
+    }
+    
+    @Test
+    public void producerNotNullTest() {
+        Assert.assertNotNull(installationRegistrationEndpoint.getInstallationMetricsProducer());
     }
 }
