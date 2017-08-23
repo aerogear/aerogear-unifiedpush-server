@@ -1,6 +1,8 @@
 # UPS and Apache Kafka 
 
 ## Getting started with Docker
+[This](https://hub.docker.com/_/zookeeper/) Zookeeper image and [this](https://hub.docker.com/r/ches/kafka/) Kafka image are used for both Linux and Mac descriptions.
+
 ### Linux
 Getting started with Linux is a fairly straightforward process:
 
@@ -48,7 +50,7 @@ Create a new project:
 ```
 oc new-project kafka-cluster
 ```
-Create the application:
+Create the application from the [EnMasseProject's](https://github.com/EnMasseProject/barnabas) `Kafka stateful-sets` template:
 ```
 oc new-app -f https://raw.githubusercontent.com/EnMasseProject/barnabas/master/kafka-statefulsets/resources/openshift-template.yaml -n kafka-cluster
 ```
