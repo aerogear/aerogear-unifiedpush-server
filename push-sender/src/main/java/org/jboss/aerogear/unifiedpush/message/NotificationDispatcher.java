@@ -105,33 +105,21 @@ public class NotificationDispatcher {
 
         @Override
         public void onSuccess() {
-<<<<<<< HEAD
-            logger.debug("Sent '{}' message to '{}' devices", variant.getType().getTypeName(), tokenSize);
-=======
             // add to a Kafka topic that one more message was sent successfully
             pushMessageSendingMetricsProducer.send(KAFKA_PUSH_MESSAGE_SENDING_METRICS_TOPIC, KAFKA_PUSH_MESSAGE_SENDING_SUCCESS);
             logger.debug("Sent {} message to {} devices", variant.getType().getTypeName(), tokenSize);
->>>>>>> f422974... [AGPUSH-2167] NotificationSenderCallback onSuccess/onError Topic.
         }
 
         @Override
         public void onError(final String reason) {
-<<<<<<< HEAD
             logger.warn("Error on '{}' delivery: {}", variant.getType().getTypeName(), reason);
-=======
-            logger.warn("Error on {} delivery: {}", variant.getType().getTypeName(), reason);
->>>>>>> f422974... [AGPUSH-2167] NotificationSenderCallback onSuccess/onError Topic.
             pushMessageMetricsService.appendError(pushMessageInformation, variant, reason);
             // add to a Kafka topic that a message was sent unsuccessfully
             pushMessageSendingMetricsProducer.send(KAFKA_PUSH_MESSAGE_SENDING_METRICS_TOPIC, KAFKA_PUSH_MESSAGE_SENDING_FAILURE);
         }
     }
-<<<<<<< HEAD
-
-=======
     
     public SimpleKafkaProducer<String, String> getPushMessageSendingMetricsProducer(){
         return pushMessageSendingMetricsProducer;
     }
->>>>>>> f422974... [AGPUSH-2167] NotificationSenderCallback onSuccess/onError Topic.
 }
