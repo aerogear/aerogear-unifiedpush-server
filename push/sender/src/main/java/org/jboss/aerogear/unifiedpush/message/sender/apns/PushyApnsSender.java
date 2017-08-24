@@ -24,6 +24,8 @@ import com.turo.pushy.apns.proxy.Socks5ProxyHandlerFactory;
 import com.turo.pushy.apns.util.ApnsPayloadBuilder;
 import com.turo.pushy.apns.util.SimpleApnsPushNotification;
 import io.netty.util.concurrent.Future;
+import net.wessendorf.kafka.SimpleKafkaProducer;
+import net.wessendorf.kafka.cdi.annotation.Producer;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
@@ -58,6 +60,13 @@ public class PushyApnsSender implements PushNotificationSender {
 
     private final Logger logger = LoggerFactory.getLogger(PushyApnsSender.class);
 
+    /**
+    * Topic to which a "success" message will be sent if a token was accepted and "failure" message otherwise.
+    */
+    public static final String KAFKA_APNS_TOKEN_DELIVERY_METRICS_TOPIC = "agpush_apnsTokenDeliveryMetrics";
+    public static final String KAFKA_APNS_TOKEN_DELIVERY_SUCCESS = "agpush_apnsTokenDeliverySuccess";
+    public static final String KAFKA_APNS_TOKEN_DELIVERY_FAILURE = "agpush_pnsTokenDeliveryFailure";
+
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_HOST = "custom.aerogear.apns.push.host";
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
     private static final String customAerogearApnsPushHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
@@ -67,10 +76,16 @@ public class PushyApnsSender implements PushNotificationSender {
 
     @Inject
     private SimpleApnsClientCache simpleApnsClientCache;
+
     @Inject
     private ClientInstallationService clientInstallationService;
+
     @Inject
     private Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
+
+    @Producer
+    private SimpleKafkaProducer<String, String> tokenDeliveryMetricsProducer;
+
 
     @Override
     public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final String pushMessageInformationId, final NotificationSenderCallback senderCallback) {
@@ -119,7 +134,7 @@ public class PushyApnsSender implements PushNotificationSender {
                 notificationSendFuture.addListener(future -> {
 
                     if (future.isSuccess()) {
-                        handlePushNotificationResponsePerToken(notificationSendFuture.get());
+                        handlePushNotificationResponsePerToken(notificationSendFuture.get(), pushMessageInformationId);
                     }
                 });
             });
@@ -131,15 +146,24 @@ public class PushyApnsSender implements PushNotificationSender {
         }
     }
 
-    private void handlePushNotificationResponsePerToken(final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse ) {
+    private void handlePushNotificationResponsePerToken(final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse, final String pushMessageInformationId) {
 
         final String deviceToken = pushNotificationResponse.getPushNotification().getToken();
 
         if (pushNotificationResponse.isAccepted()) {
+
+            // Sends success to the "agpush_apnsTokenDeliveryMetrics" topic
+            tokenDeliveryMetricsProducer.send(KAFKA_APNS_TOKEN_DELIVERY_METRICS_TOPIC, pushMessageInformationId, KAFKA_APNS_TOKEN_DELIVERY_SUCCESS);
+
             logger.trace("Push notification for '{}' (payload={})", deviceToken, pushNotificationResponse.getPushNotification().getPayload());
+
         } else {
+
             final String rejectReason = pushNotificationResponse.getRejectionReason();
             logger.trace("Push Message has been rejected with reason: {}", rejectReason);
+
+            // Sends failure to the "agpush_apnsTokenDeliveryMetrics" topic
+            tokenDeliveryMetricsProducer.send(KAFKA_APNS_TOKEN_DELIVERY_METRICS_TOPIC, pushMessageInformationId, KAFKA_APNS_TOKEN_DELIVERY_FAILURE);
 
             // token is either invalid, or did just expire
             if ((pushNotificationResponse.getTokenInvalidationTimestamp() != null) || ("BadDeviceToken".equals(rejectReason))) {
@@ -147,6 +171,7 @@ public class PushyApnsSender implements PushNotificationSender {
 
                 invalidTokens.add(deviceToken);
             }
+
         }
     }
 
