@@ -19,6 +19,10 @@ package org.jboss.aerogear.unifiedpush.message.sender;
 import com.google.android.gcm.server.Constants;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Message.Builder;
+
+import net.wessendorf.kafka.SimpleKafkaProducer;
+import net.wessendorf.kafka.cdi.annotation.Producer;
+
 import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
@@ -44,7 +48,7 @@ import java.util.Set;
 
 @SenderType(VariantType.ANDROID)
 public class FCMPushNotificationSender implements PushNotificationSender {
-
+    
     // collection of error codes we check for in the FCM response
     // in order to clean-up invalid or incorrect device tokens
     private static final Set<String> FCM_ERROR_CODES =
@@ -58,7 +62,10 @@ public class FCMPushNotificationSender implements PushNotificationSender {
     private ClientInstallationService clientInstallationService;
 
     private final Logger logger = LoggerFactory.getLogger(FCMPushNotificationSender.class);
-
+    
+    @Producer
+    private SimpleKafkaProducer<String, String> invalidTokenProducer;
+    
     /**
      * Sends FCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by
      * the {@link List} of tokens for the given {@link AndroidVariant}.
@@ -171,7 +178,8 @@ public class FCMPushNotificationSender implements PushNotificationSender {
 
         // get the FCM send results for all of the client devices:
         final List<Result> results = multicastResult.getResults();
-
+        
+        // TODO to be removed when [AGPUSH-2189] is implemented
         // storage for all the invalid registration IDs:
         final Set<String> inactiveTokens = new HashSet<>();
 
@@ -201,12 +209,17 @@ public class FCMPushNotificationSender implements PushNotificationSender {
                 if (installation != null) {
                     // ok, there is already a device, with newest/latest registration ID (aka canonical id)
                     // It is time to remove the old reg id, to avoid duplicated messages in the future!
+                    
+                    // TODO to be removed when [AGPUSH-2189] is implemented
                     inactiveTokens.add(registrationIDs.get(i));
+                    
+                    // add an invalid token to Kafka topic
+                    invalidTokenProducer.send(KAFKA_INVALID_TOKEN_TOPIC, variantID, registrationIDs.get(i));
 
                 } else {
                     // since there is no registered device with newest/latest registration ID (aka canonical id),
                     // this means the new token/regId was never stored on the server. Let's update the device and change its token to new canonical id:
-                    installation = clientInstallationService.findInstallationForVariantByDeviceToken(variantID,registrationIDs.get(i));
+                    installation = clientInstallationService.findInstallationForVariantByDeviceToken(variantID, registrationIDs.get(i));
                     installation.setDeviceToken(canonicalRegId);
 
                     //update installation with the new token
@@ -223,12 +236,18 @@ public class FCMPushNotificationSender implements PushNotificationSender {
                     // Now use the INDEX of the _that_ result object, and look
                     // for the matching registrationID inside of the List that contains
                     // _all_ the used registration IDs and store it:
+                    
+                    // TODO to be removed when [AGPUSH-2189] is implemented
                    inactiveTokens.add(registrationIDs.get(i));
+                   
+                   // add an invalid token to Kafka topic
+                   invalidTokenProducer.send(KAFKA_INVALID_TOKEN_TOPIC, variantID, registrationIDs.get(i));
                 }
             }
         }
 
-        if (! inactiveTokens.isEmpty()) {
+        if (!inactiveTokens.isEmpty()) {
+            // TODO to be removed when [AGPUSH-2189] is implemented
             // trigger asynchronous deletion:
             logger.info(String.format("Based on FCM response data and error codes, deleting %d invalid or duplicated Android installations", inactiveTokens.size()));
             clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, inactiveTokens);

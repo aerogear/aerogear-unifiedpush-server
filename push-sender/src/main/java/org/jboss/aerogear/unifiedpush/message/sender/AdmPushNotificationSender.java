@@ -32,6 +32,7 @@ import java.util.Collection;
 
 @SenderType(VariantType.ADM)
 public class AdmPushNotificationSender implements PushNotificationSender {
+    
     private final Logger logger = LoggerFactory.getLogger(AdmPushNotificationSender.class);
 
     @Override
