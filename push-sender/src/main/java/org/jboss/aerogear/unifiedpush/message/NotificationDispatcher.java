@@ -50,9 +50,9 @@ public class NotificationDispatcher {
     /**
      * Topic to which a "success" message will be sent if a push message was successfully send and "failure" message otherwise.
      */
-    public static final String KAFKA_PUSH_MESSAGE_SENDING_METRICS_TOPIC = "agpush_pushMessageSendingMetrics";
-    public static final String KAFKA_PUSH_MESSAGE_SENDING_SUCCESS = "agpush_success";
-    public static final String KAFKA_PUSH_MESSAGE_SENDING_FAILURE = "agpush_failure";
+    public static final String KAFKA_PUSH_DELIVERY_METRICS_TOPIC = "agpush_pushDeliveryMetrics";
+    public static final String KAFKA_METRICS_ON_DELIVERY_SUCCESS = "agpush_deliverySuccess";
+    public static final String KAFKA_METRICS_ON_DELIVERY_FAILURE = "agpush_deliveryFailure";
     
     @Inject
     @Any
@@ -62,7 +62,7 @@ public class NotificationDispatcher {
     private PushMessageMetricsService pushMessageMetricsService;
    
     @Producer
-    private SimpleKafkaProducer<String, String> pushMessageSendingMetricsProducer;
+    private SimpleKafkaProducer<String, String> pushDeliveryMetricsProducer;
 
     /**
      * Receives a {@link UnifiedPushMessage} and list of device tokens that the message should be sent to, selects appropriate sender implementation that
@@ -106,7 +106,7 @@ public class NotificationDispatcher {
         @Override
         public void onSuccess() {
             // add to a Kafka topic that one more message was sent successfully
-            pushMessageSendingMetricsProducer.send(KAFKA_PUSH_MESSAGE_SENDING_METRICS_TOPIC, KAFKA_PUSH_MESSAGE_SENDING_SUCCESS);
+            pushDeliveryMetricsProducer.send(KAFKA_PUSH_DELIVERY_METRICS_TOPIC, pushMessageInformation.getId(), KAFKA_METRICS_ON_DELIVERY_SUCCESS);
             logger.debug("Sent {} message to {} devices", variant.getType().getTypeName(), tokenSize);
         }
 
@@ -115,11 +115,11 @@ public class NotificationDispatcher {
             logger.warn("Error on '{}' delivery: {}", variant.getType().getTypeName(), reason);
             pushMessageMetricsService.appendError(pushMessageInformation, variant, reason);
             // add to a Kafka topic that a message was sent unsuccessfully
-            pushMessageSendingMetricsProducer.send(KAFKA_PUSH_MESSAGE_SENDING_METRICS_TOPIC, KAFKA_PUSH_MESSAGE_SENDING_FAILURE);
+            pushDeliveryMetricsProducer.send(KAFKA_PUSH_DELIVERY_METRICS_TOPIC, pushMessageInformation.getId(), KAFKA_METRICS_ON_DELIVERY_FAILURE);
         }
     }
     
-    public SimpleKafkaProducer<String, String> getPushMessageSendingMetricsProducer(){
-        return pushMessageSendingMetricsProducer;
+    public SimpleKafkaProducer<String, String> getPushDeliveryMetricsProducer(){
+        return pushDeliveryMetricsProducer;
     }
 }
