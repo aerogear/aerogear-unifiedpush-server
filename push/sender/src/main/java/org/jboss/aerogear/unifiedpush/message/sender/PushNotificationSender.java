@@ -28,6 +28,11 @@ import java.util.Collection;
 public interface PushNotificationSender {
 
     /**
+     * Kafka Topic that stores invalid device tokens.
+     */
+    public static final String KAFKA_INVALID_TOKEN_TOPIC = "agpush_invalidToken";
+    
+    /**
      * Sends the {@link UnifiedPushMessage} to the given clients, identified by a collection of tokens, the underlying push network.
      *
      * @param variant contains details for the underlying push network, e.g. API Keys/Ids
