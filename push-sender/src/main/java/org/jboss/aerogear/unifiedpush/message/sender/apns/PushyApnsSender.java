@@ -49,7 +49,6 @@ import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetIntegerProperty;
 import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetProperty;
@@ -71,9 +70,7 @@ public class PushyApnsSender implements PushNotificationSender {
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
     private static final String customAerogearApnsPushHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
     private static final Integer customAerogearApnsPushPort = tryGetIntegerProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
-
-    private final ConcurrentSkipListSet<String> invalidTokens = new ConcurrentSkipListSet();
-
+    
     @Inject
     private SimpleApnsClientCache simpleApnsClientCache;
 
@@ -82,6 +79,10 @@ public class PushyApnsSender implements PushNotificationSender {
 
     @Inject
     private Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
+    
+    @Producer
+    private SimpleKafkaProducer<String, String> invalidTokenProducer;
+    
 
     @Producer
     private SimpleKafkaProducer<String, String> tokenDeliveryMetricsProducer;
@@ -134,7 +135,7 @@ public class PushyApnsSender implements PushNotificationSender {
                 notificationSendFuture.addListener(future -> {
 
                     if (future.isSuccess()) {
-                        handlePushNotificationResponsePerToken(notificationSendFuture.get(), pushMessageInformationId);
+                        handlePushNotificationResponsePerToken(notificationSendFuture.get(), pushMessageInformationId, variant.getId());
                     }
                 });
             });
@@ -146,7 +147,7 @@ public class PushyApnsSender implements PushNotificationSender {
         }
     }
 
-    private void handlePushNotificationResponsePerToken(final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse, final String pushMessageInformationId) {
+    private void handlePushNotificationResponsePerToken(final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse, final String pushMessageInformationId, final String variantID) {
 
         final String deviceToken = pushNotificationResponse.getPushNotification().getToken();
 
@@ -168,8 +169,9 @@ public class PushyApnsSender implements PushNotificationSender {
             // token is either invalid, or did just expire
             if ((pushNotificationResponse.getTokenInvalidationTimestamp() != null) || ("BadDeviceToken".equals(rejectReason))) {
                 logger.info(rejectReason + ", removing token: " + deviceToken);
-
-                invalidTokens.add(deviceToken);
+                
+                // add invalid token to a Kafka Topic
+                invalidTokenProducer.send(KAFKA_INVALID_TOKEN_TOPIC, variantID, deviceToken);
             }
 
         }
