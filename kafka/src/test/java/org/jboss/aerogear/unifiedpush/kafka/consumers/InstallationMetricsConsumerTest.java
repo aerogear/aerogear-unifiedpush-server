@@ -22,7 +22,7 @@ import java.util.concurrent.CountDownLatch;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.kafka.utils.MockProviders;
-import org.jboss.aerogear.unifiedpush.kafka.BasicKafkaTest;
+import org.jboss.aerogear.unifiedpush.kafka.BaseKafkaTest;
 import org.jboss.aerogear.unifiedpush.kafka.KafkaClusterConfig;
 import org.jboss.aerogear.unifiedpush.kafka.MessageConsumedEvent;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
@@ -45,7 +45,7 @@ import net.wessendorf.kafka.impl.DelegationKafkaConsumer;
  * Test cases for {@link InstallationMetricsConsumer#consume(String)} method.
  */
 @RunWith(Arquillian.class)
-public class InstallationMetricsConsumerTest extends BasicKafkaTest {
+public class InstallationMetricsConsumerTest extends BaseKafkaTest {
 
     private boolean isMethodCalled = Boolean.FALSE;
     private static CountDownLatch countDownLatch;

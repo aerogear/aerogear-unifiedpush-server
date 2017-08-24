@@ -31,7 +31,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Test cases for plain Kafka producer and consumer.
  */
-public class KafkaClusterTest extends BasicKafkaTest {
+public class KafkaClusterTest extends BaseKafkaTest {
 
     private KafkaConsumer consumer;
     private KafkaProducer producer;
