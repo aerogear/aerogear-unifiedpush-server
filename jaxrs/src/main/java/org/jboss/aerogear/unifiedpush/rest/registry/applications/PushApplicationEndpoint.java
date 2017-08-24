@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- * 	http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.UUID;
 
@@ -70,6 +71,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
      *
      * @statuscode 201 The PushApplication Variant created successfully
      * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 409 The PushApplication already exists
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -77,20 +79,26 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @ReturnType("org.jboss.aerogear.unifiedpush.api.PushApplication")
     public Response registerPushApplication(PushApplication pushApp) {
 
-         // some validation
         try {
             validateModelClass(pushApp);
         } catch (ConstraintViolationException cve) {
-
-            // Build and return the 400 (Bad Request) response
-            ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
-
-            return builder.build();
+            return createBadRequestResponse(cve.getConstraintViolations()).build();
         }
 
-        pushAppService.addPushApplication(pushApp);
+        try {
+            pushAppService.addPushApplication(pushApp);
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.CONFLICT).entity(e.getMessage()).build();
+        }
 
-        return Response.created(UriBuilder.fromResource(PushApplicationEndpoint.class).path(String.valueOf(pushApp.getPushApplicationID())).build()).entity(pushApp)
+        URI uri = UriBuilder
+                .fromResource(PushApplicationEndpoint.class)
+                .path(pushApp.getPushApplicationID())
+                .build();
+
+        return Response
+                .created(uri)
+                .entity(pushApp)
                 .build();
     }
 

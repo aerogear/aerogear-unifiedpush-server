@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,11 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
+import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.omg.SendingContext.RunTime;
 
 import java.util.UUID;
 
@@ -131,10 +135,28 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
         pushApplicationService.addPushApplication(pa);
 
-        PushApplication queried =  searchApplicationService.findByPushApplicationIDForDeveloper(uuid);
+        PushApplication queried = searchApplicationService.findByPushApplicationIDForDeveloper(uuid);
         assertThat(queried).isNotNull();
         assertThat(uuid).isEqualTo(queried.getPushApplicationID());
 
         assertThat(searchApplicationService.findByPushApplicationIDForDeveloper("123-3421")).isNull();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowErrorWhenCreatingAppWithExistingID() throws Exception {
+        // Given
+        PushApplication pa = new PushApplication();
+        pa.setName("EJB Container");
+        final String uuid = UUID.randomUUID().toString();
+        pa.setPushApplicationID(uuid);
+
+        PushApplication pa2 = new PushApplication();
+        pa2.setName("EJB Container 2");
+        pa2.setPushApplicationID(uuid);
+
+        pushApplicationService.addPushApplication(pa);
+
+        // Then
+        pushApplicationService.addPushApplication(pa2); // should throw
     }
 }
