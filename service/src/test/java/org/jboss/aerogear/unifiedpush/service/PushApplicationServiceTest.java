@@ -17,11 +17,7 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
-import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.omg.SendingContext.RunTime;
 
 import java.util.UUID;
 
@@ -143,20 +139,24 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowErrorWhenCreatingAppWithExistingID() throws Exception {
+    public void shouldThrowErrorWhenCreatingAppWithExistingID() {
         // Given
-        PushApplication pa = new PushApplication();
-        pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();
+
+        final PushApplication pa = new PushApplication();
+        pa.setName("EJB Container");
         pa.setPushApplicationID(uuid);
 
-        PushApplication pa2 = new PushApplication();
+        final PushApplication pa2 = new PushApplication();
         pa2.setName("EJB Container 2");
         pa2.setPushApplicationID(uuid);
 
+        // When
         pushApplicationService.addPushApplication(pa);
+        assertThat(pushApplicationService.findByPushApplicationID(pa.getPushApplicationID()))
+                .isNotNull();
 
         // Then
-        pushApplicationService.addPushApplication(pa2); // should throw
+        pushApplicationService.addPushApplication(pa2);
     }
 }
