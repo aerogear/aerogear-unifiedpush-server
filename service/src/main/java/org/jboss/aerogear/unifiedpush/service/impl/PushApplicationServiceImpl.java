@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,15 +41,19 @@ public class PushApplicationServiceImpl implements PushApplicationService {
     }
 
     @Override
-    public void addPushApplication(PushApplication pushApp) throws IllegalArgumentException {
-        pushApp.setDeveloper(loginName.get());
+    public void addPushApplication(PushApplication pushApp) {
+        final String id = pushApp.getPushApplicationID();
 
-        final String pushApplicationID = pushApp.getPushApplicationID();
+        if (findByPushApplicationID(id) != null) {
+            throw new IllegalArgumentException("App ID already exists: " + id);
+        }
 
-        if (findByPushApplicationID(pushApplicationID) != null) {
-            throw new IllegalArgumentException("PushApplicationID exits already: " + pushApplicationID);
-        } else {
+        try {
+            pushApp.setDeveloper(loginName.get());
             pushApplicationDao.create(pushApp);
+            pushApplicationDao.flushAndClear();
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Transaction failed for app with ID: " + id, e);
         }
     }
 
