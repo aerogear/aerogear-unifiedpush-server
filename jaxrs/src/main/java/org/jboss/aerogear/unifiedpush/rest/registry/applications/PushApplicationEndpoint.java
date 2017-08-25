@@ -91,7 +91,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             return Response.status(Status.CONFLICT).entity(e.getMessage()).build();
         }
 
-        URI uri = UriBuilder.fromResource(PushApplicationEndpoint.class)
+        final URI uri = UriBuilder.fromResource(PushApplicationEndpoint.class)
                 .path(pushApp.getPushApplicationID())
                 .build();
 
