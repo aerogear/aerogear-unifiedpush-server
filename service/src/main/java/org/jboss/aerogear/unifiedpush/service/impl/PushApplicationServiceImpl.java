@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,9 +42,19 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 
     @Override
     public void addPushApplication(PushApplication pushApp) {
+        final String id = pushApp.getPushApplicationID();
 
-        pushApp.setDeveloper(loginName.get());
-        pushApplicationDao.create(pushApp);
+        if (findByPushApplicationID(id) != null) {
+            throw new IllegalArgumentException("App ID already exists: " + id);
+        }
+
+        try {
+            pushApp.setDeveloper(loginName.get());
+            pushApplicationDao.create(pushApp);
+            pushApplicationDao.flushAndClear();
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Transaction failed for app with ID: " + id, e);
+        }
     }
 
     @Override

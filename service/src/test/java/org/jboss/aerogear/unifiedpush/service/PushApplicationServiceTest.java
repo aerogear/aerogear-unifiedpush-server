@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -131,10 +131,32 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
         pushApplicationService.addPushApplication(pa);
 
-        PushApplication queried =  searchApplicationService.findByPushApplicationIDForDeveloper(uuid);
+        PushApplication queried = searchApplicationService.findByPushApplicationIDForDeveloper(uuid);
         assertThat(queried).isNotNull();
         assertThat(uuid).isEqualTo(queried.getPushApplicationID());
 
         assertThat(searchApplicationService.findByPushApplicationIDForDeveloper("123-3421")).isNull();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowErrorWhenCreatingAppWithExistingID() {
+        // Given
+        final String uuid = UUID.randomUUID().toString();
+
+        final PushApplication pa = new PushApplication();
+        pa.setName("EJB Container");
+        pa.setPushApplicationID(uuid);
+
+        final PushApplication pa2 = new PushApplication();
+        pa2.setName("EJB Container 2");
+        pa2.setPushApplicationID(uuid);
+
+        // When
+        pushApplicationService.addPushApplication(pa);
+        assertThat(pushApplicationService.findByPushApplicationID(pa.getPushApplicationID()))
+                .isNotNull();
+
+        // Then
+        pushApplicationService.addPushApplication(pa2);
     }
 }
