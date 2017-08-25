@@ -29,6 +29,5 @@
 
     <modules>
         <module>sender</module>
-        <module>model</module>
     </modules>
 </project>

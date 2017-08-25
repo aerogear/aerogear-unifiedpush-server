@@ -29,6 +29,7 @@
 
     <modules>
         <module>api</module>
-        <module>jpa</module>
+        <module>push</module>
+	<module>jpa</module>
     </modules>
 </project>
