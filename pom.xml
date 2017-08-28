@@ -53,7 +53,7 @@
         <module>common</module>
         <module>model</module>
         <module>migrator</module>
-        <module>push</module>
+        <module>push-sender</module>
         <module>service</module>
         <module>jaxrs</module>
         <module>dependencies</module>
