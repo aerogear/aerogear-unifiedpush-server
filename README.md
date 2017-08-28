@@ -31,7 +31,7 @@ Or for the on-premise version, execute the following steps to get going!
 
 * Get the [latest WAR files](http://aerogear.org/push/)
 * Setup a database of [your choice](https://aerogear.org/docs/unifiedpush/ups_userguide/index/#gendbds)
-* Start the {Wildfly-10|EAP 7} server (e.g. ``$SERVER_HOME/bin/standalone.sh -c standalone-full.xml -b 0.0.0.0``)
+* Start the {Wildfly-10|EAP 7} server (e.g. ``$SERVER_HOME/bin/standalone.sh -b 0.0.0.0``)
 * Deploy the two `WAR` files to the [server](https://aerogear.org/docs/unifiedpush/ups_userguide/index/#deploy)
 
 Now go to ``http://localhost:8080/ag-push`` and enjoy the UnifiedPush Server.
@@ -41,11 +41,11 @@ __NOTE:__ the default user/password is ```admin```:```123```
 
 In order to test on a cluster of WildFly servers, the default configuration serves pretty well, you just need to change startup script a bit - in following scenario we will use servers colocated on one node with configured port-offset:
 
-    ./bin/standalone.sh -c standalone-full-ha.xml -Djboss.node.name=node1 -Djboss.messaging.cluster.password=somepassword -Djboss.socket.binding.port-offset=100 -Djava.net.preferIPv4Stack=true
+    ./bin/standalone.sh -c standalone-ha.xml -Djboss.node.name=node1 -Djboss.messaging.cluster.password=somepassword -Djboss.socket.binding.port-offset=100 -Djava.net.preferIPv4Stack=true
 
 And in a second terminal:
 
-    ./bin/standalone.sh -c standalone-full-ha.xml -Djboss.node.name=node2 -Djboss.messaging.cluster.password=somepassword -Djboss.socket.binding.port-offset=200 -Djava.net.preferIPv4Stack=true
+    ./bin/standalone.sh -c standalone-ha.xml -Djboss.node.name=node2 -Djboss.messaging.cluster.password=somepassword -Djboss.socket.binding.port-offset=200 -Djava.net.preferIPv4Stack=true
 
 Note: on OS X, you need to enable multicast first:
 
