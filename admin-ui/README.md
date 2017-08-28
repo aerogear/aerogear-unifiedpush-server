@@ -23,13 +23,7 @@ UPS is run using a {Wildfly-10|EAP 7} server so one of these servers will need t
 To start the server run the command:
 
 ```
-$SERVER_HOME/bin/standalone.sh -c standalone-full.xml -b 0.0.0.0
-```
-
-and to configure the server for UPS run the command:
-
-```
-$SERVER_HOME/bin/jboss-cli.sh --file=/path/to/aerogear-unifiedpush-server/configuration/jms-setup-wildfly.cli
+$SERVER_HOME/bin/standalone.sh -b 0.0.0.0
 ```
 
 The Database and Authentication need to be set now.

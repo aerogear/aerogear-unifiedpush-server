@@ -71,10 +71,10 @@ chcon -R -t svirt_sandbox_file_t /path/to/dir
 
 Allow the UPS to connect to your Kafka broker by passing in the host and port (configured in the previous steps) to the Wildfly server. Use the environment variables `KAFKA_HOST` and `KAFKA_PORT`:
 ```
-$SERVER_HOME/bin/standalone.sh -c standalone-full.xml -DKAFKA_HOST=<ip_address> -DKAFKA_PORT=<port>
+$SERVER_HOME/bin/standalone.sh -DKAFKA_HOST=<ip_address> -DKAFKA_PORT=<port>
 ```
 
 For example:
 ```
-$SERVER_HOME/bin/standalone.sh -c standalone-full.xml -DKAFKA_HOST=172.18.0.3 -DKAFKA_PORT=9092
+$SERVER_HOME/bin/standalone.sh -DKAFKA_HOST=172.18.0.3 -DKAFKA_PORT=9092
 ```
