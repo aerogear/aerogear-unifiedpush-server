@@ -79,8 +79,8 @@ Remote run mode
 
 If you want to run/debug test against remote container (that speeds up execution), you have to start required containers first - right now two containers are required with certain post-offset:
 
-    ./bin/standalone.sh -c standalone-full-ha.xml -Djboss.socket.binding.port-offset=4321 -Djboss.node.name=node1 -Djboss.messaging.cluster.password=somepassword -Djava.net.preferIPv4Stack=true
-    ./bin/standalone.sh -c standalone-full-ha.xml -Djboss.socket.binding.port-offset=4322 -Djboss.node.name=node2 -Djboss.messaging.cluster.password=somepassword -Djava.net.preferIPv4Stack=true
+    ./bin/standalone.sh -c standalone-ha.xml -Djboss.socket.binding.port-offset=4321 -Djboss.node.name=node1 -Djboss.messaging.cluster.password=somepassword -Djava.net.preferIPv4Stack=true
+    ./bin/standalone.sh -c standalone-ha.xml -Djboss.socket.binding.port-offset=4322 -Djboss.node.name=node2 -Djboss.messaging.cluster.password=somepassword -Djava.net.preferIPv4Stack=true
 
 Since Arquillian is configured to detect running container (`allowConnectingToRunningServer=true`), it will detect running container and you don't have to anything else to run tests in dedicated test server:
 
@@ -92,7 +92,7 @@ Debugging tests in Eclipse
 Since Arquillian tests run in application server, it may be harder to debug them, but with IDE, it is quite easy:
 
 1. start Eclipse
-2. start two WildFly servers in Debug mode, using `standalone-full-ha.xml` and configured `port-offset` (see the configuration properties above)
+2. start two WildFly servers in Debug mode, using `standalone-ha.xml` and configured `port-offset` (see the configuration properties above)
 3. insert breakpoint into a test or an implementation code
 4. run the test class (or just selected method) by selecting its name in the IDE and choosing `Run as... JUnit Test`
 5. the breakpoint will be hit once server deploys micro-deployment and executes the test method
