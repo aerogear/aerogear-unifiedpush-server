@@ -1,41 +1,66 @@
+/**
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jboss.aerogear.unifiedpush.rest.config;
 
-import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.logging.Logger;
 
 @Path("/keycloak/config")
 public class KeycloakConfigurationEndpoint {
 
-    private static final Logger LOGGER = Logger.getLogger(KeycloakConfigurationEndpoint.class.getSimpleName());
+    private static final String REALM_NAME_PROPERTY = "ups.realm.name";
+    private static final String REALM_URL_PROPERTY = "ups.auth.server.url";
+    private static final ObjectMapper mapper = new ObjectMapper();
+
+    private final Logger logger = LoggerFactory.getLogger(KeycloakConfigurationEndpoint.class);
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response configurationFile() {
+    public Response configurationFile() throws JsonProcessingException {
 
-        String realmName = System.getProperty("ups.realm.name");
-        String upsAuthServer = System.getProperty("ups.auth.server.url");
+        final String realmName = ConfigurationUtils.tryGetProperty(REALM_NAME_PROPERTY);
+        final String keycloakServerURL = ConfigurationUtils.tryGetProperty(REALM_URL_PROPERTY);
 
-        Config config = new Config(realmName, upsAuthServer);
+        final Config config = new Config(realmName, keycloakServerURL);
 
-        return Response.ok(new Gson().toJson(config)).build();
+        logger.trace("rendering '{}' realm config, for {}", realmName, keycloakServerURL);
+
+        return Response.ok(mapper.writeValueAsString(config)).build();
 
     }
 
     private class Config {
 
         private String realm = "aerogear";
-        @SerializedName("auth-server-url")
+        @JsonProperty("auth-server-url")
         private String authServerUrl = "/auth";
-        @SerializedName("ssl-required")
+        @JsonProperty("ssl-required")
         private final String sslRequired = "external";
-        @SerializedName("public-client")
+        @JsonProperty("public-client")
         private final boolean publicClient = true;
         private final String resource = "unified-push-server-js";
 
