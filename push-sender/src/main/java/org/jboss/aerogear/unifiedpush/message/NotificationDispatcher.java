@@ -40,7 +40,9 @@ import javax.inject.Inject;
 import java.util.Collection;
 
 /**
- * Receives a request for dispatching push notifications to specified devices from {@link TokenLoader}
+ * Receives a request for dispatching push notifications to specified devices from
+ * {@link org.jboss.aerogear.unifiedpush.message.kafka.MessageHolderWithTokensKafkaConsumer} and selects
+ * the appropriate sender network
  */
 @Stateless
 public class NotificationDispatcher {
@@ -122,4 +124,5 @@ public class NotificationDispatcher {
     public SimpleKafkaProducer<String, String> getPushDeliveryMetricsProducer(){
         return pushDeliveryMetricsProducer;
     }
+
 }
