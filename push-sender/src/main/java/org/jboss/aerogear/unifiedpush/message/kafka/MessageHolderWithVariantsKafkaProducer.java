@@ -25,6 +25,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.event.Observes;
 
+/**
+ * Receives {@link MessageHolderWithVariants} objects and produces them to various topics
+ * based on variant type.
+ * These objects will be consumed by the {@link MessageHolderWithVariantsKafkaConsumer}
+ */
 public class MessageHolderWithVariantsKafkaProducer {
 
     private final Logger logger = LoggerFactory.getLogger(MessageHolderWithVariantsKafkaProducer.class);
@@ -32,17 +37,17 @@ public class MessageHolderWithVariantsKafkaProducer {
     @Producer
     private SimpleKafkaProducer<String, MessageHolderWithVariants> producer;
 
-    private final String ADM_TOPIC = "agpush_AdmMessageTopic";
+    private final String ADM_TOPIC = "agpush_admPushMessageTopic";
 
-    private final String APNS_TOPIC = "agpush_APNsMessageTopic";
+    private final String ANDROID_TOPIC = "agpush_gcmPushMessageTopic";
 
-    private final String FCM_TOPIC = "agpush_FCMMessageTopic";
+    private final String IOS_TOPIC = "agpush_apnsPushMessageTopic";
 
-    private final String MPNS_TOPIC = "agpush_MPNSMessageTopic";
+    private final String SIMPLE_PUSH_TOPIC = "agpush_simplePushMessageTopic";
 
-    private final String MOZ_TOPIC = "agpush_SimplePushMessageTopic";
+    private final String WINDOWS_MPNS_TOPIC = "agpush_mpnsPushMessageTopic";
 
-    private final String WNS_TOPIC = "agpush_WNSMessageTopic";
+    private final String WINDOWS_WNS_TOPIC = "agpush_wnsPushMessageTopic";
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithVariants msg) {
         final String pushTopic = selectTopic(msg.getVariantType());
@@ -56,15 +61,15 @@ public class MessageHolderWithVariantsKafkaProducer {
             case ADM:
                 return ADM_TOPIC;
             case ANDROID:
-                return FCM_TOPIC;
+                return ANDROID_TOPIC;
             case IOS:
-                return APNS_TOPIC;
+                return IOS_TOPIC;
             case SIMPLE_PUSH:
-                return MOZ_TOPIC;
+                return SIMPLE_PUSH_TOPIC;
             case WINDOWS_MPNS:
-                return MPNS_TOPIC;
+                return WINDOWS_MPNS_TOPIC;
             case WINDOWS_WNS:
-                return WNS_TOPIC;
+                return WINDOWS_WNS_TOPIC;
             default:
                 throw new IllegalStateException("Unknown variant type queue");
         }
