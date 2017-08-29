@@ -22,12 +22,12 @@ import net.wessendorf.kafka.cdi.annotation.KafkaConfig;
 public class KafkaClusterConfig {
 
     /**
-     * Installation Metrics consumer topic
+     * Installation Metrics producer/consumer topic
      */
     public static final String KAFKA_INSTALLATION_TOPIC = "agpush_installationMetrics";
 
     /**
-     * Installation Metrics consumer groupId.
+     * Installation Metrics consumer groupId
      */
     public static final String KAFKA_INSTALLATION_TOPIC_CONSUMER_GROUP_ID = "agpush_installationMetricsGroup";
 

@@ -25,6 +25,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.event.Observes;
 
+/**
+ * Receives {@link MessageHolderWithTokens} objects and produces them to various topics
+ * based on variant type.
+ * These objects will be consumed by the {@link MessageHolderWithTokensKafkaConsumer}
+ */
 public class MessageHolderWithTokensKafkaProducer {
 
     private final Logger logger = LoggerFactory.getLogger(MessageHolderWithTokensKafkaProducer.class);
