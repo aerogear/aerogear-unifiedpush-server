@@ -91,4 +91,5 @@ public class InstallationMetricsProducerTest extends BaseKafkaTest {
     public void producerNotNullTest() {
         Assert.assertNotNull(installationRegistrationEndpoint.getInstallationMetricsProducer());
     }
+
 }

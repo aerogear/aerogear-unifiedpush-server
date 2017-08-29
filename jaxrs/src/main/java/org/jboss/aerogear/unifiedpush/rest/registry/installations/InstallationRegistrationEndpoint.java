@@ -426,4 +426,5 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     public SimpleKafkaProducer<String, String> getInstallationMetricsProducer(){
         return installationMetricsProducer;
     }
+
 }

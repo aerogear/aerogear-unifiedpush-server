@@ -42,7 +42,7 @@ import org.mockito.stubbing.Answer;
 import net.wessendorf.kafka.impl.DelegationKafkaConsumer;
 
 /**
- * Test cases for {@link InstallationMetricsConsumer#consume(String)} method.
+ * Test cases for {@link InstallationMetricsKafkaConsumer#consume(String)} method.
  */
 @RunWith(Arquillian.class)
 public class InstallationMetricsConsumerTest extends BaseKafkaTest {
@@ -104,4 +104,5 @@ public class InstallationMetricsConsumerTest extends BaseKafkaTest {
     public void observeMessageConsumed(@Observes MessageConsumedEvent msg) {
         countDownLatch.countDown();
     }
+
 }

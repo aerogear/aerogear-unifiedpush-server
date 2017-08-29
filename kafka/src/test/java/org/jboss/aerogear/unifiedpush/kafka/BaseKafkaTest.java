@@ -44,4 +44,5 @@ public class BaseKafkaTest {
     public void afterEach() {
         kafkaCluster.stop();
     }
+
 }
