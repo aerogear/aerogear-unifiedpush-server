@@ -1,8 +1,0 @@
-keycloak:
-  image: jboss/keycloak:3.2.1.Final
-  command: "-b 0.0.0.0 -Dkeycloak.import=/ups-keycloak-config/ups-realm-sample.json"
-  volumes:
-   - .:/ups-keycloak-config
-  environment:
-   - KEYCLOAK_USER=admin
-   - KEYCLOAK_PASSWORD=admin
