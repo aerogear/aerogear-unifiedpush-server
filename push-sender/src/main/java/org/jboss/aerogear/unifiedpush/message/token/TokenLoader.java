@@ -77,7 +77,8 @@ public class TokenLoader {
 
 
     /**
-     * Receives {@link MessageHolderWithVariants} from {@link org.jboss.aerogear.unifiedpush.message.kafka.MessageHolderWithVariantsKafkaConsumer}
+     * Receives {@link MessageHolderWithVariants} objects from
+     * {@link org.jboss.aerogear.unifiedpush.message.kafka.MessageHolderWithVariantsKafkaConsumer}
      * and loads tokens for devices that match requested parameters from database.
      *
      * Device tokens are loaded in a stream and split to batches of configured size (see {@link SenderConfiguration#batchSize()}).
@@ -101,7 +102,7 @@ public class TokenLoader {
         final List<String> aliases = criteria.getAliases();
         final List<String> deviceTypes = criteria.getDeviceTypes();
 
-        logger.info(String.format("Preparing message delivery and loading tokens for the %s 3rd-party Push Network (for %d variants)", variantType, variants.size()));
+        logger.info("Preparing message delivery and loading tokens for the {} 3rd-party Push Network (for {} variants)", variantType, variants.size());
 
         for (Variant variant : variants) {
 
@@ -165,9 +166,9 @@ public class TokenLoader {
 
                     if (tokens.size() > 0) {
                         if (tryToDispatchTokens(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens, serialId))) {
-                            logger.info(String.format("Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID()));
+                            logger.info("Loaded batch #{}, containing {} tokens, for {} variant ({})", serialId, tokens.size(), variant.getType().getTypeName(), variant.getVariantID());
                         } else {
-                            logger.debug(String.format("Failing token loading transaction for batch token #%s for %s variant (%s), since queue is full, will retry...", serialId, variant.getType().getTypeName(), variant.getVariantID()));
+                            logger.debug("Failing token loading transaction for batch token #{} for {} variant ({}), since queue is full, will retry...", serialId, variant.getType().getTypeName(), variant.getVariantID());
                             context.setRollbackOnly();
                             return;
                         }
@@ -180,7 +181,7 @@ public class TokenLoader {
                 }
                 // should we trigger next transaction batch ?
                 if (tokensLoaded >= configuration.tokensToLoad()) {
-                    logger.debug(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
+                    logger.debug("Ending token loading transaction for {} variant ({})", variant.getType().getTypeName(), variant.getVariantID());
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, serialId, lastTokenInBatch));
                 } else {
                     logger.debug("All batches for {} variant were loaded ({})", variant.getType().getTypeName(), variant.getVariantID());
