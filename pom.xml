@@ -21,7 +21,7 @@
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-parent</artifactId>
         <!-- NOTE: if updated for version of UPS dependencies, please update the 'aerogear.bom.version' as well -->
-        <version>0.9.0</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.jboss.aerogear.unifiedpush</groupId>
@@ -184,9 +184,9 @@
         -->
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
-        <wildfly-maven-plugin.version>1.1.0.Alpha7</wildfly-maven-plugin.version>
+        <wildfly-maven-plugin.version>1.2.0.Final</wildfly-maven-plugin.version>
 
-        <aerogear.bom.version>0.9.0</aerogear.bom.version>
+        <aerogear.bom.version>1.1.0-SNAPSHOT</aerogear.bom.version>
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>
