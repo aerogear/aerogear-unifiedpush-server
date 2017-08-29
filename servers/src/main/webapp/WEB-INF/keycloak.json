@@ -1,6 +1,6 @@
 {
-  "realm" : "aerogear",
-  "auth-server-url" : "/auth",
+  "realm" : "${ups.realm.name}",
+  "auth-server-url" : "${ups.auth.server.url}",
   "ssl-required" : "external",
   "resource" : "unified-push-server",
   "bearer-only" : true,
