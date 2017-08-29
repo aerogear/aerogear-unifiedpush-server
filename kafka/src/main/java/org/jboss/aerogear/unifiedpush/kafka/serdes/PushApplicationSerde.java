@@ -30,6 +30,7 @@ import java.util.Map;
  * used in {@link org.jboss.aerogear.unifiedpush.kafka.streams.NotificationRouterStreamsHook}
  */
 public class PushApplicationSerde implements Serde<PushApplication> {
+
     final private Serializer<PushApplication> serializer = new GenericSerializer(PushApplication.class);
     final private Deserializer<PushApplication> deserializer = new GenericDeserializer(PushApplication.class);
 
@@ -54,4 +55,5 @@ public class PushApplicationSerde implements Serde<PushApplication> {
     public Deserializer<PushApplication> deserializer() {
         return deserializer;
     }
+
 }
