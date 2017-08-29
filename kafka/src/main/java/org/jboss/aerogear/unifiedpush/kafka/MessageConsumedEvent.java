@@ -18,7 +18,7 @@ package org.jboss.aerogear.unifiedpush.kafka;
 
 /**
  * Empty event fired when a message is consumed and processed by a Kafka consumer. Used mainly in tests. See usage
- * {@link InstallationMetricsConsumer#consume(String)}.
+ * {@link org.jboss.aerogear.unifiedpush.kafka.consumers.InstallationMetricsKafkaConsumer#consume(String)}
  */
 public class MessageConsumedEvent {
 
