@@ -17,7 +17,6 @@
 package org.jboss.aerogear.unifiedpush.message.kafka;
 
 import net.wessendorf.kafka.cdi.annotation.Consumer;
-import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +49,7 @@ public class MessageHolderWithVariantsKafkaConsumer {
     @Dequeue
     private Event<MessageHolderWithVariants> dequeueEvent;
 
-    @Consumer(topics = {ADM_TOPIC, ANDROID_TOPIC, IOS_TOPIC, SIMPLE_PUSH_TOPIC, WINDOWS_MPNS_TOPIC, WINDOWS_WNS_TOPIC}, groupId = "agpush_MessageHolderWithVariantsKafkaConsumerGroup")
+    @Consumer(topics = {ADM_TOPIC, ANDROID_TOPIC, IOS_TOPIC, SIMPLE_PUSH_TOPIC, WINDOWS_MPNS_TOPIC, WINDOWS_WNS_TOPIC}, groupId = "agpush_messageHolderWithVariantsKafkaConsumerGroup")
     public void listener(final MessageHolderWithVariants msg) {
         logger.info("Receiving messages from topic");
         dequeueEvent.fire(msg);
