@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.message.kafka;
 
 import net.wessendorf.kafka.cdi.annotation.Consumer;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,28 +25,32 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-
+/**
+ * Consumes {@link MessageHolderWithVariants} objects from various topics
+ * and triggers {@link org.jboss.aerogear.unifiedpush.message.token.TokenLoader} for further
+ * processing
+ */
 public class MessageHolderWithVariantsKafkaConsumer {
 
     private final Logger logger = LoggerFactory.getLogger(MessageHolderWithVariantsKafkaConsumer.class);
 
-    private final String ADM_TOPIC = "agpush_AdmMessageTopic";
+    private final String ADM_TOPIC = "agpush_admPushMessageTopic";
 
-    private final String APNS_TOPIC = "agpush_APNsMessageTopic";
+    private final String ANDROID_TOPIC = "agpush_gcmPushMessageTopic";
 
-    private final String FCM_TOPIC = "agpush_FCMMessageTopic";
+    private final String IOS_TOPIC = "agpush_apnsPushMessageTopic";
 
-    private final String MPNS_TOPIC = "agpush_MPNSMessageTopic";
+    private final String SIMPLE_PUSH_TOPIC = "agpush_simplePushMessageTopic";
 
-    private final String MOZ_TOPIC = "agpush_SimplePushMessageTopic";
+    private final String WINDOWS_MPNS_TOPIC = "agpush_mpnsPushMessageTopic";
 
-    private final String WNS_TOPIC = "agpush_WNSMessageTopic";
+    private final String WINDOWS_WNS_TOPIC = "agpush_wnsPushMessageTopic";
 
     @Inject
     @Dequeue
     private Event<MessageHolderWithVariants> dequeueEvent;
 
-    @Consumer(topics = {ADM_TOPIC, APNS_TOPIC, FCM_TOPIC, MPNS_TOPIC, MOZ_TOPIC, WNS_TOPIC}, groupId = "MessageHolderWithVariantsKafkaConsumer_group")
+    @Consumer(topics = {ADM_TOPIC, ANDROID_TOPIC, IOS_TOPIC, SIMPLE_PUSH_TOPIC, WINDOWS_MPNS_TOPIC, WINDOWS_WNS_TOPIC}, groupId = "agpush_MessageHolderWithVariantsKafkaConsumerGroup")
     public void listener(final MessageHolderWithVariants msg) {
         logger.info("Receiving messages from topic");
         dequeueEvent.fire(msg);
