@@ -16,8 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthStatus;
 import org.jboss.aerogear.unifiedpush.service.impl.health.Status;

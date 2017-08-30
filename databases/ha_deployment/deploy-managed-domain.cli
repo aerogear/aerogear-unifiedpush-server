@@ -1,7 +1,6 @@
 connect
 batch
  
-deploy auth-server.war --server-groups=other-server-group
 deploy ag-push.war --server-groups=other-server-group
  
 run-batch

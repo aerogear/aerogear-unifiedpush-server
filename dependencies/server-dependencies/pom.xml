@@ -169,7 +169,7 @@
         <dependency>
             <groupId>org.aerogear.unifiedpush</groupId>
             <artifactId>admin-ui</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.4</version>
             <scope>compile</scope>
         </dependency>
 
