@@ -118,12 +118,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>async-http-servlet-3.0</artifactId>
-            <scope>provided</scope>
-        </dependency-->
-
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jackson2-provider</artifactId>
