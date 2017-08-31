@@ -14,4 +14,4 @@ unifiedpushDB:
     - MYSQL_DATABASE=unifiedpush
     - MYSQL_ROOT_PASSWORD=supersecret
   ports:
-    - 4306:3306
+    - 6306:3306
