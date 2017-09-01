@@ -24,30 +24,36 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+/**
+ * Consumes {@link MessageHolderWithTokens} objects from various topics
+ * and triggers {@link org.jboss.aerogear.unifiedpush.message.NotificationDispatcher} to select
+ * the correct sender network for each message
+ */
 public class MessageHolderWithTokensKafkaConsumer {
 
     private final Logger logger = LoggerFactory.getLogger(MessageHolderWithTokensKafkaConsumer.class);
 
-    private final String ADM_TOPIC = "AdmToken_Topic";
+    private final String ADM_TOPIC = "agpush_AdmTokenTopic";
 
-    private final String APNS_TOPIC = "APNsToken_Topic";
+    private final String APNS_TOPIC = "agpush_APNsTokenTopic";
 
-    private final String FCM_TOPIC = "FCMToken_Topic";
+    private final String FCM_TOPIC = "agpush_FCMTokenTopic";
 
-    private final String MPNS_TOPIC = "MPNSToken_Topic";
+    private final String MPNS_TOPIC = "agpush_MPNSTokenTopic";
 
-    private final String MOZ_TOPIC = "SimplePushToken_Topic";
+    private final String MOZ_TOPIC = "agpush_SimplePushTokenTopic";
 
-    private final String WNS_TOPIC = "WNSToken_Topic";
+    private final String WNS_TOPIC = "agpush_WNSTokenTopic";
+
 
     @Inject
     @Dequeue
     private Event<MessageHolderWithTokens> dequeueEvent;
 
-    @Consumer(topics = {ADM_TOPIC, APNS_TOPIC, FCM_TOPIC, MPNS_TOPIC, MOZ_TOPIC, WNS_TOPIC}, groupId = "MessageHolderWithTokensKafkaConsumer_group")
+    @Consumer(topics = {ADM_TOPIC, APNS_TOPIC, FCM_TOPIC, MPNS_TOPIC, MOZ_TOPIC, WNS_TOPIC}, groupId = "agpush_messageHolderWithTokensKafkaConsumerGroup")
     public void listener(final MessageHolderWithTokens msg) {
-
-        logger.info("receiving tokens from topic, triggering Notification Dispatcher to pick the right sender");
+        logger.info("Receiving tokens from topic, triggering Notification Dispatcher to pick the right sender");
         dequeueEvent.fire(msg);
     }
+
 }

@@ -56,4 +56,5 @@ public class InstallationMetricsKafkaConsumer {
         // inform observers that metrics are updated - used in tests
         updateAnalyticsEvent.fire(new MessageConsumedEvent());
     }
+
 }

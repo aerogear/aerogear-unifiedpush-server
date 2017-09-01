@@ -1,3 +1,19 @@
+/**
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jboss.aerogear.unifiedpush.message.kafka;
 
 import net.wessendorf.kafka.SimpleKafkaProducer;
@@ -9,6 +25,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.event.Observes;
 
+/**
+ * Receives {@link MessageHolderWithVariants} objects and produces them to various topics
+ * based on variant type.
+ * These objects will be consumed by the {@link MessageHolderWithVariantsKafkaConsumer}
+ */
 public class MessageHolderWithVariantsKafkaProducer {
 
     private final Logger logger = LoggerFactory.getLogger(MessageHolderWithVariantsKafkaProducer.class);
@@ -16,17 +37,17 @@ public class MessageHolderWithVariantsKafkaProducer {
     @Producer
     private SimpleKafkaProducer<String, MessageHolderWithVariants> producer;
 
-    private final String ADM_TOPIC = "AdmMessage_Topic";
+    private final String ADM_TOPIC = "agpush_admPushMessageTopic";
 
-    private final String APNS_TOPIC = "APNsMessage_Topic";
+    private final String ANDROID_TOPIC = "agpush_gcmPushMessageTopic";
 
-    private final String FCM_TOPIC = "FCMMessage_Topic";
+    private final String IOS_TOPIC = "agpush_apnsPushMessageTopic";
 
-    private final String MPNS_TOPIC = "MPNSMessage_Topic";
+    private final String SIMPLE_PUSH_TOPIC = "agpush_simplePushMessageTopic";
 
-    private final String MOZ_TOPIC = "SimplePushMessage_Topic";
+    private final String WINDOWS_MPNS_TOPIC = "agpush_mpnsPushMessageTopic";
 
-    private final String WNS_TOPIC = "WNSMessage_Topic";
+    private final String WINDOWS_WNS_TOPIC = "agpush_wnsPushMessageTopic";
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithVariants msg) {
         final String pushTopic = selectTopic(msg.getVariantType());
@@ -35,25 +56,23 @@ public class MessageHolderWithVariantsKafkaProducer {
         producer.send(pushTopic, msg);
     }
 
-
     private String selectTopic(final VariantType variantType) {
         switch (variantType) {
             case ADM:
                 return ADM_TOPIC;
             case ANDROID:
-                return FCM_TOPIC;
+                return ANDROID_TOPIC;
             case IOS:
-                return APNS_TOPIC;
+                return IOS_TOPIC;
             case SIMPLE_PUSH:
-                return MOZ_TOPIC;
+                return SIMPLE_PUSH_TOPIC;
             case WINDOWS_MPNS:
-                return MPNS_TOPIC;
+                return WINDOWS_MPNS_TOPIC;
             case WINDOWS_WNS:
-                return WNS_TOPIC;
+                return WINDOWS_WNS_TOPIC;
             default:
                 throw new IllegalStateException("Unknown variant type queue");
         }
     }
-
 
 }

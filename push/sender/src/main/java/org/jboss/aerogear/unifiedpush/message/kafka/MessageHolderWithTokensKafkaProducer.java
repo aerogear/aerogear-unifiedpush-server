@@ -25,6 +25,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.event.Observes;
 
+/**
+ * Receives {@link MessageHolderWithTokens} objects and produces them to various topics
+ * based on variant type.
+ * These objects will be consumed by the {@link MessageHolderWithTokensKafkaConsumer}
+ */
 public class MessageHolderWithTokensKafkaProducer {
 
     private final Logger logger = LoggerFactory.getLogger(MessageHolderWithTokensKafkaProducer.class);
@@ -32,20 +37,20 @@ public class MessageHolderWithTokensKafkaProducer {
     @Producer
     private SimpleKafkaProducer<String, MessageHolderWithTokens> producer;
 
-    private final String ADM_TOPIC = "AdmToken_Topic";
+    private final String ADM_TOPIC = "agpush_AdmTokenTopic";
 
-    private final String APNS_TOPIC = "APNsToken_Topic";
+    private final String APNS_TOPIC = "agpush_APNsTokenTopic";
 
-    private final String FCM_TOPIC = "FCMToken_Topic";
+    private final String FCM_TOPIC = "agpush_FCMTokenTopic";
 
-    private final String MPNS_TOPIC = "MPNSToken_Topic";
+    private final String MPNS_TOPIC = "agpush_MPNSTokenTopic";
 
-    private final String MOZ_TOPIC = "SimplePushToken_Topic";
+    private final String MOZ_TOPIC = "agpush_SimplePushTokenTopic";
 
-    private final String WNS_TOPIC = "WNSToken_Topic";
+    private final String WNS_TOPIC = "agpush_WNSTokenTopic";
+
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithTokens msg) {
-
         final String pushTopic = selectTopic(msg.getVariant().getType());
         logger.info("Sending tokens to the {} topic", pushTopic);
 
@@ -70,4 +75,5 @@ public class MessageHolderWithTokensKafkaProducer {
                 throw new IllegalStateException("Unknown variant type queue");
         }
     }
+
 }

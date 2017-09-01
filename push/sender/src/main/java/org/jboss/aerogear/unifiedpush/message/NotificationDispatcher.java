@@ -23,7 +23,6 @@ import org.jboss.aerogear.unifiedpush.message.kafka.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
-import org.jboss.aerogear.unifiedpush.message.token.TokenLoader;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +39,9 @@ import javax.inject.Inject;
 import java.util.Collection;
 
 /**
- * Receives a request for dispatching push notifications to specified devices from {@link TokenLoader}
+ * Receives a request for dispatching push notifications to specified devices from
+ * {@link org.jboss.aerogear.unifiedpush.message.kafka.MessageHolderWithTokensKafkaConsumer} and selects
+ * the appropriate sender network
  */
 @Stateless
 public class NotificationDispatcher {
@@ -122,4 +123,5 @@ public class NotificationDispatcher {
     public SimpleKafkaProducer<String, String> getPushDeliveryMetricsProducer(){
         return pushDeliveryMetricsProducer;
     }
+
 }

@@ -84,4 +84,5 @@ public class KafkaClusterTest extends BaseKafkaTest {
             consumer.close();
         }
     }
+
 }
