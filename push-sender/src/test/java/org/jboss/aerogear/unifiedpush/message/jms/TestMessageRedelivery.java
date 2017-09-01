@@ -16,22 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
-import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.message.MockProviders;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.exception.PushNetworkUnreachableException;
@@ -44,6 +32,17 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.Assert.fail;
 
 @RunWith(Arquillian.class)
 public class TestMessageRedelivery {
@@ -115,7 +114,7 @@ public class TestMessageRedelivery {
     @Test
     public void testMessageCannotBeRedelivered() throws InterruptedException {
         // given
-        variant = new SimplePushVariant();
+        variant = new WindowsWNSVariant();
         failed = new CountDownLatch(NUMBER_OF_MESSAGES);
         counter.set(0);
 
@@ -152,7 +151,7 @@ public class TestMessageRedelivery {
     }
 
     public void emulateNonRedeliverableMessageProcessing(@Observes @Dequeue MessageHolderWithTokens msg) {
-        if (msg.getVariant() instanceof SimplePushVariant) {
+        if (msg.getVariant() instanceof WindowsWNSVariant) {
             int count = counter.incrementAndGet();
             System.out.println("fail #" + count);
             failed.countDown();

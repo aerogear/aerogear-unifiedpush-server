@@ -37,9 +37,7 @@ import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
@@ -250,16 +248,19 @@ public class InstallationDaoTest {
     @Test
     public void mergeCategories() {
         //given
-        final SimplePushVariant variant = new SimplePushVariant();
-        variant.setName("SimplePush Variant Name");
+        final AndroidVariant variant = new AndroidVariant();
+        variant.setName("Android Variant Name");
+        variant.setGoogleKey("12");
+        variant.setProjectNumber("12");
         entityManager.persist(variant);
 
         final Installation installation = new Installation();
-        installation.setDeviceToken("http://test");
+        installation.setDeviceToken(DEVICE_TOKEN_1);
+
         installation.setCategories(new HashSet<>(Arrays.asList(new Category("one"), new Category("two"))));
 
         final Installation installation2 = new Installation();
-        installation2.setDeviceToken("http://test2");
+        installation2.setDeviceToken(DEVICE_TOKEN_2);
         installation2.setCategories(new HashSet<>(Arrays.asList(new Category("one"), new Category("three"))));
 
         installation.setVariant(variant);
@@ -412,47 +413,6 @@ public class InstallationDaoTest {
         variant.setName("ADM variant Name");
         variant.setClientSecret("12");
         variant.setClientId("12");
-
-        // when
-        deviceTokenTest(installation, variant);
-    }
-
-    @Test(expected = ConstraintViolationException.class)
-    public void shouldNotSaveWhenSimplePushTokenInvalid() {
-        // given
-        final Installation installation = new Installation();
-        installation.setDeviceToken("htp://invalid");
-
-        final SimplePushVariant variant = new SimplePushVariant();
-        variant.setName("SimplePush Variant Name");
-
-        // when
-        deviceTokenTest(installation, variant);
-    }
-
-    @Test
-    public void shouldSaveWhenValidateDeviceIdMPNSWindows() {
-        // given
-        final Installation installation = new Installation();
-        installation.setDeviceToken("https://s.notify.live.net/u/1/db3/HmQAAACsY7ZBMnNW6QnfPcHXC1gwvHFlPeujLy"
-                + "aLyoJmTm79gofALwJGBefhxH_Rjpz4oAoK5O5zL2nQwaFZpLMpXUP/d2luZG93c3Bob25lZGVmYXVsdA/AGVGhYlaBG"
-                + "GphX2C8gGmg/vedAL_DKqnF00b4O3NCIifacDEQ");
-
-        WindowsMPNSVariant variant = new WindowsMPNSVariant();
-        variant.setName("Windows MPNS Variant Name");
-
-        // when
-        deviceTokenTest(installation, variant);
-    }
-
-    @Test
-    public void shouldSaveWhenSimplePushTokenValid() {
-        // given
-        final Installation installation = new Installation();
-        installation.setDeviceToken("http://valid/but/you/should/use/https");
-
-        final SimplePushVariant variant = new SimplePushVariant();
-        variant.setName("SimplePush Variant Name");
 
         // when
         deviceTokenTest(installation, variant);

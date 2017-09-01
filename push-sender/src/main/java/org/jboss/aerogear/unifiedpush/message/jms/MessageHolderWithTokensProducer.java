@@ -44,12 +44,6 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
     @Resource(mappedName = "java:/queue/GCMTokenBatchQueue")
     private Queue gcmTokenBatchQueue;
 
-    @Resource(mappedName = "java:/queue/MPNSTokenBatchQueue")
-    private Queue mpnsTokenBatchQueue;
-
-    @Resource(mappedName = "java:/queue/SimplePushTokenBatchQueue")
-    private Queue simplePushTokenBatchQueue;
-
     @Resource(mappedName = "java:/queue/WNSTokenBatchQueue")
     private Queue wnsTokenBatchQueue;
 
@@ -66,10 +60,6 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
                 return gcmTokenBatchQueue;
             case IOS:
                 return apnsTokenBatchQueue;
-            case SIMPLE_PUSH:
-                return simplePushTokenBatchQueue;
-            case WINDOWS_MPNS:
-                return mpnsTokenBatchQueue;
             case WINDOWS_WNS:
                 return wnsTokenBatchQueue;
             default:

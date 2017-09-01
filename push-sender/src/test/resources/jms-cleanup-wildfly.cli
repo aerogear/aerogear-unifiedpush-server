@@ -20,16 +20,6 @@ batch
 /subsystem=messaging-activemq/server=default/jms-queue=GCMTokenBatchQueue:remove()
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.GCMTokenBatchQueue:remove()
 
-/subsystem=messaging-activemq/server=default/jms-queue=MPNSPushMessageQueue:remove()
-/subsystem=messaging-activemq/server=default/address-setting=jms.queue.MPNSPushMessageQueue:remove()
-/subsystem=messaging-activemq/server=default/jms-queue=MPNSTokenBatchQueue:remove()
-/subsystem=messaging-activemq/server=default/address-setting=jms.queue.MPNSTokenBatchQueue:remove()
-
-/subsystem=messaging-activemq/server=default/jms-queue=SimplePushMessageQueue:remove()
-/subsystem=messaging-activemq/server=default/address-setting=jms.queue.SimplePushMessageQueue:remove()
-/subsystem=messaging-activemq/server=default/jms-queue=SimplePushTokenBatchQueue:remove()
-/subsystem=messaging-activemq/server=default/address-setting=jms.queue.SimplePushTokenBatchQueue:remove()
-
 /subsystem=messaging-activemq/server=default/jms-queue=WNSPushMessageQueue:remove()
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.WNSPushMessageQueue:remove()
 /subsystem=messaging-activemq/server=default/jms-queue=WNSTokenBatchQueue:remove()

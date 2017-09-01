@@ -34,19 +34,9 @@ public enum VariantType {
     IOS("ios"),
 
     /**
-     * The type identifier for our SimplePush variants.
-     */
-    SIMPLE_PUSH("simplePush"),
-
-    /**
      * The type identifier for our Windows WNS variants.
      */
     WINDOWS_WNS("windows_wns"),
-
-    /**
-     * The type identifier for our Windows MPNS variants.
-     */
-    WINDOWS_MPNS("windows_mpns"),
 
     /**
      * The type identifier for our Amazon Device Messaging (ADM) variants.

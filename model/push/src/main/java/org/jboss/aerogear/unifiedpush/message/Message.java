@@ -32,7 +32,7 @@ import java.util.Map;
 import static org.jboss.aerogear.unifiedpush.message.Priority.NORMAL;
 
 /**
- * The message part of the Unifieh message.
+ * The message part of the Unified message.
  * <p>
  * For details have a look at the <a href="https://aerogear.org/docs/unifiedpush/push-message-format/">AeroGear UnifiedPush Message Format</a>.
  */

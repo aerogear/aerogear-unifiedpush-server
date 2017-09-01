@@ -22,8 +22,6 @@ import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
@@ -89,7 +87,6 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
         AndroidVariant androidVariant;
         iOSVariant iOSVariant;
         WindowsVariant windowsVariant = null;
-        SimplePushVariant simplePushVariant;
         AdmVariant admVariant;
 
         // Android around ?
@@ -119,43 +116,18 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
 
         // Windows around?
         if (form.getWindowsVariantName() != null) {
+            // MPNS is no longer supported
+            WindowsWNSVariant wnsVariant = new WindowsWNSVariant();
+            wnsVariant.setName(form.getWindowsVariantName());
+            wnsVariant.setSid(form.getWindowsSid());
+            wnsVariant.setClientSecret(form.getWindowsClientSecret());
 
-            final String windowsType = form.getWindowsType().toLowerCase();
-
-            switch (windowsType) {
-                case "mpns":
-                    WindowsMPNSVariant mpnsVariant = new WindowsMPNSVariant();
-                    mpnsVariant.setName(form.getWindowsVariantName());
-
-                    // store ref:
-                    windowsVariant = mpnsVariant;
-
-                    break;
-                case "wns":
-                    WindowsWNSVariant wnsVariant = new WindowsWNSVariant();
-                    wnsVariant.setName(form.getWindowsVariantName());
-                    wnsVariant.setSid(form.getWindowsSid());
-                    wnsVariant.setClientSecret(form.getWindowsClientSecret());
-
-                    // store ref:
-                    windowsVariant = wnsVariant;
-
-                    break;
-            }
+            // store ref:
+            windowsVariant = wnsVariant;
 
             // store the model, add variant references and merge:
             variantService.addVariant(windowsVariant);
             pushAppService.addVariant(pushApplication, windowsVariant);
-        }
-
-        // SimplePush around ?
-        if (form.getSimplePushVariantName() != null) {
-            simplePushVariant = new SimplePushVariant();
-            simplePushVariant.setName(form.getSimplePushVariantName());
-
-            // store the model, add variant references and merge:
-            variantService.addVariant(simplePushVariant);
-            pushAppService.addVariant(pushApplication, simplePushVariant);
         }
 
         // Android around ?
