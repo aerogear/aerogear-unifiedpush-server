@@ -60,16 +60,6 @@ public class SenderConfigurationProvider {
         return loadConfigurationFor(VariantType.IOS, new SenderConfiguration(3, 2000));
     }
 
-    @Produces @ApplicationScoped @SenderType(VariantType.SIMPLE_PUSH)
-    public SenderConfiguration produceSimplePushConfiguration() {
-        return loadConfigurationFor(VariantType.SIMPLE_PUSH, new SenderConfiguration(10, 1000));
-    }
-
-    @Produces @ApplicationScoped @SenderType(VariantType.WINDOWS_MPNS)
-    public SenderConfiguration produceWindowsMpnsConfiguration() {
-        return loadConfigurationFor(VariantType.WINDOWS_MPNS, new SenderConfiguration(10, 1000));
-    }
-
     @Produces @ApplicationScoped @SenderType(VariantType.WINDOWS_WNS)
     public SenderConfiguration produceWindowsWnsConfiguration() {
         return loadConfigurationFor(VariantType.WINDOWS_WNS, new SenderConfiguration(10, 1000));

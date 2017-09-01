@@ -41,12 +41,6 @@ public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProduce
     @Resource(mappedName = "java:/queue/GCMPushMessageQueue")
     private Queue gcmPushMessageQueue;
 
-    @Resource(mappedName = "java:/queue/MPNSPushMessageQueue")
-    private Queue mpnsPushMessageQueue;
-
-    @Resource(mappedName = "java:/queue/SimplePushMessageQueue")
-    private Queue simplePushMessageQueue;
-
     @Resource(mappedName = "java:/queue/WNSPushMessageQueue")
     private Queue wnsPushMessageQueue;
 
@@ -62,10 +56,6 @@ public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProduce
                 return gcmPushMessageQueue;
             case IOS:
                 return apnsPushMessageQueue;
-            case SIMPLE_PUSH:
-                return simplePushMessageQueue;
-            case WINDOWS_MPNS:
-                return mpnsPushMessageQueue;
             case WINDOWS_WNS:
                 return wnsPushMessageQueue;
             default:

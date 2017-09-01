@@ -64,10 +64,4 @@ public class InstallationTest {
         deviceInstallation.setEnabled(Boolean.FALSE);
         assertThat(deviceInstallation.isEnabled()).isFalse();
     }
-
-    @Test
-    public void simplePushEndpointAsDeviceToken() {
-        deviceInstallation.setDeviceToken("http://server.com/update/21345321354");
-        assertThat(deviceInstallation.getDeviceToken()).isEqualTo("http://server.com/update/21345321354");
-    }
 }

@@ -48,9 +48,6 @@ public class BootstrapForm {
     private String windowsSid;
     private String windowsClientSecret;
 
-    // SimplePush details
-    private String simplePushVariantName;
-
     // ADM details
     private String admVariantName;
     private String admClientId;
@@ -168,15 +165,6 @@ public class BootstrapForm {
     @FormParam("windowsClientSecret")
     public void setWindowsClientSecret(String windowsClientSecret) {
         this.windowsClientSecret = windowsClientSecret;
-    }
-
-    public String getSimplePushVariantName() {
-        return simplePushVariantName;
-    }
-
-    @FormParam("simplePushVariantName")
-    public void setSimplePushVariantName(String simplePushVariantName) {
-        this.simplePushVariantName = simplePushVariantName;
     }
 
     public String getAdmVariantName() {

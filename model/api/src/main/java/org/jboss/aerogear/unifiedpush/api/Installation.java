@@ -24,7 +24,6 @@ import java.util.Set;
 
 /**
  * One installation of a push-enabled client, running on a device (Android/iOS)
- * or user-agent (SimplePush)
  */
 @DeviceTokenCheck
 public class Installation extends BaseModel {
@@ -69,7 +68,6 @@ public class Installation extends BaseModel {
      * <ul>
      * <li> APNs: <code>deviceToken</code>
      * <li> GCM: <code>registrationId</code>
-     * <li> SimplePush: <code>pushEndpoint</code>
      * </ul>
      *
      * @param deviceToken unique string to identify an Installation with its PushNetwork
@@ -86,7 +84,6 @@ public class Installation extends BaseModel {
      * The device type of the device or the user agent.
      *
      * <ul>
-     * <li> For SimplePush this will be <code>Web</code>
      * <li> For iOS that could be <code>iPod</code>, <code>iPad</code> or <code>iPhone</code>
      * <li> For Android that could be <code>Phone</code> or <code>Tablet</code>
      * </ul>
