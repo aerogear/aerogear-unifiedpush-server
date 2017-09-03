@@ -24,8 +24,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "protocolType")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value=WindowsWNSVariant.class, name="wns"),
-        @JsonSubTypes.Type(value=WindowsMPNSVariant.class, name="mpns")
+        @JsonSubTypes.Type(value=WindowsWNSVariant.class, name="wns")
 })
 public abstract class WindowsVariant extends Variant {
 

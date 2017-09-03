@@ -218,7 +218,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     // =====================================================================
 
     /**
-     * Finder for 'send', used for Android, iOS and SimplePush clients
+     * Finder for 'send', used for Android and iOS clients
      */
     @Override
     public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch) {

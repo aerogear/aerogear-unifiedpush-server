@@ -103,10 +103,6 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             </one-to-many>
         </attributes>
     </entity>
-    <entity class="SimplePushVariant" access="FIELD">
-        <table name="simple_push_variant"/>
-        <discriminator-value>simplePush</discriminator-value>
-    </entity>
     <entity class="AdmVariant" access="FIELD">
         <table name="adm_variant"/>
         <discriminator-value>admVariant</discriminator-value>
@@ -130,10 +126,6 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
                 <column name="client_secret" length="255" nullable="false"/>
             </basic>
         </attributes>
-    </entity>
-    <entity class="org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant" access="FIELD">
-        <table name="windows_mpns_variant"/>
-        <discriminator-value>windows_mpns</discriminator-value>
     </entity>
 
 </entity-mappings>

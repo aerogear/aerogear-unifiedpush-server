@@ -8,9 +8,7 @@ The _AeroGear UnifiedPush Server_ is a server that allows sending push notificat
 * [Apple’s APNs](http://developer.apple.com/library/mac/#documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9)
 * [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/)
 * [Microsoft's Windows Push Notification service (WNS)](https://msdn.microsoft.com/en-us/library/windows/apps/hh913756.aspx)
-* [Microsoft's Push Notification service (MPNs)](http://msdn.microsoft.com/en-us/library/windows/apps/ff402558.aspx)
 * [Amazon Device Messaging (ADM)](https://developer.amazon.com/appsandservices/apis/engage/device-messaging/) (*experimental*)
-* [Mozilla’s SimplePush](https://wiki.mozilla.org/WebAPI/SimplePush) (_deprecated)_
 
 <img src="https://raw.githubusercontent.com/aerogear/aerogear-unifiedpush-server/master/ups-ui-screenshot.png" height="427px" width="550px" />
 
