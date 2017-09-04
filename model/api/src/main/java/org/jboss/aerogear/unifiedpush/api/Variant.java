@@ -31,8 +31,6 @@ import java.util.UUID;
         @JsonSubTypes.Type(value = AndroidVariant.class, name = "AndroidVariant"),
         @JsonSubTypes.Type(value = AdmVariant.class, name = "AdmVariant"),
         @JsonSubTypes.Type(value = iOSVariant.class, name = "iOSVariant"),
-        @JsonSubTypes.Type(value = SimplePushVariant.class, name = "SimplePushVariant"),
-        @JsonSubTypes.Type(value = WindowsMPNSVariant.class, name = "WindowsMPNSVariant"),
         @JsonSubTypes.Type(value = WindowsWNSVariant.class, name = "WindowsWNSVariant")
 })
 public abstract class Variant extends BaseModel {

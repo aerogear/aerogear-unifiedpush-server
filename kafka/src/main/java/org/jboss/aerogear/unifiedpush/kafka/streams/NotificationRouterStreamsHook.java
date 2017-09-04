@@ -54,8 +54,6 @@ import java.util.Properties;
 import static org.jboss.aerogear.unifiedpush.api.VariantType.ADM;
 import static org.jboss.aerogear.unifiedpush.api.VariantType.ANDROID;
 import static org.jboss.aerogear.unifiedpush.api.VariantType.IOS;
-import static org.jboss.aerogear.unifiedpush.api.VariantType.SIMPLE_PUSH;
-import static org.jboss.aerogear.unifiedpush.api.VariantType.WINDOWS_MPNS;
 import static org.jboss.aerogear.unifiedpush.api.VariantType.WINDOWS_WNS;
 
 /**
@@ -82,10 +80,6 @@ public class NotificationRouterStreamsHook {
     private final String ANDROID_TOPIC = "agpush_gcmPushMessageTopic";
 
     private final String IOS_TOPIC = "agpush_apnsPushMessageTopic";
-
-    private final String SIMPLE_PUSH_TOPIC = "agpush_simplePushMessageTopic";
-
-    private final String WINDOWS_MPNS_TOPIC = "agpush_mpnsPushMessageTopic";
 
     private final String WINDOWS_WNS_TOPIC = "agpush_wnsPushMessageTopic";
 
@@ -173,8 +167,6 @@ public class NotificationRouterStreamsHook {
                 (variantType, holder) -> variantType.equals(ADM),
                 (variantType, holder) -> variantType.equals(ANDROID),
                 (variantType, holder) -> variantType.equals(IOS),
-                (variantType, holder) -> variantType.equals(SIMPLE_PUSH),
-                (variantType, holder) -> variantType.equals(WINDOWS_MPNS),
                 (variantType, holder) -> variantType.equals(WINDOWS_WNS)
         );
 
@@ -182,9 +174,7 @@ public class NotificationRouterStreamsHook {
         branches[0].to(variantTypeSerde, messageHolderSerde, ADM_TOPIC);
         branches[1].to(variantTypeSerde, messageHolderSerde, ANDROID_TOPIC);
         branches[2].to(variantTypeSerde, messageHolderSerde, IOS_TOPIC);
-        branches[3].to(variantTypeSerde, messageHolderSerde, SIMPLE_PUSH_TOPIC);
-        branches[4].to(variantTypeSerde, messageHolderSerde, WINDOWS_MPNS_TOPIC);
-        branches[5].to(variantTypeSerde, messageHolderSerde, WINDOWS_WNS_TOPIC);
+        branches[3].to(variantTypeSerde, messageHolderSerde, WINDOWS_WNS_TOPIC);
 
         streams = new KafkaStreams(builder, props);
         streams.start();

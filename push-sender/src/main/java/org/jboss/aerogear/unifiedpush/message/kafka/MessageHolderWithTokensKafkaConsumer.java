@@ -39,10 +39,6 @@ public class MessageHolderWithTokensKafkaConsumer {
 
     private final String FCM_TOPIC = "agpush_FCMTokenTopic";
 
-    private final String MPNS_TOPIC = "agpush_MPNSTokenTopic";
-
-    private final String MOZ_TOPIC = "agpush_SimplePushTokenTopic";
-
     private final String WNS_TOPIC = "agpush_WNSTokenTopic";
 
 
@@ -50,7 +46,7 @@ public class MessageHolderWithTokensKafkaConsumer {
     @Dequeue
     private Event<MessageHolderWithTokens> dequeueEvent;
 
-    @Consumer(topics = {ADM_TOPIC, APNS_TOPIC, FCM_TOPIC, MPNS_TOPIC, MOZ_TOPIC, WNS_TOPIC}, groupId = "agpush_messageHolderWithTokensKafkaConsumerGroup")
+    @Consumer(topics = {ADM_TOPIC, APNS_TOPIC, FCM_TOPIC, WNS_TOPIC}, groupId = "agpush_messageHolderWithTokensKafkaConsumerGroup")
     public void listener(final MessageHolderWithTokens msg) {
         logger.info("Receiving tokens from topic, triggering Notification Dispatcher to pick the right sender");
         dequeueEvent.fire(msg);

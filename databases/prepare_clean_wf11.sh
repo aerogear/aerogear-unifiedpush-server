@@ -13,10 +13,6 @@ else
     printf "   >>> Running the jboss-cli tool!\n"
     $WILDFLY_HOME/bin/jboss-cli.sh --file=./mysql-database-config-wildfly.cli
 
-    printf "WildFly 11 JMS configuration is about to start\n"
-    printf "   >>> Running the jboss-cli tool!\n"
-    $WILDFLY_HOME/bin/jboss-cli.sh --file=../configuration/jms-setup-wildfly.cli
-
     printf "Huzza, it worked!\n"
 
 fi
