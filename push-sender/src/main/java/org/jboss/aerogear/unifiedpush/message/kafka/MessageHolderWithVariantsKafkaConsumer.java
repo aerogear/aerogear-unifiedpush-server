@@ -39,17 +39,13 @@ public class MessageHolderWithVariantsKafkaConsumer {
 
     private final String IOS_TOPIC = "agpush_apnsPushMessageTopic";
 
-    private final String SIMPLE_PUSH_TOPIC = "agpush_simplePushMessageTopic";
-
-    private final String WINDOWS_MPNS_TOPIC = "agpush_mpnsPushMessageTopic";
-
     private final String WINDOWS_WNS_TOPIC = "agpush_wnsPushMessageTopic";
 
     @Inject
     @Dequeue
     private Event<MessageHolderWithVariants> dequeueEvent;
 
-    @Consumer(topics = {ADM_TOPIC, ANDROID_TOPIC, IOS_TOPIC, SIMPLE_PUSH_TOPIC, WINDOWS_MPNS_TOPIC, WINDOWS_WNS_TOPIC}, groupId = "agpush_messageHolderWithVariantsKafkaConsumerGroup")
+    @Consumer(topics = {ADM_TOPIC, ANDROID_TOPIC, IOS_TOPIC, WINDOWS_WNS_TOPIC}, groupId = "agpush_messageHolderWithVariantsKafkaConsumerGroup")
     public void listener(final MessageHolderWithVariants msg) {
         logger.info("Receiving messages from topic");
         dequeueEvent.fire(msg);

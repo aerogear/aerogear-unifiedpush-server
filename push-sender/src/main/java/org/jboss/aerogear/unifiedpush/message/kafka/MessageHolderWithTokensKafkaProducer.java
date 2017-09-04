@@ -43,10 +43,6 @@ public class MessageHolderWithTokensKafkaProducer {
 
     private final String FCM_TOPIC = "agpush_FCMTokenTopic";
 
-    private final String MPNS_TOPIC = "agpush_MPNSTokenTopic";
-
-    private final String MOZ_TOPIC = "agpush_SimplePushTokenTopic";
-
     private final String WNS_TOPIC = "agpush_WNSTokenTopic";
 
 
@@ -65,10 +61,6 @@ public class MessageHolderWithTokensKafkaProducer {
                 return FCM_TOPIC;
             case IOS:
                 return APNS_TOPIC;
-            case SIMPLE_PUSH:
-                return MOZ_TOPIC;
-            case WINDOWS_MPNS:
-                return MPNS_TOPIC;
             case WINDOWS_WNS:
                 return WNS_TOPIC;
             default:

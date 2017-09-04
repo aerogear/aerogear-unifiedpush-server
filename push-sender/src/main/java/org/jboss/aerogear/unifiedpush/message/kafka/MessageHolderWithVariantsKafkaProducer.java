@@ -43,10 +43,6 @@ public class MessageHolderWithVariantsKafkaProducer {
 
     private final String IOS_TOPIC = "agpush_apnsPushMessageTopic";
 
-    private final String SIMPLE_PUSH_TOPIC = "agpush_simplePushMessageTopic";
-
-    private final String WINDOWS_MPNS_TOPIC = "agpush_mpnsPushMessageTopic";
-
     private final String WINDOWS_WNS_TOPIC = "agpush_wnsPushMessageTopic";
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithVariants msg) {
@@ -64,10 +60,6 @@ public class MessageHolderWithVariantsKafkaProducer {
                 return ANDROID_TOPIC;
             case IOS:
                 return IOS_TOPIC;
-            case SIMPLE_PUSH:
-                return SIMPLE_PUSH_TOPIC;
-            case WINDOWS_MPNS:
-                return WINDOWS_MPNS_TOPIC;
             case WINDOWS_WNS:
                 return WINDOWS_WNS_TOPIC;
             default:
