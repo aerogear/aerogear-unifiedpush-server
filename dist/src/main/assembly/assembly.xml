@@ -24,12 +24,17 @@
     </formats>
     
     <fileSets>
-        <!-- Bundle the database configuration files and modules --> 
+        <!-- Bundle the database configuration files and modules -->
         <fileSet>
             <directory>${project.basedir}/../databases</directory>
             <outputDirectory>/databases</outputDirectory>
         </fileSet>
-        <!-- Bundle the server WAR files --> 
+        <!-- Bundle the docker compose configuration files -->
+        <fileSet>
+            <directory>${project.basedir}/../docker-compose</directory>
+            <outputDirectory>/docker-compose</outputDirectory>
+        </fileSet>
+        <!-- Bundle the server WAR files -->
         <fileSet>
             <directory>target/servers</directory>
             <outputDirectory>servers</outputDirectory>
