@@ -27,6 +27,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -239,7 +240,7 @@ public class InstallationDaoTest {
         assertThat(list).hasSize(0);
     }
 
-    @Test
+    @Test(expected= EntityNotFoundException.class)
     public void deleteNonExistingInstallation() {
         Installation installation = new Installation();
         installation.setId("2345");
