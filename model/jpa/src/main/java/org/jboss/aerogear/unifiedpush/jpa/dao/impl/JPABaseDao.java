@@ -91,7 +91,8 @@ public abstract class JPABaseDao<T, K> implements GenericBaseDao<T, K> {
             // making sure the entity in question,
             // is really part of this transaction
             if (! entityManager.contains(entity)) {
-                entity = entityManager.merge(entity);
+                final Object entityId = entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(entity);
+                entity = entityManager.getReference(getType(), entityId);
             }
 
             entityManager.remove(entity);
