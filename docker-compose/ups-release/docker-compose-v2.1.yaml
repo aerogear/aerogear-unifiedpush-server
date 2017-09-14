@@ -3,6 +3,9 @@ version: '2.1'
 services:
   unifiedpushserver:
     image: aerogear/unifiedpush-wildfly:latest
+    volumes:
+       - ./helper:/ups-helper
+    entrypoint: "/ups-helper/hack.sh"
     depends_on:
        unifiedpushDB:
          condition: service_healthy
