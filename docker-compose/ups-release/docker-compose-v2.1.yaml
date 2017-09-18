@@ -1,0 +1,45 @@
+version: '2.1'
+
+services:
+  unifiedpushserver:
+    image: aerogear/unifiedpush-wildfly:1.2.0
+    volumes:
+       - ./helper:/ups-helper
+    entrypoint: "/ups-helper/hack.sh"
+    depends_on:
+       unifiedpushDB:
+         condition: service_healthy
+    environment:
+        UNIFIEDPUSH_PORT_3306_TCP_ADDR: ${MYSQL_ADDR_UNIFIEDPUSH}
+        UNIFIEDPUSH_ENV_MYSQL_USER: ${MYSQL_USER}
+        UNIFIEDPUSH_ENV_MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        UNIFIEDPUSH_PORT_3306_TCP_PORT: ${MYSQL_PORT_3306_TCP_PORT}
+        UNIFIEDPUSH_ENV_MYSQL_DATABASE: ${MYSQL_DATABASE_UNIFIEDPUSH}
+        KEYCLOAK_PORT_8080_TCP_ADDR: ${KEYCLOAK_PORT_8080_TCP_ADDR}
+        KEYCLOAK_PORT_8080_TCP_PORT: ${KEYCLOAK_PORT_8080_TCP_PORT}
+    links:
+      - unifiedpushDB:unifiedpush
+      - keycloakServer:keycloak
+    ports:
+      - 9999:8080
+  unifiedpushDB:
+    image: mysql:5.5
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE_UNIFIEDPUSH}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    ports:
+      - 4306:3306
+  keycloakServer:
+    image: jboss/keycloak:3.2.1.Final
+    command: "-b 0.0.0.0 -Dkeycloak.import=/ups-keycloak-config/ups-realm-sample.json"
+    volumes:
+      - ../keycloak-realm:/ups-keycloak-config
+    environment:
+      KEYCLOAK_USER: ${KEYCLOAK_USER}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
