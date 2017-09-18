@@ -1,9 +1,18 @@
 # $WILDFLY_HOME/bin/jboss-cli.sh --file=/path/to/this/file.
 connect
-batch
 
-## Add UnifiedPush Datasource
-data-source add --name=UnifiedPushDS --driver-name=h2 --jndi-name=java:jboss/datasources/UnifiedPushDS --connection-url="jdbc:h2:${jboss.server.data.dir}/unifiedpush;DB_CLOSE_DELAY=-1" --user-name=sa --password=sa --use-ccm=true --enabled=true
-
-run-batch
-#:reload
+try
+  ## Add UnifiedPush Datasource
+  data-source add --name=UnifiedPushDS --driver-name=h2 --jndi-name=java:jboss/datasources/UnifiedPushDS --connection-url="jdbc:h2:${jboss.server.data.dir}/unifiedpush;DB_CLOSE_DELAY=-1" --user-name=sa --password=sa --use-ccm=true --enabled=true
+catch
+  if (response-headers.process-state == reload-required) of /subsystem=datasources/data-source=UnifiedPushDS:remove
+    ## Reload the controller
+    reload 
+    ## Add UnifiedPush Datasource
+    data-source add --name=UnifiedPushDS --driver-name=h2 --jndi-name=java:jboss/datasources/UnifiedPushDS --connection-url="jdbc:h2:${jboss.server.data.dir}/unifiedpush;DB_CLOSE_DELAY=-1" --user-name=sa --password=sa --use-ccm=true --enabled=true
+  else
+    ## Add UnifiedPush Datasource
+    data-source add --name=UnifiedPushDS --driver-name=mysqlup --jndi-name=java:jboss/datasources/UnifiedPushDS --connection-url="jdbc:mysql://localhost:6306/unifiedpush?useUnicode=true&amp;characterEncoding=UTF-8" --user-name=unifiedpush --password=unifiedpush --use-ccm=false --max-pool-size=25 --blocking-timeout-wait-millis=5000 --enabled=true
+  end-if
+finally
+end-try
