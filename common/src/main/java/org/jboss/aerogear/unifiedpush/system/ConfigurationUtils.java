@@ -17,6 +17,10 @@
 package org.jboss.aerogear.unifiedpush.system;
 
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,6 +87,19 @@ public final class ConfigurationUtils {
         }
     }
 
-
+    /**
+     * Load properties from a file.
+     * 
+     * @param path path to a file in which the properties are stored.
+     * @return loaded configurations into {@link Properties} object
+     * @throws IOException
+     */
+    public static Properties loadProperties(final String path) throws IOException {
+        try (final InputStream props = ConfigurationUtils.class.getResourceAsStream(path)) {
+            final Properties properties = new Properties();
+            properties.load(props);
+            return properties;
+        }
+    }
 
 }

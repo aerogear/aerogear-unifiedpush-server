@@ -19,36 +19,51 @@ package org.jboss.aerogear.unifiedpush.message;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
+import org.jboss.aerogear.unifiedpush.message.kafka.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
-import org.jboss.aerogear.unifiedpush.message.token.TokenLoader;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.wessendorf.kafka.SimpleKafkaProducer;
+import net.wessendorf.kafka.cdi.annotation.Producer;
 
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
 import java.util.Collection;
 
 /**
- * Receives a request for dispatching push notifications to specified devices from {@link TokenLoader}
+ * Receives a request for dispatching push notifications to specified devices from
+ * {@link org.jboss.aerogear.unifiedpush.message.kafka.MessageHolderWithTokensKafkaConsumer} and selects
+ * the appropriate sender network
  */
 @Stateless
 public class NotificationDispatcher {
 
     private final Logger logger = LoggerFactory.getLogger(NotificationDispatcher.class);
 
+    /**
+     * Topic to which a "success" message will be sent if a push message was successfully send and "failure" message otherwise.
+     */
+    public static final String KAFKA_PUSH_DELIVERY_METRICS_TOPIC = "agpush_pushDeliveryMetrics";
+    public static final String KAFKA_METRICS_ON_DELIVERY_SUCCESS = "agpush_deliverySuccess";
+    public static final String KAFKA_METRICS_ON_DELIVERY_FAILURE = "agpush_deliveryFailure";
+    
     @Inject
     @Any
     private Instance<PushNotificationSender> senders;
 
     @Inject
     private PushMessageMetricsService pushMessageMetricsService;
+   
+    @Producer
+    private SimpleKafkaProducer<String, String> pushDeliveryMetricsProducer;
 
     /**
      * Receives a {@link UnifiedPushMessage} and list of device tokens that the message should be sent to, selects appropriate sender implementation that
@@ -61,7 +76,7 @@ public class NotificationDispatcher {
         final UnifiedPushMessage unifiedPushMessage = msg.getUnifiedPushMessage();
         final Collection<String> deviceTokens = msg.getDeviceTokens();
 
-        logger.info(String.format("Received UnifiedPushMessage from JMS queue, will now trigger the Push Notification delivery for the %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
+        logger.info("UnifiedPushMessage was successfully received. Push Notification delivery for the {} variant ({}) will now be triggered.", variant.getType().getTypeName(), variant.getVariantID());
 
         senders.select(new SenderTypeLiteral(variant.getType())).get()
                             .sendPushMessage(variant, deviceTokens, unifiedPushMessage, msg.getPushMessageInformation().getId(),
@@ -73,6 +88,11 @@ public class NotificationDispatcher {
                             );
     }
 
+    /**
+     * Implementation of the {@link NotificationSenderCallback} interface for specific
+     * push networks with additional fields for variant, token size and flat push message
+     * information
+     */
     private class SenderServiceCallback implements NotificationSenderCallback {
         private final Variant variant;
         private final int tokenSize;
@@ -86,13 +106,22 @@ public class NotificationDispatcher {
 
         @Override
         public void onSuccess() {
-            logger.debug(String.format("Sent '%s' message to '%d' devices", variant.getType().getTypeName(), tokenSize));
+            // add to a Kafka topic that one more message was sent successfully
+            pushDeliveryMetricsProducer.send(KAFKA_PUSH_DELIVERY_METRICS_TOPIC, pushMessageInformation.getId(), KAFKA_METRICS_ON_DELIVERY_SUCCESS);
+            logger.debug("Sent {} message to {} devices", variant.getType().getTypeName(), tokenSize);
         }
 
         @Override
         public void onError(final String reason) {
-            logger.warn(String.format("Error on '%s' delivery: %s", variant.getType().getTypeName(), reason));
+            logger.warn("Error on '{}' delivery: {}", variant.getType().getTypeName(), reason);
             pushMessageMetricsService.appendError(pushMessageInformation, variant, reason);
+            // add to a Kafka topic that a message was sent unsuccessfully
+            pushDeliveryMetricsProducer.send(KAFKA_PUSH_DELIVERY_METRICS_TOPIC, pushMessageInformation.getId(), KAFKA_METRICS_ON_DELIVERY_FAILURE);
         }
     }
+    
+    public SimpleKafkaProducer<String, String> getPushDeliveryMetricsProducer(){
+        return pushDeliveryMetricsProducer;
+    }
+
 }

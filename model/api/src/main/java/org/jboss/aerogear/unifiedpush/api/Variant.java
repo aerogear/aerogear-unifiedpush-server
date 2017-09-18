@@ -16,6 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.UUID;
@@ -23,6 +26,13 @@ import java.util.UUID;
 /**
  * Logical construct which matches a mobile app in the appstore.
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = AndroidVariant.class, name = "AndroidVariant"),
+        @JsonSubTypes.Type(value = AdmVariant.class, name = "AdmVariant"),
+        @JsonSubTypes.Type(value = iOSVariant.class, name = "iOSVariant"),
+        @JsonSubTypes.Type(value = WindowsWNSVariant.class, name = "WindowsWNSVariant")
+})
 public abstract class Variant extends BaseModel {
     private static final long serialVersionUID = -5028062942838899201L;
 

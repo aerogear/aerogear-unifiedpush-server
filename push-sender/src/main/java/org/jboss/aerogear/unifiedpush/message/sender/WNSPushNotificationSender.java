@@ -29,6 +29,9 @@ import ar.com.fernandospr.wns.model.builders.WnsBadgeBuilder;
 import ar.com.fernandospr.wns.model.builders.WnsRawBuilder;
 import ar.com.fernandospr.wns.model.builders.WnsTileBuilder;
 import ar.com.fernandospr.wns.model.builders.WnsToastBuilder;
+import net.wessendorf.kafka.SimpleKafkaProducer;
+import net.wessendorf.kafka.cdi.annotation.Producer;
+
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
@@ -65,6 +68,9 @@ public class WNSPushNotificationSender implements PushNotificationSender {
     @Inject
     private ClientInstallationService clientInstallationService;
 
+    @Producer
+    private SimpleKafkaProducer<String, String> invalidTokenProducer;
+    
     @Override
     public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
         setPushMessageInformationId(pushMessageInformationId);
@@ -77,6 +83,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
         final WindowsWNSVariant windowsVariant = (WindowsWNSVariant) variant;
         WnsService wnsService = new WnsService(windowsVariant.getSid(), windowsVariant.getClientSecret(), false);
 
+        //TODO to be removed when implementing [AGPUSH-2189]
         Set<String> expiredClientIdentifiers = new HashSet<>(clientIdentifiers.size());
         ArrayList<String> channelUris = new ArrayList<>(clientIdentifiers);
         Message message = pushMessage.getMessage();
@@ -111,9 +118,14 @@ public class WNSPushNotificationSender implements PushNotificationSender {
 
             logger.info(String.format("Sent push notification to WNS for %d  tokens", channelUris.size()));
 
+            //TODO to be removed when implementing [AGPUSH-2189]
             expiredClientIdentifiers.addAll(responses.stream().filter(response -> response.code == HttpServletResponse.SC_GONE).map(response -> response.channelUri).collect(Collectors.toList()));
+            
+            responses.stream().filter(response -> response.code == HttpServletResponse.SC_GONE).map(response -> response.channelUri).forEach(expiredClientIdentifier -> invalidTokenProducer.send(KAFKA_INVALID_TOKEN_TOPIC, variant.getId(), expiredClientIdentifier));
             if (!expiredClientIdentifiers.isEmpty()) {
-                logger.info(String.format("Deleting '%d' expired WNS installations", expiredClientIdentifiers.size()));
+                
+                //TODO to be removed when implementing [AGPUSH-2189]
+                logger.info("Deleting {} expired WNS installations", expiredClientIdentifiers.size());
                 clientInstallationService.removeInstallationsForVariantByDeviceTokens(variant.getVariantID(), expiredClientIdentifiers);
             }
             logger.debug("Message to WNS has been submitted");

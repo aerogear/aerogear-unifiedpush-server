@@ -29,31 +29,25 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.jms.JMSException;
 
-import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
-import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.configuration.SenderConfiguration;
-import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
-import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
-import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
-import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
-import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
+import org.jboss.aerogear.unifiedpush.message.kafka.Dequeue;
+import org.jboss.aerogear.unifiedpush.message.kafka.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Receives a request for sending a push message to given variants from {@link NotificationRouter}.
+ * Receives a request for sending a push message to given variants via Kafka.
  *
  * Loads device token batches from a database and queues them for processing inside a message holder.
  *
@@ -75,29 +69,21 @@ public class TokenLoader {
     @DispatchToQueue
     private Event<MessageHolderWithVariants> nextBatchEvent;
 
-    @Inject
-    @DispatchToQueue
-    private Event<BatchLoadedEvent> batchLoaded;
-
-    @Inject
-    @DispatchToQueue
-    private Event<AllBatchesLoadedEvent> allBatchesLoaded;
-
     @Inject @Any
     private Instance<SenderConfiguration> senderConfiguration;
 
     @Resource
     private EJBContext context;
 
+
     /**
-     * Receives request for processing a {@link UnifiedPushMessage} and loads tokens for devices that match requested parameters from database.
+     * Receives {@link MessageHolderWithVariants} objects from
+     * {@link org.jboss.aerogear.unifiedpush.message.kafka.MessageHolderWithVariantsKafkaConsumer}
+     * and loads tokens for devices that match requested parameters from database.
      *
      * Device tokens are loaded in a stream and split to batches of configured size (see {@link SenderConfiguration#batchSize()}).
      * Once the pre-configured number of batches (see {@link SenderConfiguration#batchesToLoad()}) is reached, this method resends message to the same queue it took the request from,
      * so that the transaction it worked in is split and further processing may continue in next transaction.
-     *
-     * Additionally it fires {@link BatchLoadedEvent} as CDI event (that is translated to JMS event).
-     * When all batches were loaded for the given variant, it fires  {@link AllBatchesLoadedEvent}.
      *
      * @param msg holder object containing the payload and info about the effected variants
      */
@@ -107,7 +93,6 @@ public class TokenLoader {
         final Collection<Variant> variants = msg.getVariants();
         final String lastTokenFromPreviousBatch = msg.getLastTokenFromPreviousBatch();
         final SenderConfiguration configuration = senderConfiguration.select(new SenderTypeLiteral(variantType)).get();
-        final FlatPushMessageInformation pushMessageInformation = msg.getPushMessageInformation();
         int serialId = msg.getLastSerialId();
 
         logger.debug("Received message from queue: {}", message.getMessage().getAlert());
@@ -117,7 +102,7 @@ public class TokenLoader {
         final List<String> aliases = criteria.getAliases();
         final List<String> deviceTypes = criteria.getDeviceTypes();
 
-        logger.info(String.format("Preparing message delivery and loading tokens for the %s 3rd-party Push Network (for %d variants)", variantType, variants.size()));
+        logger.info("Preparing message delivery and loading tokens for the {} 3rd-party Push Network (for {} variants)", variantType, variants.size());
 
         for (Variant variant : variants) {
 
@@ -181,16 +166,14 @@ public class TokenLoader {
 
                     if (tokens.size() > 0) {
                         if (tryToDispatchTokens(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens, serialId))) {
-                            logger.info(String.format("Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID()));
+                            logger.info("Loaded batch #{}, containing {} tokens, for {} variant ({})", serialId, tokens.size(), variant.getType().getTypeName(), variant.getVariantID());
                         } else {
-                            logger.debug(String.format("Failing token loading transaction for batch token #%s for %s variant (%s), since queue is full, will retry...", serialId, variant.getType().getTypeName(), variant.getVariantID()));
+                            logger.debug("Failing token loading transaction for batch token #{} for {} variant ({}), since queue is full, will retry...", serialId, variant.getType().getTypeName(), variant.getVariantID());
                             context.setRollbackOnly();
                             return;
                         }
                         logger.info("Loaded batch #{}, containing {} tokens, for {} variant ({})", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID());
 
-                        // using combined key of variant and PMI (AGPUSH-1585):
-                        //batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
                     } else {
                         logger.debug("Ending batch processing: No more tokens for batch #{} available", serialId);
                         break;
@@ -198,13 +181,10 @@ public class TokenLoader {
                 }
                 // should we trigger next transaction batch ?
                 if (tokensLoaded >= configuration.tokensToLoad()) {
-                    logger.debug(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
+                    logger.debug("Ending token loading transaction for {} variant ({})", variant.getType().getTypeName(), variant.getVariantID());
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, serialId, lastTokenInBatch));
                 } else {
                     logger.debug("All batches for {} variant were loaded ({})", variant.getType().getTypeName(), variant.getVariantID());
-
-                    // using combined key of variant and PMI (AGPUSH-1585):
-                    //allBatchesLoaded.fire(new AllBatchesLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
 
                     if (tokensLoaded == 0 && lastTokenFromPreviousBatch == null) {
                         // no tokens were loaded at all!
@@ -231,28 +211,10 @@ public class TokenLoader {
         try {
             dispatchTokensEvent.fire(msg);
             return true;
-        } catch (MessageDeliveryException e) {
-            Throwable cause = e.getCause();
-            if (isQueueFullException(cause)) {
-                return false;
-            }
+        } catch (Exception e) {
+            logger.error("Failed to load batch of tokens", e);
             throw e;
         }
     }
 
-    /*
-     * When queue is full, ActiveMQ/Artemis throws an instance of org.apache.activemq.artemis.api.core.ActiveMQAddressFullException
-     * In order to avoid hard dependency on that API for this check, we detect that queue is full by analyzing the name of the thrown exception.
-     *
-     * @param e throwable thrown when JMS message delivery fails
-     * @return true if exceptions represents state when queue is full; false otherwise
-     */
-    private static boolean isQueueFullException(Throwable e) {
-        if (e instanceof JMSException && e.getCause() != null) {
-            if ("ActiveMQAddressFullException".equals(e.getCause().getClass().getSimpleName())) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
