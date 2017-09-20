@@ -71,7 +71,7 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
 	 * TODO - Check that super.session() impl is not changed over time.
 	 */
 	@Bean
-	public CassandraSessionFactoryBean session() throws ClassNotFoundException {
+	public CassandraSessionFactoryBean session() {
 
 		RetryCassandraSessionFactoryBean session = new RetryCassandraSessionFactoryBean();
 
