@@ -37,7 +37,9 @@ import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.dao.helper.InstallationAlias;
 import org.jboss.aerogear.unifiedpush.dto.Count;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
 
     private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY = "select distinct installation.deviceToken"

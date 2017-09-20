@@ -9,6 +9,7 @@
 target/
 /target
 */target
+access_log*
 
 #Maven release files
 *.releaseBackup

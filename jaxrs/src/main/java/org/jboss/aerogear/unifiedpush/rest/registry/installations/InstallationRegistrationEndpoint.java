@@ -49,22 +49,24 @@ import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.authentication.AuthenticationHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationAsyncService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.ConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
+import org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
 
+@Controller
 @Path("/registry/device")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
@@ -75,14 +77,15 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	@Inject
 	private ClientInstallationService clientInstallationService;
 	@Inject
+	private ClientInstallationAsyncService clientInstallationAsyncService;
+	@Inject
 	private GenericVariantService genericVariantService;
 	@Inject
-	private PushMessageMetricsService metricsService;
+	private IPushMessageMetricsService metricsService;
 	@Inject
 	private VerificationService verificationService;
 	@Inject
-	@Wrapper
-	private ConfigurationService configuration;
+	private IConfigurationService configuration;
 	@Inject
 	private AuthenticationHelper authenticationHelper;
 
@@ -217,51 +220,39 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 		// The token has changed, remove the old one
 		if (!oldToken.isEmpty() && !oldToken.equals(entity.getDeviceToken())) {
 			logger.info(String.format("Deleting old device token %s", oldToken));
-			clientInstallationService.removeInstallationForVariantByDeviceToken(variant.getVariantID(), oldToken);
+			clientInstallationAsyncService.removeInstallationForVariantByDeviceToken(variant.getVariantID(), oldToken);
 		}
 
 		// In some cases (automation & verification a.k.a OTP), we need to
 		// make sure device is synchronously registered.
 		if (synchronously || shouldVerifiy)
-			clientInstallationService.addInstallationSynchronously(variant, entity);
-		else
 			clientInstallationService.addInstallation(variant, entity);
+		else
+			clientInstallationAsyncService.addInstallation(variant, entity);
 
 		return appendAllowOriginHeader(Response.ok(entity), request);
 	}
 
-	/**
-	 * RESTful API for updating device token. The Endpoint is protected using
-	 * <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
-	 *
-	 * <pre>
-	 * curl -u "variantID:secret"
-	 *   -v -H "Accept: application/json" -H "device-token: BASE64 encoded device-token"
-	 *   -X PUT
-	 *   -d 'BASE64 encoded new device-token'
-	 *   https://SERVER:PORT/context/rest/registry/device/
-	 * </pre>
-	 *
-	 * Details about JSON format can be found HERE!
-	 *
-	 * @param token
-	 *            The new registered deviceToken.
-	 * @param request
-	 *            The request object
-	 *
-	 * @requestheader device-token the old push service dependent token (ie
-	 *                InstanceID in FCM). If not present return 401 error code.
-	 *
-	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
-	 *                 header
-	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase UnifiedPush
-	 *                 Server" (only for 401 response)
-	 *
-	 * @statuscode 204 Successful update of the device token
-	 * @statuscode 401 The request requires authentication.
-	 * @statuscode 500 Server error while replacing.
-	 */
+    /**
+     * RESTful API for Push Notification metrics registration.
+     * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
+     *
+     * <pre>
+     * curl -u "variantID:secret"
+     *   -v -H "Accept: application/json" -H "Content-type: application/json" -H "aerogear-push-id: someid"
+     *   -X PUT
+     *   https://SERVER:PORT/context/rest/registry/device/pushMessage/{pushMessageId}
+     * </pre>
+     *
+     * @param pushMessageId push message identifier
+     * @param request the request
+     * @return              empty JSON body
+     *
+     * @responseheader WWW-Authenticate Basic realm="AeroBase UnifiedPush Server" (only for 401 response)
+     *
+     * @statuscode 200 Successful storage of the device metadata
+     * @statuscode 401 The request requires authentication
+     */
 	@PUT
 	@Path("/token/{token: .*}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -329,7 +320,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
 		// let's do update the analytics
 		if (pushMessageId != null) {
-			metricsService.updateAnalytics(pushMessageId, variant.getVariantID());
+            metricsService.updateAnalytics(pushMessageId);
 		}
 
 		return Response.ok(EmptyJSON.STRING).build();
@@ -465,7 +456,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
 		logger.info("Devices to import: {}", devices.size());
 
-		clientInstallationService.addInstallations(variant, devices);
+		clientInstallationAsyncService.addInstallations(variant, devices);
 
 		// return directly, the above is async and may take a bit :-)
 		return Response.ok(EmptyJSON.STRING).build();

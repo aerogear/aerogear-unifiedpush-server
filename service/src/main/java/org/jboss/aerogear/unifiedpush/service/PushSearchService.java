@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dto.Count;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
 import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
@@ -96,5 +97,5 @@ public interface PushSearchService {
      */
     PageResult<Installation, Count> findAllInstallationsByVariantForDeveloper(String variantID, Integer page, Integer pageSize, String search);
 
-
+    void setLoginName(LoggedInUser loginName);
 }

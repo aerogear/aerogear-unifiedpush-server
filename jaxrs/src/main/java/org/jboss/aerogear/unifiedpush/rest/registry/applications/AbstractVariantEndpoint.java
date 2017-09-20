@@ -16,12 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import com.qmino.miredot.annotations.ReturnType;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -33,16 +31,20 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
+
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.rest.AbstractManagementEndpoint;
+import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+
+import com.qmino.miredot.annotations.ReturnType;
 
 /**
  * Abstract base class for all the concrete variant endpoints. Shares common
  * functionality.
  */
-public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
+public abstract class AbstractVariantEndpoint extends AbstractManagementEndpoint {
 
     @Inject
     protected PushApplicationService pushAppService;
@@ -140,5 +142,6 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
                 .map(variant -> (T) variant)
                 .collect(Collectors.toSet());
     }
+
 
 }

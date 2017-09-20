@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="org.jboss.aerogear.unifiedpush.api.VariantErrorStatus" table="variant_error_status">
+        <id name="pushMessageVariantId" type="java.lang.String">
+            <column name="push_message_variant_id" not-null="true"/>
+        </id>
+        <property name="errorReason" type="java.lang.String">
+            <column name="error_reason" />
+        </property>
+        <property name="variantID" type="java.lang.String" insert="false" update="false">
+            <column name="variant_id" />
+        </property>
+        <property name="pushJobId" type="java.lang.String" insert="false" update="false">
+            <column name="push_job_id" />
+        </property>
+        <many-to-one name="pushMessageInformation" class="org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation" fetch="join">
+            <column name="push_job_id" />
+        </many-to-one>
+        <many-to-one name="variant" class="org.jboss.aerogear.unifiedpush.api.Variant" fetch="join">
+            <column name="variant_id" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

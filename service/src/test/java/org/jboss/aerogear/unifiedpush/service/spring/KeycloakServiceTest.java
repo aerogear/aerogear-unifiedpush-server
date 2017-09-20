@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
 import org.jboss.aerogear.unifiedpush.service.spring.KeycloakServiceTest.KeycloakServiceTestConfig;
-import org.jboss.aerogear.unifiedpush.spring.ServiceConfig;
+import org.jboss.aerogear.unifiedpush.spring.ServiceCacheConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,9 +29,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { KeycloakServiceTestConfig.class, ServiceCacheConfig.class })
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class })
-@ContextConfiguration(classes = { ServiceConfig.class, KeycloakServiceTestConfig.class })
-public class KeycloakServiceTest {
+public class KeycloakServiceTest{
 
 	@Autowired
 	private IKeycloakService kcServiceMock;

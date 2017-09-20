@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -27,28 +28,31 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration;
-import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
-import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Test;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.datastax.driver.core.utils.UUIDs;
 
-public class AliasServiceTest extends AbstractBaseServiceTest {
+public class AliasServiceTest extends AbstractCassandraServiceTest {
 
 	@Inject
 	private AliasService aliasService;
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void testMultipleSync() throws IOException {
 		PushApplication pushApplication = new PushApplication();
+		UUID pushAppId = UUID.fromString(pushApplication.getPushApplicationID());
 
-		String[] legacyAliases = new String[] { "Supprot@AeroBase.org", "Test@AeroBase.org", "Help@AeroBase.org" };
-		List<String> aliasList = Arrays.asList(legacyAliases);
+		List<Alias> aliasesList = new ArrayList<>();
+		aliasesList.add(new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroBase.org"));
+		aliasesList.add(new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroBase.org"));
+		aliasesList.add(new Alias(pushAppId, UUIDs.timeBased(), "Help@AeroBase.org"));
 
 		// Sync 3 aliases
-		List<Alias> aliases = aliasService.syncAliases(pushApplication, aliasList, false);
+		List<Alias> aliases = aliasService.addAll(pushApplication, aliasesList, false);
 
 		// Validate 3 aliases
 		aliases.forEach(alias -> {
@@ -56,7 +60,7 @@ public class AliasServiceTest extends AbstractBaseServiceTest {
 		});
 
 		// Sync 2 aliases
-		aliasService.syncAliases(pushApplication, Arrays.asList(legacyAliases[0], legacyAliases[1]), false);
+		aliasService.addAll(pushApplication, aliasesList.subList(0, 1), false);
 
 		// Validate 3 aliases
 		aliases.forEach(alias -> {
@@ -65,7 +69,7 @@ public class AliasServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void testAddAll() throws IOException {
 		PushApplication pushApplication = new PushApplication();
 		UUID pushAppId = UUID.fromString(pushApplication.getPushApplicationID());
@@ -93,7 +97,7 @@ public class AliasServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void testRemoveAlias() throws IOException {
 		PushApplication pushApplication = new PushApplication();
 		UUID pushAppId = UUID.fromString(pushApplication.getPushApplicationID());
@@ -120,7 +124,7 @@ public class AliasServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void addPushApplication() {
 		String domain = "aerobase.com";
 		String appName = "xxx";
@@ -132,7 +136,7 @@ public class AliasServiceTest extends AbstractBaseServiceTest {
 		UUID pushAppId = UUID.randomUUID();
 		pushApplication.setPushApplicationID(pushAppId.toString());
 
-		pushApplicationService.addPushApplication(pushApplication);
+		pushApplicationService.addPushApplication(pushApplication, new LoggedInUser(DEFAULT_USER));
 
 		Alias[] aliases = new Alias[] { new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroBase.org"),
 				new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroBase.org"),

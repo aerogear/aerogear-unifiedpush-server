@@ -16,7 +16,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class DatabaseParseTest extends RestEndpointTest {
+public class DatabaseParseTest  {
 
 	@Test
 	public void testDocumentContent() {

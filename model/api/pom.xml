@@ -25,7 +25,7 @@
 	</parent>
 
 	<artifactId>unifiedpush-model-api</artifactId>
-	<name>UnifiedPush Server Model API</name>
+	<name>AeroBase Server Model API</name>
 
 	<dependencies>
 		<dependency>
@@ -39,10 +39,6 @@
 			<artifactId>jackson-annotations</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>net.iharder</groupId>
-			<artifactId>base64</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>

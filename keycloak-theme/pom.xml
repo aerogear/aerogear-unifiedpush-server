@@ -7,7 +7,7 @@
 		<version>1.2.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>unifiedpush-keycloak-theme</artifactId>
-	<name>UnifiedPush Keycloak Theme</name>
+	<name>AeroBase Keycloak Theme</name>
 	<build>
 		<finalName>unifiedpush-keycloak-theme</finalName>
 		<plugins>

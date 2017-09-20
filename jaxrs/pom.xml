@@ -63,6 +63,18 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-spring</artifactId>
+			<version>${resteasy.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jboss.resteasy</groupId>
+					<artifactId>resteasy-jaxrs</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-core</artifactId>
 		</dependency>
@@ -73,16 +85,15 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.github.fge</groupId>
-			<artifactId>json-patch</artifactId>
-			<version>1.7</version>
-		</dependency>
-
-		<dependency>
 			<groupId>com.qmino</groupId>
 			<artifactId>miredot-annotations</artifactId>
 			<version>1.4.0</version>
 			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
 		</dependency>
 
 		<dependency>
@@ -101,6 +112,12 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webflux</artifactId>
+			<version>${springframework.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -251,24 +268,6 @@
 				</dependency>
 
 				<dependency>
-					<groupId>org.jboss.arquillian.junit</groupId>
-					<artifactId>arquillian-junit-container</artifactId>
-					<scope>test</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>org.arquillian.container</groupId>
-					<artifactId>arquillian-container-chameleon</artifactId>
-					<scope>test</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>org.jboss.arquillian.extension</groupId>
-					<artifactId>arquillian-transaction-jta</artifactId>
-					<scope>test</scope>
-				</dependency>
-
-				<dependency>
 					<groupId>org.jboss.resteasy</groupId>
 					<artifactId>resteasy-client</artifactId>
 					<version>${resteasy.version}</version>
@@ -282,11 +281,9 @@
 					<scope>test</scope>
 				</dependency>
 
-				<!-- Spring cql test -->
 				<dependency>
-					<groupId>org.springframework.data</groupId>
-					<artifactId>spring-cql</artifactId>
-					<type>test-jar</type>
+					<groupId>com.h2database</groupId>
+					<artifactId>h2</artifactId>
 					<scope>test</scope>
 				</dependency>
 
@@ -309,6 +306,35 @@
 					<scope>test</scope>
 				</dependency>
 
+				<!-- Spring test -->
+				<dependency>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-test</artifactId>
+					<version>${springframework.version}</version>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.cassandraunit</groupId>
+					<artifactId>cassandra-unit-spring</artifactId>
+					<version>3.1.4.0-SNAPSHOT</version>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-test-autoconfigure</artifactId>
+					<version>1.5.6.RELEASE</version>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-undertow</artifactId>
+					<version>1.5.6.RELEASE</version>
+					<scope>test</scope>
+				</dependency>
+
 				<!-- Assert dependencies -->
 				<dependency>
 					<groupId>junit</groupId>
@@ -319,52 +345,6 @@
 				<dependency>
 					<groupId>org.assertj</groupId>
 					<artifactId>assertj-core</artifactId>
-					<scope>test</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>org.wildfly.extras.creaper</groupId>
-					<artifactId>creaper-core</artifactId>
-					<exclusions>
-						<exclusion>
-							<groupId>org.jboss.as</groupId>
-							<artifactId>jboss-as-controller-client</artifactId>
-						</exclusion>
-						<exclusion>
-							<groupId>org.jboss.as</groupId>
-							<artifactId>jboss-as-cli</artifactId>
-						</exclusion>
-					</exclusions>
-					<scope>test</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>org.wildfly.extras.creaper</groupId>
-					<artifactId>creaper-commands</artifactId>
-					<exclusions>
-						<exclusion>
-							<groupId>org.wildfly</groupId>
-							<artifactId>wildfly-patching</artifactId>
-						</exclusion>
-					</exclusions>
-					<scope>test</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>org.wildfly.core</groupId>
-					<artifactId>wildfly-controller-client</artifactId>
-					<scope>test</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>org.wildfly.core</groupId>
-					<artifactId>wildfly-cli</artifactId>
-					<scope>test</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>org.wildfly.core</groupId>
-					<artifactId>wildfly-patching</artifactId>
 					<scope>test</scope>
 				</dependency>
 			</dependencies>

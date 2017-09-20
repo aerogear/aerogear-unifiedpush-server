@@ -1,17 +1,19 @@
 package org.jboss.aerogear.unifiedpush.rest;
 
-import java.net.URL;
-
 import javax.ws.rs.ApplicationPath;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
+import org.jboss.aerogear.unifiedpush.service.AbstractCassandraServiceTest;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.LocalServerPort;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 
-public abstract class RestEndpointTest {
-	protected static final String RESOURCE_PREFIX = RestApplication.class.getAnnotation(ApplicationPath.class).value()
+public abstract class RestEndpointTest extends AbstractCassandraServiceTest {
+	private static final String RESOURCE_PREFIX = RestApplication.class.getAnnotation(ApplicationPath.class).value()
 			.substring(1);
 
 	protected static final String DEFAULT_APP_ID = "7385c294-2003-4abf-83f6-29a27415326b";
@@ -28,6 +30,11 @@ public abstract class RestEndpointTest {
 	protected static final String DEFAULT_IOS_DEVICE_ALIAS = "Support@tEst.com";
 	protected static final String DEFAULT_AND_DEVICE_ALIAS = "android@test.com";
 
+	@Autowired
+	protected TestRestTemplate testTemplate;
+	@LocalServerPort
+	private int port;
+
 	protected ResteasyClient iosClient = new ResteasyClientBuilder()
 			.register(new Authenticator(DEFAULT_IOS_VARIENT_ID, DEFAULT_IOS_VARIENT_PASS)).build();
 
@@ -37,7 +44,7 @@ public abstract class RestEndpointTest {
 	protected ResteasyClient applicationClient = new ResteasyClientBuilder()
 			.register(new Authenticator(DEFAULT_APP_ID, DEFAULT_APP_PASS)).build();
 
-	protected static Installation getIosDefaultInstallation() {
+	public static Installation getIosDefaultInstallation() {
 		Installation iosInstallation = new Installation();
 		iosInstallation.setDeviceType("iPhone7,2");
 		iosInstallation.setDeviceToken(DEFAULT_IOS_DEVICE_TOKEN);
@@ -59,22 +66,22 @@ public abstract class RestEndpointTest {
 		return iosInstallation;
 	}
 
-	/*
-	 * Return ResteasyWebTarget authenticated with DEFAULT_APP_ID/DEFAULT_APP_PASS
-	 */
-	@Deprecated
-	protected ResteasyWebTarget getAliasesTarget(URL deploymentUrl) {
-		return applicationClient.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/alias/aliases");
-	}
-
-	protected ResteasyWebTarget getAllAliasesTarget(URL deploymentUrl) {
-		return applicationClient.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/alias/all");
+	protected ResteasyWebTarget getAllAliasesTarget(String deploymentUrl) {
+		return applicationClient.target(deploymentUrl + "/alias/all");
 	}
 
 	/*
 	 * Return ResteasyWebTarget authenticated with DEFAULT_APP_ID/DEFAULT_APP_PASS
 	 */
-	protected ResteasyWebTarget getAliasByNameTarget(URL deploymentUrl, String alias) {
-		return applicationClient.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/alias/name/" + alias);
+	protected ResteasyWebTarget getAliasByNameTarget(String deploymentUrl, String alias) {
+		return applicationClient.target(deploymentUrl + "/alias/name/" + alias);
+	}
+
+	protected void specificSetup(){
+
+	}
+
+	protected String getRestFullPath(){
+		return "http://localhost:" + port + "/" + RESOURCE_PREFIX;
 	}
 }

@@ -1,6 +1,5 @@
 package org.jboss.aerogear.unifiedpush.service.spring;
 
-import org.jboss.aerogear.unifiedpush.spring.ServiceConfig;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,7 +12,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class })
-@ContextConfiguration(classes = { ServiceConfig.class })
+@ContextConfiguration(classes = { ConfigurationEnvironment.class })
 public class ConfigurationTest {
 
 	@Autowired

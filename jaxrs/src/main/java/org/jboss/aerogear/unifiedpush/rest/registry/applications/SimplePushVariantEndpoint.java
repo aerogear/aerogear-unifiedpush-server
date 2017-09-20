@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
+import org.springframework.stereotype.Controller;
 
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
@@ -35,6 +36,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+@Controller
 @Path("/applications/{pushAppID}/simplePush")
 public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
 
@@ -78,7 +80,7 @@ public class SimplePushVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // store the SimplePush variant:
-        variantService.addVariant(simplePushVariant);
+        variantService.addVariant(simplePushVariant, extractUsername());
         // add iOS variant, and merge:
         pushAppService.addVariant(pushApp, simplePushVariant);
 

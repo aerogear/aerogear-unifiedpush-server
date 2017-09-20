@@ -21,54 +21,47 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
-import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.token.TokenLoader;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import reactor.core.publisher.TopicProcessor;
 
 /**
- * Takes a request for sending {@link UnifiedPushMessage} and submits it to
- * messaging subsystem for further processing.
+ * Takes a request for sending {@link UnifiedPushMessage} and submits it to messaging subsystem for further processing.
  *
- * Router splits messages to specific variant types (push network type) so that
- * they can be processed separately, giving attention to limitations and
- * requirements of specific push networks.
+ * Router splits messages to specific variant types (push network type) so that they can be processed separately,
+ * giving attention to limitations and requirements of specific push networks.
  *
- * {@link NotificationRouter} receives a request for sending a
- * {@link UnifiedPushMessage} and queues one message per variant type, both in
- * transaction. The transactional behavior makes sure the request for sending
- * notification is recorded and then asynchronously processed.
+ * {@link NotificationRouter} receives a request for sending a {@link UnifiedPushMessage} and queues one message per variant type, both in transaction.
+ * The transactional behavior makes sure the request for sending notification is recorded and then asynchronously processed.
  *
  * The further processing of the push message happens in {@link TokenLoader}.
  */
-@Stateless
+@Service
 public class NotificationRouter {
 
     private final Logger logger = LoggerFactory.getLogger(NotificationRouter.class);
 
     @Inject
-    private Instance<GenericVariantService> genericVariantService;
+    private GenericVariantService genericVariantService;
     @Inject
-    private PushMessageMetricsService metricsService;
+    private IPushMessageMetricsService metricsService;
 
     @Inject
-    @DispatchToQueue
-    private Event<MessageHolderWithVariants> dispatchVariantMessageEvent;
+    private TopicProcessor<MessageHolderWithVariants> dispatchVariantMessageEvent;
 
     /**
 	 * Receives a request for sending a {@link UnifiedPushMessage} and queues
@@ -82,7 +75,7 @@ public class NotificationRouter {
 	 * @param message
 	 *            the message
      */
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @Transactional
     public void submit(PushApplication pushApplication, InternalUnifiedPushMessage message) {
         logger.debug("Processing send request with '{}' payload", message.getMessage());
 
@@ -96,7 +89,7 @@ public class NotificationRouter {
         if (variantIDs != null) {
 
             variantIDs.forEach(variantID -> {
-                Variant variant = genericVariantService.get().findByVariantID(variantID);
+                Variant variant = genericVariantService.findByVariantID(variantID);
 
                 // does the variant exist ?
                 if (variant != null) {
@@ -117,16 +110,20 @@ public class NotificationRouter {
             jsonMessageContent = message.toMinimizedJsonString();
         }
 
-		final PushMessageInformation pushMessageInformation = metricsService.storeNewRequestFrom(
-				pushApplication.getPushApplicationID(), jsonMessageContent, message.getIpAddress(),
-				message.getClientIdentifier(), variants.getVariantCount());
+        final FlatPushMessageInformation pushMessageInformation =
+                metricsService.storeNewRequestFrom(
+                        pushApplication.getPushApplicationID(),
+                        jsonMessageContent,
+                        message.getIpAddress(),
+                        message.getClientIdentifier()
+                );
 
 		// we split the variants per type since each type may have its own
 		// configuration (e.g. batch size)
         variants.forEach((variantType, variant) -> {
         	if (variant != null && !variant.isEmpty()){
         		logger.info(String.format("Internal dispatching of push message for one %s variant (by %s)", variantType.getTypeName(), message.getClientIdentifier()));
-        		dispatchVariantMessageEvent.fire(new MessageHolderWithVariants(pushMessageInformation, message, variantType, variant));
+        		dispatchVariantMessageEvent.onNext(new MessageHolderWithVariants(pushMessageInformation, message, variantType, variant));
         	}
         });
     }
@@ -161,12 +158,5 @@ public class NotificationRouter {
 			variants.forEach(this::add);
 		}
 
-		int getVariantCount() {
-			int count = 0;
-			for (Collection<Variant> variants : values()) {
-				count += variants.size();
-			}
-			return count;
-		}
 	}
 }

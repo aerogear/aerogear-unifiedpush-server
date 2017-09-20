@@ -28,12 +28,15 @@ import org.jboss.aerogear.windows.mpns.notifications.TileNotification;
 import org.jboss.aerogear.windows.mpns.notifications.ToastNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-@SenderType(VariantType.WINDOWS_MPNS)
+@Service
+@Qualifier(value = VariantType.WINDOWSMPNSQ)
 public class MPNSPushNotificationSender implements PushNotificationSender {
 
     private final Logger logger = LoggerFactory.getLogger(MPNSPushNotificationSender.class);
@@ -73,21 +76,22 @@ public class MPNSPushNotificationSender implements PushNotificationSender {
                     tile.title(message.getAlert());
 
                     List<String> images = windows.getImages();
-                    if (images.size() >= 1) {
-                        tile.backgroundImage(images.get(0));
-                    }
 
-                    if (images.size() >= 2) {
-                        tile.backBackgroundImage(images.get(1));
+                    if (!images.isEmpty()) {
+                        tile.backgroundImage(images.get(0));
+                        if (images.size() >= 2) {
+                            tile.backBackgroundImage(images.get(1));
+                        }
                     }
 
                     List<String> textFields = windows.getTextFields();
-                    if (textFields.size() >= 1) {
+                    if (!textFields.isEmpty()) {
                         tile.backTitle(textFields.get(0));
+                        if (textFields.size() >= 2) {
+                            tile.backContent(textFields.get(1));
+                        }
                     }
-                    if (textFields.size() >= 2) {
-                        tile.backContent(textFields.get(1));
-                    }
+
                     notification = tile.build();
                     break;
                 default:

@@ -18,56 +18,49 @@ package org.jboss.aerogear.unifiedpush.message.configuration;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.message.sender.SenderType;
-import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
-import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushSenderArchive;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.aerogear.unifiedpush.message.SenderConfig;
+import org.jboss.aerogear.unifiedpush.service.AbstractNoCassandraServiceTest;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.BeanFactoryAnnotationUtils;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
 
-@RunWith(Arquillian.class)
-public class TestSenderConfigurationProducer {
+@ContextConfiguration(classes = { SenderConfig.class })
+public class TestSenderConfigurationProducer extends AbstractNoCassandraServiceTest {
 
-    @Deployment
-    public static WebArchive archive() {
-        return UnifiedPushSenderArchive.forTestClass(TestSenderConfigurationProducer.class)
-                    .withMessaging()
-                    .addPackage(SenderConfiguration.class.getPackage())
-                    .addClasses(SenderType.class, SenderTypeLiteral.class)
-                .as(WebArchive.class);
-    }
+	@Autowired
+	private ApplicationContext applicationContext;
 
-    @Inject @Any
-    private Instance<SenderConfiguration> senderConfiguration;
+	static {
+		System.setProperty("aerogear.android.batchSize", "999");
+		System.setProperty("aerogear.ios.batchSize", "1");
+	}
 
-    @Test
-    public void testAndroid() {
-        try {
-            System.setProperty("aerogear.android.batchSize", "999");
-            SenderConfiguration configuration = senderConfiguration.select(new SenderTypeLiteral(VariantType.ANDROID)).get();
-            assertEquals(10, configuration.batchesToLoad());
-            assertEquals(999, configuration.batchSize());
-        } finally {
-            System.clearProperty("aerogear.android.batchSize");
-        }
-    }
+	@Test
+	public void testAndroid() {
+		try {
+			SenderConfiguration configuration = BeanFactoryAnnotationUtils.qualifiedBeanOfType(
+					applicationContext.getAutowireCapableBeanFactory(), SenderConfiguration.class,
+					VariantType.ANDROIDQ);
+			assertEquals(10, configuration.batchesToLoad());
+			assertEquals(999, configuration.batchSize());
+		} finally {
+			System.clearProperty("aerogear.android.batchSize");
+		}
+	}
 
-    @Test
-    public void testIOS() {
-        try {
-            System.setProperty("aerogear.ios.batchSize", "1");
-            SenderConfiguration configuration = senderConfiguration.select(new SenderTypeLiteral(VariantType.IOS)).get();
-            assertEquals(3, configuration.batchesToLoad());
-            assertEquals(1, configuration.batchSize());
-        } finally {
-            System.clearProperty("aerogear.ios.batchSize");
-        }
-    }
+	@Test
+	public void testIOS() {
+		try {
+
+			SenderConfiguration configuration = BeanFactoryAnnotationUtils.qualifiedBeanOfType(
+					applicationContext.getAutowireCapableBeanFactory(), SenderConfiguration.class, VariantType.IOSQ);
+			assertEquals(3, configuration.batchesToLoad());
+			assertEquals(1, configuration.batchSize());
+		} finally {
+			System.clearProperty("aerogear.ios.batchSize");
+		}
+	}
 }

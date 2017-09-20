@@ -7,6 +7,9 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.DatabaseDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.Database;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DatabaseKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DatabaseQueryKey;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.cassandra.core.CassandraOperations;
+import org.springframework.data.cassandra.repository.support.CassandraRepositoryFactory;
 import org.springframework.stereotype.Repository;
 
 import com.datastax.driver.core.querybuilder.QueryBuilder;
@@ -14,8 +17,9 @@ import com.datastax.driver.core.querybuilder.Select;
 
 @Repository
 class NoSQLDatabaseDaoImpl extends CassandraBaseDao<Database, DatabaseKey> implements DatabaseDao {
-	public NoSQLDatabaseDaoImpl() {
-		super(Database.class);
+	public NoSQLDatabaseDaoImpl(@Autowired CassandraOperations operations) {
+		super(Database.class, new CassandraRepositoryFactory(operations).getEntityInformation(Database.class),
+				operations);
 	}
 
 	public Database findOne(DatabaseQueryKey key) {

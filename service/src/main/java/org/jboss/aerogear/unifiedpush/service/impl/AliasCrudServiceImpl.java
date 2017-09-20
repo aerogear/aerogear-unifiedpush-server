@@ -18,22 +18,15 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.util.UUID;
 
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
-import javax.interceptor.Interceptors;
-
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
-import org.jboss.aerogear.unifiedpush.spring.SpringContextInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-@Stateless
-@Interceptors(SpringContextInterceptor.class)
-@TransactionManagement(TransactionManagementType.BEAN)
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@Service
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 public class AliasCrudServiceImpl implements AliasCrudService {
 
 	@Autowired

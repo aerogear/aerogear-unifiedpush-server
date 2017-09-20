@@ -16,13 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -30,7 +23,18 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
-@SenderType(VariantType.SIMPLE_PUSH)
+import javax.ws.rs.core.Response.Status;
+
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+@Service
+@Qualifier(value = VariantType.SIMPLEPUSHQ)
 public class SimplePushNotificationSender implements PushNotificationSender {
 
     private final Logger logger = LoggerFactory.getLogger(SimplePushNotificationSender.class);

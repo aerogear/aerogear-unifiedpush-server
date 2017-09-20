@@ -16,24 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import com.google.android.gcm.server.Constants;
-import com.google.android.gcm.server.Message;
-import com.google.android.gcm.server.Message.Builder;
-import com.google.android.gcm.server.MulticastResult;
-import com.google.android.gcm.server.Result;
-import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.Installation;
-import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.Priority;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.sender.fcm.ConfigurableFCMSender;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +24,31 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@SenderType(VariantType.ANDROID)
+import javax.inject.Inject;
+
+import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
+import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.Priority;
+import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
+import org.jboss.aerogear.unifiedpush.message.sender.fcm.ConfigurableFCMSender;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationAsyncService;
+import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.google.android.gcm.server.Constants;
+import com.google.android.gcm.server.Message;
+import com.google.android.gcm.server.Message.Builder;
+import com.google.android.gcm.server.MulticastResult;
+import com.google.android.gcm.server.Result;
+
+@Service
+@Qualifier(value = VariantType.ANDROIDQ)
 public class FCMPushNotificationSender implements PushNotificationSender {
 
     // collection of error codes we check for in the FCM response
@@ -56,6 +62,8 @@ public class FCMPushNotificationSender implements PushNotificationSender {
 
     @Inject
     private ClientInstallationService clientInstallationService;
+    @Inject
+    private ClientInstallationAsyncService clientInstallationAsyncService;
 
     private final Logger logger = LoggerFactory.getLogger(FCMPushNotificationSender.class);
 
@@ -231,7 +239,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
         if (! inactiveTokens.isEmpty()) {
             // trigger asynchronous deletion:
             logger.info(String.format("Based on FCM response data and error codes, deleting %d invalid or duplicated Android installations", inactiveTokens.size()));
-            clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, inactiveTokens);
+            clientInstallationAsyncService.removeInstallationsForVariantByDeviceTokens(variantID, inactiveTokens);
         }
     }
 }

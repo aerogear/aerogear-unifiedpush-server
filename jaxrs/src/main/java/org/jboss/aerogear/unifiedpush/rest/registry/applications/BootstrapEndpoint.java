@@ -32,6 +32,7 @@ import org.jboss.aerogear.unifiedpush.rest.util.BootstrapForm;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
@@ -43,6 +44,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+@Component
 @Path("/applications/bootstrap")
 public class BootstrapEndpoint extends AbstractBaseEndpoint {
 
@@ -82,7 +84,7 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
         // root push application
         final PushApplication pushApplication = new PushApplication();
         pushApplication.setName(form.getPushApplicationName());
-        pushAppService.addPushApplication(pushApplication);
+        pushAppService.addPushApplication(pushApplication, extractUsername());
 
 
         // nested variants
@@ -100,7 +102,7 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
             androidVariant.setProjectNumber(form.getAndroidProjectNumber());
 
             // store the model, add variant references and merge:
-            variantService.addVariant(androidVariant);
+            variantService.addVariant(androidVariant, extractUsername());
             pushAppService.addVariant(pushApplication, androidVariant);
         }
 
@@ -113,7 +115,7 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
             iOSVariant.setProduction(form.getiOSProduction());
 
             // store the model, add variant references and merge:
-            variantService.addVariant(iOSVariant);
+            variantService.addVariant(iOSVariant, extractUsername());
             pushAppService.addVariant(pushApplication, iOSVariant);
         }
 
@@ -144,7 +146,7 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
             }
 
             // store the model, add variant references and merge:
-            variantService.addVariant(windowsVariant);
+            variantService.addVariant(windowsVariant, extractUsername());
             pushAppService.addVariant(pushApplication, windowsVariant);
         }
 
@@ -154,7 +156,7 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
             simplePushVariant.setName(form.getSimplePushVariantName());
 
             // store the model, add variant references and merge:
-            variantService.addVariant(simplePushVariant);
+            variantService.addVariant(simplePushVariant, extractUsername());
             pushAppService.addVariant(pushApplication, simplePushVariant);
         }
 
@@ -166,7 +168,7 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
             admVariant.setClientSecret(form.getAdmClientSecret());
 
             // store the model, add variant references and merge:
-            variantService.addVariant(admVariant);
+            variantService.addVariant(admVariant, extractUsername());
             pushAppService.addVariant(pushApplication, admVariant);
         }
 

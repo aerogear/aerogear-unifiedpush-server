@@ -1,20 +1,24 @@
 package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
-import java.net.URL;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.rest.RestApplication;
 import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
+import org.jboss.aerogear.unifiedpush.rest.WebConfigTest;
 import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
@@ -23,118 +27,102 @@ import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
-import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushRestArchive;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
-import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.transaction.annotation.Transactional;
 
-@RunWith(Arquillian.class)
+import com.datastax.driver.core.utils.UUIDs;
+
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { WebConfigTest.class })
 public class InstallationRegistrationEndpointTest extends RestEndpointTest {
-	private static final String RESOURCE_PREFIX = RestApplication.class.getAnnotation(ApplicationPath.class).value().substring(1);
+	@Inject
+	private GenericVariantService genericVariantService;
+	@Inject
+	private ClientInstallationService installationService;
+	@Inject
+	private PushApplicationService applicationService;
+	@Inject
+	private VerificationService verificationService;
+	@Inject
+	private AliasService aliasService;
 
-	@Deployment
-	public static WebArchive archive() {
-		return UnifiedPushRestArchive.forTestClass(InstallationRegistrationEndpointTest.class) //
-				.withRest() //
-				.addPackage(InstallationRegistrationEndpoint.class.getPackage()) //
-				.as(WebArchive.class);
+	@Test
+	public void unAuthorizedDeviceTest() {
+		ResteasyClient client = new ResteasyClientBuilder().build();
+
+		ResteasyWebTarget target = client.target(getRestFullPath() + "/registry/device");
+		Response response = target.request().post(Entity.entity(new Installation(), MediaType.APPLICATION_JSON_TYPE));
+
+		assertEquals(401, response.getStatus());
 	}
 
-    @BeforeClass
-    public static void initResteasyClient() {
-        RegisterBuiltin.register(ResteasyProviderFactory.getInstance());
-    }
+	@Test
+	@Transactional
+	public void registerDeviceTest() {
+		// Prepare installation
+		Installation iosInstallation = getIosDefaultInstallation();
 
-    @Test
-    @RunAsClient
-    public void unAuthorizedDeviceTest(@ArquillianResource URL deploymentUrl) {
-    	ResteasyClient client = new ResteasyClientBuilder().build();
+		ResteasyClient client = new ResteasyClientBuilder()
+				.register(new Authenticator(DEFAULT_IOS_VARIENT_ID, DEFAULT_IOS_VARIENT_PASS)).build();
 
-    	ResteasyWebTarget target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/registry/device");
-    	Response response = target.request().post(Entity.entity(new Installation(), MediaType.APPLICATION_JSON_TYPE));
+		try {
+			ResteasyWebTarget target = client.target(getRestFullPath() + "/registry/device");
+			Response response = target.request().post(Entity.entity(iosInstallation, MediaType.APPLICATION_JSON_TYPE));
+			Installation newInstallation = response.readEntity(Installation.class);
 
-    	Assert.assertTrue(response.getStatus() == 401);
-    }
-
-    @Test
-    @RunAsClient
-    public void registerDeviceTest(@ArquillianResource URL deploymentUrl) {
-    	// Prepare installation
-    	Installation iosInstallation = getIosDefaultInstallation();
-
-    	ResteasyClient client = new ResteasyClientBuilder().register(new Authenticator(DEFAULT_IOS_VARIENT_ID, DEFAULT_IOS_VARIENT_PASS)).build();
-
-    	try{
-	    	ResteasyWebTarget target = client.target(deploymentUrl.toString() + RESOURCE_PREFIX + "/registry/device");
-	    	Response response = target.request().post(Entity.entity(iosInstallation, MediaType.APPLICATION_JSON_TYPE));
-	    	Installation newInstallation = response.readEntity(Installation.class);
-
-			Assert.assertTrue(response.getStatus() == 200);
+			assertEquals(200, response.getStatus());
 			Assert.assertTrue(newInstallation.isEnabled());
-    	} catch (Throwable e){
-    		Assert.fail(e.getMessage());
-    	}
-    }
+		} catch (Throwable e) {
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Inject
-    private GenericVariantService genericVariantService;
-    @Inject
-    private ClientInstallationService installationService;
-    @Inject
-    private PushApplicationService applicationService;
-    @Inject
-    private VerificationService verificationService;
-    @Inject
-    private AliasService aliasService;
-
-    @Test
-    @Transactional(TransactionMode.ROLLBACK)
-    public void enableDeviceTest() {
+	@Test
+	@Transactional
+	public void enableDeviceTest() {
 		System.setProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION, "true");
 
-    	// Prepare installation
-    	Installation iosInstallation = getIosDefaultInstallation();
-    	// Also check case sensitive aliases
-    	iosInstallation.setAlias("SupporT@test.com");
-    	try {
-			Variant variant = genericVariantService.findByVariantID(DEFAULT_IOS_VARIENT_ID);
-			Assert.assertTrue(variant.getVariantID().equals(DEFAULT_IOS_VARIENT_ID));
+		// Prepare installation
+		Installation iosInstallation = getIosDefaultInstallation();
+		// Also check case sensitive aliases
+		iosInstallation.setAlias("SupporT@test.com");
+		iosInstallation.setDeviceToken(DEFAULT_IOS_DEVICE_TOKEN.replace("40", "50"));
 
-			installationService.addInstallationSynchronously(variant, iosInstallation);
+		try {
+			Variant variant = genericVariantService.findByVariantID(DEFAULT_IOS_VARIENT_ID);
+			assertEquals(variant.getVariantID(), DEFAULT_IOS_VARIENT_ID);
+
+			installationService.addInstallation(variant, iosInstallation);
 
 			Installation inst = installationService.findById(iosInstallation.getId());
-			Assert.assertTrue(inst != null && inst.isEnabled() == false);
+			assertTrue("Installation is null", inst != null);
+			assertEquals(inst.isEnabled(), false);
 
 			// Register alias
 			PushApplication app = applicationService.findByVariantID(variant.getVariantID());
-			ArrayList<String> aliases = new ArrayList<String>();
-			aliases.add("Support@Test.com");
-			aliasService.syncAliases(app, aliases, false);
+
+			List<Alias> aliases = new ArrayList<>();
+			aliases.add(new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Support@Test.com"));
+			aliasService.addAll(app, aliases, false);
 
 			// ReEnable device
 			String code = verificationService.initiateDeviceVerification(inst, variant);
-			VerificationResult results = verificationService.verifyDevice(inst, variant, new InstallationVerificationAttempt(code, inst.getDeviceToken()));
-			Assert.assertTrue(results != null && results.equals(VerificationResult.SUCCESS));
+			VerificationResult results = verificationService.verifyDevice(inst, variant,
+					new InstallationVerificationAttempt(code, inst.getDeviceToken()));
+			assertTrue("Result is null", results != null);
+			assertEquals(results, VerificationResult.SUCCESS);
 
 			Variant var = installationService.associateInstallation(inst, variant);
-			Assert.assertTrue(var != null);
+			assertTrue("Variant is null", var != null);
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());
-		}finally{
+		} finally {
 			System.clearProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION);
 		}
-    }
+	}
 }

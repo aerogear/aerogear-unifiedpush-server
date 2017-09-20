@@ -42,11 +42,12 @@ import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
 
-
+@Controller
 @Path("/sender")
 public class PushNotificationSenderEndpoint extends AbstractEndpoint {
     private final Logger logger = LoggerFactory.getLogger(PushNotificationSenderEndpoint.class);
@@ -137,6 +138,7 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/payload")
+	@Deprecated
 	public Response sendLargePayload(DocumentDeployMessage payloadRequest, @Context HttpServletRequest request) {
 		final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
 				pushApplicationService);
@@ -160,6 +162,7 @@ public class PushNotificationSenderEndpoint extends AbstractEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/payload")
+	@Deprecated
 	public Response updateLargePayload(DocumentDeployMessage payloadRequest, @Context HttpServletRequest request) {
 		final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
 				pushApplicationService);

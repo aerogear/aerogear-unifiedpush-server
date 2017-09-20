@@ -24,140 +24,140 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.message.SenderConfig;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.exception.PushNetworkUnreachableException;
-import org.jboss.aerogear.unifiedpush.message.exception.SenderResourceNotAvailableException;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushSenderArchive;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.aerogear.unifiedpush.service.AbstractNoCassandraServiceTest;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.context.ContextConfiguration;
 
-@RunWith(Arquillian.class)
-public class TestMessageRedelivery {
-	private static final Logger logger =  LoggerFactory.getLogger(TestMessageRedelivery.class);
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.WorkQueueProcessor;
 
-    private static final int NUMBER_OF_MESSAGES = 10;
-    private static final int RESOURCE_NOT_AVAILABLE = 3;
-    private static final int PUSH_NETWORK_UNREACHABLE = 3;
+@ContextConfiguration(classes = { SenderConfig.class })
+public class TestMessageRedelivery extends AbstractNoCassandraServiceTest {
+	private static final Logger logger = LoggerFactory.getLogger(TestMessageRedelivery.class);
 
-    @Deployment
-    public static WebArchive archive() {
-        return UnifiedPushSenderArchive.forTestClass(TestMessageRedelivery.class)
-                .withMessaging()
-                .withMessageDrivenBeans()
-                .as(WebArchive.class);
-    }
+	private static final int NUMBER_OF_MESSAGES = 10000;
+	private static final int DEFAULT_QUEUE_SIZE = 256;
 
-    private UnifiedPushMessage message;
-    private PushMessageInformation information;
-    private Variant variant;
-    private Collection<String> deviceTokens;
+	private UnifiedPushMessage message;
+	private FlatPushMessageInformation information;
+	private Variant variant;
+	private Collection<String> deviceTokens;
 
-    private static CountDownLatch delivered;
-    private static CountDownLatch resourceNotAvailable;
-    private static CountDownLatch pushNetworkUnreachable;
-    private static CountDownLatch failed;
+	private static CountDownLatch delivered;
+	private static CountDownLatch failed;
 
-    private static final AtomicInteger counter = new AtomicInteger(0);
+	private static final AtomicInteger counter = new AtomicInteger(0);
 
-    @Inject @DispatchToQueue
-    private Event<MessageHolderWithTokens> event;
+	@Inject
+	private WorkQueueProcessor<MessageHolderWithTokens> event;
 
-    @Before
-    public void setUp() {
-        information = new PushMessageInformation();
-        message = new UnifiedPushMessage();
-        deviceTokens = new ArrayList<>();
-    }
+	@Before
+	public void setUp() {
+		information = new FlatPushMessageInformation();
+		message = new UnifiedPushMessage();
+		deviceTokens = new ArrayList<>();
 
-    @Test
-    public void testMessageWillBeRedelivered() throws InterruptedException {
-        // given
-        variant = new AndroidVariant();
-        delivered = new CountDownLatch(NUMBER_OF_MESSAGES);
-        resourceNotAvailable = new CountDownLatch(RESOURCE_NOT_AVAILABLE);
-        pushNetworkUnreachable = new CountDownLatch(PUSH_NETWORK_UNREACHABLE);
-        counter.set(0);
+		// Recreate WorkQueueProcessor for next test
+		event = WorkQueueProcessor.<MessageHolderWithTokens>builder().build();
+	}
 
-        // when
-        for (int i = 1; i <= NUMBER_OF_MESSAGES; i++) {
-            event.fire(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
-        }
 
-        // then
-        if (!resourceNotAvailable.await(RESOURCE_NOT_AVAILABLE + 1, TimeUnit.SECONDS)) {
-            fail(String.format("%s tries must time out on resource establishing (remains %s)", RESOURCE_NOT_AVAILABLE, resourceNotAvailable.getCount()));
-        }
+	@Test
+	public void testMessageWillBeRedelivered() throws InterruptedException {
+		// given
+		variant = new AndroidVariant();
+		delivered = new CountDownLatch(NUMBER_OF_MESSAGES);
+		counter.set(0);
 
-        if (!resourceNotAvailable.await(RESOURCE_NOT_AVAILABLE + 1, TimeUnit.SECONDS)) {
-            fail(String.format("%s tries must fail to initiate connection (remains %s)", PUSH_NETWORK_UNREACHABLE, pushNetworkUnreachable.getCount()));
-        }
+		// Simulate taking first message only every time
+		for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
+			event.take(1).repeat(NUMBER_OF_MESSAGES).subscribe(s -> emulateMessageProcessingForRedelivery(s));
+		}
 
-        if (!delivered.await(NUMBER_OF_MESSAGES + 1, TimeUnit.SECONDS)) {
-            fail(String.format("all messages must be delivered (remains %s)", delivered.getCount()));
-        }
-    }
+		// when
+		for (int i = 1; i <= NUMBER_OF_MESSAGES; i++) {
+			event.onNext(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
+		}
 
-    @Test
-    public void testMessageCannotBeRedelivered() throws InterruptedException {
-        // given
-        variant = new SimplePushVariant();
-        failed = new CountDownLatch(NUMBER_OF_MESSAGES);
-        counter.set(0);
+		// then
+		if (!delivered.await(1, TimeUnit.SECONDS)) {
+			fail(String.format("all messages must be delivered (remains %s)", delivered.getCount()));
+		}
+	}
 
-        // when
-        for (int i = 1; i <= NUMBER_OF_MESSAGES; i++) {
-            event.fire(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
-        }
 
-        // then
-        if (!failed.await(NUMBER_OF_MESSAGES + 1, TimeUnit.SECONDS)) {
-            fail(String.format("all messages must fail to be delivered (remains %s)", failed.getCount()));
-        }
+	@Test
+	public void testMessageCountMultipleSubscribers() throws InterruptedException {
+		// given
+		variant = new SimplePushVariant();
+		failed = new CountDownLatch(NUMBER_OF_MESSAGES);
+		counter.set(0);
 
-    }
+		for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
+			event.repeat(NUMBER_OF_MESSAGES).subscribe(s -> emulateRedeliverableMessageProcessing(s));
+		}
 
-    public void emulateMessageProcessingForRedelivery(@Observes @Dequeue MessageHolderWithTokens msg) {
-        if (msg.getVariant() instanceof AndroidVariant) {
-            int count = counter.incrementAndGet();
+		// when
+		for (int i = 1; i <= NUMBER_OF_MESSAGES; i++) {
+			event.onNext(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
+		}
 
-            logger.info("starting #" + count);
-            if (count <= RESOURCE_NOT_AVAILABLE) {
-            	logger.info("resource not available #" + count);
-                resourceNotAvailable.countDown();
-                throw new SenderResourceNotAvailableException("Resource not available");
-            } else if (count <= PUSH_NETWORK_UNREACHABLE + RESOURCE_NOT_AVAILABLE) {
-            	logger.info("communication failure #" + count);
-                pushNetworkUnreachable.countDown();
-                throw new PushNetworkUnreachableException("Communication failure");
-            } else {
-            	logger.info("sent #" + count);
-                delivered.countDown();
-            }
-        }
-    }
+		// then
+		if (!failed.await(NUMBER_OF_MESSAGES + 1, TimeUnit.SECONDS)) {
+			fail(String.format("all messages must be delivered (remains %s)", failed.getCount()));
+		}
+	}
 
-    public void emulateNonRedeliverableMessageProcessing(@Observes @Dequeue MessageHolderWithTokens msg) {
-        if (msg.getVariant() instanceof SimplePushVariant) {
-            int count = counter.incrementAndGet();
-            logger.info("fail #" + count);
-            failed.countDown();
-            throw new IllegalStateException("The messaging should not try to re-deliver this message");
-        }
-    }
+	@Test
+	public void tesQueueLimit() throws InterruptedException {
+		// given
+		variant = new SimplePushVariant();
+		failed = new CountDownLatch(DEFAULT_QUEUE_SIZE);
+		counter.set(0);
+
+		// when - Adding one more message will block this thread.
+		for (int i = 1; i <= DEFAULT_QUEUE_SIZE; i++) {
+			event.onNext(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
+		}
+
+		for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
+			event.take(10).repeat().subscribe(s -> emulateRedeliverableMessageProcessing(s));
+		}
+
+		// then
+		if (!failed.await(DEFAULT_QUEUE_SIZE + 1, TimeUnit.SECONDS)) {
+			fail(String.format("all messages must be delivered (remains %s)", failed.getCount()));
+		}
+	}
+	public void emulateMessageProcessingForRedelivery(MessageHolderWithTokens msg) {
+		if (msg.getVariant() instanceof AndroidVariant) {
+			logger.info("success #" + msg.getSerialId() + " " + Thread.currentThread().getName());
+			delivered.countDown();
+		}
+	}
+
+	public void emulateRedeliverableMessageProcessing(MessageHolderWithTokens msg) {
+		if (failed.getCount() == 0)
+			throw new RuntimeException();
+		logger.info("success #" + msg.getSerialId() + " " + Thread.currentThread().getName());
+		failed.countDown();
+	}
+
+	public Flux<MessageHolderWithTokens> handleIllegalStateException(Throwable e,
+			WorkQueueProcessor<MessageHolderWithTokens> event) {
+		return event;
+	}
 
 }

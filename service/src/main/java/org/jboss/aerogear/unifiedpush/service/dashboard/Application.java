@@ -20,19 +20,17 @@ import java.util.Date;
 
 /**
  * The purpose of this class is to act as a "value object" for the Dashboard services.
- * It contains information about a particular PushMessageInformation instance.
+ * It contains information about a particular FlatPushMessageInformation instance.
  */
 public class Application {
 
     private String name;
     private String id;
-    private long totalReceivers;
     private Date submittedDate;
 
-    public Application(String name, String id, long totalReceivers, Date submittedDate) {
+    public Application(String name, String id, Date submittedDate) {
         this.name = name;
         this.id = id;
-        this.totalReceivers = totalReceivers;
         this.submittedDate = submittedDate;
     }
 
@@ -70,24 +68,6 @@ public class Application {
      */
     public void setId(String id) {
         this.id = id;
-    }
-
-    /**
-     * Number of active tokens that received the Push Message
-     *
-     * @return the number of active tokens that received the Push Message
-     */
-    public long getTotalReceivers() {
-        return totalReceivers;
-    }
-
-    /**
-     * Set the number of active tokens that received the Push Message
-     *
-     * @param totalReceivers number of active tokens that received the Push Message
-     */
-    public void setTotalReceivers(long totalReceivers) {
-        this.totalReceivers = totalReceivers;
     }
 
     /**

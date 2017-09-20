@@ -8,12 +8,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
 import org.springframework.data.cassandra.config.CassandraClusterFactoryBean;
 import org.springframework.data.cassandra.config.CassandraEntityClassScanner;
 import org.springframework.data.cassandra.config.CassandraSessionFactoryBean;
-import org.springframework.data.cassandra.config.java.AbstractCassandraConfiguration;
-import org.springframework.data.cassandra.mapping.BasicCassandraMappingContext;
-import org.springframework.data.cassandra.mapping.CassandraMappingContext;
+import org.springframework.data.cassandra.core.mapping.CassandraMappingContext;
 import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
 
 @Configuration
@@ -58,7 +57,7 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
 	@Override
 	public CassandraMappingContext cassandraMapping() throws ClassNotFoundException {
 
-		BasicCassandraMappingContext bean = new BasicCassandraMappingContext();
+		CassandraMappingContext bean = new CassandraMappingContext();
 		bean.initialize();
 		bean.setInitialEntitySet(CassandraEntityClassScanner.scan(getEntityBasePackages()));
 

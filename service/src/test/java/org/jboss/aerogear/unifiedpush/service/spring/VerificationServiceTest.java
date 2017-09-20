@@ -8,6 +8,7 @@ import javax.validation.ConstraintValidator;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.aerogear.unifiedpush.api.validation.AlwaysTrueValidator;
+import org.jboss.aerogear.unifiedpush.service.AbstractNoCassandraServiceTest;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IVerificationGatewayService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.VerificationGatewayServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.VerificationGatewayServiceImpl.VerificationPart;
@@ -16,27 +17,18 @@ import org.jboss.aerogear.unifiedpush.service.sms.HtmlFileSender;
 import org.jboss.aerogear.unifiedpush.service.sms.SendGridEmailSender;
 import org.jboss.aerogear.unifiedpush.service.validation.ApplicationValidator;
 import org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator;
-import org.jboss.aerogear.unifiedpush.spring.ServiceConfig;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class })
-@ContextConfiguration(classes = { ServiceConfig.class })
-public class VerificationServiceTest {
+public class VerificationServiceTest extends AbstractNoCassandraServiceTest {
 
 	@Autowired
 	private IVerificationGatewayService vService;
 
 	@After
-	public void after(){
+	public void after() {
 		System.clearProperty(VerificationGatewayServiceImpl.VERIFICATION_IMPL_KEY);
 	}
 
@@ -54,10 +46,11 @@ public class VerificationServiceTest {
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" } )
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
 	public void singleImplWithType() {
-		System.setProperty(VerificationGatewayServiceImpl.VERIFICATION_IMPL_KEY, "org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender");
+		System.setProperty(VerificationGatewayServiceImpl.VERIFICATION_IMPL_KEY,
+				"org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender");
 
 		for (VerificationPart part : vService.getChain()) {
 			Assert.assertTrue(PhoneValidator.class.isAssignableFrom(part.getValidator().getClass()));
@@ -74,10 +67,10 @@ public class VerificationServiceTest {
 		}
 	}
 
-
 	@Test
 	public void singleImplWithType1() {
-		System.setProperty(VerificationGatewayServiceImpl.VERIFICATION_IMPL_KEY, "org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;");
+		System.setProperty(VerificationGatewayServiceImpl.VERIFICATION_IMPL_KEY,
+				"org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;");
 		vService.initializeSender();
 
 		for (VerificationPart part : vService.getChain()) {
@@ -88,7 +81,8 @@ public class VerificationServiceTest {
 
 	@Test
 	public void multipleImplWithType() {
-		System.setProperty(VerificationGatewayServiceImpl.VERIFICATION_IMPL_KEY, "org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator::org.jboss.aerogear.unifiedpush.service.sms.SendGridEmailSender");
+		System.setProperty(VerificationGatewayServiceImpl.VERIFICATION_IMPL_KEY,
+				"org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator::org.jboss.aerogear.unifiedpush.service.sms.SendGridEmailSender");
 		vService.initializeSender();
 
 		Assert.assertTrue(vService.getChain().size() == 2);
@@ -109,9 +103,9 @@ public class VerificationServiceTest {
 	@Test
 	public void applicationSpecificConfig() {
 		System.setProperty(VerificationGatewayServiceImpl.VERIFICATION_IMPL_KEY,
-				"org.jboss.aerogear.unifiedpush.service.validation.ApplicationValidator::org.jboss.aerogear.unifiedpush.service.sms.HtmlFileSender;" +
-				"org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;" +
-				"org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator::org.jboss.aerogear.unifiedpush.service.sms.SendGridEmailSender");
+				"org.jboss.aerogear.unifiedpush.service.validation.ApplicationValidator::org.jboss.aerogear.unifiedpush.service.sms.HtmlFileSender;"
+						+ "org.jboss.aerogear.unifiedpush.service.validation.PhoneValidator::org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;"
+						+ "org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator::org.jboss.aerogear.unifiedpush.service.sms.SendGridEmailSender");
 		System.setProperty(ApplicationValidator.APP_VALIDATION_KEY, "231231231");
 		System.setProperty(HtmlFileSender.HTMLFILE_KEY, "/tmp/otp.html");
 		System.setProperty(HtmlFileSender.MESSAGE_TMPL, "{1} - Your CB4 verification code is: {0}");
@@ -125,7 +119,7 @@ public class VerificationServiceTest {
 		List<String> lines;
 		try {
 			lines = FileUtils.readLines(new File("/tmp/otp.html"), "UTF-8");
-			Assert.assertTrue(lines.get(lines.size()-1).contains("12345"));
+			Assert.assertTrue(lines.get(lines.size() - 1).contains("12345"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

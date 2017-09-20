@@ -24,7 +24,7 @@
     </parent>
 
     <artifactId>unifiedpush-common</artifactId>
-    <name>UnifiedPush Common classes and utils</name>
+    <name>AeroBase Common classes and utils</name>
 
     <dependencies>
 

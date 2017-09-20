@@ -17,13 +17,12 @@
 package org.jboss.aerogear.unifiedpush.message.configuration;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.message.sender.SenderType;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Loads and stores configuration for specific Push Networks.
@@ -41,36 +40,43 @@ import javax.enterprise.inject.Produces;
  *
  * @see SenderConfiguration
  */
+@Configuration
 public class SenderConfigurationProvider {
 
     private final Logger logger = LoggerFactory.getLogger(SenderConfigurationProvider.class);
 
-    @Produces @ApplicationScoped @SenderType(VariantType.ANDROID)
+    @Qualifier(VariantType.ANDROIDQ)
+    @Bean
     public SenderConfiguration produceAndroidConfiguration() {
         return loadConfigurationFor(VariantType.ANDROID, new SenderConfiguration(10, 1000));
     }
 
-    @Produces @ApplicationScoped @SenderType(VariantType.ADM)
+    @Bean
+    @Qualifier(VariantType.ADMQ)
     public SenderConfiguration produceAdmConfiguration() {
         return loadConfigurationFor(VariantType.ADM, new SenderConfiguration(10, 1000));
     }
 
-    @Produces @ApplicationScoped @SenderType(VariantType.IOS)
+    @Bean
+    @Qualifier(VariantType.IOSQ)
     public SenderConfiguration produceIosConfiguration() {
         return loadConfigurationFor(VariantType.IOS, new SenderConfiguration(3, 2000));
     }
 
-    @Produces @ApplicationScoped @SenderType(VariantType.SIMPLE_PUSH)
+    @Bean
+    @Qualifier(VariantType.SIMPLEPUSHQ)
     public SenderConfiguration produceSimplePushConfiguration() {
         return loadConfigurationFor(VariantType.SIMPLE_PUSH, new SenderConfiguration(10, 1000));
     }
 
-    @Produces @ApplicationScoped @SenderType(VariantType.WINDOWS_MPNS)
+    @Bean
+    @Qualifier(VariantType.WINDOWSMPNSQ)
     public SenderConfiguration produceWindowsMpnsConfiguration() {
         return loadConfigurationFor(VariantType.WINDOWS_MPNS, new SenderConfiguration(10, 1000));
     }
 
-    @Produces @ApplicationScoped @SenderType(VariantType.WINDOWS_WNS)
+    @Bean
+    @Qualifier(VariantType.WINDOWSWNSQ)
     public SenderConfiguration produceWindowsWnsConfiguration() {
         return loadConfigurationFor(VariantType.WINDOWS_WNS, new SenderConfiguration(10, 1000));
     }
@@ -123,6 +129,6 @@ public class SenderConfigurationProvider {
      */
     private enum ConfigurationProperty {
         batchesToLoad,
-        batchSize
-    }
+		batchSize
+	}
 }

@@ -16,11 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
-import com.qmino.miredot.annotations.ReturnType;
-import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
-import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
-import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
-import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -32,8 +28,16 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
+import org.jboss.aerogear.unifiedpush.rest.SearchManager;
+import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
+import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
+import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
+import org.springframework.stereotype.Component;
+
+import com.qmino.miredot.annotations.ReturnType;
+
+@Component
 @Path("/metrics/dashboard")
 public class DashboardEndpoint {
 

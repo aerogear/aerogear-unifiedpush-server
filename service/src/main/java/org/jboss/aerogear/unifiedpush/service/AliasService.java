@@ -29,11 +29,7 @@ public interface AliasService {
 	 * aliases, mirroring the data received in {@code aliases}, and associates
 	 * them to the given application. Note that this application's existing
 	 * aliases will be overwritten by the newly created aliases.
-	 *
-	 * Any {@code Installation} that was previously installed under this
-	 * application and whose alias does not match one of the aliases provided in
-	 * {@code aliases} will be disabled.
-	 *
+
 	 * @param pushApplication
 	 *            push application to associate the aliases to.
 	 * @param aliases
@@ -42,8 +38,6 @@ public interface AliasService {
 	 *            synchronize state to identity provider
 	 * @return new {@link org.jboss.aerogear.unifiedpush.api.Alias} list
 	 */
-	List<Alias> syncAliases(PushApplication pushApplication, List<String> aliases, boolean oauth2);
-
 	List<Alias> addAll(PushApplication pushApplication, List<Alias> aliases, boolean oauth2);
 
 	/**
@@ -61,8 +55,6 @@ public interface AliasService {
 	boolean registered(String alias);
 
 	boolean associated(String fqdn, String alias);
-
-	Alias create(String pushApplicationId, String alias);
 
 	Alias find(String pushApplicationId, String alias);
 

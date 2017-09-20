@@ -16,36 +16,37 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
-import javax.ejb.Stateless;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.aerogear.unifiedpush.service.KeycloakService;
-import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
-import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@Stateless
+@Service
+@Transactional
 public class GenericVariantServiceImpl implements GenericVariantService {
 	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(GenericVariantServiceImpl.class);
 	@Inject
-	@Wrapper
-	private KeycloakService keycloakService;
+	private IKeycloakService keycloakService;
 
 	@Inject
 	private VariantDao variantDao;
 
-	@Inject
-	@LoggedIn
-	private Instance<String> loginName;
+	@Autowired
+	private CacheManager cacheManager;
 
 	@Override
-	public void addVariant(Variant variant) {
-		variant.setDeveloper(loginName.get());
+	public void addVariant(Variant variant, LoggedInUser user) {
+		variant.setDeveloper(user.get());
 		variantDao.create(variant);
 	}
 
@@ -87,5 +88,11 @@ public class GenericVariantServiceImpl implements GenericVariantService {
 	@Override
 	public void removeVariant(Variant variant) {
 		variantDao.delete(variant);
+		evict(variant.getId());
+	}
+
+	private void evict(String clientId) {
+		Cache cache = cacheManager.getCache(GenericVariantService.CACHE_NAME);
+		cache.evict(clientId);
 	}
 }

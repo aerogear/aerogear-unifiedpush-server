@@ -42,9 +42,11 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartOutput;
 import org.jboss.resteasy.plugins.providers.multipart.OutputPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
 import com.qmino.miredot.annotations.ReturnType;
 
+@Controller
 @Path("/database")
 public class DatabaseEndpoint extends AbstractEndpoint {
 	private final Logger logger = LoggerFactory.getLogger(DatabaseEndpoint.class);

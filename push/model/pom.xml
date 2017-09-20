@@ -24,7 +24,7 @@
     </parent>
 
     <artifactId>unifiedpush-push-model</artifactId>
-    <name>UnifiedPush Push Message Model</name>
+    <name>AeroBase Push Message Model</name>
 
     <dependencies>
         <dependency>

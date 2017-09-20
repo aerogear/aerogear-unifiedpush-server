@@ -4,7 +4,9 @@ var upsServices = angular.module('upsConsole');
 
 upsServices.factory('messageSenderEndpoint', function ($resource, apiPrefix) {
   return function ( applicationID, masterSecret ) {
-    return $resource( apiPrefix + 'rest/sender', {}, {
+    var url = apiPrefix + 'rest/sender';
+    var paramDefaults = {};
+    var actions = {
       send: {
         method: 'POST',
         headers: {
@@ -12,6 +14,8 @@ upsServices.factory('messageSenderEndpoint', function ($resource, apiPrefix) {
           'Authorization': 'Basic ' + btoa(applicationID + ':' + masterSecret)
         }
       }
-    });
+    };
+
+    return $resource(url, paramDefaults, actions);
   };
 });

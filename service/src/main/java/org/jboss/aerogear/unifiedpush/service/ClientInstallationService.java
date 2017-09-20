@@ -37,7 +37,6 @@ public interface ClientInstallationService {
      */
     void addInstallation(Variant variant, Installation installation);
 
-    void addInstallationSynchronously(Variant variant, Installation entity);
     /**
      * Add new Installations objects, for importing devices on the database.
      *
@@ -45,8 +44,6 @@ public interface ClientInstallationService {
      * @param installations list of installations
      */
     void addInstallations(Variant variant, List<Installation> installations);
-
-    void addInstallationsSynchronously(Variant variant, List<Installation> installations);
 
     /**
      * Performs an update/merge on the given entity.
@@ -110,8 +107,6 @@ public interface ClientInstallationService {
      */
     void removeInstallationForVariantByDeviceToken(String variantID, String deviceToken);
 
-    void removeInstallationForVariantByDeviceTokenSynchronously(String variantID, String deviceToken);
-
     /**
      * Used for "Device Registration":
      *
@@ -162,4 +157,6 @@ public interface ClientInstallationService {
     ResultsStream.QueryBuilder<String> findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, int maxResults, String lastTokenFromPreviousBatch);
 
     Variant associateInstallation(Installation installation, Variant currentVariant);
+
+    long getNumberOfDevicesForVariantID(String variantId);
 }

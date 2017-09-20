@@ -7,13 +7,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
-import javax.interceptor.Interceptors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -26,14 +19,11 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
-import org.jboss.aerogear.unifiedpush.spring.SpringContextInterceptor;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@Stateless
-@Interceptors(SpringContextInterceptor.class)
-@TransactionManagement(TransactionManagementType.BEAN)
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@Service
 public class DocumentServiceImpl implements DocumentService {
 
 	/**

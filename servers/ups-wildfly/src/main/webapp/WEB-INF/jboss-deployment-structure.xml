@@ -1,8 +1,11 @@
 <jboss-deployment-structure>
-    <deployment>
-        <dependencies>
-            <module name="org.jboss.xnio"/>
-            <module name="org.infinispan"/>
-        </dependencies>
-    </deployment>
+	<deployment>
+		<dependencies>
+			<module name="org.jboss.xnio" />
+			<module name="org.infinispan" />
+		</dependencies>
+		<exclude-subsystems>
+			<subsystem name="weld" />
+		</exclude-subsystems>
+	</deployment>
 </jboss-deployment-structure>

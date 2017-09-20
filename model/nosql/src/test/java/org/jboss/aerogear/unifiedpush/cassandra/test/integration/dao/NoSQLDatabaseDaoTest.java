@@ -8,7 +8,6 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.model.Database;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DatabaseQueryKey;
 import org.jboss.aerogear.unifiedpush.cassandra.test.integration.FixedKeyspaceCreatingIntegrationTest;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +25,6 @@ public class NoSQLDatabaseDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 	@Autowired
 	private CacheManager cacheManager;
 
-	@Before
-	public void setupTemplate() {
-		execute("cassandra-test-cql-dataload.cql", this.keyspace);
-	}
 
 	@Test
 	public void testDatabaseCache() {

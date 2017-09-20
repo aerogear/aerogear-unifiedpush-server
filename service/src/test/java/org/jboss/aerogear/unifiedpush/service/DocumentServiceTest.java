@@ -24,17 +24,16 @@ import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
-import org.jboss.aerogear.unifiedpush.service.wrap.Wrapper;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
-import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
-import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.datastax.driver.core.utils.UUIDs;
 
-public class DocumentServiceTest extends AbstractBaseServiceTest {
+public class DocumentServiceTest extends AbstractCassandraServiceTest {
 	private static final String DEFAULT_DEVICE_TOKEN = "c5106a4e97ecc8b8ab8448c2ebccbfa25938c0f9a631f96eb2dd5f16f0bedc40";
 	private static final String DEFAULT_DEVICE_ALIAS = "17327572923";
 	private static final String DEFAULT_DEVICE_DATABASE = "TEST";
@@ -54,8 +53,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	@Inject
 	private AliasService aliasService;
 	@Inject
-	@Wrapper
-	private ConfigurationService configuration;
+	private IConfigurationService configuration;
 
 	@Before
 	public void cleanup() {
@@ -68,7 +66,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void saveDocumentTest() {
 		System.setProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION, "true");
 
@@ -84,7 +82,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 			Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 			Assert.assertTrue(variant.getVariantID().equals(DEFAULT_VARIENT_ID));
 
-			installationService.addInstallationSynchronously(variant, iosInstallation);
+			installationService.addInstallation(variant, iosInstallation);
 
 			Installation inst = installationService.findById(iosInstallation.getId());
 			Assert.assertTrue(inst != null && inst.isEnabled() == false);
@@ -117,7 +115,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void lastUpdatedDocumentTest() {
 		saveDocumentTest();
 
@@ -141,7 +139,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void saveGlobalDocumentTest() {
 		PushApplication pushApplication = applicationService.findByVariantID(DEFAULT_VARIENT_ID);
 
@@ -158,7 +156,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void saveDocumentWithoutVerificationModeTest() {
 		// Prepare installation
 		Installation iosInstallation = new Installation();
@@ -171,7 +169,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 		Assert.assertTrue(variant.getVariantID().equals(DEFAULT_VARIENT_ID));
 
-		installationService.addInstallationSynchronously(variant, iosInstallation);
+		installationService.addInstallation(variant, iosInstallation);
 
 		Installation inst = installationService.findById(iosInstallation.getId());
 		Assert.assertTrue(inst != null && inst.isEnabled() == true);
@@ -191,7 +189,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void saveDocumentOverwriteTest() {
 		// Prepare installation
 		Installation iosInstallation = new Installation();
@@ -204,7 +202,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 		Assert.assertTrue(variant.getVariantID().equals(DEFAULT_VARIENT_ID));
 
-		installationService.addInstallationSynchronously(variant, iosInstallation);
+		installationService.addInstallation(variant, iosInstallation);
 
 		Installation inst = installationService.findById(iosInstallation.getId());
 		Assert.assertTrue(inst != null && inst.isEnabled());
@@ -232,7 +230,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void testFindLatestDocumentsForApplication() {
 		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 		PushApplication pushApp = applicationService.findByVariantID(variant.getVariantID());
@@ -253,7 +251,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void testNullAliasDocument() {
 		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 		PushApplication pushApp = applicationService.findByVariantID(variant.getVariantID());
@@ -271,7 +269,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void testNullDocumentIds() {
 		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 		PushApplication pushApp = applicationService.findByVariantID(variant.getVariantID());
@@ -292,7 +290,7 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void testBadPhoneNumberDocument() {
 		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 		PushApplication pushApp = applicationService.findByVariantID(variant.getVariantID());
@@ -300,7 +298,12 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 		String salias1 = "9720525679037170105113811";
 		String salias2 = "9720521550826170105113811";
 
-		aliasService.syncAliases(pushApp, Arrays.asList(salias1, salias2), false);
+		List<Alias> aliases = new ArrayList<>();
+		UUID pushAppId = UUID.fromString(pushApp.getPushApplicationID());
+		aliases.add(new Alias(pushAppId, UUIDs.timeBased(), salias1));
+		aliases.add(new Alias(pushAppId, UUIDs.timeBased(), salias2));
+
+		aliasService.addAll(pushApp, aliases, false);
 
 		// Reload aliases
 		Alias alias1 = aliasService.find(pushApp.getPushApplicationID(), salias1);
@@ -316,15 +319,20 @@ public class DocumentServiceTest extends AbstractBaseServiceTest {
 	}
 
 	@Test
-	@Transactional(TransactionMode.ROLLBACK)
+	@Transactional
 	public void testDocumentsWithId() {
 		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 		PushApplication pushApp = applicationService.findByVariantID(variant.getVariantID());
 		String aliasstr1 = "9720525679037170105113810";
 		String aliasstr2 = "9720521550826170105113810";
 
+		List<Alias> aliases = new ArrayList<>();
+		UUID pushAppId = UUID.fromString(pushApp.getPushApplicationID());
+		aliases.add(new Alias(pushAppId, UUIDs.timeBased(), aliasstr1));
+		aliases.add(new Alias(pushAppId, UUIDs.timeBased(), aliasstr2));
+
 		// Create aliases using legacy code
-		List<Alias> list = aliasService.syncAliases(pushApp, Arrays.asList(aliasstr1, aliasstr2), false);
+		List<Alias> list = aliasService.addAll(pushApp, aliases, false);
 		Assert.assertTrue(list.size() == 2);
 
 		// Re-save aliases using the same numbers

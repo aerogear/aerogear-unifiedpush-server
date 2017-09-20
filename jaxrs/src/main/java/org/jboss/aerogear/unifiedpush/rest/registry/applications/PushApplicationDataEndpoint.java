@@ -39,9 +39,11 @@ import org.jboss.resteasy.annotations.providers.multipart.PartType;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
 import com.qmino.miredot.annotations.ReturnType;
 
+@Controller
 @Path("/applicationsData")
 @Deprecated
 public class PushApplicationDataEndpoint extends AbstractBaseEndpoint {

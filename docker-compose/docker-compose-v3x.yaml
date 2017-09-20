@@ -1,0 +1,39 @@
+version: "3.2"
+
+services:
+  unifiedpushDB:
+    image: mysql:5.5
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE_UNIFIEDPUSH}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 4306:3306
+  keycloakDB:
+    image: mysql:5.5
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE_KEYCLOAK}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 4406:3306
+  unifiedpushserver:
+    image: aerogear/unifiedpush-wildfly-dev
+    environment:
+        UNIFIEDPUSH_PORT_3306_TCP_ADDR: ${MYSQL_ADDR_UNIFIEDPUSH}
+        UNIFIEDPUSH_ENV_MYSQL_USER: ${MYSQL_USER}
+        UNIFIEDPUSH_ENV_MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        UNIFIEDPUSH_PORT_3306_TCP_PORT: ${MYSQL_PORT_3306_TCP_PORT}
+        UNIFIEDPUSH_ENV_MYSQL_DATABASE: ${MYSQL_DATABASE_UNIFIEDPUSH}
+        KEYCLOAK_PORT_3306_TCP_ADDR: ${MYSQL_ADDR_KEYCLOAK}
+        KEYCLOAK_ENV_MYSQL_USER: ${MYSQL_USER}
+        KEYCLOAK_ENV_MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        KEYCLOAK_PORT_3306_TCP_PORT: ${MYSQL_PORT_3306_TCP_PORT}
+        KEYCLOAK_ENV_MYSQL_DATABASE: ${MYSQL_DATABASE_KEYCLOAK}
+    links:
+      - unifiedpushDB:unifiedpush
+      - keycloakDB:keycloak
+    ports:
+      - 8443:8443

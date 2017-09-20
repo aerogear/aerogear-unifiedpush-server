@@ -13,7 +13,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 
 @Configuration
-@PropertySource(value = { "classpath:default.properties", "file://${aerogear.config}" }, ignoreResourceNotFound = true)
+@PropertySource(name = "environment", value = { "classpath:default.properties", "file://${aerobase.config.dir}/environment.properties" }, ignoreResourceNotFound = true)
 public class ConfigurationEnvironment {
 
 	public static final String PROPERTIES_DOCUMENTS_QUERY_DAYS = "aerogear.config.documents.query.period.days";

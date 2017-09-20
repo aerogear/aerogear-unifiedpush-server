@@ -21,62 +21,55 @@ import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.message.SenderConfig;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushSenderArchive;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.aerogear.unifiedpush.service.AbstractNoCassandraServiceTest;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
 
+import reactor.core.publisher.WorkQueueProcessor;
 
-@RunWith(Arquillian.class)
-public class TestMessageHolderWithTokens {
+@ContextConfiguration(classes = { SenderConfig.class })
+public class TestMessageHolderWithTokens extends AbstractNoCassandraServiceTest {
 
-    @Deployment
-    public static WebArchive archive() {
-		return UnifiedPushSenderArchive.forTestClass(TestMessageHolderWithTokens.class) //
-				.withMessaging() //
-				.withMessageDrivenBeans() //
-				.as(WebArchive.class); //
-	}
 
     private UnifiedPushMessage message;
-    private PushMessageInformation information;
+    private FlatPushMessageInformation information;
     private Variant variant;
     private Collection<String> deviceTokens;
     private static CountDownLatch delivered;
 
-    @Inject @DispatchToQueue
-    private Event<MessageHolderWithTokens> event;
+	@Inject
+	private WorkQueueProcessor<MessageHolderWithTokens> event;
 
     @Before
     public void setUp() {
-        information = new PushMessageInformation();
+        information = new FlatPushMessageInformation();
         message = new UnifiedPushMessage();
         deviceTokens = new ArrayList<>();
         delivered = new CountDownLatch(5);
+
+        if (event.downstreamCount() == 0)
+        	event.doOnNext(s -> observeMessageHolderWithVariants(s)).subscribe();
     }
 
     @Test
     public void test() throws InterruptedException {
         variant = new AndroidVariant();
         for (int i = 0; i < 5; i++) {
-            event.fire(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
+            event.onNext(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
         }
         delivered.await(5, TimeUnit.SECONDS);
     }
 
-    public void observeMessageHolderWithVariants(@Observes @Dequeue MessageHolderWithTokens msg) {
+    public void observeMessageHolderWithVariants(MessageHolderWithTokens msg) {
         delivered.countDown();
     }
 

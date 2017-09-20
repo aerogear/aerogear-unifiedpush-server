@@ -20,6 +20,7 @@ import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
+import org.springframework.stereotype.Controller;
 
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
@@ -34,6 +35,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+@Controller
 @Path("/applications/{pushAppID}/windows{type}")
 public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
 
@@ -77,7 +79,7 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         // store the Windows variant:
-        variantService.addVariant(windowsVariant);
+        variantService.addVariant(windowsVariant, extractUsername());
         // add iOS variant, and merge:
         pushAppService.addVariant(pushApp, windowsVariant);
 
