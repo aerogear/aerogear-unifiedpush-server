@@ -150,6 +150,26 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <resourceBundles>
+                                <resourceBundle>org.apache:apache-jar-resource-bundle:1.4</resourceBundle>
+                            </resourceBundles>
+                            <properties>
+                                <addLicense>true</addLicense>
+                            </properties>
+                            <excludeScope>provided</excludeScope>
+                            <excludeArtifactIds>servlet-api,jstl</excludeArtifactIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
         </plugins>
         <pluginManagement>
