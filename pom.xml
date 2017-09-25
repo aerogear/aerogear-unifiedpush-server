@@ -159,7 +159,7 @@
                         </goals>
                         <configuration>
                             <resourceBundles>
-                                <resourceBundle>org.aerogear:aerogear-jar-resource-bundle:1.0.0-SNAPSHOT</resourceBundle>
+                                <resourceBundle>org.aerogear:aerogear-jar-resource-bundle:1.0.0</resourceBundle>
                             </resourceBundles>
                             <properties>
                                 <addLicense>true</addLicense>
