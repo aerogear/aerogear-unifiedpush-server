@@ -150,6 +150,26 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <resourceBundles>
+                                <resourceBundle>org.aerogear:aerogear-jar-resource-bundle:1.0.0</resourceBundle>
+                            </resourceBundles>
+                            <properties>
+                                <addLicense>true</addLicense>
+                            </properties>
+                            <excludeScope>provided</excludeScope>
+                            <excludeArtifactIds>servlet-api,jstl</excludeArtifactIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
         </plugins>
         <pluginManagement>
