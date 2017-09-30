@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.service;
 import org.cassandraunit.spring.CassandraDataSet;
 import org.cassandraunit.spring.EmbeddedCassandra;
 import org.jboss.aerogear.unifiedpush.cassandra.CassandraConfig;
+import org.jboss.aerogear.unifiedpush.spring.ServiceCacheConfig;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.TestExecutionListeners.MergeMode;
@@ -26,7 +27,7 @@ import org.springframework.test.context.TestExecutionListeners.MergeMode;
 @TestExecutionListeners(listeners = CassandraUnitTestClassExecutionListener.class, mergeMode = MergeMode.MERGE_WITH_DEFAULTS)
 @CassandraDataSet(keyspace = "unifiedpush_server", value = "cassandra-test-cql-dataload.cql")
 @EmbeddedCassandra
-@ContextConfiguration(classes = { CassandraConfig.class })
+@ContextConfiguration(classes = { CassandraConfig.class, ServiceCacheConfig.class })
 public abstract class AbstractCassandraServiceTest extends AbstractBaseServiceTest {
 
 }

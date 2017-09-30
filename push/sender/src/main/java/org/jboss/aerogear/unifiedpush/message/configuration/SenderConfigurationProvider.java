@@ -17,9 +17,10 @@
 package org.jboss.aerogear.unifiedpush.message.configuration;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,6 +45,9 @@ import org.springframework.context.annotation.Configuration;
 public class SenderConfigurationProvider {
 
     private final Logger logger = LoggerFactory.getLogger(SenderConfigurationProvider.class);
+
+	@Autowired
+	private ConfigurationEnvironment config;
 
     @Qualifier(VariantType.ANDROIDQ)
     @Bean
@@ -111,9 +115,9 @@ public class SenderConfigurationProvider {
     private <T> T getProperty(VariantType type, ConfigurationProperty property, T defaultValue, Class<T> expectedType) {
         String systemPropertyName = getSystemPropertyName(type, property);
         if (expectedType == String.class) {
-            return (T) ConfigurationUtils.tryGetProperty(systemPropertyName, (String) defaultValue);
+            return (T) config.getProperty(systemPropertyName, (String) defaultValue);
         } else if (expectedType == Integer.class) {
-            return (T) ConfigurationUtils.tryGetIntegerProperty(systemPropertyName, (Integer) defaultValue);
+        	return (T) config.getProperty(systemPropertyName, (Integer) defaultValue);
         } else {
             throw new IllegalStateException("Unexpected type: " + expectedType);
         }

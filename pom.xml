@@ -506,8 +506,8 @@
 		<mysql.version>5.1.36</mysql.version>
 		<fasterxml.version>2.9.0</fasterxml.version>
 		<wildfly.version>10.1.0.Final</wildfly.version>
-		<springframework.version>5.0.0.RC4</springframework.version>
-		<reactor-core.version>3.1.0.RC1</reactor-core.version>
+		<springframework.version>5.0.0.RELEASE</springframework.version>
+		<reactor-core.version>3.1.0.RELEASE</reactor-core.version>
 
 		<!-- Cassandra related properties -->
 		<failsafe.version>2.19.1</failsafe.version>

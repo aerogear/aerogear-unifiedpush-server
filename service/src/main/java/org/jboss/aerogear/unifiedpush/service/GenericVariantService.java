@@ -46,6 +46,7 @@ public interface GenericVariantService {
      *
      * @return the variant
      */
+    @Cacheable(value = GenericVariantService.CACHE_NAME, unless = "#result == null")
     Variant findByVariantID(String variantID);
 
     /**
@@ -54,7 +55,6 @@ public interface GenericVariantService {
      * @param clientId keycloak client id
      * @return the variant
      */
-    @Cacheable(value = GenericVariantService.CACHE_NAME, unless = "#result == null")
     Variant findVariantByKeycloakClientID(String clientId);
 
     /**

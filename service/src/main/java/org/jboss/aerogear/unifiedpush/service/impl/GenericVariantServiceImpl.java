@@ -55,15 +55,27 @@ public class GenericVariantServiceImpl implements GenericVariantService {
 		return variantDao.findByVariantID(variantID);
 	}
 
+	/*
+	 * Cacheable service
+	 */
+	private Variant find(String variantID) {
+		Cache cache = cacheManager.getCache(GenericVariantService.CACHE_NAME);
+		Variant var = (Variant) cache.get(variantID).get();
+		if (var == null)
+			cache.put(variantID, findByVariantID(variantID));
+		return var;
+	}
+
 	@Override
 	public Variant findVariantByKeycloakClientID(String clientId) {
 		Variant variant = null;
 
+		// Cacheable service
 		Iterable<String> clientVariants = keycloakService.getVariantIdsFromClient(clientId);
 
 		if (clientVariants != null) {
 			for (String clientVariantId : clientVariants) {
-				Variant clientVariant = findByVariantID(clientVariantId);
+				Variant clientVariant = find(clientVariantId);
 				if (clientVariant != null && (clientVariant.getType() == VariantType.SIMPLE_PUSH)) {
 					// TODO - Support case of several Variants.
 					variant = clientVariant;
@@ -83,6 +95,7 @@ public class GenericVariantServiceImpl implements GenericVariantService {
 	@Override
 	public void updateVariant(Variant variant) {
 		variantDao.update(variant);
+		evict(variant.getId());
 	}
 
 	@Override

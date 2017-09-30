@@ -21,9 +21,12 @@ import java.util.Map;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
+import org.springframework.cache.annotation.Cacheable;
 
 public interface PushApplicationService {
-
+	public static final String APPLICATION_CACHE_BY_ID = "application-by-id";
+	public static final String APPLICATION_CACHE_BY_VAR_ID = "application-by-variant-id";
+	public static final String APPLICATION_CACHE_BY_NAME = "application-by-name";
     /**
      * Store a new PushApplication object on the database.
      *
@@ -45,6 +48,7 @@ public interface PushApplicationService {
      *
      * @return push application entity
      */
+    @Cacheable(value = PushApplicationService.APPLICATION_CACHE_BY_ID, unless = "#result == null")
     PushApplication findByPushApplicationID(String pushApplicationID);
 
     /**
@@ -64,7 +68,9 @@ public interface PushApplicationService {
 
     Map<String, Long> countInstallationsByType(String pushApplicationID);
 
+    @Cacheable(value = PushApplicationService.APPLICATION_CACHE_BY_VAR_ID, unless = "#result == null")
     PushApplication findByVariantID(String variantID);
 
+    @Cacheable(value = PushApplicationService.APPLICATION_CACHE_BY_NAME, unless = "#result == null")
     PushApplication findByName(String name);
 }

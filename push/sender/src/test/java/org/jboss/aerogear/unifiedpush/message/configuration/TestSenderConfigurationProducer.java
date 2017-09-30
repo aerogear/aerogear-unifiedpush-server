@@ -25,9 +25,14 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.BeanFactoryAnnotationUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration(classes = { SenderConfig.class })
+@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
+//When running with maven we can't ensure no other test was already
+//initialized spring context with System.setProperty
 public class TestSenderConfigurationProducer extends AbstractNoCassandraServiceTest {
 
 	@Autowired

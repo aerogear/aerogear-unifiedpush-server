@@ -48,6 +48,10 @@ public class ConfigurationEnvironment {
 		return env.getProperty(key, Boolean.class, defaultValue);
 	}
 
+	public Integer getProperty(String key, Integer defaultValue) {
+		return Integer.valueOf(env.getProperty(key, defaultValue.toString()));
+	}
+
 	/**
 	 * Property placeholder configurer needed to process @Value annotations
 	 */
