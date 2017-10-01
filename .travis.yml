@@ -5,8 +5,9 @@ cache:
   directories:
     - $HOME/.m2
 
-env:
-  - JDK=openjdk8
+jdk:
+  - openjdk8
+  - oraclejdk8
 dist: trusty
 
 branches:

@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * @Async implementation wrapper.
+ * Async implementation wrapper.
  */
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)

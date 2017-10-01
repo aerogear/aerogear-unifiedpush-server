@@ -29,6 +29,7 @@ public interface GenericVariantService {
      * Store a new Variant object on the database.
      *
      * @param variant the variant
+     * @param user logged-in user
      */
     void addVariant(Variant variant, LoggedInUser user);
 

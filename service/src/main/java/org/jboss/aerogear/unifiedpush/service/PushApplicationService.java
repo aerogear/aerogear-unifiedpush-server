@@ -31,6 +31,7 @@ public interface PushApplicationService {
      * Store a new PushApplication object on the database.
      *
      * @param pushApp the push application object
+     * @param user logged-in user
      */
     void addPushApplication(PushApplication pushApp, LoggedInUser user);
 
