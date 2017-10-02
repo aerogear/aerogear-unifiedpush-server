@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,9 +61,17 @@ public class GenericVariantServiceImpl implements GenericVariantService {
 	 */
 	private Variant find(String variantID) {
 		Cache cache = cacheManager.getCache(GenericVariantService.CACHE_NAME);
-		Variant var = (Variant) cache.get(variantID).get();
-		if (var == null)
-			cache.put(variantID, findByVariantID(variantID));
+
+		// Try to hit cache
+		ValueWrapper cacheVar = cache.get(variantID);
+		if (cacheVar != null)
+			return (Variant) cacheVar.get();
+
+		Variant var = findByVariantID(variantID);
+
+		if (var != null)
+			cache.put(variantID, var);
+
 		return var;
 	}
 
