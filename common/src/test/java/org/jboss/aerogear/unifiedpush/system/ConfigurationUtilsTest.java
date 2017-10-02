@@ -17,16 +17,58 @@
 package org.jboss.aerogear.unifiedpush.system;
 
 
-import org.junit.After;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.After;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ConfigurationEnvironment.class })
+@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
 public class ConfigurationUtilsTest {
-
     private static final String TEST_PROPERTY_NAME = "ConfigurationUtilsTestProperty";
+
+	@Autowired
+	private ConfigurationEnvironment environment;
+
+	static {
+		String dirPath = System.getProperty("java.io.tmpdir") + File.separator + ConfigurationUtilsTest.class.getName();
+
+		List<String> lines = new ArrayList<>();
+		lines.add(ConfigurationEnvironment.PROP_MASTER_VERIFICATION + "=123456");
+
+		try {
+			Files.deleteIfExists(Paths.get(dirPath + File.separator + "environment.properties"));
+
+			Files.createDirectories(Paths.get(dirPath));
+			Files.write(Paths.get(dirPath + File.separator + "environment.properties"), lines, StandardOpenOption.CREATE_NEW);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		System.setProperty("aerobase.config.dir", dirPath);
+	}
+
+	@Test
+	public void testConfig() {
+		assertEquals(environment.getProperties().get(ConfigurationEnvironment.PROP_MASTER_VERIFICATION), "123456");
+	}
 
     @After
     public void cleanupTestProperty() {

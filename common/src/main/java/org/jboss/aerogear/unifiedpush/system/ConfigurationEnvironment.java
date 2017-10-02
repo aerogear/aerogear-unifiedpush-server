@@ -1,20 +1,25 @@
 package org.jboss.aerogear.unifiedpush.system;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.AbstractEnvironment;
+import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.core.env.MapPropertySource;
 
 @Configuration
-@PropertySource(name = "environment", value = { "classpath:default.properties", "file://${aerobase.config.dir}/environment.properties" }, ignoreResourceNotFound = true)
+@PropertySource(name = "environment", value = { "classpath:default.properties",
+		"file://${aerobase.config.dir}/environment.properties" }, ignoreResourceNotFound = true)
 public class ConfigurationEnvironment {
+	private final Logger logger = LoggerFactory.getLogger(ConfigurationEnvironment.class);
 
 	public static final String PROPERTIES_DOCUMENTS_QUERY_DAYS = "aerogear.config.documents.query.period.days";
 	public static final String PROP_ENABLE_VERIFICATION = "aerogear.config.verification.enable_verification";
@@ -75,8 +80,12 @@ public class ConfigurationEnvironment {
 				.getPropertySources().iterator(); it.hasNext();) {
 			org.springframework.core.env.PropertySource<?> propertySource = (org.springframework.core.env.PropertySource<?>) it
 					.next();
-			if (propertySource instanceof MapPropertySource) {
-				properties.putAll(((MapPropertySource) propertySource).getSource());
+			if (propertySource instanceof EnumerablePropertySource) {
+				Arrays.stream(((EnumerablePropertySource<?>) propertySource).getPropertyNames())
+						.forEach(prop -> properties.put(prop, propertySource.getProperty(prop)));
+			} else {
+				logger.warn("propertySource: " + propertySource.getName()
+						+ " can't be processed (NOT derived from EnumerablePropertySource)!");
 			}
 		}
 
