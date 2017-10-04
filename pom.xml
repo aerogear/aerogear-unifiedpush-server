@@ -191,7 +191,7 @@
         <admin-ui.version>1.2.6</admin-ui.version>
 
         <kafka.clients.version>0.10.2.1</kafka.clients.version>
-        <kafka.cdi.version>0.0.9</kafka.cdi.version>
+        <kafka.cdi.version>0.0.10</kafka.cdi.version>
         <debezium.version>0.5.1</debezium.version>
 
         <!-- Override versions of AeroGear BOMs-->
