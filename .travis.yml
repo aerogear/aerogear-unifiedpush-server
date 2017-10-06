@@ -12,6 +12,12 @@ jdk:
   - oraclejdk8
   - oraclejdk9
 
+addons:
+  sonarcloud:
+    organization: "aerogear"
+    token:
+      secure: "G9JZpmpuYHSiPBnDH5SWRAomlpTi0+eBcTDKZT/ymGuR6oOR0OX+u7wXUGVb998MMt81VIjDz912sJJykFgzlx2THz8VHeUOu8QTbTBDbU/aNKJ+N7H52a5PDMxh2rPEs810JoyC7obgyrLSxyj/s2/xmJcnLTcjdBfP5hsxSBk="
+
 matrix:
   allow_failures:
     - jdk: oraclejdk9
@@ -27,4 +33,7 @@ branches:
 before_install: 
   - "npm install -g grunt-cli bower@1.3.9"
 
-script: "mvn verify javadoc:jar"
+script: 
+- mvn verify javadoc:jar
+- mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
+
