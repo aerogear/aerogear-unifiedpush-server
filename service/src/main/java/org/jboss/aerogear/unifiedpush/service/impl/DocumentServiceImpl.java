@@ -12,12 +12,12 @@ import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
-import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.DocumentDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.document.MessagePayload;
+import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +25,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
-
-	/**
-	 * We can't mixup EJB and spring beans. TODO - Change AliasDao To
-	 * AliasService when mixing is supported.
-	 */
 	@Autowired
 	private DocumentDao<DocumentContent, DocumentKey> documentDao;
 	@Autowired
-	private AliasDao aliasDao;
+	private AliasService aliasService;
 	@Autowired
 	private ConfigurationEnvironment configuration;
 
@@ -58,22 +53,18 @@ public class DocumentServiceImpl implements DocumentService {
 	}
 
 	@Override
-	public String getLatestFromAlias(PushApplication pushApplication, String alias, String database, String id) {
-		DocumentMetadata metadata = new DocumentMetadata(pushApplication.getPushApplicationID(), database,
-				getAlias(pushApplication.getPushApplicationID(), alias));
-
+	public DocumentContent findLatest(DocumentMetadata metadata, String id) {
 		DocumentContent document = (DocumentContent) documentDao.findOne(new DocumentKey(metadata), id);
 
 		if (document != null)
-			return document.getContent();
+			return document;
 
 		return null;
 	}
 
 	@Override
-	public List<String> getLatestFromAliases(PushApplication pushApplication, String database, String id) {
-		List<String> contents = new ArrayList<>();
-		List<Alias> aliases = aliasDao.findAll(UUID.fromString(pushApplication.getPushApplicationID()));
+	public List<DocumentContent> findLatest(PushApplication pushApplication, String database, String id, List<Alias> aliases) {
+		List<DocumentContent> contents = new ArrayList<>();
 
 		DocumentMetadata metadata = new DocumentMetadata(pushApplication.getPushApplicationID(), database, null);
 
@@ -82,7 +73,7 @@ public class DocumentServiceImpl implements DocumentService {
 
 		if (docs != null) {
 			docs.forEach((doc) -> {
-				contents.add(doc.getContent());
+				contents.add(doc);
 			});
 		}
 
@@ -130,7 +121,7 @@ public class DocumentServiceImpl implements DocumentService {
 		if (StringUtils.isEmpty(alias))
 			return null;
 
-		return aliasDao.findByAlias(pushApplicationId == null ? null : UUID.fromString(pushApplicationId), alias);
+		return aliasService.find(pushApplicationId, alias);
 	}
 
 }

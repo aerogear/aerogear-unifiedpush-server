@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +28,7 @@ import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
 import org.junit.Test;
 import org.springframework.transaction.annotation.Transactional;
@@ -171,9 +173,9 @@ public class PushApplicationServiceTest extends AbstractCassandraServiceTest {
 		documentService.save(new DocumentMetadata(pa.getPushApplicationID(), "TASKS", alias), "{SIMPLE}", "1");
 
 		// Query document for alias
-		String content = documentService.getLatestFromAlias(pa, alias.getEmail(), "TASKS", "1");
-		assertTrue(content.equals("{SIMPLE}"));
-		List<String> documents = documentService.getLatestFromAliases(pa, "TASKS", "1");
+		DocumentContent content = documentService.findLatest(getMetadata(pa, alias.getEmail(), "TASKS"), "1");
+		assertTrue(content.getContent().equals("{SIMPLE}"));
+		List<DocumentContent> documents = documentService.findLatest(pa, "TASKS", "1", Arrays.asList(alias));
 		assertTrue(documents.size() == 1);
 
 		// Recreate alias
@@ -181,8 +183,8 @@ public class PushApplicationServiceTest extends AbstractCassandraServiceTest {
 		assertTrue(aliasService.find(pa.getPushApplicationID(), alias.getEmail()) != null);
 
 		pushApplicationService.removePushApplication(pa);
-		documents = documentService.getLatestFromAliases(pa, "TASKS", "1");
-		assertTrue(documents.size() == 0);
+		documents = documentService.findLatest(pa, "TASKS", "1", Arrays.asList(alias));
+		assertTrue(documents.size() == 1);
 		assertTrue(aliasService.find(pa.getPushApplicationID(), alias.getEmail()) == null);
 	}
 

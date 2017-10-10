@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -94,8 +93,8 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 			MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
 					"{TEST JSON}", DEFAULT_DEVICE_DATABASE);
 			documentService.save(pushApplication, msgPayload, false);
-			String document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
-					DEFAULT_DEVICE_DATABASE, null);
+			DocumentContent document = documentService.findLatest(getMetadata(pushApplication, DEFAULT_DEVICE_ALIAS,
+					DEFAULT_DEVICE_DATABASE), null);
 
 			// Enable device
 			String code = verificationService.initiateDeviceVerification(inst, variant);
@@ -105,10 +104,10 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 
 			// Re-save device
 			documentService.save(pushApplication, msgPayload, false);
-			document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
-					DEFAULT_DEVICE_DATABASE, null);
+			document = documentService.findLatest(getMetadata(pushApplication, DEFAULT_DEVICE_ALIAS,
+					DEFAULT_DEVICE_DATABASE), null);
 
-			Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
+			Assert.assertTrue(document != null && document.getContent().equals("{TEST JSON}"));
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());
 		}
@@ -132,10 +131,10 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 
 		// Save alias should return without saving, device is not enabled.
 		documentService.save(pushApplication, msgPayload, false);
-		String document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
-				DEFAULT_DEVICE_DATABASE, null);
+		DocumentContent document = documentService
+				.findLatest(getMetadata(pushApplication, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_DATABASE), null);
 
-		Assert.assertTrue(document != null && document.equals("{TEST JSON NEWEST}"));
+		Assert.assertTrue(document != null && document.getContent().equals("{TEST JSON NEWEST}"));
 	}
 
 	@Test
@@ -149,10 +148,10 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 
 		// Save alias should return without saving, device is not enabled.
 		documentService.save(pushApplication, msgPayload, false);
-		String document = documentService.getLatestFromAlias(pushApplication, DocumentMetadata.NULL_ALIAS.toString(),
-				DEFAULT_DEVICE_DATABASE, null);
+		DocumentContent document = documentService.findLatest(
+				getMetadata(pushApplication, DocumentMetadata.NULL_ALIAS.toString(), DEFAULT_DEVICE_DATABASE), null);
 
-		Assert.assertTrue(document != null && document.equals("{TEST JSON NULL_ALIAS}"));
+		Assert.assertTrue(document != null && document.getContent().equals("{TEST JSON NULL_ALIAS}"));
 	}
 
 	@Test
@@ -182,10 +181,10 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 
 		// Save alias should return without saving, divice is not emabled.
 		documentService.save(pushApplication, msgPayload, false);
-		String document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
-				DEFAULT_DEVICE_DATABASE, null);
+		DocumentContent document = documentService
+				.findLatest(getMetadata(pushApplication, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_DATABASE), null);
 
-		Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
+		Assert.assertTrue(document != null && document.getContent().equals("{TEST JSON}"));
 	}
 
 	@Test
@@ -215,18 +214,18 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 
 		// Save once
 		documentService.save(pushApplication, msgPayload, true);
-		String document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS,
-				DEFAULT_DEVICE_DATABASE, null);
+		DocumentContent document = documentService
+				.findLatest(getMetadata(pushApplication, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_DATABASE), null);
 
-		Assert.assertTrue(document != null && document.equals("{TEST JSON}"));
+		Assert.assertTrue(document != null && document.getContent().equals("{TEST JSON}"));
 
 		msgPayload.setPayload("{TEST JSON 2}");
 		// save 2nd time and check that it was overwritten
 		documentService.save(pushApplication, msgPayload, true);
-		document = documentService.getLatestFromAlias(pushApplication, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_DATABASE,
-				null);
+		document = documentService
+				.findLatest(getMetadata(pushApplication, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_DATABASE), null);
 
-		Assert.assertTrue(document != null && document.equals("{TEST JSON 2}"));
+		Assert.assertTrue(document != null && document.getContent().equals("{TEST JSON 2}"));
 	}
 
 	@Test
@@ -246,8 +245,10 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2),
 				"doc2", "test_id");
 
-		List<String> docs = documentService.getLatestFromAliases(pushApp, DEFAULT_DEVICE_DATABASE, "test_id");
-		Assert.assertEquals(new HashSet<>(docs), new HashSet<>(Arrays.asList("doc1", "doc2")));
+		List<DocumentContent> docs = documentService.findLatest(pushApp, DEFAULT_DEVICE_DATABASE, "test_id",
+				Arrays.asList(alias1, alias2));
+		Assert.assertEquals(Arrays.asList(docs.get(0).getContent(), docs.get(1).getContent()),
+				Arrays.asList("doc1", "doc2"));
 	}
 
 	@Test
@@ -264,8 +265,9 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 
 		documentService.save(pushApp, payload, true);
 
-		String latest = documentService.getLatestFromAlias(pushApp, null, DocumentMetadata.NULL_DATABASE, null);
-		Assert.assertTrue(latest != null && latest.equals("{TEST PAYLOAD}"));
+		DocumentContent latest = documentService.findLatest(getMetadata(pushApp, null, DocumentMetadata.NULL_DATABASE),
+				null);
+		Assert.assertTrue(latest != null && latest.getContent().equals("{TEST PAYLOAD}"));
 	}
 
 	@Test
@@ -284,9 +286,10 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 		documentService.save(pushApp, payload1, true);
 		documentService.save(pushApp, payload2, true);
 
-		String latest = documentService.getLatestFromAlias(pushApp, null, DocumentMetadata.NULL_DATABASE, null);
+		DocumentContent latest = documentService.findLatest(getMetadata(pushApp, null, DocumentMetadata.NULL_DATABASE),
+				null);
 
-		Assert.assertTrue(latest != null && latest.equals("{TEST PAYLOAD2}"));
+		Assert.assertTrue(latest != null && latest.getContent().equals("{TEST PAYLOAD2}"));
 	}
 
 	@Test
@@ -314,8 +317,10 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2),
 				"{CONTENT102}", "ID301");
 
-		List<String> docs = documentService.getLatestFromAliases(pushApp, DEFAULT_DEVICE_DATABASE, "ID301");
-		Assert.assertEquals(new HashSet<>(docs), new HashSet<>(Arrays.asList("{CONTENT101}", "{CONTENT102}")));
+		List<DocumentContent> docs = documentService.findLatest(pushApp, DEFAULT_DEVICE_DATABASE, "ID301",
+				Arrays.asList(alias1, alias2));
+		Assert.assertEquals(Arrays.asList(docs.get(0).getContent(), docs.get(1).getContent()),
+				Arrays.asList("{CONTENT101}", "{CONTENT102}"));
 	}
 
 	@Test
@@ -352,11 +357,13 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 		documentService.save(new DocumentMetadata(pushApp.getPushApplicationID(), DEFAULT_DEVICE_DATABASE, alias2),
 				"{CONTENT1000}", "ID2");
 
-		String doc1 = documentService.getLatestFromAlias(pushApp, alias1.getOther(), DEFAULT_DEVICE_DATABASE, "ID1");
-		String doc2 = documentService.getLatestFromAlias(pushApp, alias2.getOther(), DEFAULT_DEVICE_DATABASE, "ID2");
+		DocumentContent doc1 = documentService
+				.findLatest(getMetadata(pushApp, alias1.getOther(), DEFAULT_DEVICE_DATABASE), "ID1");
+		DocumentContent doc2 = documentService
+				.findLatest(getMetadata(pushApp, alias2.getOther(), DEFAULT_DEVICE_DATABASE), "ID2");
 
-		Assert.assertEquals(doc1, "{CONTENT1}");
-		Assert.assertEquals(doc2, "{CONTENT1000}");
+		Assert.assertEquals(doc1.getContent(), "{CONTENT1}");
+		Assert.assertEquals(doc2.getContent(), "{CONTENT1000}");
 	}
 
 	@Test
@@ -374,7 +381,8 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 			DocumentKey key3 = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS", alias1));
 
 			// Create snapshot X+1 (X defaults days) backwards.
-			UUID snapshot = UUIDs.startOf(LocalDateTime.now().minusDays(configuration.getQueryDefaultPeriodInDays() + 1).toInstant(ZoneOffset.UTC).toEpochMilli());
+			UUID snapshot = UUIDs.startOf(LocalDateTime.now().minusDays(configuration.getQueryDefaultPeriodInDays() + 1)
+					.toInstant(ZoneOffset.UTC).toEpochMilli());
 			DocumentKey key4 = new DocumentKey(new DocumentMetadata(pushApplicationId, "STATUS", alias1, snapshot));
 
 			// Create all documents
@@ -389,8 +397,9 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 			Thread.sleep(100);
 
 			// Query 3 documents only
-			Assert.assertTrue(documentService.find(new DocumentMetadata(pushApplicationId, "STATUS", alias1), new QueryOptions())
-					.collect(Collectors.toList()).size() == 3);
+			Assert.assertTrue(
+					documentService.find(new DocumentMetadata(pushApplicationId, "STATUS", alias1), new QueryOptions())
+							.collect(Collectors.toList()).size() == 3);
 
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());

@@ -3,6 +3,7 @@ package org.jboss.aerogear.unifiedpush.service;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
@@ -15,13 +16,13 @@ public interface DocumentService {
 
 	DocumentContent save(DocumentMetadata metadata, String content, String id);
 
-	String getLatestFromAlias(PushApplication pushApplication, String alias, String database, String id);
-
 	void save(PushApplication pushApplication, MessagePayload payload, boolean overwrite);
-
-	List<String> getLatestFromAliases(PushApplication pushApp, String database, String id);
 
 	void delete(String pushApplicationId);
 
+	DocumentContent findLatest(DocumentMetadata metadata, String id);
+
 	Stream<DocumentContent> find(DocumentMetadata metadata, QueryOptions options);
+
+	List<DocumentContent> findLatest(PushApplication pushApp, String database, String id, List<Alias> aliases);
 }
