@@ -29,7 +29,7 @@ import javax.validation.constraints.Size;
 public class PushApplication extends BaseModel {
     private static final long serialVersionUID = 6507691362454032282L;
 
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 255)
     private String name;
 

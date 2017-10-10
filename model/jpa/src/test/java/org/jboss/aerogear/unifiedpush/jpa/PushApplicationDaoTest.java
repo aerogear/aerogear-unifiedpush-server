@@ -24,6 +24,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
@@ -219,5 +220,23 @@ public class PushApplicationDaoTest {
         assertThat(application.getVariants()).isNotEmpty();
         assertThat(application.getVariants().size()).isEqualTo(1);
         assertThat(application.getVariants().iterator().next().getId()).isEqualTo("1");
+    }
+
+    @Test(expected = PersistenceException.class)
+    public void failDuplicatedApplicationName() {
+
+        //when
+        PushApplication application = pushApplicationDao.findByPushApplicationName("Push App 1");
+
+        //then
+        assertThat(application).isNotNull();
+        assertThat(application.getName()).isEqualTo("Push App 1");
+
+        PushApplication application2 = new PushApplication();
+        application2.setId("100");
+        application2.setName(application.getName());
+
+        pushApplicationDao.create(application2);
+        pushApplicationDao.flushAndClear();
     }
 }

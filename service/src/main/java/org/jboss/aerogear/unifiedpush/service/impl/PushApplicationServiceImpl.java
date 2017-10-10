@@ -47,7 +47,8 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 	@Autowired
 	private CacheManager cacheManager;
 
-	public PushApplicationServiceImpl() {}
+	public PushApplicationServiceImpl() {
+	}
 
 	@Override
 	public void addPushApplication(PushApplication pushApp, LoggedInUser user) {

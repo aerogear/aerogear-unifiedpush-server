@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration.DomainMatcher;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -122,8 +123,8 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
 			String domain = conf.getRooturlDomain();
 			String protocol = conf.getRooturlProtocol();
-			clientRepresentation
-					.setRootUrl(protocol + "://" + simpleApplicationName + conf.getRooturlSeparator() + domain);
+			clientRepresentation.setRootUrl(
+					protocol + "://" + simpleApplicationName + conf.getRooturlMatcher().seperator() + domain);
 			clientRepresentation.setRedirectUris(Arrays.asList("/*"));
 			clientRepresentation.setBaseUrl("/");
 
@@ -346,16 +347,16 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	}
 
 	/*
-	 * String domain name and separator and return subdomain as application
-	 * name.
-	 * TODO - Make sure domain separators '-' and '.' and disallowed with application name.
+	 * Strip and return subdomain/domain according to matcher and separator.
+	 * separator character can be either '-' or '.' or '*'; TODO - Make sure
+	 * application name is unique and valid domain.
 	 */
 	public String strip(String fqdn) {
 		String domain = conf.getRooturlDomain();
-		String separator = conf.getRooturlSeparator();
+		DomainMatcher matcher = conf.getRooturlMatcher();
 
 		if (StringUtils.isNotEmpty(fqdn)) {
-			return StringUtils.removeEnd(StringUtils.removeEnd(fqdn, domain), separator);
+			return matcher.matches(domain);
 		}
 
 		return StringUtils.EMPTY;

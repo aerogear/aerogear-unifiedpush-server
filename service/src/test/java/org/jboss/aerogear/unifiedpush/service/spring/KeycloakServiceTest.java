@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration.DomainMatcher;
 import org.jboss.aerogear.unifiedpush.service.spring.KeycloakServiceTest.KeycloakServiceTestConfig;
 import org.jboss.aerogear.unifiedpush.spring.ServiceCacheConfig;
 import org.junit.After;
@@ -31,7 +32,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { KeycloakServiceTestConfig.class, ServiceCacheConfig.class })
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class })
-public class KeycloakServiceTest{
+public class KeycloakServiceTest {
 
 	@Autowired
 	private IKeycloakService kcServiceMock;
@@ -57,6 +58,17 @@ public class KeycloakServiceTest{
 		assertThat(secondInvocation.get(0), is("variant-1"));
 
 		verify(mockProvider.get(), times(1)).getVariantIdsFromClient("test-client-1");
+	}
+
+	@Test
+	public void test() {
+		assertThat(DomainMatcher.DOT.matches("test.aerobase"), is("test"));
+		assertThat(DomainMatcher.DOT.matches("a-bc.test.aerobase.eu.uk"), is("a-bc"));
+		assertThat(DomainMatcher.DASH.matches("test-aerobase"), is("test"));
+		assertThat(DomainMatcher.DASH.matches("a-bc-test-aerobase"), is("a-bc-test"));
+		assertThat(DomainMatcher.DASH.matches("a-bc-test-aerobase.eu.uk"), is("a-bc-test"));
+		assertThat(DomainMatcher.NONE.matches("test.aerobase.eu.uk"), is("test.aerobase.eu.uk"));
+		assertThat(DomainMatcher.NONE.matches("test-aerobase.eu.uk"), is("test-aerobase.eu.uk"));
 	}
 
 	@After

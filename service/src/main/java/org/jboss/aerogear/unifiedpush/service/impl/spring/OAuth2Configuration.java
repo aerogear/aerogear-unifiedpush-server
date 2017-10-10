@@ -1,5 +1,8 @@
 package org.jboss.aerogear.unifiedpush.service.impl.spring;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,8 +71,8 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 		return getProperty(KEY_OAUTH2_ENFORCE_PROTOCOL, StringUtils.EMPTY);
 	}
 
-	public String getRooturlSeparator() {
-		return getProperty(KEY_OAUTH2_ENFORE_SEPERATOR, DEFAULT_SUBDOMAIN_SEPERATOR);
+	public DomainMatcher getRooturlMatcher() {
+		return DomainMatcher.fromString(getProperty(KEY_OAUTH2_ENFORE_SEPERATOR, DEFAULT_SUBDOMAIN_SEPERATOR));
 	}
 
 	private Boolean getProperty(String key, Boolean defaultValue) {
@@ -123,6 +126,46 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 	@Autowired
 	public void setConfiguration(ConfigurationEnvironment configuration) {
 		OAuth2Configuration.configuration = configuration;
+	}
+
+	public enum DomainMatcher {
+		DOT(".", "(.*?)[.].*"), // Valid subdomain, match as few characters as
+								// possible (First occurrence).
+		DASH("-", "(.*)[-].*"), // Logical subdomain, match as many characters
+								// as possible (Last occurrence).
+		NONE("*", "(.*)"); // Alternative domain, match entire string
+
+		private final Pattern pattern;
+		private final String seperator;
+
+		private DomainMatcher(String seperator, String pattern) {
+			this.seperator = seperator;
+			this.pattern = Pattern.compile(pattern);
+		}
+
+		public String matches(String toMatch) {
+			Matcher matcher = pattern.matcher(toMatch);
+
+			if (matcher.matches()) {
+				return matcher.group(1);
+			}
+
+			return null;
+		}
+
+		public String seperator() {
+			return seperator;
+		}
+
+		public static DomainMatcher fromString(String seperator) {
+			if (DOT.seperator().equals(seperator)) {
+				return DomainMatcher.DOT;
+			} else if (DASH.seperator().equals(seperator)) {
+				return DomainMatcher.DASH;
+			}
+
+			return DomainMatcher.NONE;
+		}
 	}
 
 }

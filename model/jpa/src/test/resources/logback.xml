@@ -9,6 +9,7 @@
   </appender>
 
   <logger name="org.springframework" level="error" />
+  <logger name="org.hibernate.engine.jdbc.spi.SqlExceptionHelper" level="off" />
 
   <root level="error">
     <appender-ref ref="STDOUT" />

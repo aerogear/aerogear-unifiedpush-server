@@ -41,7 +41,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
-//import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { JPAConfig.class })

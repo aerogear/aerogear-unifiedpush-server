@@ -29,6 +29,7 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dto.Count;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 @Repository
 public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> implements PushApplicationDao {
@@ -157,9 +158,12 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
 
     @Override
     public PushApplication findByPushApplicationName(String name) {
+		if (StringUtils.isEmpty(name))
+			return null;
+
         return getSingleResultForQuery(createQuery(
                 "select pa from PushApplication pa where LOWER(pa.name) = :name")
-                .setParameter("name", name));
+                .setParameter("name", name.toLowerCase()));
     }
 
 }

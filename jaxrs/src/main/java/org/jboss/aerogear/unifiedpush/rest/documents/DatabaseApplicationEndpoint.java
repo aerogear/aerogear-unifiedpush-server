@@ -84,7 +84,7 @@ public class DatabaseApplicationEndpoint extends AbstractEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("java.lang.Void")
 	@Path("/{database}/aliases")
-	public Response getForAlias(@Context HttpServletRequest request, //
+	public Response getForAliases(@Context HttpServletRequest request, //
 			@QueryParam("id") String id, //
 			@QueryParam("fromDate") Long fromDate, //
 			@QueryParam("toDate") Long toDate, //

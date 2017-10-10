@@ -184,10 +184,10 @@ public class PushApplicationServiceTest extends AbstractCassandraServiceTest {
 		documents = documentService.getLatestFromAliases(pa, "TASKS", "1");
 		assertTrue(documents.size() == 0);
 		assertTrue(aliasService.find(pa.getPushApplicationID(), alias.getEmail()) == null);
-
 	}
 
 	@Override
 	protected void specificSetup() {
 	}
 }
+

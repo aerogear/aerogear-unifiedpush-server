@@ -1,5 +1,7 @@
 package org.jboss.aerogear.unifiedpush.service.impl.spring;
 
+import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration.DomainMatcher;
+
 interface IOAuth2Configuration {
 
 	boolean isOAuth2Enabled();
@@ -20,5 +22,5 @@ interface IOAuth2Configuration {
 
 	String getRooturlProtocol();
 
-	String getRooturlSeparator();
+	DomainMatcher getRooturlMatcher();
 }

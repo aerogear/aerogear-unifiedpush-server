@@ -80,7 +80,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
         <table name="push_application"/>
         <attributes>
             <basic name="name">
-                <column name="name" length="255" nullable="false"/>
+                <column name="name" length="255" nullable="false" unique="true" />
             </basic>
             <basic name="description">
                 <column name="description" length="255"/>

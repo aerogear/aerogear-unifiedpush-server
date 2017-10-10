@@ -45,6 +45,7 @@ import org.jboss.aerogear.unifiedpush.rest.AbstractManagementEndpoint;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 
 import com.qmino.miredot.annotations.ReturnType;
@@ -54,7 +55,7 @@ import com.qmino.miredot.annotations.ReturnType;
 public class PushApplicationEndpoint extends AbstractManagementEndpoint {
     private static final int MAX_PAGE_SIZE = 25;
     private static final int DEFAULT_PAGE_SIZE = 8;
-
+    private static final String PUSH_APP_UNIQUE_NAME_CODE= "unique.name";
     @Inject
     private PushApplicationService pushAppService;
 
@@ -77,9 +78,8 @@ public class PushApplicationEndpoint extends AbstractManagementEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @ReturnType("org.jboss.aerogear.unifiedpush.api.PushApplication")
     public Response registerPushApplication(PushApplication pushApp) {
-
-         // some validation
         try {
+        	// some validation
             validateModelClass(pushApp);
         } catch (ConstraintViolationException cve) {
 
@@ -89,7 +89,12 @@ public class PushApplicationEndpoint extends AbstractManagementEndpoint {
             return builder.build();
         }
 
-        pushAppService.addPushApplication(pushApp, extractUsername());
+        try {
+	        // Create Application
+	        pushAppService.addPushApplication(pushApp, extractUsername());
+        } catch (DataIntegrityViolationException die) {
+        	return createBadRequestResponse(die, PushApplication.class, PUSH_APP_UNIQUE_NAME_CODE, pushApp.getName()).build();
+        }
 
         return Response.created(UriBuilder.fromResource(PushApplicationEndpoint.class).path(String.valueOf(pushApp.getPushApplicationID())).build()).entity(pushApp)
                 .build();

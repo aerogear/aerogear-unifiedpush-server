@@ -24,13 +24,13 @@
         <row>
             <value>1</value>
             <value>231231231</value>
-            <value>app</value>
+            <value>app1</value>
             <value>admin</value>
         </row>
         <row>
             <value>2</value>
             <value>231231232</value>
-            <value>app</value>
+            <value>app2</value>
             <value>admin</value>
         </row>
     </table>

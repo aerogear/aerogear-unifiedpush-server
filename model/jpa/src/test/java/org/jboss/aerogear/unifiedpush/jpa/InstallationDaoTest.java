@@ -60,646 +60,637 @@ import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 @Transactional
 public class InstallationDaoTest {
 
-    public static final String DEVICE_TOKEN_1 = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
-    public static final String DEVICE_TOKEN_2 = "67890167890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
-    public static final String DEVICE_TOKEN_3 = "27890167890:123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
-    public static final String DEVICE_TOKEN_4 = "12345678901:23456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
-
-    @Inject
-    private EntityManager entityManager;
-    @Inject
-    private InstallationDao installationDao;
-
-    private String androidVariantID = "1";
-    private String simplePushVariantID = "2";
-
-    @Rule
-    public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("Installations.xml");
-
-    @Test
-    public void countDevicesForLoginName() {
-        assertThat(installationDao.getNumberOfDevicesForLoginName("me")).isEqualTo(9);
-    }
-
-    @Test
-    public void testTotalNumberOfDevices() {
-        assertThat(installationDao.getTotalNumberOfDevices()).isEqualTo(10);
-    }
-
-    @Test
-    public void getNumberOfDevicesForVariantID() {
-        assertThat(installationDao.getNumberOfDevicesForVariantID("1")).isEqualTo(6);
-        assertThat(installationDao.getNumberOfDevicesForVariantID("2")).isEqualTo(3);
-    }
-
-    @Test
-    public void findDeviceTokensForOneInstallationOfOneVariant() {
-        String[] alias = { "foo@bar.org" };
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
-        assertThat(tokens).hasSize(4);
-
-        Installation one = installationDao.findInstallationForVariantByDeviceToken(androidVariantID, DEVICE_TOKEN_1);
-        assertThat(one.getDeviceToken()).isEqualTo(DEVICE_TOKEN_1);
-
-        final Set<String> tokenz = new HashSet<>();
-        tokenz.add(DEVICE_TOKEN_1);
-        tokenz.add("foobar223");
-        List<Installation> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
-        assertThat(list).hasSize(1);
-        assertThat(list).extracting("deviceToken").containsOnly(DEVICE_TOKEN_1);
-    }
-
-    @Test
-    @Transactional
-    public void findDeviceTokensOfVariant() {
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, null, null);
-        assertThat(tokens).hasSize(4);
-        assertThat(tokens).containsOnly(DEVICE_TOKEN_1, DEVICE_TOKEN_2, DEVICE_TOKEN_3, DEVICE_TOKEN_4);
-    }
-
-    @Test
-    @Transactional
-    public void findOldGCMDeviceTokensOfVariant() {
-        List<String> tokens = findAllOldGCMDeviceTokenForVariantIDByCriteria(androidVariantID, null, null, null);
-        assertThat(tokens).hasSize(2);
-        assertThat(tokens).containsOnly(DEVICE_TOKEN_1, DEVICE_TOKEN_2);
-    }
-
-    @Test
-    @Transactional
-    public void findDeviceTokensForAliasOfVariant() {
-        String[] alias = { "foo@bar.org" };
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
-        assertThat(tokens).hasSize(4);
-        assertThat(tokens).containsOnly(DEVICE_TOKEN_1, DEVICE_TOKEN_2, DEVICE_TOKEN_3, DEVICE_TOKEN_4);
-    }
-
-    @Test
-    @Transactional
-    public void findNoDeviceTokensForAliasOfVariant() {
-        String[] alias = { "bar@foo.org" };
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), null);
-        assertThat(tokens).hasSize(0);
-    }
-
-    @Test
-    @Transactional
-    public void findDeviceTokensForAliasAndDeviceType() {
-        String[] alias = { "foo@bar.org" };
-        String[] types = { "Android Tablet" };
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), Arrays.asList(types));
-        assertThat(tokens).hasSize(2);
-        assertThat(tokens).containsOnly(DEVICE_TOKEN_2, DEVICE_TOKEN_3);
-    }
-
-    @Test
-    @Transactional
-    public void findNoDeviceTokensForAliasAndUnusedDeviceType() {
-        String[] alias = { "foo@bar.org" };
-        String[] types = { "Android Clock" };
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias), Arrays.asList(types));
-        assertThat(tokens).isEmpty();
-    }
-
-    @Test
-    @Transactional
-    public void findZeroDeviceTokensForAliasAndCategoriesAndDeviceType() {
-        String[] alias = { "foo@bar.org" };
-        String[] types = { "Android Tablet" };
-        String[] categories = { "soccer" };
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(categories), Arrays.asList(alias), Arrays
-                .asList(types));
-        assertThat(tokens).isEmpty();
-    }
-
-    @Test
-    @Transactional
-    public void findOneDeviceTokensForAliasAndCategoriesAndDeviceType() {
-        String[] alias = { "foo@bar.org" };
-        String[] types = { "Android Phone" };
-        String[] cats = { "soccer", "news", "weather" };
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), Arrays.asList(alias), Arrays.asList(types));
-        assertThat(tokens).hasSize(1);
-        assertThat(tokens).containsOnly(DEVICE_TOKEN_1);
-    }
-
-    @Test
-    @Transactional
-    public void findTwoDeviceTokensForAliasAndCategories() {
-        String[] alias = { "foo@bar.org" };
-        String[] cats = { "soccer", "news", "weather" };
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
-        assertThat(tokens).hasSize(2);
-    }
-
-    @Test
-    @Transactional
-    public void findTwoDeviceTokensCategories() {
-        String[] cats = { "soccer", "news", "weather" };
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), null, null);
-        assertThat(tokens).hasSize(2);
-    }
-
-    @Test
-    @Transactional
-    public void findAndDeleteOneInstallation() {
-        final Set<String> tokenz = new HashSet<>();
-        tokenz.add(DEVICE_TOKEN_1);
-        tokenz.add("foobar223");
-        List<Installation> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
-        assertThat(list).hasSize(1);
-
-        Installation installation = list.get(0);
-        assertThat(installation.getDeviceToken()).isEqualTo(DEVICE_TOKEN_1);
-
-        installationDao.delete(installation);
-
-        list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
-        assertThat(list).isEmpty();
-    }
-
-    @Test
-    @Transactional
-    public void findAndDeleteTwoInstallations() {
-        final Set<String> tokenz = new HashSet<>();
-        tokenz.add(DEVICE_TOKEN_1);
-        tokenz.add(DEVICE_TOKEN_2);
-        List<Installation> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
-        assertThat(list).hasSize(2);
-
-        list.forEach(installation -> {
-            installationDao.delete(installation);
-        });
-
-        list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
-        assertThat(list).hasSize(0);
-    }
-
-    @Test
-    @Transactional
-    public void deleteNonExistingInstallation() {
-        Installation installation = new Installation();
-        installation.setId("2345");
-
-        installationDao.delete(installation);
-    }
-
-    @Test
-    @Transactional
-    public void mergeCategories() {
-        //given
-        final SimplePushVariant variant = new SimplePushVariant();
-        variant.setName("SimplePush Variant Name");
-        entityManager.persist(variant);
-
-        final Installation installation = new Installation();
-        installation.setDeviceToken("http://test");
-        installation.setCategories(new HashSet<>(Arrays.asList(new Category("one"), new Category("two"))));
-
-        final Installation installation2 = new Installation();
-        installation2.setDeviceToken("http://test2");
-        installation2.setCategories(new HashSet<>(Arrays.asList(new Category("one"), new Category("three"))));
-
-        installation.setVariant(variant);
-        installation2.setVariant(variant);
-
-        //when
-        installationDao.create(installation);
-
-        //then
-        @SuppressWarnings("unchecked")
-		final List<Category> list = entityManager.createQuery("select c from Category c where c.name = 'one'").getResultList();
-        assertThat(list).hasSize(1);
-    }
-
-    @Test
-    @Transactional
-    public void findPushEndpointsForAlias() {
-        String[] alias = { "foo@bar.org" };
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, Arrays.asList(alias), null);
-        assertThat(tokens).hasSize(3);
-        assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
-        assertThat(tokens.get(1)).startsWith("http://server:8080/update/");
-    }
-
-    @Test
-    @Transactional
-    public void findZeroPushEndpointsForAliasAndCategories() {
-        String[] alias = { "foo@bar.org" };
-        String[] categories = { "US Football" };
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(categories), Arrays.asList(alias), null);
-        assertThat(tokens).isEmpty();
-    }
-
-    @Test
-    @Transactional
-    public void findOnePushEndpointForAliasAndCategories() {
-        String[] alias = { "foo@bar.org" };
-        String[] cats = { "soccer", "weather" };
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
-        assertThat(tokens).hasSize(1);
-        assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
-
-    }
-
-    @Test
-    @Transactional
-    public void findThreePushEndpointsForAliasAndCategories() {
-        String[] alias = { "foo@bar.org" };
-        String[] cats = { "soccer", "news", "weather" };
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), Arrays.asList(alias), null);
-        assertThat(tokens).hasSize(3);
-        assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
-        assertThat(tokens.get(1)).startsWith("http://server:8080/update/");
-        assertThat(tokens.get(2)).startsWith("http://server:8080/update/");
-    }
-
-    @Test
-    @Transactional
-    public void findThreePushEndpointsForCategories() {
-        String[] cats = { "soccer", "news", "weather" };
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), null, null);
-        assertThat(tokens).hasSize(3);
-        assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
-        assertThat(tokens.get(1)).startsWith("http://server:8080/update/");
-        assertThat(tokens.get(2)).startsWith("http://server:8080/update/");
-    }
-
-    @Test
-    @Transactional
-    public void findPushEndpointsWithDeviceType() {
-        String[] types = {"JavaFX Monitor"};
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, null, Arrays.asList(types));
-        assertThat(tokens).hasSize(1);
-        assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
-    }
-
-    @Test
-    @Transactional
-    public void findPushEndpointsWithoutDeviceType() {
-        List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, null, null);
-        assertThat(tokens).hasSize(3);
-        assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
-    }
-
-    @Test
-    @Transactional
-    public void shouldValidateDeviceId() {
-        // given
-        final Installation installation = new Installation();
-        installation.setDeviceToken("invalid");
-
-        final iOSVariant variant = new iOSVariant();
-        variant.setName("iOS Variant Name");
-        variant.setPassphrase("12");
-        variant.setCertificate("12".getBytes());
-        entityManager.persist(variant);
-        installation.setVariant(variant);
-
-        // when
-        installationDao.create(installation);
-        try {
-            entityManager.flush();
-            fail("ConstraintViolationException should have been thrown");
-        } catch (ConstraintViolationException violationException) {
-            // then
-            final Set<ConstraintViolation<?>> constraintViolations = violationException.getConstraintViolations();
-            assertThat(constraintViolations).isNotEmpty();
-            assertThat(constraintViolations.size()).isEqualTo(1);
-
-            assertThat(constraintViolations.iterator().next().getMessage()).isEqualTo(
-                    "Device token is not valid for this device type");
-        }
-    }
-
-    @Test
-    @Transactional
-    public void shouldSaveWhenValidateDeviceIdIOS() {
-        // given
-        final Installation installation = new Installation();
-        installation.setDeviceToken("1ce51dad49a77ca7b45924074bcc4f19aea20378f5feda202fbba3beed7073d7");
-        final iOSVariant variant = new iOSVariant();
-        variant.setName("iOS Variant Name");
-        variant.setPassphrase("12");
-        variant.setCertificate("12".getBytes());
-
-        // when
-        deviceTokenTest(installation, variant);
-    }
-
-    @Test
-    @Transactional
-    public void shouldSaveWhenValidateDeviceIdWindows() {
-        // given
-        final Installation installation = new Installation();
-        installation.setDeviceToken("https://db3.notify.windows.com/?token=AgYAAACH%2fZixlZK4v%2bkD3LFiz7zHOJm13"
-                + "smBVRn8rH%2b32Xu6tv3fj%2fh8bb4VhNTS7NqS8TclpW044YxAbaN%2bB4NjpyVSZs3He7SwwjExbEsBFRLYc824%2f0"
-                + "615fPox8bwoxrTU%3d");
-
-        final WindowsWNSVariant variant = new WindowsWNSVariant();
-        variant.setName("Windows Variant Name");
-        variant.setClientSecret("12");
-        variant.setSid("12");
-
-        // when
-        deviceTokenTest(installation, variant);
-    }
-
-    @Test
-    @Transactional
-    public void shouldSaveWhenValidateDeviceIdAdm() {
-        // given
-        final Installation installation = new Installation();
-        installation.setDeviceToken("amzn1.adm-registration.v3.Y29tLmFtYXpvbi5EZXZpY2VNZXNzYWdpbmcuUmVnaXN0cmF0a" +
-                "W9uSWRFbmNyeXB0aW9uS2V5ITEhWTlLSFlBZDlOSU12cTUzdlpIQzZJd3VZVk9CZ0g1bUdWUkJrL0hOTkZ5UGFPN1FxY3pP" +
-                "WXJVL0laWGdrczVKU1MwSG8rVDUva2hkS3h5WjE4YUZHM3NoTXpOMUxCa2tORDdsY2FxemVxcG5lWXR1eC9UeHZMTWVScUY" +
-                "wT3JwUXFzZFFCMi9vaHhmQjk2dERwK29JNEtFTm1TRGhLMFhnd0FPT3FPWGRwMi9GQllNSmN5TVh4YlZ4VlNQdVcvbHEveU" +
-                "JkZExoMTdrZnNaVWpOMGlVMTBDbndkNERSd3Z4VjlpVm9hUy9mTXhLdUsxSVV5cjY1cngrQWYwdjN4WGxvWWJGL3ZDNXF6T" +
-                "2FPa0JTL3Z6bGtxUUFUN3h4bXg1YitBTHlpbGkxazdJbHBIVm1PUm0rUkgveDFOdzFDQUVhQ1BXcE1Ud3ZpY2ROcUxGWlRt" +
-                "VFM2bml3PT0hQVcwQ2puM3g2THgvaWJ0cE9nMzBEUT09");
-
-        final AdmVariant variant = new AdmVariant();
-        variant.setName("ADM variant Name");
-        variant.setClientSecret("12");
-        variant.setClientId("12");
-
-        // when
-        deviceTokenTest(installation, variant);
-    }
-
-    @Test(expected = ConstraintViolationException.class)
-    @Transactional
-    public void shouldNotSaveWhenSimplePushTokenInvalid() {
-        // given
-        final Installation installation = new Installation();
-        installation.setDeviceToken("htp://invalid");
-
-        final SimplePushVariant variant = new SimplePushVariant();
-        variant.setName("SimplePush Variant Name");
-
-        // when
-        deviceTokenTest(installation, variant);
-    }
-
-    @Test
-    @Transactional
-    public void shouldSaveWhenValidateDeviceIdMPNSWindows() {
-        // given
-        final Installation installation = new Installation();
-        installation.setDeviceToken("https://s.notify.live.net/u/1/db3/HmQAAACsY7ZBMnNW6QnfPcHXC1gwvHFlPeujLy"
-                + "aLyoJmTm79gofALwJGBefhxH_Rjpz4oAoK5O5zL2nQwaFZpLMpXUP/d2luZG93c3Bob25lZGVmYXVsdA/AGVGhYlaBG"
-                + "GphX2C8gGmg/vedAL_DKqnF00b4O3NCIifacDEQ");
-
-        WindowsMPNSVariant variant = new WindowsMPNSVariant();
-        variant.setName("Windows MPNS Variant Name");
-
-        // when
-        deviceTokenTest(installation, variant);
-    }
-
-    @Test
-    @Transactional
-    public void shouldSaveWhenSimplePushTokenValid() {
-        // given
-        final Installation installation = new Installation();
-        installation.setDeviceToken("http://valid/but/you/should/use/https");
-
-        final SimplePushVariant variant = new SimplePushVariant();
-        variant.setName("SimplePush Variant Name");
-
-        // when
-        deviceTokenTest(installation, variant);
-    }
-
-    @Test
-    @Transactional
-    public void shouldSaveWhenValidateDeviceIdAndroid() {
-        // given
-        final Installation installation = new Installation();
-        installation.setDeviceToken("APA91bHpbMXepp4odlb20vYOv0gQyNIyFu2X3OXR3TjqR8qecgWivima_UiLPFgUBs_10Nys2TUwUy"
-                + "WlixrIta35NXW-5Z85OdXcbb_3s3p0qaa_a7NpFlaX9GpidK_BdQNMsx2gX8BrE4Uw7s22nPCcEn1U1_mo-"
-                + "T6hcF5unYt965PDwRTRss8");
-
-        final AndroidVariant variant = new AndroidVariant();
-        variant.setName("Android Variant Name");
-        variant.setGoogleKey("12");
-        variant.setProjectNumber("12");
-
-        // when
-        deviceTokenTest(installation, variant);
-    }
-
-    @Test
-    @Transactional
-    public void shouldSaveWhenValidateDeviceIdFromAndroidEmulator() {
-        // given
-        final Installation installation = new Installation();
-        installation.setDeviceToken("eHlfnI0__dI:APA91bEhtHefML2lr_sBQ-bdXIyEn5owzkZg_p_y7SRyNKRMZ3Xu" +
-                "zZhBpTOYIh46tqRYQIc-7RTADk4nM5H-ONgPDWHodQDS24O5GuKP8EZ" +
-                "EKwNh4Zxdv1wkZJh7cU2PoLz9gn4Nxqz-");
-
-        final AndroidVariant variant = new AndroidVariant();
-        variant.setName("Android Variant Name");
-        variant.setGoogleKey("12");
-        variant.setProjectNumber("12");
-
-        // when
-        deviceTokenTest(installation, variant);
-    }
-
-    @Test
-    @Transactional
-    public void shouldSaveWhenValidateDeviceIdFromFirebase() {
-        // given
-        final Installation installation = new Installation();
-        installation.setDeviceToken("ckK-6WYMBXQ:APA91bEvCK_37qM89h5nKNOQTRz0rIjAMqP01hOi7QANlDDRpsDrB7w" +
-                "382l_NB_6mNr_4l3Zx96IuL-dq9O4VdQnx8AM1-hquE2t4VkprbDrJ" +
-                "2784ndbtAnt3FNg7J5aQcPPPO5g19An");
-
-        final AndroidVariant variant = new AndroidVariant();
-        variant.setName("Android Variant Name");
-        variant.setGoogleKey("12");
-        variant.setProjectNumber("12");
-
-        // when
-        deviceTokenTest(installation, variant);
-    }
-
-    @Test
-    @Transactional
-    public void shouldSaveWhitAndroidInstanceIDtoken() {
-        // given
-        final Installation installation = new Installation();
-        installation.setDeviceToken("cKNPkyd7HBU:APA91bH-GxYBT08qeltVLhFcPxvoT4MN1uRfhR-Q" +
-                "Zns-0KLcZ159tQ14YXPOe4JjemCsGHLQNAqmFZrDNV-wcDqanGXWjHNG9ftNyBEj" +
-                "7RqUOtpP1BEjTxWE4Hk7i1vKT3pyMV_7F8xF");
-
-        final AndroidVariant variant = new AndroidVariant();
-        variant.setName("Android Variant Name");
-        variant.setGoogleKey("12");
-        variant.setProjectNumber("12");
-
-        // when
-        deviceTokenTest(installation, variant);
-    }
-
-    private void deviceTokenTest(Installation installation, Variant variant) {
-        entityManager.persist(variant);
-        installation.setVariant(variant);
-
-        // when
-        installationDao.create(installation);
-        entityManager.flush();
-    }
-
-    @Test
-    @Transactional
-    public void primaryKeyUnmodifiedAfterUpdate() {
-        Installation android1 = new Installation();
-        android1.setAlias("foo@bar.org");
-        android1.setDeviceToken(DEVICE_TOKEN_1);
-        android1.setDeviceType("Android Phone");
-        final Set<Category> categoriesOne = new HashSet<>();
-        final Category category = entityManager.createQuery("from Category where name = :name", Category.class)
-                .setParameter("name", "soccer").getSingleResult();
-        categoriesOne.add(category);
-        android1.setCategories(categoriesOne);
-        final String id = android1.getId();
-
-        final AndroidVariant variant = new AndroidVariant();
-        variant.setName("Android Variant Name");
-        variant.setGoogleKey("12");
-        variant.setProjectNumber("12");
-        entityManager.persist(variant);
-        android1.setVariant(variant);
-
-        installationDao.create(android1);
-
-        // flush to be sure that it's in the database
-        entityManager.flush();
-        // clear the cache otherwise finding the entity will not perform a select but get the entity from cache
-        entityManager.clear();
-
-        Installation installation = installationDao.find(id);
-
-        assertThat(installation.getId()).isEqualTo(id);
-        assertThat(installation.getDeviceType()).isEqualTo("Android Phone");
-
-        final String alias = "foobar@bar.org";
-        android1.setAlias(alias);
-        installationDao.update(android1);
-        entityManager.flush();
-        entityManager.clear();
-
-        installation = installationDao.find(id);
-
-        assertThat(installation.getAlias()).isEqualTo(alias);
-    }
-
-    @Test
-    public void shouldSelectInstallationsByVariantForDeveloper() {
-        //given
-        String developer = "me";
-
-        //when
-        final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariantForDeveloper(androidVariantID, developer, 0, 1, null);
-
-        //then
-        assertThat(pageResult).isNotNull();
-        assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
-        assertThat(pageResult.getAggregate().getCount()).isEqualTo(6);
-    }
-
-    @Test
-    public void shouldSelectInstallationsByVariant() {
-        //when
-        final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariant(androidVariantID, 0, 1, null);
-
-        //then
-        assertThat(pageResult).isNotNull();
-        assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
-        assertThat(pageResult.getAggregate().getCount()).isEqualTo(6);
-    }
-
-    @Test
-    public void shouldSelectInstallationsByDeviceTokenSearch() {
-        //when
-        final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariant(androidVariantID, 0, Integer.MAX_VALUE, "67890167890");
-        //then
-        assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
-    }
-
-    @Test
-    public void shouldSelectInstallationsByDeviceTypeSearch() {
-        //when
-        final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariant(androidVariantID, 0, Integer.MAX_VALUE, "Tablet");
-        //then
-        assertThat(pageResult.getResultList()).isNotEmpty().hasSize(3);
-    }
-
-    @Test
-    public void shouldSelectInstallationsByAliasSearch() {
-        //when
-        final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariant(androidVariantID, 0, Integer.MAX_VALUE, "baz@");
-        //then
-        assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
-    }
-
-    @Test(expected = PersistenceException.class)
-    public void testTooLongDeviceToken() {
-        AndroidVariant variant = new AndroidVariant();
-        variant.setName("Android Name");
-        variant.setGoogleKey("123");
-        variant.setProjectNumber("123");
-
-        entityManager.persist(variant);
-
-        Installation android1 = new Installation();
-        android1.setAlias("foo@bar.org");
-        android1.setDeviceToken(TestUtils.longString(4097));
-        android1.setVariant(variant);
-
-        installationDao.create(android1);
-
-        entityManager.flush();
-    }
-
-    @Test
-    @Transactional
-    public void testLongDeviceToken() {
-        AndroidVariant variant = new AndroidVariant();
-        variant.setName("Android Name");
-        variant.setGoogleKey("123");
-        variant.setProjectNumber("123");
-
-        entityManager.persist(variant);
-
-        Installation android1 = new Installation();
-        android1.setAlias("foo@bar.org");
-        android1.setDeviceToken(TestUtils.longString(4096));
-        android1.setVariant(variant);
-
-        installationDao.create(android1);
-
-        entityManager.flush();
-    }
-
-    private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
-        return findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, false);
-    }
-    private List<String> findAllOldGCMDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes) {
-        return findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, true);
-    }
-    private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, boolean oldGCM) {
-        try {
-            ResultsStream<String> tokenStream = installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, Integer.MAX_VALUE, null, oldGCM).executeQuery();
-            List<String> list = new ArrayList<>();
-            while (tokenStream.next()) {
-                list.add(tokenStream.get());
-            }
-            return list;
-        } catch (ResultStreamException e) {
-            throw new IllegalStateException(e);
-        }
-    }
+	public static final String DEVICE_TOKEN_1 = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+	public static final String DEVICE_TOKEN_2 = "67890167890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+	public static final String DEVICE_TOKEN_3 = "27890167890:123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+	public static final String DEVICE_TOKEN_4 = "12345678901:23456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+
+	@Inject
+	private EntityManager entityManager;
+	@Inject
+	private InstallationDao installationDao;
+
+	private String androidVariantID = "1";
+	private String simplePushVariantID = "2";
+
+	@Rule
+	public EmbeddedDbTesterRule testDb = new EmbeddedDbTesterRule("Installations.xml");
+
+	@Test
+	public void countDevicesForLoginName() {
+		assertThat(installationDao.getNumberOfDevicesForLoginName("me")).isEqualTo(9);
+	}
+
+	@Test
+	public void testTotalNumberOfDevices() {
+		assertThat(installationDao.getTotalNumberOfDevices()).isEqualTo(10);
+	}
+
+	@Test
+	public void getNumberOfDevicesForVariantID() {
+		assertThat(installationDao.getNumberOfDevicesForVariantID("1")).isEqualTo(6);
+		assertThat(installationDao.getNumberOfDevicesForVariantID("2")).isEqualTo(3);
+	}
+
+	@Test
+	public void findDeviceTokensForOneInstallationOfOneVariant() {
+		String[] alias = { "foo@bar.org" };
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias),
+				null);
+		assertThat(tokens).hasSize(4);
+
+		Installation one = installationDao.findInstallationForVariantByDeviceToken(androidVariantID, DEVICE_TOKEN_1);
+		assertThat(one.getDeviceToken()).isEqualTo(DEVICE_TOKEN_1);
+
+		final Set<String> tokenz = new HashSet<>();
+		tokenz.add(DEVICE_TOKEN_1);
+		tokenz.add("foobar223");
+		List<Installation> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
+		assertThat(list).hasSize(1);
+		assertThat(list).extracting("deviceToken").containsOnly(DEVICE_TOKEN_1);
+	}
+
+	@Test
+	public void findDeviceTokensOfVariant() {
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, null, null);
+		assertThat(tokens).hasSize(4);
+		assertThat(tokens).containsOnly(DEVICE_TOKEN_1, DEVICE_TOKEN_2, DEVICE_TOKEN_3, DEVICE_TOKEN_4);
+	}
+
+	@Test
+	public void findOldGCMDeviceTokensOfVariant() {
+		List<String> tokens = findAllOldGCMDeviceTokenForVariantIDByCriteria(androidVariantID, null, null, null);
+		assertThat(tokens).hasSize(2);
+		assertThat(tokens).containsOnly(DEVICE_TOKEN_1, DEVICE_TOKEN_2);
+	}
+
+	@Test
+	public void findDeviceTokensForAliasOfVariant() {
+		String[] alias = { "foo@bar.org" };
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias),
+				null);
+		assertThat(tokens).hasSize(4);
+		assertThat(tokens).containsOnly(DEVICE_TOKEN_1, DEVICE_TOKEN_2, DEVICE_TOKEN_3, DEVICE_TOKEN_4);
+	}
+
+	@Test
+	public void findNoDeviceTokensForAliasOfVariant() {
+		String[] alias = { "bar@foo.org" };
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias),
+				null);
+		assertThat(tokens).hasSize(0);
+	}
+
+	@Test
+	public void findDeviceTokensForAliasAndDeviceType() {
+		String[] alias = { "foo@bar.org" };
+		String[] types = { "Android Tablet" };
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias),
+				Arrays.asList(types));
+		assertThat(tokens).hasSize(2);
+		assertThat(tokens).containsOnly(DEVICE_TOKEN_2, DEVICE_TOKEN_3);
+	}
+
+	@Test
+	public void findNoDeviceTokensForAliasAndUnusedDeviceType() {
+		String[] alias = { "foo@bar.org" };
+		String[] types = { "Android Clock" };
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, null, Arrays.asList(alias),
+				Arrays.asList(types));
+		assertThat(tokens).isEmpty();
+	}
+
+	@Test
+	public void findZeroDeviceTokensForAliasAndCategoriesAndDeviceType() {
+		String[] alias = { "foo@bar.org" };
+		String[] types = { "Android Tablet" };
+		String[] categories = { "soccer" };
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(categories),
+				Arrays.asList(alias), Arrays.asList(types));
+		assertThat(tokens).isEmpty();
+	}
+
+	@Test
+	public void findOneDeviceTokensForAliasAndCategoriesAndDeviceType() {
+		String[] alias = { "foo@bar.org" };
+		String[] types = { "Android Phone" };
+		String[] cats = { "soccer", "news", "weather" };
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats),
+				Arrays.asList(alias), Arrays.asList(types));
+		assertThat(tokens).hasSize(1);
+		assertThat(tokens).containsOnly(DEVICE_TOKEN_1);
+	}
+
+	@Test
+	public void findTwoDeviceTokensForAliasAndCategories() {
+		String[] alias = { "foo@bar.org" };
+		String[] cats = { "soccer", "news", "weather" };
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats),
+				Arrays.asList(alias), null);
+		assertThat(tokens).hasSize(2);
+	}
+
+	@Test
+	public void findTwoDeviceTokensCategories() {
+		String[] cats = { "soccer", "news", "weather" };
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(androidVariantID, Arrays.asList(cats), null,
+				null);
+		assertThat(tokens).hasSize(2);
+	}
+
+	@Test
+	public void findAndDeleteOneInstallation() {
+		final Set<String> tokenz = new HashSet<>();
+		tokenz.add(DEVICE_TOKEN_1);
+		tokenz.add("foobar223");
+		List<Installation> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
+		assertThat(list).hasSize(1);
+
+		Installation installation = list.get(0);
+		assertThat(installation.getDeviceToken()).isEqualTo(DEVICE_TOKEN_1);
+
+		installationDao.delete(installation);
+
+		list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
+		assertThat(list).isEmpty();
+	}
+
+	@Test
+	public void findAndDeleteTwoInstallations() {
+		final Set<String> tokenz = new HashSet<>();
+		tokenz.add(DEVICE_TOKEN_1);
+		tokenz.add(DEVICE_TOKEN_2);
+		List<Installation> list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
+		assertThat(list).hasSize(2);
+
+		list.forEach(installation -> {
+			installationDao.delete(installation);
+		});
+
+		list = installationDao.findInstallationsForVariantByDeviceTokens(androidVariantID, tokenz);
+		assertThat(list).hasSize(0);
+	}
+
+	@Test
+	public void deleteNonExistingInstallation() {
+		Installation installation = new Installation();
+		installation.setId("2345");
+
+		installationDao.delete(installation);
+	}
+
+	@Test
+	public void mergeCategories() {
+		// given
+		final SimplePushVariant variant = new SimplePushVariant();
+		variant.setName("SimplePush Variant Name");
+		entityManager.persist(variant);
+
+		final Installation installation = new Installation();
+		installation.setDeviceToken("http://test");
+		installation.setCategories(new HashSet<>(Arrays.asList(new Category("one"), new Category("two"))));
+
+		final Installation installation2 = new Installation();
+		installation2.setDeviceToken("http://test2");
+		installation2.setCategories(new HashSet<>(Arrays.asList(new Category("one"), new Category("three"))));
+
+		installation.setVariant(variant);
+		installation2.setVariant(variant);
+
+		// when
+		installationDao.create(installation);
+
+		// then
+		@SuppressWarnings("unchecked")
+		final List<Category> list = entityManager.createQuery("select c from Category c where c.name = 'one'")
+				.getResultList();
+		assertThat(list).hasSize(1);
+	}
+
+	@Test
+	public void findPushEndpointsForAlias() {
+		String[] alias = { "foo@bar.org" };
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, Arrays.asList(alias),
+				null);
+		assertThat(tokens).hasSize(3);
+		assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
+		assertThat(tokens.get(1)).startsWith("http://server:8080/update/");
+	}
+
+	@Test
+	public void findZeroPushEndpointsForAliasAndCategories() {
+		String[] alias = { "foo@bar.org" };
+		String[] categories = { "US Football" };
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(categories),
+				Arrays.asList(alias), null);
+		assertThat(tokens).isEmpty();
+	}
+
+	@Test
+	public void findOnePushEndpointForAliasAndCategories() {
+		String[] alias = { "foo@bar.org" };
+		String[] cats = { "soccer", "weather" };
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats),
+				Arrays.asList(alias), null);
+		assertThat(tokens).hasSize(1);
+		assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
+
+	}
+
+	@Test
+	public void findThreePushEndpointsForAliasAndCategories() {
+		String[] alias = { "foo@bar.org" };
+		String[] cats = { "soccer", "news", "weather" };
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats),
+				Arrays.asList(alias), null);
+		assertThat(tokens).hasSize(3);
+		assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
+		assertThat(tokens.get(1)).startsWith("http://server:8080/update/");
+		assertThat(tokens.get(2)).startsWith("http://server:8080/update/");
+	}
+
+	@Test
+	public void findThreePushEndpointsForCategories() {
+		String[] cats = { "soccer", "news", "weather" };
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, Arrays.asList(cats), null,
+				null);
+		assertThat(tokens).hasSize(3);
+		assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
+		assertThat(tokens.get(1)).startsWith("http://server:8080/update/");
+		assertThat(tokens.get(2)).startsWith("http://server:8080/update/");
+	}
+
+	@Test
+	public void findPushEndpointsWithDeviceType() {
+		String[] types = { "JavaFX Monitor" };
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, null,
+				Arrays.asList(types));
+		assertThat(tokens).hasSize(1);
+		assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
+	}
+
+	@Test
+	public void findPushEndpointsWithoutDeviceType() {
+		List<String> tokens = findAllDeviceTokenForVariantIDByCriteria(simplePushVariantID, null, null, null);
+		assertThat(tokens).hasSize(3);
+		assertThat(tokens.get(0)).startsWith("http://server:8080/update/");
+	}
+
+	@Test
+	public void shouldValidateDeviceId() {
+		// given
+		final Installation installation = new Installation();
+		installation.setDeviceToken("invalid");
+
+		final iOSVariant variant = new iOSVariant();
+		variant.setName("iOS Variant Name");
+		variant.setPassphrase("12");
+		variant.setCertificate("12".getBytes());
+		entityManager.persist(variant);
+		installation.setVariant(variant);
+
+		// when
+		installationDao.create(installation);
+		try {
+			entityManager.flush();
+			fail("ConstraintViolationException should have been thrown");
+		} catch (ConstraintViolationException violationException) {
+			// then
+			final Set<ConstraintViolation<?>> constraintViolations = violationException.getConstraintViolations();
+			assertThat(constraintViolations).isNotEmpty();
+			assertThat(constraintViolations.size()).isEqualTo(1);
+
+			assertThat(constraintViolations.iterator().next().getMessage())
+					.isEqualTo("Device token is not valid for this device type");
+		}
+	}
+
+	@Test
+	public void shouldSaveWhenValidateDeviceIdIOS() {
+		// given
+		final Installation installation = new Installation();
+		installation.setDeviceToken("1ce51dad49a77ca7b45924074bcc4f19aea20378f5feda202fbba3beed7073d7");
+		final iOSVariant variant = new iOSVariant();
+		variant.setName("iOS Variant Name");
+		variant.setPassphrase("12");
+		variant.setCertificate("12".getBytes());
+
+		// when
+		deviceTokenTest(installation, variant);
+	}
+
+	@Test
+	public void shouldSaveWhenValidateDeviceIdWindows() {
+		// given
+		final Installation installation = new Installation();
+		installation.setDeviceToken("https://db3.notify.windows.com/?token=AgYAAACH%2fZixlZK4v%2bkD3LFiz7zHOJm13"
+				+ "smBVRn8rH%2b32Xu6tv3fj%2fh8bb4VhNTS7NqS8TclpW044YxAbaN%2bB4NjpyVSZs3He7SwwjExbEsBFRLYc824%2f0"
+				+ "615fPox8bwoxrTU%3d");
+
+		final WindowsWNSVariant variant = new WindowsWNSVariant();
+		variant.setName("Windows Variant Name");
+		variant.setClientSecret("12");
+		variant.setSid("12");
+
+		// when
+		deviceTokenTest(installation, variant);
+	}
+
+	@Test
+	public void shouldSaveWhenValidateDeviceIdAdm() {
+		// given
+		final Installation installation = new Installation();
+		installation.setDeviceToken("amzn1.adm-registration.v3.Y29tLmFtYXpvbi5EZXZpY2VNZXNzYWdpbmcuUmVnaXN0cmF0a"
+				+ "W9uSWRFbmNyeXB0aW9uS2V5ITEhWTlLSFlBZDlOSU12cTUzdlpIQzZJd3VZVk9CZ0g1bUdWUkJrL0hOTkZ5UGFPN1FxY3pP"
+				+ "WXJVL0laWGdrczVKU1MwSG8rVDUva2hkS3h5WjE4YUZHM3NoTXpOMUxCa2tORDdsY2FxemVxcG5lWXR1eC9UeHZMTWVScUY"
+				+ "wT3JwUXFzZFFCMi9vaHhmQjk2dERwK29JNEtFTm1TRGhLMFhnd0FPT3FPWGRwMi9GQllNSmN5TVh4YlZ4VlNQdVcvbHEveU"
+				+ "JkZExoMTdrZnNaVWpOMGlVMTBDbndkNERSd3Z4VjlpVm9hUy9mTXhLdUsxSVV5cjY1cngrQWYwdjN4WGxvWWJGL3ZDNXF6T"
+				+ "2FPa0JTL3Z6bGtxUUFUN3h4bXg1YitBTHlpbGkxazdJbHBIVm1PUm0rUkgveDFOdzFDQUVhQ1BXcE1Ud3ZpY2ROcUxGWlRt"
+				+ "VFM2bml3PT0hQVcwQ2puM3g2THgvaWJ0cE9nMzBEUT09");
+
+		final AdmVariant variant = new AdmVariant();
+		variant.setName("ADM variant Name");
+		variant.setClientSecret("12");
+		variant.setClientId("12");
+
+		// when
+		deviceTokenTest(installation, variant);
+	}
+
+	@Test(expected = ConstraintViolationException.class)
+	public void shouldNotSaveWhenSimplePushTokenInvalid() {
+		// given
+		final Installation installation = new Installation();
+		installation.setDeviceToken("htp://invalid");
+
+		final SimplePushVariant variant = new SimplePushVariant();
+		variant.setName("SimplePush Variant Name");
+
+		// when
+		deviceTokenTest(installation, variant);
+	}
+
+	@Test
+	public void shouldSaveWhenValidateDeviceIdMPNSWindows() {
+		// given
+		final Installation installation = new Installation();
+		installation.setDeviceToken("https://s.notify.live.net/u/1/db3/HmQAAACsY7ZBMnNW6QnfPcHXC1gwvHFlPeujLy"
+				+ "aLyoJmTm79gofALwJGBefhxH_Rjpz4oAoK5O5zL2nQwaFZpLMpXUP/d2luZG93c3Bob25lZGVmYXVsdA/AGVGhYlaBG"
+				+ "GphX2C8gGmg/vedAL_DKqnF00b4O3NCIifacDEQ");
+
+		WindowsMPNSVariant variant = new WindowsMPNSVariant();
+		variant.setName("Windows MPNS Variant Name");
+
+		// when
+		deviceTokenTest(installation, variant);
+	}
+
+	@Test
+	public void shouldSaveWhenSimplePushTokenValid() {
+		// given
+		final Installation installation = new Installation();
+		installation.setDeviceToken("http://valid/but/you/should/use/https");
+
+		final SimplePushVariant variant = new SimplePushVariant();
+		variant.setName("SimplePush Variant Name");
+
+		// when
+		deviceTokenTest(installation, variant);
+	}
+
+	@Test
+	public void shouldSaveWhenValidateDeviceIdAndroid() {
+		// given
+		final Installation installation = new Installation();
+		installation.setDeviceToken("APA91bHpbMXepp4odlb20vYOv0gQyNIyFu2X3OXR3TjqR8qecgWivima_UiLPFgUBs_10Nys2TUwUy"
+				+ "WlixrIta35NXW-5Z85OdXcbb_3s3p0qaa_a7NpFlaX9GpidK_BdQNMsx2gX8BrE4Uw7s22nPCcEn1U1_mo-"
+				+ "T6hcF5unYt965PDwRTRss8");
+
+		final AndroidVariant variant = new AndroidVariant();
+		variant.setName("Android Variant Name");
+		variant.setGoogleKey("12");
+		variant.setProjectNumber("12");
+
+		// when
+		deviceTokenTest(installation, variant);
+	}
+
+	@Test
+	public void shouldSaveWhenValidateDeviceIdFromAndroidEmulator() {
+		// given
+		final Installation installation = new Installation();
+		installation.setDeviceToken("eHlfnI0__dI:APA91bEhtHefML2lr_sBQ-bdXIyEn5owzkZg_p_y7SRyNKRMZ3Xu"
+				+ "zZhBpTOYIh46tqRYQIc-7RTADk4nM5H-ONgPDWHodQDS24O5GuKP8EZ" + "EKwNh4Zxdv1wkZJh7cU2PoLz9gn4Nxqz-");
+
+		final AndroidVariant variant = new AndroidVariant();
+		variant.setName("Android Variant Name");
+		variant.setGoogleKey("12");
+		variant.setProjectNumber("12");
+
+		// when
+		deviceTokenTest(installation, variant);
+	}
+
+	@Test
+	public void shouldSaveWhenValidateDeviceIdFromFirebase() {
+		// given
+		final Installation installation = new Installation();
+		installation.setDeviceToken("ckK-6WYMBXQ:APA91bEvCK_37qM89h5nKNOQTRz0rIjAMqP01hOi7QANlDDRpsDrB7w"
+				+ "382l_NB_6mNr_4l3Zx96IuL-dq9O4VdQnx8AM1-hquE2t4VkprbDrJ" + "2784ndbtAnt3FNg7J5aQcPPPO5g19An");
+
+		final AndroidVariant variant = new AndroidVariant();
+		variant.setName("Android Variant Name");
+		variant.setGoogleKey("12");
+		variant.setProjectNumber("12");
+
+		// when
+		deviceTokenTest(installation, variant);
+	}
+
+	@Test
+	public void shouldSaveWhitAndroidInstanceIDtoken() {
+		// given
+		final Installation installation = new Installation();
+		installation.setDeviceToken("cKNPkyd7HBU:APA91bH-GxYBT08qeltVLhFcPxvoT4MN1uRfhR-Q"
+				+ "Zns-0KLcZ159tQ14YXPOe4JjemCsGHLQNAqmFZrDNV-wcDqanGXWjHNG9ftNyBEj"
+				+ "7RqUOtpP1BEjTxWE4Hk7i1vKT3pyMV_7F8xF");
+
+		final AndroidVariant variant = new AndroidVariant();
+		variant.setName("Android Variant Name");
+		variant.setGoogleKey("12");
+		variant.setProjectNumber("12");
+
+		// when
+		deviceTokenTest(installation, variant);
+	}
+
+	private void deviceTokenTest(Installation installation, Variant variant) {
+		entityManager.persist(variant);
+		installation.setVariant(variant);
+
+		// when
+		installationDao.create(installation);
+		entityManager.flush();
+	}
+
+	@Test
+	public void primaryKeyUnmodifiedAfterUpdate() {
+		Installation android1 = new Installation();
+		android1.setAlias("foo@bar.org");
+		android1.setDeviceToken(DEVICE_TOKEN_1);
+		android1.setDeviceType("Android Phone");
+		final Set<Category> categoriesOne = new HashSet<>();
+		final Category category = entityManager.createQuery("from Category where name = :name", Category.class)
+				.setParameter("name", "soccer").getSingleResult();
+		categoriesOne.add(category);
+		android1.setCategories(categoriesOne);
+		final String id = android1.getId();
+
+		final AndroidVariant variant = new AndroidVariant();
+		variant.setName("Android Variant Name");
+		variant.setGoogleKey("12");
+		variant.setProjectNumber("12");
+		entityManager.persist(variant);
+		android1.setVariant(variant);
+
+		installationDao.create(android1);
+
+		// flush to be sure that it's in the database
+		entityManager.flush();
+		// clear the cache otherwise finding the entity will not perform a
+		// select but get the entity from cache
+		entityManager.clear();
+
+		Installation installation = installationDao.find(id);
+
+		assertThat(installation.getId()).isEqualTo(id);
+		assertThat(installation.getDeviceType()).isEqualTo("Android Phone");
+
+		final String alias = "foobar@bar.org";
+		android1.setAlias(alias);
+		installationDao.update(android1);
+		entityManager.flush();
+		entityManager.clear();
+
+		installation = installationDao.find(id);
+
+		assertThat(installation.getAlias()).isEqualTo(alias);
+	}
+
+	@Test
+	public void shouldSelectInstallationsByVariantForDeveloper() {
+		// given
+		String developer = "me";
+
+		// when
+		final PageResult<Installation, Count> pageResult = installationDao
+				.findInstallationsByVariantForDeveloper(androidVariantID, developer, 0, 1, null);
+
+		// then
+		assertThat(pageResult).isNotNull();
+		assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
+		assertThat(pageResult.getAggregate().getCount()).isEqualTo(6);
+	}
+
+	@Test
+	public void shouldSelectInstallationsByVariant() {
+		// when
+		final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariant(androidVariantID,
+				0, 1, null);
+
+		// then
+		assertThat(pageResult).isNotNull();
+		assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
+		assertThat(pageResult.getAggregate().getCount()).isEqualTo(6);
+	}
+
+	@Test
+	public void shouldSelectInstallationsByDeviceTokenSearch() {
+		// when
+		final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariant(androidVariantID,
+				0, Integer.MAX_VALUE, "67890167890");
+		// then
+		assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
+	}
+
+	@Test
+	public void shouldSelectInstallationsByDeviceTypeSearch() {
+		// when
+		final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariant(androidVariantID,
+				0, Integer.MAX_VALUE, "Tablet");
+		// then
+		assertThat(pageResult.getResultList()).isNotEmpty().hasSize(3);
+	}
+
+	@Test
+	public void shouldSelectInstallationsByAliasSearch() {
+		// when
+		final PageResult<Installation, Count> pageResult = installationDao.findInstallationsByVariant(androidVariantID,
+				0, Integer.MAX_VALUE, "baz@");
+		// then
+		assertThat(pageResult.getResultList()).isNotEmpty().hasSize(1);
+	}
+
+	@Test(expected = PersistenceException.class)
+	public void testTooLongDeviceToken() {
+		AndroidVariant variant = new AndroidVariant();
+		variant.setName("Android Name");
+		variant.setGoogleKey("123");
+		variant.setProjectNumber("123");
+
+		entityManager.persist(variant);
+
+		Installation android1 = new Installation();
+		android1.setAlias("foo@bar.org");
+		android1.setDeviceToken(TestUtils.longString(4097));
+		android1.setVariant(variant);
+
+		installationDao.create(android1);
+
+		entityManager.flush();
+	}
+
+	@Test
+	public void testLongDeviceToken() {
+		AndroidVariant variant = new AndroidVariant();
+		variant.setName("Android Name");
+		variant.setGoogleKey("123");
+		variant.setProjectNumber("123");
+
+		entityManager.persist(variant);
+
+		Installation android1 = new Installation();
+		android1.setAlias("foo@bar.org");
+		android1.setDeviceToken(TestUtils.longString(4096));
+		android1.setVariant(variant);
+
+		installationDao.create(android1);
+
+		entityManager.flush();
+	}
+
+	private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories,
+			List<String> aliases, List<String> deviceTypes) {
+		return findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, false);
+	}
+
+	private List<String> findAllOldGCMDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories,
+			List<String> aliases, List<String> deviceTypes) {
+		return findAllDeviceTokenForVariantIDByCriteria(variantID, categories, aliases, deviceTypes, true);
+	}
+
+	private List<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories,
+			List<String> aliases, List<String> deviceTypes, boolean oldGCM) {
+		try {
+			ResultsStream<String> tokenStream = installationDao.findAllDeviceTokenForVariantIDByCriteria(variantID,
+					categories, aliases, deviceTypes, Integer.MAX_VALUE, null, oldGCM).executeQuery();
+			List<String> list = new ArrayList<>();
+			while (tokenStream.next()) {
+				list.add(tokenStream.get());
+			}
+			return list;
+		} catch (ResultStreamException e) {
+			throw new IllegalStateException(e);
+		}
+	}
 }

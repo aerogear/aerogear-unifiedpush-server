@@ -17,7 +17,9 @@
 
 package org.jboss.aerogear.unifiedpush.rest;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,6 +37,7 @@ import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 
 /**
  * Base class for all RESTful endpoints. Offers hooks for common features like validation
@@ -45,6 +48,9 @@ public abstract class AbstractBaseEndpoint extends AbstractEndpoint {
 
     @Inject
     private Validator validator;
+
+    @Inject
+    private MessageSource messageSource;
 
     @Inject
     private HttpServletRequest httpServletRequest;
@@ -78,6 +84,25 @@ public abstract class AbstractBaseEndpoint extends AbstractEndpoint {
         return Response.status(Response.Status.BAD_REQUEST)
                            .entity(responseObj);
     }
+
+    /**
+     * Helper function to create a 400 Bad Request response, containing a JSON map giving details about the exception
+     *
+     * @param e thrown exception
+     * @param source source validation entity
+     * @param suffix validation code suffix
+     * @param args message source args
+     * @return 400 Bad Request response, containing details on the constraint violations
+     */
+	protected ResponseBuilder createBadRequestResponse(Exception e, Class<?> source, String suffix, String... args) {
+		final Map<String, String> responseObj = new HashMap<>();
+
+		String code = source.getName().toLowerCase() + "." + suffix;
+		String message = messageSource.getMessage(code, args, Locale.getDefault());
+
+		responseObj.put(code, message);
+		return Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+	}
 
 	/**
 	 * Extract the username to be used in multiple queries
