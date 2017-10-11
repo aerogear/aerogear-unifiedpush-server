@@ -139,6 +139,8 @@ If you would like to help develop AeroGear you can join our [developer's mailing
 
 Also takes some time and skim the [contributor guide](http://aerogear.org/docs/guides/Contributing/)
 
+We are available on [Sonarcloud.io](https://sonarcloud.io/dashboard?id=org.jboss.aerogear.unifiedpush%3Aunifiedpush-parent) if you want to help us reduce our technical debt or improve our test coverage check us out there. It's a great way to get involved with your first PR. Check out the excellent guide on running [SonarQube](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+Maven) locally for more information.
+
 ## How to develop and run tests
 
 There is a dedicated guide to running and developing tests in [TESTS.md](./TESTS.md)
