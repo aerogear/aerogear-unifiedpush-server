@@ -22,15 +22,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.message.SenderConfig;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.service.AbstractNoCassandraServiceTest;
@@ -38,17 +34,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.context.ContextConfiguration;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.WorkQueueProcessor;
 
-@ContextConfiguration(classes = { SenderConfig.class })
 public class TestMessageRedelivery extends AbstractNoCassandraServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(TestMessageRedelivery.class);
 
 	private static final int NUMBER_OF_MESSAGES = 10000;
 	private static final int DEFAULT_QUEUE_SIZE = 256;
+	private static final int DEFAULT_WAIT = 3;
 
 	private UnifiedPushMessage message;
 	private FlatPushMessageInformation information;
@@ -58,10 +53,7 @@ public class TestMessageRedelivery extends AbstractNoCassandraServiceTest {
 	private static CountDownLatch delivered;
 	private static CountDownLatch failed;
 
-	private static final AtomicInteger counter = new AtomicInteger(0);
-
-	@Inject
-	private WorkQueueProcessor<MessageHolderWithTokens> event;
+	private WorkQueueProcessor<MessageHolderWithTokens> eventProcessor;
 
 	@Before
 	public void setUp() {
@@ -70,25 +62,23 @@ public class TestMessageRedelivery extends AbstractNoCassandraServiceTest {
 		deviceTokens = new ArrayList<>();
 
 		// Recreate WorkQueueProcessor for next test
-		event = WorkQueueProcessor.<MessageHolderWithTokens>builder().build();
+		eventProcessor = WorkQueueProcessor.<MessageHolderWithTokens>builder().build();
 	}
-
 
 	@Test
 	public void testMessageWillBeRedelivered() throws InterruptedException {
 		// given
 		variant = new AndroidVariant();
 		delivered = new CountDownLatch(NUMBER_OF_MESSAGES);
-		counter.set(0);
 
 		// Simulate taking first message only every time
 		for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
-			event.take(1).repeat(NUMBER_OF_MESSAGES).subscribe(s -> emulateMessageProcessingForRedelivery(s));
+			eventProcessor.take(1).repeat(NUMBER_OF_MESSAGES).subscribe(s -> emulateMessageProcessingForRedelivery(s));
 		}
 
 		// when
 		for (int i = 1; i <= NUMBER_OF_MESSAGES; i++) {
-			event.onNext(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
+			eventProcessor.onNext(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
 		}
 
 		// then
@@ -97,26 +87,47 @@ public class TestMessageRedelivery extends AbstractNoCassandraServiceTest {
 		}
 	}
 
-
 	@Test
 	public void testMessageCountMultipleSubscribers() throws InterruptedException {
 		// given
 		variant = new SimplePushVariant();
 		failed = new CountDownLatch(NUMBER_OF_MESSAGES);
-		counter.set(0);
 
 		for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
-			event.repeat(NUMBER_OF_MESSAGES).subscribe(s -> emulateRedeliverableMessageProcessing(s));
+			eventProcessor.repeat(NUMBER_OF_MESSAGES).subscribe(s -> emulateRedeliverableMessageProcessing(s));
 		}
 
 		// when
 		for (int i = 1; i <= NUMBER_OF_MESSAGES; i++) {
-			event.onNext(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
+			eventProcessor.onNext(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
 		}
 
 		// then
-		if (!failed.await(NUMBER_OF_MESSAGES + 1, TimeUnit.SECONDS)) {
+		if (!failed.await(DEFAULT_WAIT, TimeUnit.SECONDS)) {
 			fail(String.format("all messages must be delivered (remains %s)", failed.getCount()));
+		}
+	}
+
+	@Test
+	public void testTakeAndBuffer() throws InterruptedException {
+		// given
+		variant = new AndroidVariant();
+		delivered = new CountDownLatch(NUMBER_OF_MESSAGES);
+
+		eventProcessor.take(1).repeat().subscribe(s -> emulateMessageProcessingForRedelivery(s));
+
+		// when - Adding DEFAULT_QUEUE_SIZE messages
+		for (int i = 1; i <= NUMBER_OF_MESSAGES; i++) {
+			eventProcessor.onNext(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
+		}
+
+		// then
+		if (!delivered.await(DEFAULT_WAIT, TimeUnit.SECONDS)) {
+			fail(String.format("all messages must be delivered (remains %s)", delivered.getCount()));
+		}
+
+		if (delivered.getCount() != 0) {
+			fail(String.format("all messages must be delivered (remains %s)", delivered.getCount()));
 		}
 	}
 
@@ -125,22 +136,26 @@ public class TestMessageRedelivery extends AbstractNoCassandraServiceTest {
 		// given
 		variant = new SimplePushVariant();
 		failed = new CountDownLatch(DEFAULT_QUEUE_SIZE);
-		counter.set(0);
 
 		// when - Adding one more message will block this thread.
 		for (int i = 1; i <= DEFAULT_QUEUE_SIZE; i++) {
-			event.onNext(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
+			if (eventProcessor.getAvailableCapacity() <= 0){
+				fail(String.format("Event Processor is not alive"));
+			}
+
+			eventProcessor.onNext(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
 		}
 
 		for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
-			event.take(10).repeat().subscribe(s -> emulateRedeliverableMessageProcessing(s));
+			eventProcessor.take(10).repeat().subscribe(s -> emulateRedeliverableMessageProcessing(s));
 		}
 
 		// then
-		if (!failed.await(DEFAULT_QUEUE_SIZE + 1, TimeUnit.SECONDS)) {
+		if (!failed.await(DEFAULT_WAIT, TimeUnit.SECONDS)) {
 			fail(String.format("all messages must be delivered (remains %s)", failed.getCount()));
 		}
 	}
+
 	public void emulateMessageProcessingForRedelivery(MessageHolderWithTokens msg) {
 		if (msg.getVariant() instanceof AndroidVariant) {
 			logger.info("success #" + msg.getSerialId() + " " + Thread.currentThread().getName());

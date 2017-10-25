@@ -21,56 +21,48 @@ import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.message.SenderConfig;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.jboss.aerogear.unifiedpush.service.AbstractNoCassandraServiceTest;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.test.context.ContextConfiguration;
 
 import reactor.core.publisher.WorkQueueProcessor;
+public class TestMessageHolderWithTokens  {
 
-@ContextConfiguration(classes = { SenderConfig.class })
-public class TestMessageHolderWithTokens extends AbstractNoCassandraServiceTest {
+	private UnifiedPushMessage message;
+	private FlatPushMessageInformation information;
+	private Variant variant;
+	private Collection<String> deviceTokens;
+	private static CountDownLatch delivered;
 
+	private WorkQueueProcessor<MessageHolderWithTokens> eventProcessor;
 
-    private UnifiedPushMessage message;
-    private FlatPushMessageInformation information;
-    private Variant variant;
-    private Collection<String> deviceTokens;
-    private static CountDownLatch delivered;
+	@Before
+	public void setUp() {
+		information = new FlatPushMessageInformation();
+		message = new UnifiedPushMessage();
+		deviceTokens = new ArrayList<>();
+		delivered = new CountDownLatch(5);
 
-	@Inject
-	private WorkQueueProcessor<MessageHolderWithTokens> event;
+		// Recreate WorkQueueProcessor for next test
+		eventProcessor = WorkQueueProcessor.<MessageHolderWithTokens>builder().build();
+		eventProcessor.take(5).repeat().subscribe(s -> observeMessageHolderWithVariants(s));
+	}
 
-    @Before
-    public void setUp() {
-        information = new FlatPushMessageInformation();
-        message = new UnifiedPushMessage();
-        deviceTokens = new ArrayList<>();
-        delivered = new CountDownLatch(5);
+	@Test
+	public void test() throws InterruptedException {
+		variant = new AndroidVariant();
+		for (int i = 0; i < 5; i++) {
+			eventProcessor.onNext(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
+		}
+		delivered.await(5, TimeUnit.SECONDS);
+	}
 
-        if (event.downstreamCount() == 0)
-        	event.take(5).repeat().subscribe(s -> observeMessageHolderWithVariants(s));
-    }
-
-    @Test
-    public void test() throws InterruptedException {
-        variant = new AndroidVariant();
-        for (int i = 0; i < 5; i++) {
-            event.onNext(new MessageHolderWithTokens(information, message, variant, deviceTokens, i));
-        }
-        delivered.await(5, TimeUnit.SECONDS);
-    }
-
-    public void observeMessageHolderWithVariants(MessageHolderWithTokens msg) {
-        delivered.countDown();
-    }
+	public void observeMessageHolderWithVariants(MessageHolderWithTokens msg) {
+		delivered.countDown();
+	}
 
 }

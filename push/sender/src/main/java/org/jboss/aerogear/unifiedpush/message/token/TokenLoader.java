@@ -253,8 +253,16 @@ public class TokenLoader {
 	 */
 	private boolean tryToDispatchTokens(MessageHolderWithTokens msg) {
 		try {
-			if (!dispatchTokensEvent.alive())
+			if (!dispatchTokensEvent.alive()){
+				logger.error("Unable to send MessageHolderWithTokens, Flux is not alive");
 				return false;
+			}
+
+			if (dispatchTokensEvent.getAvailableCapacity() <= 0){
+				logger.warn("Unable to send MessageHolderWithTokens, No available capacity to Flux");
+				// TODO - Sleep 1 second and retry.
+				return false;
+			}
 
 			dispatchTokensEvent.onNext(msg);
 			return true;

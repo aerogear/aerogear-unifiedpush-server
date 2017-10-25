@@ -18,15 +18,16 @@ import reactor.core.publisher.WorkQueueProcessor;
 @Import({ ServiceConfig.class })
 @ComponentScan(basePackageClasses = { SenderConfig.class, SenderConfigurationProvider.class, TokenLoaderWrapper.class })
 public class SenderConfig {
+	public static final int BUFFER_SIZE = 256 * 256;
 
 	@Bean
 	public WorkQueueProcessor<MessageHolderWithTokens> getTokensProcessor() {
-		return WorkQueueProcessor.<MessageHolderWithTokens>builder().build();
+		return WorkQueueProcessor.<MessageHolderWithTokens>builder().bufferSize(BUFFER_SIZE).build();
 	}
 
 	@Bean
 	public TopicProcessor<MessageHolderWithVariants> getBatchProcessor() {
-		return TopicProcessor.<MessageHolderWithVariants>builder().build();
+		return TopicProcessor.<MessageHolderWithVariants>builder().bufferSize(BUFFER_SIZE).build();
 	}
 
 	@Bean
