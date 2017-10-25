@@ -57,7 +57,7 @@ public class TestMessageHolderWithTokens extends AbstractNoCassandraServiceTest 
         delivered = new CountDownLatch(5);
 
         if (event.downstreamCount() == 0)
-        	event.doOnNext(s -> observeMessageHolderWithVariants(s)).subscribe();
+        	event.take(5).repeat().subscribe(s -> observeMessageHolderWithVariants(s));
     }
 
     @Test

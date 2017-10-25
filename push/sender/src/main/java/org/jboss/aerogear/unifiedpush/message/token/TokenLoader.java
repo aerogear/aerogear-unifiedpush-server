@@ -33,7 +33,6 @@ import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.configuration.SenderConfiguration;
 import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
 import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
-import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
@@ -201,7 +200,7 @@ public class TokenLoader {
 									serialId, tokens.size(), variant.getType().getTypeName(), variant.getVariantID()));
 						} else {
 							logger.debug(String.format(
-									"Failing token loading transaction for batch token #%s for %s variant (%s), since queue is full, will retry...",
+									"Failing token loading transaction for batch token #%s for %s variant (%s), since previous batch failed",
 									serialId, variant.getType().getTypeName(), variant.getVariantID()));
 							return;
 						}
@@ -247,42 +246,22 @@ public class TokenLoader {
 
 	/**
 	 * Tries to dispatch tokens; returns true if tokens were successfully
-	 * queued. Detects when queue is full and in that case returns false.
+	 * queued.
 	 *
 	 * @return returns true if tokens were successfully queued; returns false if
-	 *         queue was full
+	 *         failed.
 	 */
 	private boolean tryToDispatchTokens(MessageHolderWithTokens msg) {
 		try {
+			if (!dispatchTokensEvent.alive())
+				return false;
+
 			dispatchTokensEvent.onNext(msg);
 			return true;
-		} catch (MessageDeliveryException e) {
-			Throwable cause = e.getCause();
-			if (isQueueFullException(cause)) {
-				return false;
-			}
-			throw e;
+		} catch (Exception e) {
+			logger.error("Failed to submit MessageHolderWithTokens to Flux", e);
+			return false;
 		}
-	}
-
-	/*
-	 * When queue is full, ActiveMQ/Artemis throws an instance of
-	 * org.apache.activemq.artemis.api.core.ActiveMQAddressFullException In
-	 * order to avoid hard dependency on that API for this check, we detect that
-	 * queue is full by analyzing the name of the thrown exception.
-	 *
-	 * @param e throwable thrown when JMS message delivery fails
-	 *
-	 * @return true if exceptions represents state when queue is full; false
-	 * otherwise
-	 */
-	private static boolean isQueueFullException(Throwable e) {
-		if (e instanceof Exception && e.getCause() != null) {
-			if ("ActiveMQAddressFullException".equals(e.getCause().getClass().getSimpleName())) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public static class TokenLoaderWrapperConfig {
