@@ -7,6 +7,7 @@ public abstract class AbstractEmailSender extends AbstractSender {
 	protected final static String PASSWORD_KEY = "aerogear.config.email.sender.password";
 	protected final static String FROMADDR_KEY = "aerogear.config.email.sender.fromaddress";
 	protected final static String SUBJECTT_KEY = "aerogear.config.email.sender.subject";
+	protected final static String PORT25_USE_TLS = "aerogear.config.email.sender.tlsenabled";
 
 	protected final static String MESSAGE_TMPL = "aerogear.config.email.sender.template";
 
