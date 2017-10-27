@@ -129,11 +129,28 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 	}
 
 	public enum DomainMatcher {
-		DOT(".", "(.*?)[.].*"), // Valid subdomain, match as few characters as
-								// possible (First occurrence).
-		DASH("-", "(.*)[-].*"), // Logical subdomain, match as many characters
-								// as possible (Last occurrence).
-		NONE("*", "(.*)"); // Alternative domain, match entire string
+		// Valid subdomain, match as few characters as possible (First
+		// occurrence).
+		DOT(".", "(.*?)[.].*") {
+			@Override
+			public String rootUrl(String protocol, String domain, String application) {
+				return protocol + "://" + application + seperator() + domain;
+			}
+		},
+		// Logical subdomain, match as many characters as possible (Last
+		// occurrence).
+		DASH("-", "(.*)[-].*") {
+			@Override
+			public String rootUrl(String protocol, String domain, String application) {
+				return protocol + "://" + application + seperator() + domain;
+			}
+		},
+
+		NONE("*", "(.*)") {
+			@Override
+			public String rootUrl(String protocol, String domain, String application) {
+				return protocol + "://" + application;			}
+		};
 
 		private final Pattern pattern;
 		private final String seperator;
@@ -166,6 +183,8 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 
 			return DomainMatcher.NONE;
 		}
+
+		public abstract String rootUrl(String protocol, String domain, String application);
 	}
 
 }

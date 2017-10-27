@@ -513,8 +513,8 @@
 		<failsafe.version>2.19.1</failsafe.version>
 		<cassandra.version>3.10</cassandra.version>
 		<cassandra-driver-core.version>3.3.0</cassandra-driver-core.version>
-		<cassandra-data.version>2.0.0.RC3</cassandra-data.version>
-		<spring-data.version>2.0.0.RC3</spring-data.version>
+		<cassandra-data.version>2.0.1.RELEASE</cassandra-data.version>
+		<spring-data.version>2.0.1.RELEASE</spring-data.version>
 
 		<ups.ddl_value>validate</ups.ddl_value>
 	</properties>

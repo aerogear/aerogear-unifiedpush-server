@@ -110,21 +110,20 @@ public class KeycloakServiceImpl implements IKeycloakService {
 			return;
 		}
 
-		String simpleApplicationName = pushApplication.getName().toLowerCase();
-		String applicationName = CLIENT_PREFIX + simpleApplicationName;
+		String applicationName = pushApplication.getName().toLowerCase();
+		String clientName = CLIENT_PREFIX + applicationName;
 		ClientRepresentation clientRepresentation = isClientExists(pushApplication);
 
 		if (this.oauth2Enabled && clientRepresentation == null) {
 			clientRepresentation = new ClientRepresentation();
 
-			clientRepresentation.setId(applicationName);
-			clientRepresentation.setClientId(applicationName);
+			clientRepresentation.setId(clientName);
+			clientRepresentation.setClientId(clientName);
 			clientRepresentation.setEnabled(true);
 
 			String domain = conf.getRooturlDomain();
 			String protocol = conf.getRooturlProtocol();
-			clientRepresentation.setRootUrl(
-					protocol + "://" + simpleApplicationName + conf.getRooturlMatcher().seperator() + domain);
+			clientRepresentation.setRootUrl(conf.getRooturlMatcher().rootUrl(protocol, domain, applicationName));
 			clientRepresentation.setRedirectUris(Arrays.asList("/*"));
 			clientRepresentation.setBaseUrl("/");
 
