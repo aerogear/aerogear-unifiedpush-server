@@ -35,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.datastax.driver.core.utils.UUIDs;
 
+@Transactional
 public class PushApplicationServiceTest extends AbstractCassandraServiceTest {
 
 	@Inject
@@ -44,7 +45,6 @@ public class PushApplicationServiceTest extends AbstractCassandraServiceTest {
 	private AliasService aliasService;
 
 	@Test
-	@Transactional
 	public void addPushApplication() {
 
 		PushApplication pa = new PushApplication();
@@ -62,7 +62,6 @@ public class PushApplicationServiceTest extends AbstractCassandraServiceTest {
 	}
 
 	@Test
-	@Transactional
 	public void updatePushApplication() {
 		PushApplication pa = new PushApplication();
 		pa.setName("EJB Container");
@@ -81,7 +80,6 @@ public class PushApplicationServiceTest extends AbstractCassandraServiceTest {
 	}
 
 	@Test
-	@Transactional
 	public void findByPushApplicationID() {
 		PushApplication pa = new PushApplication();
 		pa.setName("EJB Container");
@@ -102,7 +100,6 @@ public class PushApplicationServiceTest extends AbstractCassandraServiceTest {
 	}
 
 	@Test
-	@Transactional
 	public void findAllPushApplicationsForDeveloper() {
 		PushApplication pa = new PushApplication();
 		pa.setName("EJB Container");
@@ -117,7 +114,6 @@ public class PushApplicationServiceTest extends AbstractCassandraServiceTest {
 	}
 
 	@Test
-	@Transactional
 	public void removePushApplication() {
 		PushApplication pa = new PushApplication();
 		pa.setName("EJB Container");
@@ -137,7 +133,6 @@ public class PushApplicationServiceTest extends AbstractCassandraServiceTest {
 	}
 
 	@Test
-	@Transactional
 	public void findByPushApplicationIDForDeveloper() {
 		PushApplication pa = new PushApplication();
 		pa.setName("EJB Container");
@@ -154,8 +149,29 @@ public class PushApplicationServiceTest extends AbstractCassandraServiceTest {
 		assertThat(searchApplicationService.findByPushApplicationIDForDeveloper("123-3421")).isNull();
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+    public void shouldThrowErrorWhenCreatingAppWithExistingID() {
+        // Given
+        final String uuid = UUID.randomUUID().toString();
+
+        final PushApplication pa = new PushApplication();
+        pa.setName("EJB Container");
+        pa.setPushApplicationID(uuid);
+
+        final PushApplication pa2 = new PushApplication();
+        pa2.setName("EJB Container 2");
+        pa2.setPushApplicationID(uuid);
+
+        // When
+        pushApplicationService.addPushApplication(pa, new LoggedInUser(DEFAULT_USER));
+        assertThat(pushApplicationService.findByPushApplicationID(pa.getPushApplicationID()))
+                .isNotNull();
+
+        // Then
+        pushApplicationService.addPushApplication(pa2, new LoggedInUser(DEFAULT_USER));
+    }
+
 	@Test
-	@Transactional
 	public void removeApplicationAndDocuments() {
 		PushApplication pa = new PushApplication();
 		pa.setName("EJB Container");

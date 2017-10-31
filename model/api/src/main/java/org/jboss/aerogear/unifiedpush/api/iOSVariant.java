@@ -22,7 +22,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Base64;
+import java.util.Base64; 
 
 /**
  * The iOS variant class encapsulates APNs specific behavior.

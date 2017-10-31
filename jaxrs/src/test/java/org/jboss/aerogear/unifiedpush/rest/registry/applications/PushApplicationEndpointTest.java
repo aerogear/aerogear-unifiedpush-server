@@ -71,7 +71,7 @@ public class PushApplicationEndpointTest extends RestEndpointTest {
 		response = HttpBasicHelper.basic(target.request(), DEFAULT_USER, "password")
 				.post(Entity.entity(pushApplication, MediaType.APPLICATION_JSON_TYPE));
 
-		assertEquals(400, response.getStatus());
+		assertEquals(409, response.getStatus());
 		@SuppressWarnings("unchecked")
 		Map<String, String> message = response.readEntity(HashMap.class);
 

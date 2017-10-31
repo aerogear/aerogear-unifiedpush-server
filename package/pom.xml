@@ -31,8 +31,6 @@
 
 	<modules>
 		<module>../databases/initdb</module>
-		<module>../keycloak-theme/</module>
-		<module>../admin-ui</module>
 	</modules>
 
 	<dependencies>
@@ -45,21 +43,7 @@
 
 		<dependency>
 			<groupId>org.jboss.aerogear.unifiedpush</groupId>
-			<artifactId>unifiedpush-keycloak-theme</artifactId>
-			<type>tar.gz</type>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.aerogear.unifiedpush</groupId>
 			<artifactId>unifiedpush-initdb</artifactId>
-			<type>tar.gz</type>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.aerogear.unifiedpush</groupId>
-			<artifactId>unifiedpush-admin-ui</artifactId>
 			<type>tar.gz</type>
 			<version>${project.version}</version>
 		</dependency>

@@ -27,6 +27,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -37,7 +38,6 @@ import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
@@ -231,7 +231,7 @@ public class InstallationDaoTest {
 		assertThat(list).hasSize(0);
 	}
 
-	@Test
+    @Test(expected= EntityNotFoundException.class)
 	public void deleteNonExistingInstallation() {
 		Installation installation = new Installation();
 		installation.setId("2345");
@@ -242,16 +242,19 @@ public class InstallationDaoTest {
 	@Test
 	public void mergeCategories() {
 		// given
-		final SimplePushVariant variant = new SimplePushVariant();
-		variant.setName("SimplePush Variant Name");
+        final AndroidVariant variant = new AndroidVariant();
+        variant.setName("Android Variant Name");
+        variant.setGoogleKey("12");
+        variant.setProjectNumber("12");
 		entityManager.persist(variant);
 
 		final Installation installation = new Installation();
-		installation.setDeviceToken("http://test");
+        installation.setDeviceToken(DEVICE_TOKEN_1);
+
 		installation.setCategories(new HashSet<>(Arrays.asList(new Category("one"), new Category("two"))));
 
 		final Installation installation2 = new Installation();
-		installation2.setDeviceToken("http://test2");
+        installation2.setDeviceToken(DEVICE_TOKEN_2);
 		installation2.setCategories(new HashSet<>(Arrays.asList(new Category("one"), new Category("three"))));
 
 		installation.setVariant(variant);
@@ -425,21 +428,6 @@ public class InstallationDaoTest {
 
 		final SimplePushVariant variant = new SimplePushVariant();
 		variant.setName("SimplePush Variant Name");
-
-		// when
-		deviceTokenTest(installation, variant);
-	}
-
-	@Test
-	public void shouldSaveWhenValidateDeviceIdMPNSWindows() {
-		// given
-		final Installation installation = new Installation();
-		installation.setDeviceToken("https://s.notify.live.net/u/1/db3/HmQAAACsY7ZBMnNW6QnfPcHXC1gwvHFlPeujLy"
-				+ "aLyoJmTm79gofALwJGBefhxH_Rjpz4oAoK5O5zL2nQwaFZpLMpXUP/d2luZG93c3Bob25lZGVmYXVsdA/AGVGhYlaBG"
-				+ "GphX2C8gGmg/vedAL_DKqnF00b4O3NCIifacDEQ");
-
-		WindowsMPNSVariant variant = new WindowsMPNSVariant();
-		variant.setName("Windows MPNS Variant Name");
 
 		// when
 		deviceTokenTest(installation, variant);

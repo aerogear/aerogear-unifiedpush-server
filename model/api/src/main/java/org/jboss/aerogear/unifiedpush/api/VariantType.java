@@ -44,11 +44,6 @@ public enum VariantType {
     WINDOWS_WNS("windows_wns"),
 
     /**
-     * The type identifier for our Windows MPNS variants.
-     */
-    WINDOWS_MPNS("windows_mpns"),
-
-    /**
      * The type identifier for our Amazon Device Messaging (ADM) variants.
      */
     ADM("adm");
@@ -57,7 +52,6 @@ public enum VariantType {
     public static final String ADMQ = "ADM";
     public static final String IOSQ = "IOS";
     public static final String SIMPLEPUSHQ = "SIMPLE_PUSH";
-    public static final String WINDOWSMPNSQ = "WINDOWS_MPNS";
     public static final String WINDOWSWNSQ = "WINDOWS_WNS";
 
     private final String typeName;

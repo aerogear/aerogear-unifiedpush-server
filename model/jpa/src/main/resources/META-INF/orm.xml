@@ -131,9 +131,5 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             </basic>
         </attributes>
     </entity>
-    <entity class="org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant" access="FIELD">
-        <table name="windows_mpns_variant"/>
-        <discriminator-value>windows_mpns</discriminator-value>
-    </entity>
 
 </entity-mappings>

@@ -52,6 +52,12 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 
 	@Override
 	public void addPushApplication(PushApplication pushApp, LoggedInUser user) {
+	    final String id = pushApp.getPushApplicationID();
+
+        if (findByPushApplicationID(id) != null) {
+            throw new IllegalArgumentException("App ID already exists: " + id);
+        }
+        
 		pushApp.setDeveloper(user.get());
 		pushApplicationDao.create(pushApp);
 	}

@@ -1,9 +1,0 @@
-{
-  "realm" : "unifiedpush",
-  "auth-server-url" : "/auth",
-  "ssl-required" : "external",
-  "resource" : "unified-push-server",
-  "bearer-only" : true,
-  "disable-trust-manager" : true
-}
-

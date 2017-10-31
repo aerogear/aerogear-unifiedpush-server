@@ -16,6 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.migrator;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
 import liquibase.change.custom.CustomTaskChange;
 import liquibase.database.Database;
 import liquibase.database.jvm.JdbcConnection;
@@ -23,10 +31,6 @@ import liquibase.exception.CustomChangeException;
 import liquibase.exception.SetupException;
 import liquibase.exception.ValidationErrors;
 import liquibase.resource.ResourceAccessor;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CategoriesMigration implements CustomTaskChange {
     private String confirmationMessage;

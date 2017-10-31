@@ -15,7 +15,7 @@
 		<artifactId>aerogear-parent</artifactId>
 		<!-- NOTE: if updated for version of UPS dependencies, please update the
 			'aerogear.bom.version' as well -->
-		<version>0.2.20.2</version>
+		<version>1.1.2</version>
 	</parent>
 
 	<groupId>org.jboss.aerogear.unifiedpush</groupId>
@@ -47,7 +47,7 @@
 		<module>common</module>
 		<module>model</module>
 		<module>migrator</module>
-		<module>push</module>
+		<module>push-sender</module>
 		<module>service</module>
 		<module>jaxrs</module>
 		<module>dependencies</module>
@@ -90,20 +90,18 @@
 			<!-- AeroGear Dependencies BOM Imports -->
 			<dependency>
 				<groupId>org.jboss.aerogear</groupId>
-				<artifactId>aerogear-bom</artifactId>
+                <artifactId>aerogear-unifiedpush-bom</artifactId>
 				<version>${aerogear.bom.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 
-			<!-- AeroGear Android Dependencies BOM Imports -->
 			<dependency>
-				<groupId>org.jboss.aerogear</groupId>
-				<artifactId>aerogear-android-bom</artifactId>
-				<version>${aerogear.bom.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+                <groupId>org.jboss.spec.javax.servlet</groupId>
+                <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+                <version>1.0.2.Final</version>
+                <scope>provided</scope>
+            </dependency>
 
 			<dependency>
 				<groupId>org.hibernate</groupId>
@@ -451,20 +449,6 @@
 						</dependency>
 					</dependencies>
 				</plugin>
-
-				<plugin>
-					<groupId>org.bitstrings.maven.plugins</groupId>
-					<artifactId>dependencypath-maven-plugin</artifactId>
-					<version>1.1.1</version>
-					<executions>
-						<execution>
-							<id>set-all</id>
-							<goals>
-								<goal>set</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -482,13 +466,14 @@
 			and what the Maven compiler actually use. -->
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
-		<wildfly-maven-plugin.version>1.1.0.Alpha11</wildfly-maven-plugin.version>
+		<wildfly-maven-plugin.version>1.2.0.Final</wildfly-maven-plugin.version>
 
-		<aerogear.bom.version>0.2.20.2</aerogear.bom.version>
+        <aerogear.bom.version>1.1.2</aerogear.bom.version>
+        <admin-ui.version>1.2.6</admin-ui.version>
 
 		<!-- Override versions of AeroGear BOMs -->
 		<junit.version>4.12</junit.version>
-		<keycloak.version>2.5.5.Final</keycloak.version>
+		<keycloak.version>3.2.1.Final</keycloak.version>
 		<hibernate.version>5.0.10.Final</hibernate.version>
 		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 
@@ -544,33 +529,6 @@
 						<scope>test</scope>
 					</dependency>
 
-					<dependency>
-						<groupId>org.arquillian.container</groupId>
-						<artifactId>arquillian-container-chameleon</artifactId>
-						<version>1.0.0.Beta2</version>
-						<scope>test</scope>
-						<exclusions>
-							<exclusion>
-								<groupId>commons-lang</groupId>
-								<artifactId>commons-lang</artifactId>
-							</exclusion>
-						</exclusions>
-					</dependency>
-
-					<dependency>
-						<groupId>org.jboss.arquillian.extension</groupId>
-						<artifactId>arquillian-transaction-jta</artifactId>
-						<version>1.0.3.Final</version>
-						<scope>test</scope>
-					</dependency>
-
-					<dependency>
-						<groupId>org.jboss.shrinkwrap.resolver</groupId>
-						<artifactId>shrinkwrap-resolver-impl-maven-archive</artifactId>
-						<version>2.2.4</version>
-						<scope>test</scope>
-					</dependency>
-
 					<!-- Hibernate Validator also requires an implementation of the Unified
 						Expression Language (JSR 341). http://hibernate.org/validator/documentation/getting-started/ -->
 					<dependency>
@@ -584,57 +542,6 @@
 						<groupId>org.glassfish.web</groupId>
 						<artifactId>javax.el</artifactId>
 						<version>2.2.4</version>
-						<scope>test</scope>
-					</dependency>
-
-					<dependency>
-						<groupId>org.wildfly.extras.creaper</groupId>
-						<artifactId>creaper-core</artifactId>
-						<version>1.6.1</version>
-						<exclusions>
-							<exclusion>
-								<groupId>org.jboss.as</groupId>
-								<artifactId>jboss-as-controller-client</artifactId>
-							</exclusion>
-							<exclusion>
-								<groupId>org.jboss.as</groupId>
-								<artifactId>jboss-as-cli</artifactId>
-							</exclusion>
-						</exclusions>
-						<scope>test</scope>
-					</dependency>
-
-					<dependency>
-						<groupId>org.wildfly.extras.creaper</groupId>
-						<artifactId>creaper-commands</artifactId>
-						<version>1.6.1</version>
-						<exclusions>
-							<exclusion>
-								<groupId>org.wildfly</groupId>
-								<artifactId>wildfly-patching</artifactId>
-							</exclusion>
-						</exclusions>
-						<scope>test</scope>
-					</dependency>
-
-					<dependency>
-						<groupId>org.wildfly.core</groupId>
-						<artifactId>wildfly-controller-client</artifactId>
-						<version>2.2.1.Final</version>
-						<scope>test</scope>
-					</dependency>
-
-					<dependency>
-						<groupId>org.wildfly.core</groupId>
-						<artifactId>wildfly-cli</artifactId>
-						<version>2.2.1.Final</version>
-						<scope>test</scope>
-					</dependency>
-
-					<dependency>
-						<groupId>org.wildfly.core</groupId>
-						<artifactId>wildfly-patching</artifactId>
-						<version>2.2.1.Final</version>
 						<scope>test</scope>
 					</dependency>
 

@@ -199,10 +199,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
 	@Override
 	public void removeInstallations(List<Installation> installations) {
-		// uh... :)
-		for (Installation installation : installations) {
-			removeInstallation(installation);
-		}
+        // uh..., fancy method reference :)
+        installations.forEach(this::removeInstallation);
 	}
 
 	@Override
@@ -334,7 +332,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		}
 	}
 
-    private List<String> convertToNames(Set<Category> categories) {
+    private static List<String> convertToNames(Set<Category> categories) {
         return categories.stream().map(Category::getName).collect(Collectors.toList());
     }
 

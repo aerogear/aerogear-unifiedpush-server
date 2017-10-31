@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.jboss.aerogear.unifiedpush</groupId>
         <artifactId>unifiedpush-parent</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.0.SNAPSHOT</version>
     </parent>
 
     <artifactId>unifiedpush-dist</artifactId>
@@ -68,9 +68,9 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>unifiedpush-admin-ui</artifactId>
-                                    <version>${project.version}</version>
+                                    <groupId>org.aerogear.unifiedpush</groupId>
+                                    <artifactId>admin-ui</artifactId>
+                                    <version>${admin-ui.version}</version>
                                     <classifier>sources</classifier>
                                 </artifactItem>
                                 <artifactItem>

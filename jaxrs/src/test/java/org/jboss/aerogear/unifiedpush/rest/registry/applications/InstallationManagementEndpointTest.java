@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
+ 
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;

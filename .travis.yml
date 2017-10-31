@@ -1,6 +1,13 @@
 language: java
 
-sudo: false
+sudo: required
+
+# required for oraclejdk9
+dist: trusty
+
+# required for oraclejdk9
+group: edge
+
 cache:
   directories:
     - $HOME/.m2
@@ -8,12 +15,15 @@ cache:
 jdk:
   - openjdk8
   - oraclejdk8
-dist: trusty
+  - oraclejdk9
+
+matrix:
+  allow_failures:
+    - jdk: oraclejdk9
 
 branches:
   only:
     - master
-    - GSOC_2017_kafka
 
 before_install: 
   - "npm install -g grunt-cli bower@1.3.9"

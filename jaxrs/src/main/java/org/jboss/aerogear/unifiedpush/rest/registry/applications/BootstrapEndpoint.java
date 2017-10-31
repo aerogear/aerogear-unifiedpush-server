@@ -16,14 +16,20 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import com.qmino.miredot.annotations.BodyType;
-import com.qmino.miredot.annotations.ReturnType;
+import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 
 import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.SimplePushVariant;
-import org.jboss.aerogear.unifiedpush.api.WindowsMPNSVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
@@ -34,15 +40,8 @@ import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
-import javax.validation.ConstraintViolationException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
+import com.qmino.miredot.annotations.BodyType;
+import com.qmino.miredot.annotations.ReturnType;
 
 @Component
 @Path("/applications/bootstrap")
@@ -121,29 +120,14 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
 
         // Windows around?
         if (form.getWindowsVariantName() != null) {
+            // MPNS is no longer supported
+            WindowsWNSVariant wnsVariant = new WindowsWNSVariant();
+            wnsVariant.setName(form.getWindowsVariantName());
+            wnsVariant.setSid(form.getWindowsSid());
+            wnsVariant.setClientSecret(form.getWindowsClientSecret());
 
-            final String windowsType = form.getWindowsType().toLowerCase();
-
-            switch (windowsType) {
-                case "mpns":
-                    WindowsMPNSVariant mpnsVariant = new WindowsMPNSVariant();
-                    mpnsVariant.setName(form.getWindowsVariantName());
-
-                    // store ref:
-                    windowsVariant = mpnsVariant;
-
-                    break;
-                case "wns":
-                    WindowsWNSVariant wnsVariant = new WindowsWNSVariant();
-                    wnsVariant.setName(form.getWindowsVariantName());
-                    wnsVariant.setSid(form.getWindowsSid());
-                    wnsVariant.setClientSecret(form.getWindowsClientSecret());
-
-                    // store ref:
-                    windowsVariant = wnsVariant;
-
-                    break;
-            }
+            // store ref:
+            windowsVariant = wnsVariant;
 
             // store the model, add variant references and merge:
             variantService.addVariant(windowsVariant, extractUsername());
@@ -160,7 +144,7 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
             pushAppService.addVariant(pushApplication, simplePushVariant);
         }
 
-        // Android around ?
+        // Adm around ?
         if (form.getAdmVariantName() != null) {
             admVariant = new AdmVariant();
             admVariant.setName(form.getAdmVariantName());

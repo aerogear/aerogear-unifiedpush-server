@@ -25,4 +25,5 @@
     <include file="1.0.2/releasechanges.xml" relativeToChangelogFile="true"/>
     <include file="1.0.3/releasechanges.xml" relativeToChangelogFile="true"/>
     <include file="1.1.0-Final/releasechanges.xml" relativeToChangelogFile="true"/>
+    <include file="1.2.0/releasechanges.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

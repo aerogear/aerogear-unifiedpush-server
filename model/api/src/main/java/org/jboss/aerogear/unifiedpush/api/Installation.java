@@ -153,7 +153,7 @@ public class Installation extends BaseModel {
     public Set<Category> getCategories() {
         return categories;
     }
-
+ 
     /**
      * A reliable way of determining the platform type
      * for an installation. FOR ADMIN UI ONLY - Helps with setting up Routes

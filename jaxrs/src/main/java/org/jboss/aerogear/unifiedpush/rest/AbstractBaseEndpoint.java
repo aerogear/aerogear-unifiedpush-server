@@ -104,6 +104,25 @@ public abstract class AbstractBaseEndpoint extends AbstractEndpoint {
 		return Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 	}
 
+    /**
+     * Helper function to create a 400 Bad Request response, containing a JSON map giving details about the exception
+     *
+     * @param e thrown exception
+     * @param source source validation entity
+     * @param suffix validation code suffix
+     * @param args message source args
+     * @return 409 Bad Request response, containing details on the constraint violations
+     */
+	protected ResponseBuilder createConflictRequestResponse(Exception e, Class<?> source, String suffix, String... args) {
+		final Map<String, String> responseObj = new HashMap<>();
+
+		String code = source.getName().toLowerCase() + "." + suffix;
+		String message = messageSource.getMessage(code, args, Locale.getDefault());
+
+		responseObj.put(code, message);
+		return Response.status(Response.Status.CONFLICT).entity(responseObj);
+	}
+
 	/**
 	 * Extract the username to be used in multiple queries
 	 *

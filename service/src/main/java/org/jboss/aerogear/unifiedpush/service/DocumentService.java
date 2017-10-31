@@ -8,15 +8,12 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
-import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 
 public interface DocumentService {
 
 	DocumentContent save(DocumentContent doc);
 
 	DocumentContent save(DocumentMetadata metadata, String content, String id);
-
-	void save(PushApplication pushApplication, MessagePayload payload, boolean overwrite);
 
 	void delete(String pushApplicationId);
 

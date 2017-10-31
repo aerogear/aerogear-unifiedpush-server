@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.UUID;
 
@@ -72,6 +73,7 @@ public class PushApplicationEndpoint extends AbstractManagementEndpoint {
      *
      * @statuscode 201 The PushApplication Variant created successfully
      * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 409 The PushApplication already exists
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -79,24 +81,25 @@ public class PushApplicationEndpoint extends AbstractManagementEndpoint {
     @ReturnType("org.jboss.aerogear.unifiedpush.api.PushApplication")
     public Response registerPushApplication(PushApplication pushApp) {
         try {
-        	// some validation
             validateModelClass(pushApp);
         } catch (ConstraintViolationException cve) {
-
-            // Build and return the 400 (Bad Request) response
-            ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
-
-            return builder.build();
+            return createBadRequestResponse(cve.getConstraintViolations()).build();
         }
 
         try {
 	        // Create Application
 	        pushAppService.addPushApplication(pushApp, extractUsername());
-        } catch (DataIntegrityViolationException die) {
-        	return createBadRequestResponse(die, PushApplication.class, PUSH_APP_UNIQUE_NAME_CODE, pushApp.getName()).build();
+        } catch (DataIntegrityViolationException | IllegalArgumentException die) {
+        	return createConflictRequestResponse(die, PushApplication.class, PUSH_APP_UNIQUE_NAME_CODE, pushApp.getName()).build();
         }
 
-        return Response.created(UriBuilder.fromResource(PushApplicationEndpoint.class).path(String.valueOf(pushApp.getPushApplicationID())).build()).entity(pushApp)
+		URI uri = UriBuilder.fromResource(PushApplicationEndpoint.class)
+                .path(pushApp.getPushApplicationID())
+                .build();
+
+        return Response
+                .created(uri)
+                .entity(pushApp)
                 .build();
     }
 

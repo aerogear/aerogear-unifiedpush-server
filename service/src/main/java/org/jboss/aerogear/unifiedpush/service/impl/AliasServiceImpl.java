@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.NullAlias;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
@@ -100,7 +101,7 @@ public class AliasServiceImpl implements AliasService {
 	@Override
 	public Alias find(String pushApplicationId, String alias) {
 		if (StringUtils.isEmpty(alias))
-			return null;
+			return NullAlias.getAlias(pushApplicationId);
 
 		return aliasCrudService.find(StringUtils.isEmpty(pushApplicationId) ? null : UUID.fromString(pushApplicationId),
 				alias);

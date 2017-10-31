@@ -17,9 +17,9 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.NullAlias;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
-import org.jboss.aerogear.unifiedpush.document.MessagePayload;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
@@ -88,13 +88,11 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 
 			// Register alias
 			PushApplication pushApplication = applicationService.findByVariantID(DEFAULT_VARIENT_ID);
+			DocumentMetadata metadata = getMetadata(pushApplication, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_DATABASE);
 
-			// Save alias should return without saving, device is not enabled.
-			MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
-					"{TEST JSON}", DEFAULT_DEVICE_DATABASE);
-			documentService.save(pushApplication, msgPayload, false);
-			DocumentContent document = documentService.findLatest(getMetadata(pushApplication, DEFAULT_DEVICE_ALIAS,
-					DEFAULT_DEVICE_DATABASE), null);
+			// Save once
+			documentService.save(metadata, "{TEST JSON}", null);
+			DocumentContent document = documentService.findLatest(metadata, null);
 
 			// Enable device
 			String code = verificationService.initiateDeviceVerification(inst, variant);
@@ -103,9 +101,8 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 			Assert.assertTrue(results != null && results.equals(VerificationResult.SUCCESS));
 
 			// Re-save device
-			documentService.save(pushApplication, msgPayload, false);
-			document = documentService.findLatest(getMetadata(pushApplication, DEFAULT_DEVICE_ALIAS,
-					DEFAULT_DEVICE_DATABASE), null);
+			documentService.save(metadata, "{TEST JSON}", null);
+			document = documentService.findLatest(metadata, null);
 
 			Assert.assertTrue(document != null && document.getContent().equals("{TEST JSON}"));
 		} catch (Throwable e) {
@@ -124,15 +121,14 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 			// Nothing to do
 		}
 
+		// Register alias
 		PushApplication pushApplication = applicationService.findByVariantID(DEFAULT_VARIENT_ID);
-
-		MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
-				"{TEST JSON NEWEST}", DEFAULT_DEVICE_DATABASE);
+		DocumentMetadata metadata = getMetadata(pushApplication, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_DATABASE);
 
 		// Save alias should return without saving, device is not enabled.
-		documentService.save(pushApplication, msgPayload, false);
-		DocumentContent document = documentService
-				.findLatest(getMetadata(pushApplication, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_DATABASE), null);
+		documentService.save(metadata, "{TEST JSON NEWEST}", null);
+
+		DocumentContent document = documentService.findLatest(metadata, null);
 
 		Assert.assertTrue(document != null && document.getContent().equals("{TEST JSON NEWEST}"));
 	}
@@ -140,14 +136,15 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 	@Test
 	@Transactional
 	public void saveGlobalDocumentTest() {
+		// Register alias
 		PushApplication pushApplication = applicationService.findByVariantID(DEFAULT_VARIENT_ID);
 
-		MessagePayload msgPayload = new MessagePayload(
-				UnifiedPushMessage.withAlias(DocumentMetadata.NULL_ALIAS.toString()), "{TEST JSON NULL_ALIAS}",
-				DEFAULT_DEVICE_DATABASE);
+		DocumentMetadata metadata = new DocumentMetadata(pushApplication.getPushApplicationID(),
+				DEFAULT_DEVICE_DATABASE, NullAlias.getAlias(pushApplication.getPushApplicationID()));
 
 		// Save alias should return without saving, device is not enabled.
-		documentService.save(pushApplication, msgPayload, false);
+		documentService.save(metadata, "{TEST JSON NULL_ALIAS}", null);
+
 		DocumentContent document = documentService.findLatest(
 				getMetadata(pushApplication, DocumentMetadata.NULL_ALIAS.toString(), DEFAULT_DEVICE_DATABASE), null);
 
@@ -175,12 +172,15 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 
 		// Register alias
 		PushApplication pushApplication = applicationService.findByVariantID(variant.getVariantID());
+		Alias alias1 = new Alias(UUID.fromString(pushApplication.getPushApplicationID()), UUIDs.timeBased(),
+				DEFAULT_DEVICE_ALIAS);
+		aliasService.create(alias1);
 
-		MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
-				"{TEST JSON}", DEFAULT_DEVICE_DATABASE);
+		DocumentMetadata metadata = new DocumentMetadata(pushApplication.getPushApplicationID(),
+				DEFAULT_DEVICE_DATABASE, alias1);
 
-		// Save alias should return without saving, divice is not emabled.
-		documentService.save(pushApplication, msgPayload, false);
+		documentService.save(metadata, "{TEST JSON}", null);
+
 		DocumentContent document = documentService
 				.findLatest(getMetadata(pushApplication, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_DATABASE), null);
 
@@ -209,21 +209,17 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 		// Register alias
 		PushApplication pushApplication = applicationService.findByVariantID(variant.getVariantID());
 
-		MessagePayload msgPayload = new MessagePayload(UnifiedPushMessage.withAlias(DEFAULT_DEVICE_ALIAS),
-				"{TEST JSON}", DEFAULT_DEVICE_DATABASE);
-
+		DocumentMetadata metadata = getMetadata(pushApplication, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_DATABASE);
 		// Save once
-		documentService.save(pushApplication, msgPayload, true);
+		documentService.save(metadata, "{TEST JSON}", null);
 		DocumentContent document = documentService
 				.findLatest(getMetadata(pushApplication, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_DATABASE), null);
 
 		Assert.assertTrue(document != null && document.getContent().equals("{TEST JSON}"));
 
-		msgPayload.setPayload("{TEST JSON 2}");
 		// save 2nd time and check that it was overwritten
-		documentService.save(pushApplication, msgPayload, true);
-		document = documentService
-				.findLatest(getMetadata(pushApplication, DEFAULT_DEVICE_ALIAS, DEFAULT_DEVICE_DATABASE), null);
+		documentService.save(metadata, "{TEST JSON 2}", null);
+		document = documentService.findLatest(metadata, null);
 
 		Assert.assertTrue(document != null && document.getContent().equals("{TEST JSON 2}"));
 	}
@@ -255,18 +251,18 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 	@Transactional
 	public void testNullAliasDocument() {
 		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
-		PushApplication pushApp = applicationService.findByVariantID(variant.getVariantID());
+		PushApplication pushApplication = applicationService.findByVariantID(variant.getVariantID());
 
 		UnifiedPushMessage message = new UnifiedPushMessage();
 		message.setCriteria(new Criteria());
 		message.getCriteria().setAliases(new ArrayList<>());
 		message.getCriteria().getAliases().add(null);
-		MessagePayload payload = new MessagePayload(message, "{TEST PAYLOAD}");
 
-		documentService.save(pushApp, payload, true);
+		DocumentMetadata metadata = getMetadata(pushApplication, null, DocumentMetadata.NULL_DATABASE);
+		// Save
+		documentService.save(metadata, "{TEST PAYLOAD}", null);
 
-		DocumentContent latest = documentService.findLatest(getMetadata(pushApp, null, DocumentMetadata.NULL_DATABASE),
-				null);
+		DocumentContent latest = documentService.findLatest(metadata, null);
 		Assert.assertTrue(latest != null && latest.getContent().equals("{TEST PAYLOAD}"));
 	}
 
@@ -274,20 +270,20 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 	@Transactional
 	public void testNullDocumentIds() {
 		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
-		PushApplication pushApp = applicationService.findByVariantID(variant.getVariantID());
+		PushApplication pushApplication = applicationService.findByVariantID(variant.getVariantID());
 
 		UnifiedPushMessage message = new UnifiedPushMessage();
 		message.setCriteria(new Criteria());
 		message.getCriteria().setAliases(new ArrayList<>());
 		message.getCriteria().getAliases().add(null);
-		MessagePayload payload1 = new MessagePayload(message, "{TEST PAYLOAD1}", DocumentMetadata.NULL_DATABASE);
-		MessagePayload payload2 = new MessagePayload(message, "{TEST PAYLOAD2}", DocumentMetadata.NULL_DATABASE);
 
-		documentService.save(pushApp, payload1, true);
-		documentService.save(pushApp, payload2, true);
+		DocumentMetadata metadata = getMetadata(pushApplication, null, DocumentMetadata.NULL_DATABASE);
 
-		DocumentContent latest = documentService.findLatest(getMetadata(pushApp, null, DocumentMetadata.NULL_DATABASE),
-				null);
+		// Save
+		documentService.save(metadata, "{TEST PAYLOAD1}", null);
+		documentService.save(metadata, "{TEST PAYLOAD2}", null);
+
+		DocumentContent latest = documentService.findLatest(metadata, null);
 
 		Assert.assertTrue(latest != null && latest.getContent().equals("{TEST PAYLOAD2}"));
 	}
