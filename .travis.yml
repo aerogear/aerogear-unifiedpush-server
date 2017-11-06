@@ -1,6 +1,6 @@
 language: java
 
-sudo: required
+sudo: false
 
 # required for oraclejdk9
 dist: trusty

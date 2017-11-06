@@ -10,9 +10,9 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 public interface VerificationService {
 	public static final String DEVNULL_NOTIFICATIONS_VARIANT = "NULL-NOTIFICATIONS-VARIANT";
 
-    public static boolean isDevNullVariant(String variantName){
-    	return VerificationService.DEVNULL_NOTIFICATIONS_VARIANT.equals(variantName);
-    }
+	public static boolean isDevNullVariant(String variantName) {
+		return VerificationService.DEVNULL_NOTIFICATIONS_VARIANT.equals(variantName);
+	}
 
 	/**
 	 * Sends a verification request to the device represented by the
@@ -57,12 +57,6 @@ public interface VerificationService {
 		/**
 		 * Verification was wrong
 		 */
-		FAIL,
-		/**
-		 * The verification attempt for the installation is unknown by the
-		 * system. Whether this installation was never issued a verification
-		 * request before or the verification data has expired is unspecified.
-		 */
-		UNKNOWN
+		FAIL
 	}
 }

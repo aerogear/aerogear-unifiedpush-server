@@ -21,7 +21,11 @@ import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jboss.aerogear.unifiedpush.ApplicationUtil;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+
 import org.jboss.aerogear.unifiedpush.rest.RestWebApplication;
 import org.jboss.logging.Logger;
 import org.keycloak.adapters.KeycloakConfigResolver;
@@ -30,10 +34,20 @@ import org.keycloak.adapters.spi.HttpFacade.Request;
 import org.keycloak.common.util.KeycloakUriBuilder;
 import org.keycloak.constants.ServiceUrlConstants;
 
-public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
+@WebListener
+public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver, ServletContextListener {
 	private static final Logger log = Logger.getLogger(PathBasedKeycloakConfigResolver.class);
 
-	private final Map<String, CustomKeycloakDeployment> cache = new ConcurrentHashMap<String, CustomKeycloakDeployment>();
+	private static final Map<String, CustomKeycloakDeployment> cache = new ConcurrentHashMap<String, CustomKeycloakDeployment>();
+	private static ServletContext context;
+
+	public void contextInitialized(ServletContextEvent sce) {
+		context = sce.getServletContext();
+	}
+
+	public void contextDestroyed(ServletContextEvent sce) {
+		context = null;
+	}
 
 	@Override
 	public KeycloakDeployment resolve(Request request) {
@@ -47,7 +61,7 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 
 		CustomKeycloakDeployment deployment = cache.get(realm);
 		if (null == deployment) {
-			InputStream is = ApplicationUtil.getServletContext().getResourceAsStream("/WEB-INF/" + realm + ".json");
+			InputStream is = context.getResourceAsStream("/WEB-INF/" + realm + ".json");
 
 			if (is == null) {
 				throw new IllegalStateException("Not able to find the file /" + realm + ".json");

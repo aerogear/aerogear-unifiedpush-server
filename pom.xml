@@ -90,18 +90,18 @@
 			<!-- AeroGear Dependencies BOM Imports -->
 			<dependency>
 				<groupId>org.jboss.aerogear</groupId>
-                <artifactId>aerogear-unifiedpush-bom</artifactId>
+				<artifactId>aerogear-unifiedpush-bom</artifactId>
 				<version>${aerogear.bom.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 
 			<dependency>
-                <groupId>org.jboss.spec.javax.servlet</groupId>
-                <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-                <version>1.0.2.Final</version>
-                <scope>provided</scope>
-            </dependency>
+				<groupId>org.jboss.spec.javax.servlet</groupId>
+				<artifactId>jboss-servlet-api_3.0_spec</artifactId>
+				<version>1.0.2.Final</version>
+				<scope>provided</scope>
+			</dependency>
 
 			<dependency>
 				<groupId>org.hibernate</groupId>
@@ -244,17 +244,17 @@
 				<version>${fasterxml.version}</version>
 			</dependency>
 
-            <dependency>
-                <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                <artifactId>jackson-jaxrs-base</artifactId>
-                <version>${fasterxml.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.jaxrs</groupId>
+				<artifactId>jackson-jaxrs-base</artifactId>
+				<version>${fasterxml.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                <artifactId>jackson-jaxrs-json-provider</artifactId>
-                <version>${fasterxml.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.jaxrs</groupId>
+				<artifactId>jackson-jaxrs-json-provider</artifactId>
+				<version>${fasterxml.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -290,8 +290,41 @@
 
 			<dependency>
 				<groupId>org.keycloak</groupId>
+				<artifactId>keycloak-adapter-spi</artifactId>
+				<version>${keycloak.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.keycloak</groupId>
+				<artifactId>keycloak-wildfly-adapter</artifactId>
+				<version>${keycloak.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.keycloak</groupId>
+				<artifactId>keycloak-undertow-adapter</artifactId>
+				<version>${keycloak.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.keycloak</groupId>
 				<artifactId>keycloak-jboss-adapter-core</artifactId>
 				<version>${keycloak.version}</version>
+			</dependency>
+
+			<!-- infinispan version policy -->
+			<dependency>
+				<groupId>org.infinispan</groupId>
+				<artifactId>infinispan-core</artifactId>
+				<version>8.2.8.Final</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.infinispan</groupId>
+				<artifactId>infinispan-cachestore-remote</artifactId>
+				<version>8.2.8.Final</version>
+				<scope>provided</scope>
 			</dependency>
 
 			<!-- Spring -->
@@ -457,7 +490,7 @@
 		<java.version>1.8</java.version>
 
 		<!-- Override Areogear BOM -->
-		<resteasy.version>3.0.19.Final</resteasy.version>
+		<resteasy.version>3.0.24.Final</resteasy.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -468,12 +501,12 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<wildfly-maven-plugin.version>1.2.0.Final</wildfly-maven-plugin.version>
 
-        <aerogear.bom.version>1.1.2</aerogear.bom.version>
-        <admin-ui.version>1.2.6</admin-ui.version>
+		<aerogear.bom.version>1.1.2</aerogear.bom.version>
+		<admin-ui.version>1.2.6</admin-ui.version>
 
 		<!-- Override versions of AeroGear BOMs -->
 		<junit.version>4.12</junit.version>
-		<keycloak.version>3.2.1.Final</keycloak.version>
+		<keycloak.version>3.4.0.Final</keycloak.version>
 		<hibernate.version>5.0.10.Final</hibernate.version>
 		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 
@@ -574,20 +607,20 @@
 				</dependencies>
 			</dependencyManagement>
 
-			 <dependencies>
+			<dependencies>
 				<dependency>
-				    <groupId>ch.qos.logback</groupId>
-				    <artifactId>logback-core</artifactId>
-				    <version>1.1.3</version>
-				    <scope>test</scope>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-core</artifactId>
+					<version>1.1.3</version>
+					<scope>test</scope>
 				</dependency>
 				<dependency>
-				    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                    <version>1.1.3</version>
-				    <scope>test</scope>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+					<version>1.1.3</version>
+					<scope>test</scope>
 				</dependency>
-            </dependencies>
+			</dependencies>
 		</profile>
 
 		<!-- Builds the distribution. Usage: - mvn clean install -Pdist,test Preparing/Performing

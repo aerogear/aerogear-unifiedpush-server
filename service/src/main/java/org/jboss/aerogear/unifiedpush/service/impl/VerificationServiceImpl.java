@@ -8,17 +8,19 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.infinispan.manager.CacheContainer;
+import org.infinispan.manager.EmbeddedCacheManager;
+import org.infinispan.remoting.transport.Transport;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCode;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCodeKey;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
@@ -37,7 +39,7 @@ public class VerificationServiceImpl implements VerificationService {
 	private final static int VERIFICATION_CODE_LENGTH = 5;
 	private final Logger logger = LoggerFactory.getLogger(VerificationServiceImpl.class);
 
-	private ConcurrentMap<Object, Set<Object>> deviceToToken;
+	private ConcurrentMap<OtpCodeKey, Set<Object>> deviceToToken;
 
 	@Inject
 	private IConfigurationService configuration;
@@ -52,21 +54,50 @@ public class VerificationServiceImpl implements VerificationService {
 	@Inject
 	private OtpCodeService codeService;
 
+	protected CacheContainer cacheManager;
 
 	@PostConstruct
 	private void startup() {
-		CacheContainer container;
-
 		try {
-			Context ctx = new InitialContext();
-			container = (CacheContainer) ctx.lookup("java:jboss/infinispan/Aerobase");
+			if (cacheManager == null) {
+				synchronized (this) {
+					if (cacheManager == null) {
+						cacheManager = (CacheContainer) new InitialContext().lookup("java:jboss/infinispan/Aerobase");
+						if (EmbeddedCacheManager.class.isAssignableFrom(cacheManager.getClass())) {
+							initContainerManaged(cacheManager);
+						}
+					}
+				}
 
-			deviceToToken = container.getCache("aerobase");
+				logger.info("Using container managed Infinispan cache container, lookup={}",
+						"java:jboss/infinispan/Aerobase");
+			}
 		} catch (NamingException e) {
-			logger.warn("Unable to locate infinispan cache installationverification, rolling back to ConcurrentHashMap impl!");
-			deviceToToken = new ConcurrentHashMap<>();
+			logger.warn("Unable to lookup infinispan cache java:jboss/infinispan/Aerobase");
+		} finally {
+			synchronized (this) {
+				if (deviceToToken == null) {
+					logger.warn(
+							"Unable to locate infinispan cache installationverification, rolling back to ConcurrentHashMap impl!");
+					deviceToToken = new ConcurrentHashMap<>();
+				}
+			}
 		}
+	}
 
+	protected void initContainerManaged(CacheContainer cacheContainer) {
+		try {
+			EmbeddedCacheManager cacheManager = (EmbeddedCacheManager) cacheContainer;
+			deviceToToken = cacheManager.getCache("otpCodes", true);
+
+			Transport transport = cacheManager.getTransport();
+			if (transport != null) {
+				transport.getAddress().toString();
+				cacheManager.getCacheManagerConfiguration().transport().siteId();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to retrieve cache container", e);
+		}
 	}
 
 	@Override
@@ -98,16 +129,9 @@ public class VerificationServiceImpl implements VerificationService {
 
 		OtpCodeKey okey = new OtpCodeKey(UUID.fromString(variant.getVariantID()), installation.getDeviceToken(),
 				verificationCode);
-		Set<Object> codes;
 
-		if (!deviceToToken.containsKey(okey)) {
-			codes = new HashSet<Object>();
-		} else {
-			codes = deviceToToken.get(okey);
-		}
-
-		codes.add(verificationCode);
-		deviceToToken.putIfAbsent(okey, codes);
+		logger.debug("Add new otpCache code: {}, to variant: {}", okey.getCode(), okey.getVariantId());
+		addToCache(okey);
 
 		// Write code to cassandra with default ttl of one hour
 		codeService.save(okey);
@@ -126,24 +150,20 @@ public class VerificationServiceImpl implements VerificationService {
 
 		// Reload from cassandra
 		if (codes == null) {
-			codeService.findOne(okey);
+			logger.debug("Missing code form local cache, trying to use cassandra backing cache");
+			OtpCode code = codeService.findOne(okey);
+			if (code != null) {
+				logger.debug("Otp code fetched form cassandra backing cache");
+				// Initialize local cache from backing cache
+				addToCache(code.getKey());
+				codes = deviceToToken.get(code.getKey());
+			} else {
+				logger.debug("Unable to locate verification code for tokenId: {}, VariantId: {}, code: {}",
+						okey.getTokenId(), okey.getVariantId(), okey.getCode());
+			}
 		}
 
-		// Support master code verification, should be used only for
-		// QA/Automation.
-		String masterCode = configuration.getMasterCode();
-
-		if (codes == null) {
-			// Installation was already enabled
-			if (installation.isEnabled()) {
-				return VerificationResult.SUCCESS;
-			}
-
-			logger.warn("Verification attempt was made without calling /registry/device, installation id: "
-					+ installation.getId());
-			return VerificationResult.UNKNOWN;
-		} else if (codes.contains(verificationAttempt.getCode())
-				|| (StringUtils.isNotEmpty(masterCode) && masterCode.equals(verificationAttempt.getCode()))) {
+		if ((codes != null && codes.contains(verificationAttempt.getCode())) || isMasterCode(okey)) {
 			installation.setEnabled(true);
 
 			// Enable device
@@ -161,8 +181,36 @@ public class VerificationServiceImpl implements VerificationService {
 			}
 
 			return VerificationResult.SUCCESS;
+		} else {
+			// Special case when installation was already enabled
+			if (installation.isEnabled()) {
+				return VerificationResult.SUCCESS;
+			}
+
+			logger.debug("Verification attempt failed for tokenId: {}, VariantId: {}, code: {}", okey.getTokenId(),
+					okey.getVariantId(), okey.getCode());
+			return VerificationResult.FAIL;
 		}
-		return VerificationResult.FAIL;
+	}
+
+	private boolean isMasterCode(OtpCodeKey okey) {
+		// Support master code verification, should be used only for QA
+		String masterCode = configuration.getMasterCode();
+
+		return StringUtils.isNotEmpty(masterCode) && masterCode.equals(okey.getCode());
+	}
+
+	private void addToCache(OtpCodeKey okey) {
+		Set<Object> codes;
+
+		if (!deviceToToken.containsKey(okey)) {
+			codes = new HashSet<Object>();
+		} else {
+			codes = deviceToToken.get(okey);
+		}
+
+		codes.add(okey.getCode());
+		deviceToToken.putIfAbsent(okey, codes);
 	}
 
 	public void clearCache() {

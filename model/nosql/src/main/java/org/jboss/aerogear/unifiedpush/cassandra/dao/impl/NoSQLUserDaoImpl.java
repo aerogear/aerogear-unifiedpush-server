@@ -231,11 +231,6 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		}
 	}
 
-	@Override
-	protected UserKey getId(User entity) {
-		return entity.getKey();
-	}
-
 	/*
 	 * If lower-case value equals current value, return both alias and
 	 * alias.lowerCase()

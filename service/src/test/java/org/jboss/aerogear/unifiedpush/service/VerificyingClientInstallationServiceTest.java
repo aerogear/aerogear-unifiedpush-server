@@ -10,9 +10,12 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.springframework.transaction.annotation.Transactional;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class VerificyingClientInstallationServiceTest extends AbstractCassandraServiceTest {
 
 	@Inject
@@ -51,6 +54,7 @@ public class VerificyingClientInstallationServiceTest extends AbstractCassandraS
 
 		// Clear local cache and force fetch from cassandra
 		verificationService.clearCache();
+		sleepSilently(100); // Wait for cassandra write.
 
 		VerificationResult result = verificationService.verifyDevice(device, androidVariant,
 				new InstallationVerificationAttempt(verificationCode, device.getDeviceToken()));
@@ -79,7 +83,7 @@ public class VerificyingClientInstallationServiceTest extends AbstractCassandraS
 
 		VerificationResult result = verificationService.verifyDevice(fakeDevice, androidVariant,
 				new InstallationVerificationAttempt(verificationCode, device.getDeviceToken()));
-		assertEquals(VerificationResult.UNKNOWN, result);
+		assertEquals(VerificationResult.FAIL, result);
 	}
 
 	@Test
@@ -89,6 +93,7 @@ public class VerificyingClientInstallationServiceTest extends AbstractCassandraS
 		device.setAlias("myalias");
 		device.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
 		device.setVariant(androidVariant);
+		device.setEnabled(false);
 		clientInstallationService.addInstallation(androidVariant, device);
 
 		String verificationCode = verificationService.initiateDeviceVerification(device, androidVariant);

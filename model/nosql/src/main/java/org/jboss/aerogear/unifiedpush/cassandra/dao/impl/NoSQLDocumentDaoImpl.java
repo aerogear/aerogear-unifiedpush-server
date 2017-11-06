@@ -40,11 +40,6 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 	}
 
 	@Override
-	protected DocumentKey getId(DocumentContent entity) {
-		return entity.getKey();
-	}
-
-	@Override
 	public DocumentContent create(DocumentContent document) {
 		// If snapshot exists request is to update a specific version.
 		if (document.getKey().getSnapshot() != null)

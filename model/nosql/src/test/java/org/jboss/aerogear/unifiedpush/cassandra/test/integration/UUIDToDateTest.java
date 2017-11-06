@@ -25,7 +25,7 @@ public class UUIDToDateTest {
 
 			// Assert take into account, that UUIDToDate.getTimeFromUUID might
 			// delay in 5 millisecond
-			assertTrue(time - fromUUid <= 5);
+			assertTrue(time - fromUUid <= 20);
 		}
 	}
 

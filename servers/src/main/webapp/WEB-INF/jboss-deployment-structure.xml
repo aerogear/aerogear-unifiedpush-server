@@ -1,11 +1,16 @@
 <jboss-deployment-structure>
 	<deployment>
 		<dependencies>
-			<module name="org.jboss.xnio" />
-			<module name="org.infinispan" />
+			<module name="org.infinispan" services="export"/>
+			<module name="org.infinispan.commons" services="export"/>
+			<module name="org.infinispan.cachestore.remote" services="export"/>
 		</dependencies>
+
+        <!-- Remove unused modules, weld is disabled because we are using both @Inject @Autowire  -->
 		<exclude-subsystems>
 			<subsystem name="weld" />
+			<subsystem name="jpa" />
+			<subsystem name="jsf" />
 		</exclude-subsystems>
 	</deployment>
-</jboss-deployment-structure> 
+</jboss-deployment-structure>

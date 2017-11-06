@@ -9,22 +9,18 @@ import org.springframework.data.cassandra.core.InsertOptions;
 import org.springframework.data.cassandra.repository.support.CassandraRepositoryFactory;
 import org.springframework.stereotype.Repository;
 
+import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 
 @Repository
 class OtpCodeDaoImpl extends CassandraBaseDao<OtpCode, OtpCodeKey> implements OtpCodeDao {
 	private static final int CODE_TTL = 60 * 60; // 1 hours in seconds
-	private static final InsertOptions writeOptions = InsertOptions.builder().ttl(CODE_TTL).build();
+	private static final InsertOptions writeOptions = InsertOptions.builder().consistencyLevel(ConsistencyLevel.LOCAL_QUORUM).ttl(CODE_TTL).build();
 
 	public OtpCodeDaoImpl(@Autowired CassandraOperations operations) {
 		super(OtpCode.class, new CassandraRepositoryFactory(operations).getEntityInformation(OtpCode.class),
 				operations);
-	}
-
-	@Override
-	protected OtpCodeKey getId(OtpCode entity) {
-		return entity.getKey();
 	}
 
 	@SuppressWarnings("unchecked")

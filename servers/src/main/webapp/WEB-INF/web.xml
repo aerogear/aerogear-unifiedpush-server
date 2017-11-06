@@ -75,9 +75,7 @@
 			<description>Matches a few special URLs, protected by Keycloak Bearer</description>
 			<url-pattern>/rest/upsi/registry/device/*</url-pattern>
 			<url-pattern>/rest/upsi/sender/*</url-pattern>
-			<url-pattern>/rest/upsi/applicationsData/*</url-pattern>
-			<url-pattern>/rest/upsi/document/*</url-pattern>
-			<url-pattern>/rest/upsi/database/*</url-pattern>
+            <url-pattern>/rest/upsi/database/*</url-pattern>
 			<url-pattern>/rest/upsi/alias/*</url-pattern>
 			<url-pattern>/rest/upsi/heartbeat/*</url-pattern>
 		</web-resource-collection>
@@ -92,8 +90,6 @@
 			<description>Matches a few special URLs, not protected by Keycloak</description>
 			<url-pattern>/rest/registry/device/*</url-pattern>
 			<url-pattern>/rest/sender/*</url-pattern>
-			<url-pattern>/rest/applicationsData/*</url-pattern>
-			<url-pattern>/rest/document/*</url-pattern>
 			<url-pattern>/rest/database/*</url-pattern>
 			<url-pattern>/rest/alias/*</url-pattern>
 			<url-pattern>/rest/heartbeat/*</url-pattern>
@@ -109,11 +105,16 @@
 		<role-name>admin</role-name>
 	</security-role>
 
-	<security-role> 
+	<security-role>
 		<role-name>developer</role-name>
 	</security-role>
 
 	<security-role>
 		<role-name>installation</role-name>
 	</security-role>
+
+    <resource-ref>
+		<res-ref-name>Aerobase</res-ref-name>
+		<lookup-name>java:jboss/infinispan/Aerobase</lookup-name>
+	</resource-ref>
 </web-app>

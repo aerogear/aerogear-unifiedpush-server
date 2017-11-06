@@ -118,7 +118,6 @@
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<extensions>false</extensions>
-				<version>2.6</version>
 				<configuration>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<archive>
@@ -130,7 +129,6 @@
 							<Build-Branch>${scmBranch}</Build-Branch>
 							<Implementation-Build>${buildNumber}</Implementation-Build>
 							<Implementation-Build-Time>${maven.build.timestamp}</Implementation-Build-Time>
-							<Dependencies>org.infinispan export</Dependencies>
 							<SCM-URL>${scm.url}</SCM-URL>
 							<SCM-Tag>${scm.tag}</SCM-Tag>
 						</manifestEntries>
@@ -142,7 +140,6 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.4</version>
 				<executions>
 					<execution>
 						<phase>validate</phase>
@@ -165,7 +162,6 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.4</version>
 				<executions>
 					<execution>
 						<phase>validate</phase>

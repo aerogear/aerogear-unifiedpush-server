@@ -38,11 +38,6 @@ class NoSQLDatabaseDaoImpl extends CassandraBaseDao<Database, DatabaseKey> imple
 	}
 
 	@Override
-	protected DatabaseKey getId(Database entity) {
-		return entity.getKey();
-	}
-
-	@Override
 	public void create(Database database) {
 		super.insert(database);
 	}

@@ -14,8 +14,6 @@ public abstract class CassandraBaseDao<T, ID extends Serializable> extends Simpl
 	protected String tableName;
 	protected final Class<T> domainClass;
 
-	protected abstract ID getId(T entity);
-
 	public CassandraBaseDao(Class<T> domainClass, CassandraEntityInformation<T, ID> metadata, CassandraOperations operations) {
 		super(metadata, operations);
 		this.domainClass = domainClass;
