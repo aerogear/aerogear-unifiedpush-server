@@ -16,6 +16,8 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.DistinctUitils;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.User;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.UserKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -32,6 +34,8 @@ import com.datastax.driver.core.querybuilder.Select;
 
 @Repository
 class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasDao {
+	private final Logger logger = LoggerFactory.getLogger(NoSQLUserDaoImpl.class);
+
 	private static final String MV_BY_PUSH_APPLICATION = "users_by_application";
 	private static final String MV_BY_ALIAS_AND_APPLICATION = "users_by_alias_application";
 	private static final String MV_BY_ALIAS = "users_by_alias";
@@ -71,6 +75,10 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		users.stream().forEach(user -> {
 			super.insert(user);
 		});
+
+		if (users == null || users.size() == 0 ){
+			logger.warn("Attempt to store an alias without a valid AliasType. alias:{}", alias.toString());
+		}
 
 		return users;
 	}

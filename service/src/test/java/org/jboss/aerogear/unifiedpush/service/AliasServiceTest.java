@@ -50,11 +50,12 @@ public class AliasServiceTest extends AbstractCassandraServiceTest {
 		aliasesList.add(new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroBase.org"));
 		aliasesList.add(new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroBase.org"));
 		aliasesList.add(new Alias(pushAppId, UUIDs.timeBased(), "Help@AeroBase.org"));
+		aliasesList.add(new Alias(pushAppId, UUIDs.timeBased(), "gfgfd337765567"));
 
-		// Sync 3 aliases
+		// Sync 4 aliases
 		List<Alias> aliases = aliasService.addAll(pushApplication, aliasesList, false);
 
-		// Validate 3 aliases
+		// Validate 4 aliases
 		aliases.forEach(alias -> {
 			assertThat(aliasService.find(alias.getPushApplicationId(), alias.getId())).isNotNull();
 		});
@@ -62,7 +63,7 @@ public class AliasServiceTest extends AbstractCassandraServiceTest {
 		// Sync 2 aliases
 		aliasService.addAll(pushApplication, aliasesList.subList(0, 1), false);
 
-		// Validate 3 aliases
+		// Validate 4 aliases
 		aliases.forEach(alias -> {
 			assertThat(aliasService.find(alias.getPushApplicationId(), alias.getId())).isNotNull();
 		});

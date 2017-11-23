@@ -63,4 +63,12 @@ public class Alias {
 	public void setOther(String other) {
 		this.other = other;
 	}
+
+	@Override
+	public String toString() {
+		return "Alias [id=" + id + ", pushApplicationId=" + pushApplicationId + ", email=" + email + ", other=" + other
+				+ "]";
+	}
+
+
 }
