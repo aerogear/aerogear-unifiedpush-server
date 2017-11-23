@@ -2,9 +2,11 @@ package org.jboss.aerogear.unifiedpush.service.validation;
 
 import java.util.Properties;
 
+import javax.validation.ClockProvider;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ValidationException;
 
+import org.hibernate.validator.internal.engine.DefaultClockProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,5 +51,10 @@ public class ConstraintValidatorContextImpl implements ConstraintValidatorContex
 
 	public Properties getProperties() {
 		return properties;
+	}
+
+	@Override
+	public ClockProvider getClockProvider() {
+		return DefaultClockProvider.INSTANCE;
 	}
 }

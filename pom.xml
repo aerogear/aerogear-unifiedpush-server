@@ -122,6 +122,12 @@
 			</dependency>
 
 			<dependency>
+				<groupId>javax.validation</groupId>
+				<artifactId>validation-api</artifactId>
+				<version>${version.javax.validation}</version>
+			</dependency>
+
+			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
 				<version>4.5.3</version>
@@ -507,8 +513,9 @@
 		<!-- Override versions of AeroGear BOMs -->
 		<junit.version>4.12</junit.version>
 		<keycloak.version>3.4.0.Final</keycloak.version>
-		<hibernate.version>5.0.10.Final</hibernate.version>
-		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
+		<hibernate.version>5.2.12.Final</hibernate.version>
+		<hibernate-validator.version>6.0.5.Final</hibernate-validator.version>
+		<version.javax.validation>2.0.0.Final</version.javax.validation>
 
 		<gcm-server.version>1.0.0</gcm-server.version>
 		<slfj4.version>1.7.21</slfj4.version>
@@ -520,7 +527,7 @@
 		<ant.contrib.version>20020829</ant.contrib.version>
 		<aerogear.crypto.version>0.1.5</aerogear.crypto.version>
 
-		<postgresql.version>9.4-1201-jdbc41</postgresql.version>
+		<postgresql.version>42.1.4</postgresql.version>
 		<mysql.version>5.1.36</mysql.version>
 		<fasterxml.version>2.9.0</fasterxml.version>
 		<wildfly.version>10.1.0.Final</wildfly.version>
@@ -567,14 +574,14 @@
 					<dependency>
 						<groupId>javax.el</groupId>
 						<artifactId>javax.el-api</artifactId>
-						<version>2.2.4</version>
+						<version>3.0.0</version>
 						<scope>test</scope>
 					</dependency>
 
 					<dependency>
 						<groupId>org.glassfish.web</groupId>
 						<artifactId>javax.el</artifactId>
-						<version>2.2.4</version>
+						<version>2.2.6</version>
 						<scope>test</scope>
 					</dependency>
 

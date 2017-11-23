@@ -96,7 +96,7 @@ public class JPAFlatPushMessageInformationDao extends JPABaseDao<FlatPushMessage
     @Override
     public long getNumberOfPushMessagesForLoginName(String loginName) {
         return createQuery("select count(pmi) from FlatPushMessageInformation pmi, PushApplication pa " +
-                "where pmi.pushApplicationId = pa.pushApplicationID and pa.developer = :developer)", Long.class)
+                "where pmi.pushApplicationId = pa.pushApplicationID and pa.developer = :developer", Long.class)
                 .setParameter("developer", loginName).getSingleResult();
     }
 
@@ -104,7 +104,7 @@ public class JPAFlatPushMessageInformationDao extends JPABaseDao<FlatPushMessage
     public List<String> findVariantIDsWithWarnings(String loginName) {
 
         return createQuery("select distinct vmi.variantID from VariantErrorStatus vmi " +
-            " WHERE vmi.variant.developer = :developer)", String.class)
+            " WHERE vmi.variant.developer = :developer", String.class)
             .setParameter("developer", loginName)
             .getResultList();
     }
@@ -112,7 +112,7 @@ public class JPAFlatPushMessageInformationDao extends JPABaseDao<FlatPushMessage
     @Override
     public List<FlatPushMessageInformation> findLatestActivity(String loginName, int maxResults) {
         return createQuery("select pmi from FlatPushMessageInformation pmi, PushApplication pa" +
-                " WHERE pmi.pushApplicationId = pa.pushApplicationID AND pa.developer = :developer)" +
+                " WHERE pmi.pushApplicationId = pa.pushApplicationID AND pa.developer = :developer" +
                 " ORDER BY pmi.submitDate " + DESC)
                 .setParameter("developer", loginName)
                 .setMaxResults(maxResults)
