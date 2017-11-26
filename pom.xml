@@ -52,7 +52,6 @@
 		<module>jaxrs</module>
 		<module>dependencies</module>
 		<module>servers</module>
-		<module>keycloak</module>
 	</modules>
 
 	<dependencyManagement>
