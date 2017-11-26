@@ -47,6 +47,11 @@
 			<type>tar.gz</type>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jboss.aerogear.unifiedpush</groupId>
+			<artifactId>unifiedpush-keycloak-spi</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

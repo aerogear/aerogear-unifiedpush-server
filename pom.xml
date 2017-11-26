@@ -53,6 +53,7 @@
 		<module>dependencies</module>
 		<module>servers</module>
 		<module>package</module>
+		<module>keycloak</module>
 	</modules>
 
 	<dependencyManagement>

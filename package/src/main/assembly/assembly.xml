@@ -19,6 +19,7 @@
 			<includes>
 				<include>org.jboss.aerogear.unifiedpush:unifiedpush-server-wildfly</include>
 				<include>org.jboss.aerogear.unifiedpush:unifiedpush-initdb</include>
+				<include>org.jboss.aerogear.unifiedpush:unifiedpush-keycloak-spi</include>
 			</includes>
 			<useTransitiveFiltering>false</useTransitiveFiltering>
 			<fileMode>0755</fileMode>
