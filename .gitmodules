@@ -1,0 +1,3 @@
+[submodule "keycloak"]
+	path = keycloak
+	url = https://github.com/aerobase/unifiedpush-keycloak-spi.git
