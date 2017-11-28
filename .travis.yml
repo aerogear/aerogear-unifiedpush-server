@@ -35,5 +35,5 @@ before_install:
 
 script: 
 - mvn verify javadoc:jar
-- mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
+#- mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
 
