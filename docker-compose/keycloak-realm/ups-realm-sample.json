@@ -59,7 +59,7 @@
             "enabled": true,
             "publicClient": true,
             "webOrigins": [
-                "*"
+                "http://localhost:9999"
             ],
             "redirectUris": [
                 "*"
