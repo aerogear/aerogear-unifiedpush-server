@@ -17,7 +17,6 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.util.Map;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -26,6 +25,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
+import org.jboss.aerogear.unifiedpush.service.PostDelete;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,12 +52,12 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 
 	@Override
 	public void addPushApplication(PushApplication pushApp, LoggedInUser user) {
-	    final String id = pushApp.getPushApplicationID();
+		final String id = pushApp.getPushApplicationID();
 
-        if (findByPushApplicationID(id) != null) {
-            throw new IllegalArgumentException("App ID already exists: " + id);
-        }
-        
+		if (findByPushApplicationID(id) != null) {
+			throw new IllegalArgumentException("App ID already exists: " + id);
+		}
+
 		pushApp.setDeveloper(user.get());
 		pushApplicationDao.create(pushApp);
 	}
@@ -90,14 +90,20 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 		evictById(pushApp.getPushApplicationID());
 		evictByName(pushApp.getName());
 
+		// @Async delete aliases
+		aliasService.removeAll(pushApp, true, new PostDelete() {
+
+			@Override
+			public void after() {
+				// @Async delete any application documents.
+				// Alias documents already removed by aliasService
+				// This must be called after alias documents were removed.
+				documentService.delete(pushApp.getPushApplicationID());
+			}
+		});
+
 		// Delete push application
 		pushApplicationDao.delete(pushApp);
-
-		// delete aliases
-		aliasService.removeAll(UUID.fromString(pushApp.getPushApplicationID()));
-
-		// Delete any application documents
-		documentService.delete(pushApp.getPushApplicationID());
 	}
 
 	@Override

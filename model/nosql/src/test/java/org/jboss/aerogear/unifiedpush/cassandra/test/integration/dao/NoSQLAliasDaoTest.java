@@ -86,6 +86,7 @@ public class NoSQLAliasDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		createTestUsers(pushApplicationId, TEST_EMAIL);
 
 		assertTrue(aliasDao.findAll(pushApplicationId).size() == 2);
+		// count must be called to process stream
 		aliasDao.removeAll(pushApplicationId);
 		assertTrue(aliasDao.findAll(pushApplicationId).size() == 0);
 

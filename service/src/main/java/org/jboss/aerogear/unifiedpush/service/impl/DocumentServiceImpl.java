@@ -17,9 +17,13 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 public class DocumentServiceImpl implements DocumentService {
 	@Autowired
 	private DocumentDao<DocumentContent, DocumentKey> documentDao;
@@ -80,8 +84,13 @@ public class DocumentServiceImpl implements DocumentService {
 	}
 
 	@Override
+	@Async
 	public void delete(String pushApplicationId) {
 		documentDao.delete(UUID.fromString(pushApplicationId));
+	}
+
+	public void delete(UUID pushApplicaitonId, Alias alias) {
+		documentDao.delete(pushApplicaitonId, alias);
 	}
 
 }

@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -25,8 +26,11 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullAlias;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
+import org.jboss.aerogear.unifiedpush.service.DocumentService;
+import org.jboss.aerogear.unifiedpush.service.PostDelete;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
 import org.slf4j.Logger;
@@ -41,11 +45,13 @@ public class AliasServiceImpl implements AliasService {
 	private final Logger logger = LoggerFactory.getLogger(AliasServiceImpl.class);
 
 	@Inject
-	private AliasCrudService aliasCrudService;
+	private AliasDao aliasDao;
 	@Inject
 	private IKeycloakService keycloakService;
 	@Inject
 	private PushApplicationService pushApplicationService;
+	@Inject
+	private DocumentService documentService;
 
 	public List<Alias> addAll(PushApplication pushApplication, List<Alias> aliases, boolean oauth2) {
 		logger.debug("OAuth2 flag is: " + oauth2);
@@ -81,20 +87,20 @@ public class AliasServiceImpl implements AliasService {
 
 	@Override
 	public void remove(UUID pushApplicationId, UUID userId, boolean destructive) {
-		Alias alias = aliasCrudService.find(pushApplicationId, userId);
+		Alias alias = aliasDao.findOne(pushApplicationId, userId);
 		this.remove(pushApplicationId, StringUtils.isNotEmpty(alias.getEmail()) ? alias.getEmail() : alias.getOther(),
 				destructive);
 	}
 
 	private void remove(UUID pushApplicationId, String alias, boolean destructive) {
 		// Remove any aliases belong to user_id
-		aliasCrudService.remove(pushApplicationId, alias);
+		aliasDao.remove(pushApplicationId, alias);
 
 		if (destructive) {
 			// Remove user from keyCloak
 			keycloakService.delete(alias);
 
-			// TODO - Remove all documents for a given alias
+			documentService.delete(pushApplicationId, find(pushApplicationId.toString(), alias));
 		}
 	}
 
@@ -103,13 +109,13 @@ public class AliasServiceImpl implements AliasService {
 		if (StringUtils.isEmpty(alias))
 			return NullAlias.getAlias(pushApplicationId);
 
-		return aliasCrudService.find(StringUtils.isEmpty(pushApplicationId) ? null : UUID.fromString(pushApplicationId),
+		return aliasDao.findByAlias(StringUtils.isEmpty(pushApplicationId) ? null : UUID.fromString(pushApplicationId),
 				alias);
 	}
 
 	@Override
 	public Alias find(UUID pushApplicationId, UUID userId) {
-		return aliasCrudService.find(pushApplicationId, userId);
+		return aliasDao.findOne(pushApplicationId, userId);
 	}
 
 	/**
@@ -151,20 +157,20 @@ public class AliasServiceImpl implements AliasService {
 	private Alias exists(UUID pushApplicationUUID, Alias aliasToFind) {
 		Alias alias = null;
 		if (aliasToFind.getId() != null) {
-			alias = aliasCrudService.find(pushApplicationUUID, aliasToFind.getId());
+			alias = aliasDao.findOne(pushApplicationUUID, aliasToFind.getId());
 
 			if (alias != null)
 				return alias;
 		}
 
 		if (StringUtils.isNotEmpty(aliasToFind.getEmail())) {
-			alias = aliasCrudService.find(pushApplicationUUID, aliasToFind.getEmail());
+			alias = aliasDao.findByAlias(pushApplicationUUID, aliasToFind.getEmail());
 			if (alias != null)
 				return alias;
 		}
 
 		if (StringUtils.isNotEmpty(aliasToFind.getOther())) {
-			alias = aliasCrudService.find(pushApplicationUUID, aliasToFind.getOther());
+			alias = aliasDao.findByAlias(pushApplicationUUID, aliasToFind.getOther());
 			if (alias != null)
 				return alias;
 		}
@@ -174,12 +180,33 @@ public class AliasServiceImpl implements AliasService {
 
 	/*
 	 * Remove all aliases by application id and invalidates alias cache.
+	 * destructive - when true also remove KC entities and related documents
 	 */
 	@Override
-	public void removeAll(UUID pushApplicationId) {
-		aliasCrudService.removeAll(pushApplicationId);
+	@Async
+	public void removeAll(PushApplication pushApplication, boolean destructive, PostDelete action) {
+		UUID pushApplicationId = UUID.fromString(pushApplication.getPushApplicationID());
 
-		// TODO - Remove KC client and all related users.
+		aliasDao.findUserIds(pushApplicationId).map(row -> aliasDao.findOne(pushApplicationId, row.getUUID(0)))
+				.filter(alias -> Objects.nonNull(alias)).forEach(alias -> {
+
+					// If not destructive, only aliases are deleted.
+					if (destructive) {
+						// KC users are registered by email
+						if (StringUtils.isNotEmpty(alias.getEmail()))
+							keycloakService.delete(alias.getEmail());
+
+						documentService.delete(pushApplicationId, alias);
+					}
+
+					aliasDao.remove(pushApplicationId, alias.getId());
+				});
+
+		if (destructive) {
+			keycloakService.removeClient(pushApplication);
+		}
+
+		action.after();
 	}
 
 	/**
@@ -205,7 +232,7 @@ public class AliasServiceImpl implements AliasService {
 			}
 		}
 
-		aliasCrudService.create(alias);
+		aliasDao.create(alias);
 	}
 
 	@Override
@@ -213,4 +240,5 @@ public class AliasServiceImpl implements AliasService {
 	public void createAsynchronous(Alias alias) {
 		create(alias);
 	}
+
 }

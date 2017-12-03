@@ -15,6 +15,8 @@ public interface DocumentDao<T, ID> {
 
 	void delete(UUID pushApplicationId);
 
+	void delete(UUID pushApplicaitonId, Alias alias);
+
 	void delete(T doc);
 
 	Stream<DocumentContent> find(ID key, QueryOptions options);

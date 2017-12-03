@@ -113,8 +113,4 @@
 		<role-name>installation</role-name>
 	</security-role>
 
-    <resource-ref>
-		<res-ref-name>Aerobase</res-ref-name>
-		<lookup-name>java:jboss/infinispan/Aerobase</lookup-name>
-	</resource-ref>
 </web-app>

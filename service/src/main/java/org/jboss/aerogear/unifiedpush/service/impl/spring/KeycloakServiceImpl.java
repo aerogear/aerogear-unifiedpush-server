@@ -142,6 +142,19 @@ public class KeycloakServiceImpl implements IKeycloakService {
 		}
 	}
 
+	public void removeClient(PushApplication pushApplicaiton) {
+
+		if (!isInitialized()) {
+			return;
+		}
+
+		ClientRepresentation client = isClientExists(pushApplicaiton);
+
+		if (client != null) {
+			this.realm.clients().get(client.getClientId()).remove();
+		}
+	}
+
 	/**
 	 * Create user by username (If Absent).
 	 *
@@ -240,6 +253,11 @@ public class KeycloakServiceImpl implements IKeycloakService {
 			return;
 		}
 
+		if (StringUtils.isEmpty(userName)) {
+			logger.warn("Cancel attempt to remove empty or null username");
+			return;
+		}
+
 		UserRepresentation user = getUser(userName);
 		if (user == null) {
 			logger.debug(String.format("Unable to find user %s, in keyclock", userName));
@@ -314,7 +332,11 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	}
 
 	private ClientRepresentation isClientExists(PushApplication pushApp) {
-		return isClientExists(CLIENT_PREFIX + pushApp.getName().toLowerCase());
+		return isClientExists(getClientd(pushApp));
+	}
+
+	private String getClientd(PushApplication pushApp) {
+		return CLIENT_PREFIX + pushApp.getName().toLowerCase();
 	}
 
 	private ClientRepresentation isClientExists(String clientId) {

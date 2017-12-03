@@ -24,7 +24,6 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.OtpCodeDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.service.AbstractNoCassandraServiceTest.ServiceTestConfig;
-import org.jboss.aerogear.unifiedpush.service.impl.AliasCrudService;
 import org.jboss.aerogear.unifiedpush.spring.ServiceConfig;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -41,7 +40,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public abstract class AbstractNoCassandraServiceTest extends AbstractBaseServiceTest {
 	@InjectMocks
 	@Autowired
-	protected AliasCrudService aliasCrudService;
+	protected AliasService aliasCrudService;
 
 	@Before
 	public void setup() {

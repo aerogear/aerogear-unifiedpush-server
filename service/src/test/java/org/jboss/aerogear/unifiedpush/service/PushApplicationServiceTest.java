@@ -200,7 +200,10 @@ public class PushApplicationServiceTest extends AbstractCassandraServiceTest {
 
 		pushApplicationService.removePushApplication(pa);
 		documents = documentService.findLatest(pa, "TASKS", "1", Arrays.asList(alias));
-		assertTrue(documents.size() == 1);
+
+		sleepSilently(100);
+
+		assertTrue(documents.size() == 0);
 		assertTrue(aliasService.find(pa.getPushApplicationID(), alias.getEmail()) == null);
 	}
 

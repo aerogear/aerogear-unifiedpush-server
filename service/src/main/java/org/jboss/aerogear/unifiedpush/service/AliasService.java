@@ -76,7 +76,7 @@ public interface AliasService {
 
 	void remove(UUID pushApplicationId, UUID userId);
 
-	void removeAll(UUID pushApplicationId);
+	void removeAll(PushApplication pushApplication, boolean destructive, PostDelete action);
 
 	void create(Alias alias);
 

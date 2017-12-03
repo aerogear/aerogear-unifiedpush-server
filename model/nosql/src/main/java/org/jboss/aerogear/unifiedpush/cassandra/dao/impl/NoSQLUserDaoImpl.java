@@ -49,10 +49,8 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	}
 
 	public NoSQLUserDaoImpl(@Autowired CassandraOperations operations) {
-		super(User.class, new CassandraRepositoryFactory(operations).getEntityInformation(User.class),
-				operations);
+		super(User.class, new CassandraRepositoryFactory(operations).getEntityInformation(User.class), operations);
 	}
-
 
 	@Override
 	public List<User> create(Alias alias) {
@@ -76,7 +74,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 			super.insert(user);
 		});
 
-		if (users == null || users.size() == 0 ){
+		if (users == null || users.size() == 0) {
 			logger.warn("Attempt to store an alias without a valid AliasType. alias:{}", alias.toString());
 		}
 
@@ -125,7 +123,6 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	public Alias findOne(UUID pushApplicationId, UUID userId) {
 		// Get all possible aliases for a userId
 		List<User> users = getUsers(pushApplicationId, userId);
-
 
 		if (users == null || users.size() == 0) {
 			return null;

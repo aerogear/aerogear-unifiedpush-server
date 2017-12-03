@@ -165,6 +165,14 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 		});
 	}
 
+	@Override
+	public void delete(UUID pushApplicaitonId, Alias alias) {
+		// First query an delete all DB related documents.
+		databaseDao.find(pushApplicaitonId).forEach((db) -> {
+			deleteById(new DocumentKey(pushApplicaitonId, db.getDatabase(), alias.getId()));
+		});
+	}
+
 	/*
 	 * Delete application/alias documents from all 12 partitions (by month).
 	 *
@@ -185,6 +193,7 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 			delete.where(QueryBuilder.eq("push_application_id", key.getPushApplicationId()));
 			delete.where(QueryBuilder.eq("database", key.getDatabase()));
 			delete.where(QueryBuilder.eq("user_id", key.getUserId()));
+
 			operations.getCqlOperations().execute(delete);
 		} else {
 			super.deleteById(key);

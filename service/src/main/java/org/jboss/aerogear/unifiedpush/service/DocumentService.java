@@ -1,6 +1,7 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
@@ -16,6 +17,8 @@ public interface DocumentService {
 	DocumentContent save(DocumentMetadata metadata, String content, String id);
 
 	void delete(String pushApplicationId);
+
+	void delete(UUID pushApplicaitonId, Alias alias);
 
 	DocumentContent findLatest(DocumentMetadata metadata, String id);
 

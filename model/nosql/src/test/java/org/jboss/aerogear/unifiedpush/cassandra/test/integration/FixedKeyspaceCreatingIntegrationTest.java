@@ -12,5 +12,11 @@ import org.springframework.test.context.TestExecutionListeners.MergeMode;
 @CassandraDataSet(keyspace = "unifiedpush_server", value = "cassandra-test-cql-dataload.cql")
 @EmbeddedCassandra
 public class FixedKeyspaceCreatingIntegrationTest {
-
+	protected void sleepSilently(long milliseconds) {
+		try {
+			Thread.sleep(milliseconds);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }
