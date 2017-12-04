@@ -38,8 +38,6 @@ import org.jboss.aerogear.unifiedpush.rest.authentication.AuthenticationHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartOutput;
-import org.jboss.resteasy.plugins.providers.multipart.OutputPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -55,7 +53,6 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	public static final String X_HEADER_COUNT = "X-AB-Count";
 	// Date header is added by nginx/wildfly and accessed by clients.
 	private static final String HEADER_DATE = "Date";
-	private static final String MULTIPART_MIXED = "multipart/mixed";
 
 	@Inject
 	private DocumentService documentService;
@@ -561,7 +558,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @statuscode 401 The request requires authentication.
 	 */
 	@HEAD
-	@Produces({ "multipart/mixed", MediaType.APPLICATION_JSON })
+	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("java.lang.Void")
 	@Path("/{database}")
 	public Response headForApplication(@PathParam("database") String database, //
@@ -597,7 +594,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @param limit
 	 *            max number of documents.
 	 *
-	 * @return Document content as multipart/mixed.
+	 * @return Document content as application/json.
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
@@ -613,7 +610,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @statuscode 401 The request requires authentication.
 	 */
 	@GET
-	@Produces({ "multipart/mixed", MediaType.APPLICATION_JSON })
+	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("java.lang.Void")
 	@Path("/{database}")
 	public Response getForApplication(@PathParam("database") String database, //
@@ -666,7 +663,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @statuscode 401 The request requires authentication.
 	 */
 	@HEAD
-	@Produces({ "multipart/mixed", MediaType.APPLICATION_JSON })
+	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("java.lang.Void")
 	@Path("/{database}/alias/{alias}")
 	public Response headForAlias(@PathParam("database") String database, //
@@ -687,7 +684,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *
 	 * <pre>
 	 * curl -u "variantID:secret"
-	 *   -v -H "Accept: multipart/mixed" -H "Content-type: application/json"
+	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
 	 *   -X GET
 	 *   https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.org/
 	 * </pre>
@@ -705,7 +702,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @param limit
 	 *            max number of documents.
 	 *
-	 * @return Document content as multipart/mixed.
+	 * @return Document content as application/json.
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
@@ -720,7 +717,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @statuscode 401 The request requires authentication.
 	 */
 	@GET
-	@Produces({ "multipart/mixed", MediaType.APPLICATION_JSON })
+	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("java.lang.Void")
 	@Path("/{database}/alias/{alias}")
 	public Response getForAlias(@PathParam("database") String database, //
@@ -791,33 +788,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 			aliasObj = NullAlias.getAlias(pushApplicationId);
 		}
 
-		/**
-		 * TODO - Remove accept.contains(MediaType.WILDCARD) from condition. NOT
-		 * Before all clients > 1.3.6
-		 */
-		if (StringUtils.isEmpty(accept) || accept.contains(MediaType.WILDCARD) || accept.contains("multipart/mixed")) {
-			return getAsMultipartMixed(request, options, headOnly, pushApplicationId, database, aliasObj);
-		} else {
-			return getAsApplicationJson(request, options, headOnly, pushApplicationId, database, aliasObj);
-		}
-
-	}
-
-	private ResponseData getAsMultipartMixed(HttpServletRequest request, //
-			QueryOptions options, //
-			boolean headOnly, //
-			UUID pushApplicationId, //
-			String database, //
-			Alias alias) { //
-		final MultipartOutput output = new MultipartOutput();
-
-		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database, alias);
-		documentService.find(metadata, options).forEach(doc -> {
-			OutputPart part = output.addPart(doc.getContent(), MediaType.valueOf(doc.getContentType()));
-			part.getHeaders().add(X_HEADER_SNAPSHOT_ID, doc.getKey().getSnapshot().toString());
-		});
-
-		return new ResponseData(output.getParts().size(), output, MULTIPART_MIXED);
+		return getAsApplicationJson(request, options, headOnly, pushApplicationId, database, aliasObj);
 	}
 
 	private ResponseData getAsApplicationJson(HttpServletRequest request, //
