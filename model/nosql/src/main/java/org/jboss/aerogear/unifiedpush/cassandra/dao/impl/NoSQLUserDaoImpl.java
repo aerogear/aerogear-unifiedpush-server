@@ -155,7 +155,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	 * Remove all aliases according to application id.
 	 */
 	public void removeAll(UUID pushApplicationId) {
-		findUserIds(pushApplicationId).forEach((row) -> {
+		findUserIds(pushApplicationId).forEach(row -> {
 			deleteById(new UserKey(pushApplicationId, row.getUUID(0)));
 		});
 	}

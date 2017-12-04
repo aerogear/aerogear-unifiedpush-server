@@ -16,6 +16,12 @@ public class QueryOptions {
 		this.id = id;
 	}
 
+	public QueryOptions(String id, int limit) {
+		super();
+		this.id = id;
+		this.limit = limit;
+	}
+
 	public QueryOptions(Long fromDate) {
 		super();
 		this.fromDate = fromDate;
