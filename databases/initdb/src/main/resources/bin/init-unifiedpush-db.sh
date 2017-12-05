@@ -15,16 +15,35 @@ die() {
         exit 1
 }
 
-database="$1"
-[ -z "${database}" ] && die "Missing database! Usage: ./init-unifiedpush-db.sh database name"
-# Example parameter -Daerobase.config.dir=/tmp/db.properties
-RUNTIME_OPTS="$2"
-
 #remote debug parameters
 #export DEBUG_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=1044,server=y,suspend=y"
 
-${JAVA_HOME}/bin/java ${DEBUG_OPTS} ${RUNTIME_OPTS} \
-        -Dorg.jboss.aerogear.unifiedpush.initdb.database=${database} \
+while [ -n "$1" ]; do
+    v="${1#*=}"
+    case "$1" in
+        --database=*)
+            export DATABASE="${v}"
+            ;;
+        --config-path=*)
+            export CONFIG="${v}"
+            ;;
+        --help|*)
+                cat <<__EOF__
+Usage: $0
+        --database=database - Database name
+        --config-path=path  - Path for -Daerobase.config.dir param - Default /tmp/db.properties
+__EOF__
+        exit 1
+    esac
+    shift
+done
+
+[ -z "${DATABASE}" ] && die "Missing database! Usage: ./init-unifiedpush-db.sh database name"
+[ -z "${CONFIG}" ] && export CONFIG=/tmp/db.properties
+
+${JAVA_HOME}/bin/java ${DEBUG_OPTS} \
+        -Daerobase.config.dir=${CONFIG} \
+        -Dorg.jboss.aerogear.unifiedpush.initdb.database=${DATABASE} \
         -cp "../lib/*" \
         org.jboss.aerogear.unifiedpush.DBMaintenance \
-        "${database}"
+        "${DATABASE}"
