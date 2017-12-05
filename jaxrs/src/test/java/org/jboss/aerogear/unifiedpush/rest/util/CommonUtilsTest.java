@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.aerogear.unifiedpush.rest.util.CommonUtils.isAscendingOrder;
+import static org.jboss.aerogear.unifiedpush.rest.util.CommonUtils.removeDefaultHttpPorts;
 
 public class CommonUtilsTest {
 
@@ -39,6 +40,22 @@ public class CommonUtilsTest {
     public void verifyAscendingOrderFromAscValue() {
         assertThat(isAscendingOrder("foo")).isTrue();
         assertThat(isAscendingOrder("AsC")).isTrue();
+    }
+
+    @Test
+    public void httpsPorts() {
+        assertThat(removeDefaultHttpPorts("https://localhost:443/auth")).isEqualTo("https://localhost/auth");
+        assertThat(removeDefaultHttpPorts("https://localhost:444/auth")).isEqualTo("https://localhost:444/auth");
+        assertThat(removeDefaultHttpPorts("https://localhost/auth")).isEqualTo("https://localhost/auth");
+        assertThat(removeDefaultHttpPorts("localhost/auth")).isNull();
+    }
+
+    @Test
+    public void httpPorts() {
+        assertThat(removeDefaultHttpPorts("http://localhost:80/auth")).isEqualTo("http://localhost/auth");
+        assertThat(removeDefaultHttpPorts("http://localhost:444/auth")).isEqualTo("http://localhost:444/auth");
+        assertThat(removeDefaultHttpPorts("http://localhost/auth")).isEqualTo("http://localhost/auth");
+        assertThat(removeDefaultHttpPorts("localhost/auth")).isNull();
     }
 
 }

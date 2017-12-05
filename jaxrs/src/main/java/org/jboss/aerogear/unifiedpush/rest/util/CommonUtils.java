@@ -16,6 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class CommonUtils {
 
     private CommonUtils() {
@@ -31,5 +34,21 @@ public class CommonUtils {
      */
     public static Boolean isAscendingOrder(String sorting) {
         return "desc".equalsIgnoreCase(sorting) ? Boolean.FALSE : Boolean.TRUE;
+    }
+
+    public static String removeDefaultHttpPorts(final String uri) {
+        URL url;
+        try {
+            url = new URL(uri);
+            if (url.getPort() == url.getDefaultPort()) {
+
+                String urlPort = ":" + url.getPort();
+
+                return url.toExternalForm().replace(urlPort, "");
+            }
+        } catch (MalformedURLException e) {
+            return null;
+        }
+        return url.toExternalForm();
     }
 }
