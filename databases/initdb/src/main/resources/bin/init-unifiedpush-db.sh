@@ -17,11 +17,13 @@ die() {
 
 database="$1"
 [ -z "${database}" ] && die "Missing database! Usage: ./init-unifiedpush-db.sh database name"
+# Example parameter -Daerobase.config.dir=/tmp/db.properties
+RUNTIME_OPTS="$2"
 
 #remote debug parameters
 #export DEBUG_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=1044,server=y,suspend=y"
 
-${JAVA_HOME}/bin/java ${DEBUG_OPTS} \
+${JAVA_HOME}/bin/java ${DEBUG_OPTS} ${RUNTIME_OPTS} \
         -Dorg.jboss.aerogear.unifiedpush.initdb.database=${database} \
         -cp "../lib/*" \
         org.jboss.aerogear.unifiedpush.DBMaintenance \
