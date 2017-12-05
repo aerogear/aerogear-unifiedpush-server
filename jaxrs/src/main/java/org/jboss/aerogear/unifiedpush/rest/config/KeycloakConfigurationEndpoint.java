@@ -29,6 +29,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import static org.jboss.aerogear.unifiedpush.rest.util.CommonUtils.removeDefaultHttpPorts;
+
 @Path("/keycloak/config")
 public class KeycloakConfigurationEndpoint {
 
@@ -43,7 +45,7 @@ public class KeycloakConfigurationEndpoint {
     public Response configurationFile() throws JsonProcessingException {
 
         final String realmName = ConfigurationUtils.tryGetProperty(REALM_NAME_PROPERTY);
-        final String keycloakServerURL = ConfigurationUtils.tryGetProperty(REALM_URL_PROPERTY);
+        final String keycloakServerURL = removeDefaultHttpPorts(ConfigurationUtils.tryGetProperty(REALM_URL_PROPERTY));
 
         final Config config = new Config(realmName, keycloakServerURL);
 
