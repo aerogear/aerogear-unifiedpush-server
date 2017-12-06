@@ -1,6 +1,7 @@
 package org.jboss.aerogear.unifiedpush.cassandra.test.integration.dao;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.jboss.aerogear.unifiedpush.cassandra.CassandraConfig;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.DatabaseDao;
@@ -34,6 +35,20 @@ public class NoSQLDatabaseDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 
 		Cache cache = cacheManager.getCache(DatabaseDao.CACHE_NAME);
 		Assert.assertTrue(cache.get(new DatabaseQueryKey(db)) != null);
+	}
+
+	@Test
+	public void testDatabaseForApplication() {
+		Database db1 = new Database(UUID.randomUUID(), "SETTINGS1");
+		// Database snapshot are Date based, make sure its not the same date
+		sleepSilently(1);
+
+		Database db2 = new Database(db1.getKey().getPushApplicationId(), "SETTINGS2");
+
+		databaseDao.create(db1);
+		databaseDao.create(db2);
+
+		Assert.assertEquals(2, databaseDao.find(db1.getKey().getPushApplicationId()).collect(Collectors.toList()).size());
 	}
 
 }

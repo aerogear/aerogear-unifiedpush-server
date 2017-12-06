@@ -17,13 +17,15 @@ import com.datastax.driver.core.querybuilder.Select;
 
 @Repository
 class NoSQLDatabaseDaoImpl extends CassandraBaseDao<Database, DatabaseKey> implements DatabaseDao {
+	private static final String MV_BY_DATABASE = "databases_by_database";
+
 	public NoSQLDatabaseDaoImpl(@Autowired CassandraOperations operations) {
 		super(Database.class, new CassandraRepositoryFactory(operations).getEntityInformation(Database.class),
 				operations);
 	}
 
 	public Database findOne(DatabaseQueryKey key) {
-		Select select = QueryBuilder.select().from(super.tableName);
+		Select select = QueryBuilder.select().from(MV_BY_DATABASE);
 		select.where(QueryBuilder.eq("push_application_id", key.getPushApplicationId()));
 		select.where(QueryBuilder.eq("database", key.getDatabase()));
 
