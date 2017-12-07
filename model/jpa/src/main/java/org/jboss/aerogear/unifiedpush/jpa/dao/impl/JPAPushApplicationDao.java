@@ -50,7 +50,8 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
                 .setParameter("developer", loginName).getSingleResult();
         List<PushApplication> entities = entityManager.createQuery("select pa " + select, PushApplication.class)
                 .setFirstResult(page * pageSize).setMaxResults(pageSize)
-                .setParameter("developer", loginName).getResultList();
+                .setParameter("developer", loginName)
+                .setHint("org.hibernate.cacheable", true).getResultList();
 
         return new PageResult<PushApplication, Count>(entities, new Count(count));
     }
@@ -59,7 +60,8 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
     @Override
     public List<String> findAllPushApplicationIDsForDeveloper (String loginName) {
         return createQuery("select pa.pushApplicationID from PushApplication pa where pa.developer = :developer", String.class)
-                .setParameter("developer", loginName).getResultList();
+                .setParameter("developer", loginName)
+                .setHint("org.hibernate.cacheable", true).getResultList();
     }
 
     @Override
@@ -73,7 +75,8 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
     @Override
     public PushApplication findByPushApplicationID(String pushApplicationID) {
         return getSingleResultForQuery(createQuery("select pa from PushApplication pa where pa.pushApplicationID = :pushApplicationID")
-                .setParameter("pushApplicationID", pushApplicationID));
+                .setParameter("pushApplicationID", pushApplicationID)
+                .setHint("org.hibernate.cacheable", true));
     }
 
     @Override
@@ -110,7 +113,8 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
     public List<PushApplication> findByVariantIds(List<String> variantIDs) {
         final String jpql = "select pa from PushApplication pa left join fetch pa.variants v where v.variantID in (:variantIDs)";
 
-        return createQuery(jpql).setParameter("variantIDs", variantIDs).getResultList();
+        return createQuery(jpql).setParameter("variantIDs", variantIDs)
+            .setHint("org.hibernate.cacheable", true).getResultList();
     }
 
     @Override
