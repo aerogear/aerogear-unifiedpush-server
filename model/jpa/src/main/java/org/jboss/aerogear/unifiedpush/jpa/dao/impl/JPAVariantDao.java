@@ -39,7 +39,8 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
     @Override
     public Variant findByVariantID(String variantID) {
         return getSingleResultForQuery(createQuery("select t from Variant t where t.variantID = :variantID")
-                .setParameter("variantID", variantID));
+                .setParameter("variantID", variantID)
+                .setHint("org.hibernate.cacheable", true));
     }
 
     @Override
@@ -67,7 +68,8 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
         }
 
         return createQuery("select t from Variant t where t.variantID IN :variantIDs")
-                .setParameter("variantIDs", variantIDs).getResultList();
+                .setParameter("variantIDs", variantIDs)
+                .setHint("org.hibernate.cacheable", true).getResultList();
     }
 
     //Admin queries

@@ -23,6 +23,7 @@
     <jta-data-source>java:jboss/datasources/UnifiedPushDS</jta-data-source>
 
     <mapping-file>META-INF/orm.xml</mapping-file>
+    <shared-cache-mode>ALL</shared-cache-mode>
 
     <properties>
       <property name="hibernate.dialect_resolvers" value="org.jboss.aerogear.unifiedpush.jpa.MysqlDialectResolver"/>
@@ -31,6 +32,11 @@
       <property name="hibernate.format_sql" value="true"/>
       <property name="hibernate.transaction.flush_before_completion" value="true"/>
       <property name="hibernate.id.new_generator_mappings" value="true"/>
+
+      <property name="hibernate.cache.use_query_cache" value="true"/>
+      <property name="hibernate.cache.use_second_level_cache" value="true"/>
+
+      <property name="hibernate.cache.infinispan.statistics" value="true"/>
     </properties>
   </persistence-unit>
 
