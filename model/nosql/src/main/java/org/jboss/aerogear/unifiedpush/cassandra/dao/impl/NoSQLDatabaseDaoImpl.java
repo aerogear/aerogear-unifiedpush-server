@@ -9,9 +9,12 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DatabaseKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DatabaseQueryKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.cassandra.core.CassandraOperations;
+import org.springframework.data.cassandra.core.cql.CassandraAccessor;
 import org.springframework.data.cassandra.repository.support.CassandraRepositoryFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 
+import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 
@@ -22,6 +25,10 @@ class NoSQLDatabaseDaoImpl extends CassandraBaseDao<Database, DatabaseKey> imple
 	public NoSQLDatabaseDaoImpl(@Autowired CassandraOperations operations) {
 		super(Database.class, new CassandraRepositoryFactory(operations).getEntityInformation(Database.class),
 				operations);
+
+		Assert.isTrue(
+				((CassandraAccessor) operations.getCqlOperations()).getConsistencyLevel() == ConsistencyLevel.QUORUM,
+				"ConsistencyLevel Must be QUORUM");
 	}
 
 	public Database findOne(DatabaseQueryKey key) {
@@ -41,7 +48,7 @@ class NoSQLDatabaseDaoImpl extends CassandraBaseDao<Database, DatabaseKey> imple
 
 	@Override
 	public void create(Database database) {
-		super.insert(database);
+		super.save(database);
 	}
 
 }

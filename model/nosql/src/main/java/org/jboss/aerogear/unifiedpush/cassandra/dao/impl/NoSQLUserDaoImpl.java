@@ -23,9 +23,12 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.interceptor.SimpleKey;
 import org.springframework.data.cassandra.core.CassandraOperations;
+import org.springframework.data.cassandra.core.cql.CassandraAccessor;
 import org.springframework.data.cassandra.repository.support.CassandraRepositoryFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 
+import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.SimpleStatement;
 import com.datastax.driver.core.querybuilder.Delete;
@@ -50,6 +53,10 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 
 	public NoSQLUserDaoImpl(@Autowired CassandraOperations operations) {
 		super(User.class, new CassandraRepositoryFactory(operations).getEntityInformation(User.class), operations);
+
+		Assert.isTrue(
+				((CassandraAccessor) operations.getCqlOperations()).getConsistencyLevel() == ConsistencyLevel.QUORUM,
+				"ConsistencyLevel Must be QUORUM");
 	}
 
 	@Override
@@ -71,7 +78,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		}
 
 		users.stream().forEach(user -> {
-			super.insert(user);
+			super.save(user);
 		});
 
 		if (users == null || users.size() == 0) {

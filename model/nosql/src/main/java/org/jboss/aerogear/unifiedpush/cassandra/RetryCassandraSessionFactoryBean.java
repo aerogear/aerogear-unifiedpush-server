@@ -19,7 +19,7 @@ public class RetryCassandraSessionFactoryBean extends CassandraSessionFactoryBea
 	private CassandraConfig config;
 
 	@Autowired
-	ApplicationContext applicationCtx;
+	private ApplicationContext applicationCtx;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {

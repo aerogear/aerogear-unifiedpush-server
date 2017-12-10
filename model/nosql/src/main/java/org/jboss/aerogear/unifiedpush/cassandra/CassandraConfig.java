@@ -42,6 +42,7 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
 		CassandraClusterFactoryBean cluster = new CassandraClusterFactoryBean();
 		cluster.setContactPoints(config.getProperty(PROP_CONTACT_POINTS_KEY, PROP_CONTACP_DEFV));
 		cluster.setPort(Integer.valueOf(config.getProperty(PROP_PORT_KEY, PROP_PORT_DEFV)));
+
 		return cluster;
 	}
 
@@ -71,7 +72,7 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
 	 * TODO - Check that super.session() impl is not changed over time.
 	 */
 	@Bean
-	public CassandraSessionFactoryBean session() {
+	public CassandraSessionFactoryBean sessionFactoryBean() {
 
 		RetryCassandraSessionFactoryBean session = new RetryCassandraSessionFactoryBean();
 

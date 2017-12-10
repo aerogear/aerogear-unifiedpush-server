@@ -76,4 +76,5 @@ public class NoSQLOtpCodeDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 		OtpCode code3 = codeDao.findById(key2).orElse(null);
 		Assert.assertTrue(code3 == null);
 	}
+
 }
