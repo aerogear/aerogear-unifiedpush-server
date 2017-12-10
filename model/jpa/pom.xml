@@ -15,7 +15,7 @@
 		<artifactId>unifiedpush-model-parent</artifactId>
 		<version>1.2.0-SNAPSHOT</version>
 	</parent>
- 
+
 	<artifactId>unifiedpush-model-jpa</artifactId>
 	<name>AeroBase Server Model JPA implementation</name>
 
@@ -105,7 +105,6 @@
                 <dependency>
                     <groupId>org.springframework</groupId>
                     <artifactId>spring-test</artifactId>
-                    <version>${springframework.version}</version>
                     <scope>test</scope>
                 </dependency>
 

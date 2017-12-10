@@ -413,6 +413,12 @@
 				<artifactId>netty-handler</artifactId>
 				<version>4.1.14.Final</version>
 			</dependency>
+
+			<dependency>
+				<groupId>org.postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${postgresql.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -511,7 +517,7 @@
 
 		<!-- Override versions of AeroGear BOMs -->
 		<junit.version>4.12</junit.version>
-		<keycloak.version>3.4.1.CR1</keycloak.version>
+		<keycloak.version>3.4.1.Final</keycloak.version>
 		<hibernate.version>5.2.12.Final</hibernate.version>
 		<hibernate-validator.version>6.0.5.Final</hibernate-validator.version>
 		<version.javax.validation>2.0.0.Final</version.javax.validation>
@@ -527,18 +533,17 @@
 		<aerogear.crypto.version>0.1.5</aerogear.crypto.version>
 
 		<postgresql.version>42.1.4</postgresql.version>
-		<mysql.version>5.1.36</mysql.version>
 		<fasterxml.version>2.9.0</fasterxml.version>
 		<wildfly.version>10.1.0.Final</wildfly.version>
-		<springframework.version>5.0.0.RELEASE</springframework.version>
+		<springframework.version>5.0.2.RELEASE</springframework.version>
 		<reactor-core.version>3.1.0.RELEASE</reactor-core.version>
 
 		<!-- Cassandra related properties -->
 		<failsafe.version>2.19.1</failsafe.version>
 		<cassandra.version>3.10</cassandra.version>
 		<cassandra-driver-core.version>3.3.0</cassandra-driver-core.version>
-		<cassandra-data.version>2.0.1.RELEASE</cassandra-data.version>
-		<spring-data.version>2.0.1.RELEASE</spring-data.version>
+		<cassandra-data.version>2.0.2.RELEASE</cassandra-data.version>
+		<spring-data.version>2.0.2.RELEASE</spring-data.version>
 
 		<ups.ddl_value>validate</ups.ddl_value>
 	</properties>
@@ -609,6 +614,20 @@
 								<artifactId>commons-lang</artifactId>
 							</exclusion>
 						</exclusions>
+					</dependency>
+
+					<dependency>
+						<groupId>org.cassandraunit</groupId>
+						<artifactId>cassandra-unit-spring</artifactId>
+						<version>3.3.0.2</version>
+						<scope>test</scope>
+					</dependency>
+
+					<dependency>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-test</artifactId>
+						<version>${springframework.version}</version>
+						<scope>test</scope>
 					</dependency>
 				</dependencies>
 			</dependencyManagement>

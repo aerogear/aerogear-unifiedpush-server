@@ -320,14 +320,12 @@
 				<dependency>
 					<groupId>org.springframework</groupId>
 					<artifactId>spring-test</artifactId>
-					<version>${springframework.version}</version>
 					<scope>test</scope>
 				</dependency>
 
 				<dependency>
 					<groupId>org.cassandraunit</groupId>
 					<artifactId>cassandra-unit-spring</artifactId>
-					<version>3.1.4.0-SNAPSHOT</version>
 					<scope>test</scope>
 				</dependency>
 
