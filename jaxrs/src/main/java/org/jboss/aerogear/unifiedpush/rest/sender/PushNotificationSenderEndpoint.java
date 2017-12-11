@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.rest.sender;
 
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
+import io.prometheus.client.Counter;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
@@ -43,6 +44,12 @@ import javax.ws.rs.core.Response.Status;
 public class PushNotificationSenderEndpoint {
 
     private final Logger logger = LoggerFactory.getLogger(PushNotificationSenderEndpoint.class);
+
+    private static final Counter promPrushRequestsTotal = Counter.build()
+            .name("push_requests_total")
+            .help("Total number of push requests.")
+            .register();
+
     @Inject
     private PushApplicationService pushApplicationService;
     @Inject
@@ -89,6 +96,8 @@ public class PushNotificationSenderEndpoint {
     @BodyType("org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage")
     @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
     public Response send(final InternalUnifiedPushMessage message, @Context HttpServletRequest request) {
+
+        promPrushRequestsTotal.inc();
 
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
         if (pushApplication == null) {

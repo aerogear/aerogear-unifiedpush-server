@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qmino.miredot.annotations.BodyType;
 import com.qmino.miredot.annotations.ReturnType;
+import io.prometheus.client.Counter;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
@@ -59,6 +60,11 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
     // at some point we should move the mapper to a util class.?
     public static final ObjectMapper mapper = new ObjectMapper();
+
+    private static final Counter promDeviceRegisterRequestsTotal = Counter.build()
+            .name("device_register_requests_total")
+            .help("Total number of Device register requests.")
+            .register();
 
     private final Logger logger = LoggerFactory.getLogger(InstallationRegistrationEndpoint.class);
     @Inject
@@ -160,6 +166,8 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             @DefaultValue("") @HeaderParam("x-ag-old-token") final String oldToken,
             Installation entity,
             @Context HttpServletRequest request) {
+
+        promDeviceRegisterRequestsTotal.inc();
 
         // find the matching variation:
         final Variant variant = loadVariantWhenAuthorized(request);
