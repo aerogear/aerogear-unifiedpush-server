@@ -7,3 +7,5 @@ create materialized view if not exists users_by_alias_application as select alia
 create materialized view if not exists users_by_alias as select alias from users where push_application_id IS NOT NULL AND user_id IS NOT NULL AND alias IS NOT NULL PRIMARY KEY (alias, user_id, push_application_id) WITH CLUSTERING ORDER BY (user_id DESC);
 create materialized view if not exists users_by_application as select push_application_id, month from users where push_application_id IS NOT NULL AND alias IS NOT NULL AND user_id IS NOT NULL and month IS NOT NULL PRIMARY KEY ((push_application_id, month), user_id, alias) WITH CLUSTERING ORDER BY (user_id DESC);
 create table if not exists otpcodes (variant_id uuid, token_id text, code text, PRIMARY KEY ((variant_id, token_id), code)) WITH CLUSTERING ORDER BY (code DESC);
+alter table documents with gc_grace_seconds = 259200;
+alter materialized view documents_with_document_id with gc_grace_seconds = 259200;
