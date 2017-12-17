@@ -24,7 +24,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.jboss.aerogear.unifiedpush.rest.AbstractManagementEndpoint;
-import org.jboss.resteasy.annotations.GZIP;
 import org.springframework.stereotype.Controller;
 
 import com.qmino.miredot.annotations.ReturnType;
@@ -43,7 +42,6 @@ public class ExportEndpoint extends AbstractManagementEndpoint {
     @GET
     @Path("/{variantId}/installations/")
     @Produces(MediaType.APPLICATION_JSON)
-    @GZIP
     @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.Installation>")
     public Response exportInstallations(@PathParam("variantId") String variantId) {
         return Response.ok(getSearch().findAllInstallationsByVariantForDeveloper(variantId, 0, Integer.MAX_VALUE, null).getResultList()).build();

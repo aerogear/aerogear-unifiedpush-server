@@ -100,6 +100,11 @@
 					<artifactId>commons-httpclient</artifactId>
 				</exclusion>
 
+				<exclusion>
+					<groupId>javax.ws.rs</groupId>
+					<artifactId>javax.ws.rs-api</artifactId>
+				</exclusion>
+
 				<!-- Wildfly 8.2.x is bundled with fasterxml 2.4.1 -->
 				<!-- While java-wns is bundled with 2.5.1 -->
 				<exclusion>
@@ -189,11 +194,11 @@
 			</build>
 
 			<dependencies>
-			     <dependency>
-		            <groupId>org.jboss.aerogear.unifiedpush</groupId>
-		            <artifactId>unifiedpush-service</artifactId>
-		            <type>test-jar</type>
-		        </dependency>
+				<dependency>
+					<groupId>org.jboss.aerogear.unifiedpush</groupId>
+					<artifactId>unifiedpush-service</artifactId>
+					<type>test-jar</type>
+				</dependency>
 
 				<dependency>
 					<groupId>org.mockito</groupId>
@@ -251,18 +256,18 @@
 					<scope>test</scope>
 				</dependency>
 
-                <!-- Spring test -->
-                <dependency>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-test</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<!-- Spring test -->
+				<dependency>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-test</artifactId>
+					<scope>test</scope>
+				</dependency>
 
-                <dependency>
-                    <groupId>org.cassandraunit</groupId>
-                    <artifactId>cassandra-unit-spring</artifactId>
-                    <scope>test</scope>
-                </dependency>
+				<dependency>
+					<groupId>org.cassandraunit</groupId>
+					<artifactId>cassandra-unit-spring</artifactId>
+					<scope>test</scope>
+				</dependency>
 
 			</dependencies>
 		</profile>
