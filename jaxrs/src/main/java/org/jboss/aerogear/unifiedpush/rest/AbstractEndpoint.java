@@ -6,11 +6,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
+import org.jboss.aerogear.unifiedpush.rest.util.BearerHelper;
 
 public class AbstractEndpoint {
-	private static final String REFERER_HEADER = "Referer";
-
 	protected static ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
         // add response headers for the preflight request
         // required
@@ -28,7 +26,7 @@ public class AbstractEndpoint {
 		// "enable-cors" : true, is available at upsi.json (Subdomain proxy),
 		// therefore we want to prevent duplicated cors when using rest context.
 		//
-		if (!isProxyRequest(request))
+		if (!BearerHelper.isProxyRequest(request))
 			return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
 					.header("Access-Control-Allow-Credentials", "true")
 					.build();
@@ -49,9 +47,4 @@ public class AbstractEndpoint {
     protected static String quote(String value) {
     	return new StringBuilder(value.length() + 2).append('"' + value + '"').toString();
     }
-
-	private Boolean isProxyRequest(HttpServletRequest request) {
-		String referer = request.getHeader(REFERER_HEADER);
-		return StringUtils.isNoneEmpty(referer) && !request.getRequestURI().startsWith(referer);
-	}
 }

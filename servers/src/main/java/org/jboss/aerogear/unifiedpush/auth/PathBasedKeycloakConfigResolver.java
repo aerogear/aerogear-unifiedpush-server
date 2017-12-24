@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.aerogear.unifiedpush.rest.util.BearerHelper;
 import org.jboss.logging.Logger;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.KeycloakDeployment;
@@ -34,7 +35,7 @@ import org.springframework.context.ApplicationContext;
 
 public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 	private static final Logger log = Logger.getLogger(PathBasedKeycloakConfigResolver.class);
-	private static final String REFERER_HEADER = "Referer";
+
 	// TODO - Convert to
 	private static final Map<String, CustomKeycloakDeployment> cache = new ConcurrentHashMap<String, CustomKeycloakDeployment>();
 
@@ -45,7 +46,7 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 	public KeycloakDeployment resolve(Request request) {
 		String realm = "keycloak";
 
-		String referer = request.getHeader(REFERER_HEADER);
+		String referer = BearerHelper.getRefererHeader(request);
 
 		// TODO - Use proxy subdomain as realm name.
 		if (isProxyRequest(referer, request)) {
