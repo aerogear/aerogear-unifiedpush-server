@@ -95,8 +95,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	}
 
 	/**
-	 * RESTful API for validating alias is already registered. The Endpoint has
-	 * public access.
+	 * RESTful API for validating alias is already registered (Keycloak). The
+	 * Endpoint has public access.
 	 *
 	 * @param alias
 	 *            The alias name.
@@ -119,7 +119,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	@Path("/exists/{alias}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("java.lang.Boolean")
-	public Response exists(@PathParam("alias") String alias, @Context HttpServletRequest request) {
+	public Response registered(@PathParam("alias") String alias, @Context HttpServletRequest request) {
 		if (aliasService.registered(alias))
 			return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);
 
@@ -194,9 +194,10 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	public Response updateAliasPassword(@PathParam("alias") String alias, PasswordContainer passwordContainer,
 			@Context HttpServletRequest request) {
 
+		// Endpoint is not protected by keycloak, we assume Bearer exists.
 		// TODO - Find a way to validate current user password.
 		try {
-			AccessToken accessToken = BearerHelper.getTokenDataFromBearer(request);
+			AccessToken accessToken = BearerHelper.getTokenDataFromBearer(request).orNull();
 			if (accessToken != null && accessToken.getPreferredUsername().equals(alias)) {
 				ResponseBuilder response = Response.notModified();
 				if (passwordContainer.isDataValid()) {

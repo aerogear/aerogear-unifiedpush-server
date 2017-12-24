@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
@@ -35,9 +34,11 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Base class for all RESTful endpoints. Offers hooks for common features like validation
@@ -51,9 +52,6 @@ public abstract class AbstractBaseEndpoint extends AbstractEndpoint {
 
     @Inject
     private MessageSource messageSource;
-
-    @Inject
-    private HttpServletRequest httpServletRequest;
 
     /**
      * Generic validator used to identify constraint violations of the given model class.
@@ -128,15 +126,13 @@ public abstract class AbstractBaseEndpoint extends AbstractEndpoint {
 	 *
 	 * @return current logged in user
 	 */
-    protected LoggedInUser extractUsername() {
-    	return extractUsername(httpServletRequest);
-	}
-
-    public static LoggedInUser extractUsername(HttpServletRequest httpServletRequest) {
-		KeycloakPrincipal<?> p = (KeycloakPrincipal<?>) httpServletRequest.getUserPrincipal();
+    public static LoggedInUser extractUsername() {
+        KeycloakAuthenticationToken token = ((KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication());
 
 		// Null check for automation scenarios.
-		if (p != null) {
+		if (token != null && token.getPrincipal() != null) {
+			KeycloakPrincipal<?> p = (KeycloakPrincipal<?>) token.getPrincipal();
+
 			KeycloakSecurityContext kcSecurityContext = p.getKeycloakSecurityContext();
 			return new LoggedInUser(kcSecurityContext.getToken().getPreferredUsername());
 		}

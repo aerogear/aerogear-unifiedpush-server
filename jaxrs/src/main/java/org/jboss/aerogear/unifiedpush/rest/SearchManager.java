@@ -19,12 +19,13 @@ package org.jboss.aerogear.unifiedpush.rest;
 import java.io.Serializable;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -32,12 +33,8 @@ import org.springframework.stereotype.Controller;
  * role of the current logged in user
  */
 @Controller
-@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class SearchManager implements Serializable {
 	private static final long serialVersionUID = -6665967856424444078L;
-
-	@Inject
-	private HttpServletRequest httpServletRequest;
 
 	@Inject
 	@Qualifier("PushSearchServiceImpl")
@@ -53,12 +50,31 @@ public class SearchManager implements Serializable {
 	 */
 	public PushSearchService getSearchService() {
 
-		boolean isAdmin = httpServletRequest.isUserInRole("admin");
+		boolean isAdmin = hasRole("ROLE_ADMIN");
 
 		if (isAdmin) {
 			return searchAll;
 		}
-		searchByDeveloper.setLoginName(AbstractBaseEndpoint.extractUsername(httpServletRequest));
+		searchByDeveloper.setLoginName(AbstractBaseEndpoint.extractUsername());
 		return searchByDeveloper;
 	}
+
+	protected boolean hasRole(String role) {
+        // get security context from thread local
+        SecurityContext context = SecurityContextHolder.getContext();
+
+        if (context == null)
+            return false;
+
+        Authentication authentication = context.getAuthentication();
+        if (authentication == null)
+            return false;
+
+        for (GrantedAuthority auth : authentication.getAuthorities()) {
+            if (role.equals(auth.getAuthority()))
+                return true;
+        }
+
+        return false;
+    }
 }

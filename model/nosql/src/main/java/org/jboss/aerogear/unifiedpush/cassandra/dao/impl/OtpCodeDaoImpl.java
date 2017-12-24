@@ -1,5 +1,6 @@
 package org.jboss.aerogear.unifiedpush.cassandra.dao.impl;
 
+import org.jboss.aerogear.unifiedpush.cassandra.CassandraConfig;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.OtpCodeDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCode;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCodeKey;
@@ -11,7 +12,6 @@ import org.springframework.data.cassandra.repository.support.CassandraRepository
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
-import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 
@@ -19,18 +19,17 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 class OtpCodeDaoImpl extends CassandraBaseDao<OtpCode, OtpCodeKey> implements OtpCodeDao {
 	private static final int CODE_TTL = 60 * 60; // 1 hours in seconds
 
-	// Since we use a custom InsertOptions, we should also set
-	// ConsistencyLevel.QUORUM
-	private static final InsertOptions writeOptions = InsertOptions.builder().consistencyLevel(ConsistencyLevel.QUORUM)
-			.ttl(CODE_TTL).build();
+	private static InsertOptions writeOptions;
 
-	public OtpCodeDaoImpl(@Autowired CassandraOperations operations) {
-		super(OtpCode.class, new CassandraRepositoryFactory(operations).getEntityInformation(OtpCode.class),
-				operations);
+	public OtpCodeDaoImpl(@Autowired CassandraOperations operations, @Autowired CassandraConfig configuraion) {
+		super(OtpCode.class, new CassandraRepositoryFactory(operations).getEntityInformation(OtpCode.class), operations,
+				configuraion);
 
 		Assert.isTrue(
-				((CassandraAccessor) operations.getCqlOperations()).getConsistencyLevel() == ConsistencyLevel.QUORUM,
+				((CassandraAccessor) operations.getCqlOperations()).getConsistencyLevel() == getConsistencyLevel(),
 				"ConsistencyLevel Must be QUORUM");
+
+		writeOptions = InsertOptions.builder().consistencyLevel(getConsistencyLevel()).ttl(CODE_TTL).build();
 	}
 
 	@SuppressWarnings("unchecked")

@@ -28,6 +28,7 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
 	private static final String PROP_KEYSPACE_NAME_KEY = "aerogear.config.cassandra.keyspace";
 	private static final String PROP_CONTACT_POINTS_KEY = "aerogear.config.cassandra.contactpoints";
 	private static final String PROP_PORT_KEY = "aerogear.config.cassandra.port";
+	public static final String PROP_CONSISTENCY_LEVEL = "aerogear.config.cassandra.consistencylevel";
 
 	@Autowired
 	private ConfigurationEnvironment config;
@@ -84,5 +85,9 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
 		session.setShutdownScripts(getShutdownScripts());
 
 		return session;
+	}
+
+	public String getConsistencyLevel() {
+		return config.getProperty(PROP_CONSISTENCY_LEVEL, "ONE");
 	}
 }

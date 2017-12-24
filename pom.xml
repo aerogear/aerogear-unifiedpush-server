@@ -301,21 +301,10 @@
 
 			<dependency>
 				<groupId>org.keycloak</groupId>
-				<artifactId>keycloak-wildfly-adapter</artifactId>
+				<artifactId>keycloak-spring-security-adapter</artifactId>
 				<version>${keycloak.version}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>org.keycloak</groupId>
-				<artifactId>keycloak-undertow-adapter</artifactId>
-				<version>${keycloak.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.keycloak</groupId>
-				<artifactId>keycloak-jboss-adapter-core</artifactId>
-				<version>${keycloak.version}</version>
-			</dependency>
 
 			<!-- infinispan version policy -->
 			<dependency>
@@ -361,6 +350,18 @@
 				<groupId>org.springframework.data</groupId>
 				<artifactId>spring-data-jpa</artifactId>
 				<version>${spring-data.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${springsecurity.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>${springsecurity.version}</version>
 			</dependency>
 
 			<dependency>
@@ -534,14 +535,15 @@
 
 		<postgresql.version>42.1.4</postgresql.version>
 		<fasterxml.version>2.9.0</fasterxml.version>
-		<wildfly.version>10.1.0.Final</wildfly.version>
+		<wildfly.version>11.0.0.Final</wildfly.version>
 		<springframework.version>5.0.2.RELEASE</springframework.version>
+		<springsecurity.version>5.0.0.RELEASE</springsecurity.version>
 		<reactor-core.version>3.1.0.RELEASE</reactor-core.version>
 
 		<!-- Cassandra related properties -->
 		<failsafe.version>2.19.1</failsafe.version>
-		<cassandra.version>3.10</cassandra.version>
-		<cassandra-driver-core.version>3.3.0</cassandra-driver-core.version>
+		<cassandra.version>3.11.1</cassandra.version>
+		<cassandra-driver-core.version>3.3.2</cassandra-driver-core.version>
 		<cassandra-data.version>2.0.2.RELEASE</cassandra-data.version>
 		<spring-data.version>2.0.2.RELEASE</spring-data.version>
 

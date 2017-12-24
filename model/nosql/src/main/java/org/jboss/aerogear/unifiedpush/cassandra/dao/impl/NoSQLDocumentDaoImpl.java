@@ -11,6 +11,7 @@ import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
+import org.jboss.aerogear.unifiedpush.cassandra.CassandraConfig;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.DatabaseDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.DocumentDao;
@@ -24,7 +25,6 @@ import org.springframework.data.cassandra.repository.support.CassandraRepository
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
-import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
@@ -43,12 +43,13 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 	@Autowired
 	private AliasDao aliasDao;
 
-	public NoSQLDocumentDaoImpl(@Autowired CassandraOperations operations) {
+	public NoSQLDocumentDaoImpl(@Autowired CassandraOperations operations, @Autowired CassandraConfig configuraion) {
 		super(DocumentContent.class,
-				new CassandraRepositoryFactory(operations).getEntityInformation(DocumentContent.class), operations);
+				new CassandraRepositoryFactory(operations).getEntityInformation(DocumentContent.class), operations,
+				configuraion);
 
 		Assert.isTrue(
-				((CassandraAccessor) operations.getCqlOperations()).getConsistencyLevel() == ConsistencyLevel.QUORUM,
+				((CassandraAccessor) operations.getCqlOperations()).getConsistencyLevel() == getConsistencyLevel(),
 				"ConsistencyLevel Must be QUORUM");
 	}
 

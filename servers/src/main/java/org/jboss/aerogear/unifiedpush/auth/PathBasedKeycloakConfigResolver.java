@@ -16,52 +16,51 @@
  */
 package org.jboss.aerogear.unifiedpush.auth;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
-
-import org.jboss.aerogear.unifiedpush.rest.RestWebApplication;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.KeycloakDeployment;
 import org.keycloak.adapters.spi.HttpFacade.Request;
 import org.keycloak.common.util.KeycloakUriBuilder;
 import org.keycloak.constants.ServiceUrlConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
-@WebListener
-public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver, ServletContextListener {
+public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 	private static final Logger log = Logger.getLogger(PathBasedKeycloakConfigResolver.class);
-
+	private static final String REFERER_HEADER = "Referer";
+	// TODO - Convert to
 	private static final Map<String, CustomKeycloakDeployment> cache = new ConcurrentHashMap<String, CustomKeycloakDeployment>();
-	private static ServletContext context;
 
-	public void contextInitialized(ServletContextEvent sce) {
-		context = sce.getServletContext();
-	}
-
-	public void contextDestroyed(ServletContextEvent sce) {
-		context = null;
-	}
+	@Autowired
+	private ApplicationContext applicationContext;
 
 	@Override
 	public KeycloakDeployment resolve(Request request) {
-		String path = request.getURI();
-
 		String realm = "keycloak";
-		int isWebAppIndex = path.indexOf(RestWebApplication.UPSI_BASE_CONTEXT);
-		if (isWebAppIndex != -1) {
+
+		String referer = request.getHeader(REFERER_HEADER);
+
+		// TODO - Use proxy subdomain as realm name.
+		if (isProxyRequest(referer, request)) {
 			realm = "upsi";
 		}
 
 		CustomKeycloakDeployment deployment = cache.get(realm);
 		if (null == deployment) {
-			InputStream is = context.getResourceAsStream("/WEB-INF/" + realm + ".json");
+			InputStream is = null;
+
+			try {
+				is = applicationContext.getResource("/WEB-INF/" + realm + ".json").getInputStream();
+			} catch (IOException e) {
+				throw new IllegalStateException("Not able to find the file /" + realm + ".json");
+			}
 
 			if (is == null) {
 				throw new IllegalStateException("Not able to find the file /" + realm + ".json");
@@ -126,5 +125,9 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver, 
 		deployment.setUnregisterNodeUrl(
 				authUrlBuilder.clone().path(ServiceUrlConstants.CLIENTS_MANAGEMENT_UNREGISTER_NODE_PATH)
 						.build(deployment.getRealm()).toString());
+	}
+
+	private Boolean isProxyRequest(String referer, Request request) {
+		return StringUtils.isNoneEmpty(referer) && !request.getURI().startsWith(referer);
 	}
 }

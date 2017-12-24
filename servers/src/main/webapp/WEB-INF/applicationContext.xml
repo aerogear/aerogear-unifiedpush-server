@@ -19,5 +19,6 @@
     <bean class="org.jboss.aerogear.unifiedpush.rest.WebConfig"/>
     <bean class="org.jboss.aerogear.unifiedpush.cassandra.CassandraConfig"/>
     <bean class="org.jboss.aerogear.unifiedpush.spring.ServiceCacheConfig"/>
+    <bean class="org.jboss.aerogear.unifiedpush.auth.SecurityConfig"/>
 
 </beans>

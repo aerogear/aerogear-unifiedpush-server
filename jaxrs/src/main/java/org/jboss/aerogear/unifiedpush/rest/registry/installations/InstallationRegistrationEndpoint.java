@@ -234,14 +234,14 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	}
 
     /**
-     * RESTful API for Push Notification metrics registration.
+     * RESTful API for updating device token.
      * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
      *
      * <pre>
      * curl -u "variantID:secret"
-     *   -v -H "Accept: application/json" -H "Content-type: application/json" -H "aerogear-push-id: someid"
+     *   -v -H "Accept: application/json" -H "Content-type: application/json" -H "device-token: some device token"
      *   -X PUT
-     *   https://SERVER:PORT/context/rest/registry/device/pushMessage/{pushMessageId}
+     *   https://SERVER:PORT/context/rest/registry/device/token/{token: .*}
      * </pre>
      *
      * @param pushMessageId push message identifier
@@ -469,7 +469,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 *
 	 * <pre>
 	 * curl -u "variantID:secret"
-	 *   -v -H "Accept: application/json" -H "Content-type: application/json" -H "aerogear-push-id: someid"
+	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
 	 *   -X POST
 	 *   -d '{
 	 *     "deviceToken" : "someTokenString",
@@ -536,7 +536,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 *
 	 * <pre>
 	 * curl -u "variantID:secret" -H "deviceToken:<client device token>"
-	 *   -v -H "Accept: application/json" -H "Content-type: application/json" -H "aerogear-push-id: someid"
+	 *   -v -H "Accept: application/json" -H "Content-type: application/json" -H
 	 *   -X GET
 	 *   https://SERVER:PORT/context/rest/registry/resendVerificationCode
 	 * </pre>

@@ -16,41 +16,34 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.util;
 
-import java.util.Objects;
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.KeycloakServiceImpl;
 import org.keycloak.jose.jws.JWSInput;
 import org.keycloak.jose.jws.JWSInputException;
 import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
-import org.jboss.aerogear.unifiedpush.service.impl.spring.KeycloakServiceImpl;
-import org.apache.commons.lang3.StringUtils;
-import org.jboss.aerogear.unifiedpush.api.Variant;
+
+import com.google.common.base.Optional;
 
 public final class BearerHelper {
 	private static final Logger logger = LoggerFactory.getLogger(KeycloakServiceImpl.class);
 
-    private static final String BEARER_SCHEME = "Bearer ";
+	private static final String BEARER_SCHEME = "Bearer";
 
 	private BearerHelper() {
 	}
 
-	private static boolean isBearer(String authorizationHeader) {
-		return authorizationHeader.startsWith(BEARER_SCHEME);
-	}
-
-	private static String getAuthorizationHeader(HttpServletRequest request) {
-		Objects.requireNonNull(request, "request may not be null");
-		return request.getHeader("Authorization");
-	}
-
 	public static Variant extractVariantFromBearerHeader(GenericVariantService genericVariantService,
-			HttpServletRequest request){
+			HttpServletRequest request) {
 		String clientId = extractClientId(request);
-		if (StringUtils.isNotBlank(clientId)){
+		if (StringUtils.isNotBlank(clientId)) {
 			return genericVariantService.findVariantByKeycloakClientID(clientId);
 		}
 
@@ -60,33 +53,55 @@ public final class BearerHelper {
 	public static String extractClientId(HttpServletRequest request) {
 		String clientId = null;
 
-        AccessToken token = getTokenDataFromBearer(request);
-        if (token != null){
-        	clientId = token.getIssuedFor();
-        }
+		AccessToken token = getTokenDataFromBearer(request).orNull();
+		if (token != null) {
+			clientId = token.getIssuedFor();
+		}
 
 		return clientId;
 	}
 
-	public static AccessToken getTokenDataFromBearer(HttpServletRequest request){
-		AccessToken accessToken = null;
-		String authorizationHeader = getAuthorizationHeader(request);
+	public static Optional<AccessToken> getTokenDataFromBearer(HttpServletRequest request) {
 
-		if (authorizationHeader != null && isBearer(authorizationHeader)) {
-			String tokenString = extractBearerToken(authorizationHeader);
+		String tokenString = getBarearToken(request).orNull();
 
+		if (tokenString != null) {
 			try {
-	        	JWSInput input = new JWSInput(tokenString);
-	        	accessToken = input.readJsonContent(AccessToken.class);
-	        } catch (JWSInputException e) {
-	        	logger.debug("could not parse token: ", e);
-	        }
+				JWSInput input = new JWSInput(tokenString);
+				return Optional.of(input.readJsonContent(AccessToken.class));
+			} catch (JWSInputException e) {
+				logger.debug("could not parse token: ", e);
+			}
 		}
 
-        return accessToken;
+		return Optional.absent();
 	}
 
-	public static String extractBearerToken(String authorizationHeader) {
-		return authorizationHeader.substring(BEARER_SCHEME.length());
+	// Barear authentication allowed only using keycloack context
+	public static Optional<String> getBarearToken(HttpServletRequest request) {
+		Enumeration<String> authHeaders = request.getHeaders("Authorization");
+		if (authHeaders == null || !authHeaders.hasMoreElements()) {
+			return Optional.absent();
+		}
+
+		String tokenString = null;
+		while (authHeaders.hasMoreElements()) {
+			String[] split = authHeaders.nextElement().trim().split("\\s+");
+			if (split == null || split.length != 2)
+				continue;
+			if (!split[0].equalsIgnoreCase(BEARER_SCHEME))
+				continue;
+			tokenString = split[1];
+		}
+
+		if (tokenString == null) {
+			return Optional.absent();
+		}
+		return Optional.of(tokenString);
+	}
+
+	// Barear authentication request
+	public static boolean isBearerExists(HttpServletRequest request) {
+		return BearerHelper.getBarearToken(request).isPresent();
 	}
 }

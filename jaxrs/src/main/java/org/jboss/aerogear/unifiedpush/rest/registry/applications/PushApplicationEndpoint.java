@@ -47,11 +47,11 @@ import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
 import com.qmino.miredot.annotations.ReturnType;
 
-@Controller
+@Component
 @Path("/applications")
 public class PushApplicationEndpoint extends AbstractManagementEndpoint {
     private static final int MAX_PAGE_SIZE = 25;
