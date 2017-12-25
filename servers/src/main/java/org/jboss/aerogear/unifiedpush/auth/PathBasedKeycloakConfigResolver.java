@@ -24,17 +24,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.rest.util.BearerHelper;
-import org.jboss.logging.Logger;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.KeycloakDeployment;
 import org.keycloak.adapters.spi.HttpFacade.Request;
 import org.keycloak.common.util.KeycloakUriBuilder;
 import org.keycloak.constants.ServiceUrlConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
-	private static final Logger log = Logger.getLogger(PathBasedKeycloakConfigResolver.class);
+	private static final Logger logger = LoggerFactory.getLogger(PathBasedKeycloakConfigResolver.class);
 
 	// TODO - Convert to
 	private static final Map<String, CustomKeycloakDeployment> cache = new ConcurrentHashMap<String, CustomKeycloakDeployment>();
@@ -50,7 +51,12 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 
 		// TODO - Use proxy subdomain as realm name.
 		if (isProxyRequest(referer, request)) {
+			if (logger.isTraceEnabled())
+				logger.trace("Identified proxy request, using upsi realm! URI: {}, referer: {}", request.getURI(), referer);
 			realm = "upsi";
+		} else {
+			if (logger.isTraceEnabled())
+				logger.trace("Identified non-proxy request, using keycloak realm! URI: {}, referer: {}", request.getURI(), referer);
 		}
 
 		CustomKeycloakDeployment deployment = cache.get(realm);
@@ -87,7 +93,7 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 		if (deployment.getSslRequired().isRequired(requestFacade.getRemoteAddr())) {
 			scheme = "https";
 			if (!request.getScheme().equals(scheme) && request.getPort() != -1) {
-				log.error("request scheme: " + request.getScheme() + " ssl required");
+				logger.error("request scheme: " + request.getScheme() + " ssl required");
 				throw new RuntimeException("Can't resolve relative url from adapter config.");
 			}
 		}
@@ -104,8 +110,8 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 	 *            absolute URI
 	 */
 	protected void resolveUrls(CustomKeycloakDeployment deployment, KeycloakUriBuilder authUrlBuilder) {
-		if (log.isDebugEnabled()) {
-			log.debug("resolveUrls");
+		if (logger.isDebugEnabled()) {
+			logger.debug("resolveUrls");
 		}
 
 		String login = authUrlBuilder.clone().path(ServiceUrlConstants.AUTH_PATH).build(deployment.getRealm())
