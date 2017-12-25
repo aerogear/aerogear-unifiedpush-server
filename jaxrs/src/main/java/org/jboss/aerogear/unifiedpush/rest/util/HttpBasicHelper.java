@@ -26,7 +26,7 @@ import javax.ws.rs.core.HttpHeaders;
 
 public final class HttpBasicHelper {
 
-    private static final String HTTP_BASIC_SCHEME = "Basic ";
+    public static final String HTTP_BASIC_SCHEME = "Basic ";
 
 	private HttpBasicHelper() {
 	}
@@ -71,7 +71,7 @@ public final class HttpBasicHelper {
 
 	public static Invocation.Builder basic(Invocation.Builder request, String username, String password){
 	    String auth = username + ":" + password;
-	    String authHeader = "Basic " + new String(encodeBase64(auth));
+	    String authHeader = HTTP_BASIC_SCHEME + new String(encodeBase64(auth));
 		return request.header(HttpHeaders.AUTHORIZATION, authHeader);
 	}
 }
