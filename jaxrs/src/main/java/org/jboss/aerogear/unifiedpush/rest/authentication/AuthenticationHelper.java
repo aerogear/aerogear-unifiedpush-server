@@ -38,6 +38,16 @@ public class AuthenticationHelper {
 		return loadApplicationWhenAuthorized(request, null);
 	}
 
+	/**
+	 * Returns the {@link PushApplication}. First try variant based
+	 * authentication, then try application based authentication.
+	 *
+	 * @param request
+	 *            {@link HttpServletRequest}
+	 * @param alias
+	 *            For application level authentication, make sure alias is
+	 *            associated.
+	 */
 	public PushApplication loadApplicationWhenAuthorized(HttpServletRequest request, String alias) {
 
 		// Extract device token
@@ -66,7 +76,8 @@ public class AuthenticationHelper {
 		}
 
 		// Application authentication can only access associated aliases !
-		if (StringUtils.isNoneEmpty(alias) && aliasService.find(pushApplication.getPushApplicationID(), alias) == null) {
+		if (StringUtils.isNoneEmpty(alias)
+				&& aliasService.find(pushApplication.getPushApplicationID(), alias) == null) {
 			logger.warn(
 					"UnAuthorized application authentication, application ({}) is not authorized for alias ({}) scope data !",
 					pushApplication.getName(), alias);
@@ -74,20 +85,6 @@ public class AuthenticationHelper {
 		}
 
 		return pushApplication;
-	}
-
-	/**
-	 * Returns the {@link Variant} if device token exists, device exists/enabled
-	 * and request is authenticated (Basic/Bearer).
-	 *
-	 * @param request
-	 *            {@link HttpServletRequest}
-	 */
-	public Variant loadVariantWhenAuthorized(HttpServletRequest request) {
-		// Extract device token
-		String deviceToken = ClientAuthHelper.getDeviceToken(request);
-
-		return loadVariantWhenAuthorized(deviceToken, true, request);
 	}
 
 	/**
@@ -138,7 +135,7 @@ public class AuthenticationHelper {
 
 		if (variant == null) {
 			// Variant is missing, try to extract variant using Bearer
-			if (isBearerAllowed(request)) {
+			if (BearerHelper.isBearerExists(request)) {
 				variant = loadVariantFromBearerWhenAuthorized(genericVariantService, request);
 
 				if (variant == null) {
@@ -150,7 +147,8 @@ public class AuthenticationHelper {
 						variant.getVariantID(), request.getRequestURI());
 			} else {
 				// Variant is missing to anonymous/otp mode
-				logger.warn("UnAuthorized basic authentication using token-id {} API: {}", deviceToken, request.getRequestURI());
+				logger.warn("UnAuthorized basic authentication using token-id {} API: {}", deviceToken,
+						request.getRequestURI());
 				return null;
 			}
 		}
@@ -175,26 +173,14 @@ public class AuthenticationHelper {
 	/**
 	 * returns variant from the bearer token if it is valid for the request.
 	 *
-	 * {@link GenericVariantService}
-	 *
+	 * @param genericVariantService
+	 *            {@link GenericVariantService}
 	 * @param request
 	 *            {@link HttpServletRequest}
 	 */
 	private static Variant loadVariantFromBearerWhenAuthorized(GenericVariantService genericVariantService,
 			HttpServletRequest request) {
-		// extract the pushApplicationID from the Authorization header:
-		final Variant variant = BearerHelper.extractVariantFromBearerHeader(genericVariantService, request);
-
-		if (variant != null) {
-			return variant;
-		}
-
-		// unauthorized...
-		return null;
-	}
-
-	// Barear authentication allowed only using /upsi context
-	private boolean isBearerAllowed(HttpServletRequest request) {
-		return ClientAuthHelper.isWebAppContext(request);
+		// extract the Variant from the Authorization header:
+		return BearerHelper.extractVariantFromBearerHeader(genericVariantService, request);
 	}
 }

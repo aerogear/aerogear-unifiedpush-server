@@ -28,6 +28,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.configuration.SenderConfiguration;
@@ -139,8 +140,8 @@ public class TokenLoader {
 
 				// Some checks for GCM, because of GCM-3 topics
 				boolean gcmTopicRequest = (isAndroid && TokenLoaderUtils.isGCMTopicRequest(criteria));
-				if (gcmTopicRequest) {
-
+				if (gcmTopicRequest && message instanceof InternalUnifiedPushMessage) {
+                    // For InternalUnifiedPushMessage don't use topics) {
 					// If we are able to do push for GCM topics...
 
 					// 1)

@@ -17,4 +17,5 @@ public class DeviceTokenValidatorTest {
 		assertThat(DeviceTokenValidator.isValidDeviceTokenForVariant(RandomStringUtils.random(65, iosTokenChars),
 				iosVariantType)).isTrue();
 	}
+
 }

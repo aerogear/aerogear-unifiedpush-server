@@ -3,6 +3,7 @@ package org.jboss.aerogear.unifiedpush.cassandra.dao.impl;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import org.jboss.aerogear.unifiedpush.cassandra.CassandraConfig;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.DatabaseDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.Database;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DatabaseKey;
@@ -14,7 +15,6 @@ import org.springframework.data.cassandra.repository.support.CassandraRepository
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
-import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 
@@ -22,12 +22,12 @@ import com.datastax.driver.core.querybuilder.Select;
 class NoSQLDatabaseDaoImpl extends CassandraBaseDao<Database, DatabaseKey> implements DatabaseDao {
 	private static final String MV_BY_DATABASE = "databases_by_database";
 
-	public NoSQLDatabaseDaoImpl(@Autowired CassandraOperations operations) {
+	public NoSQLDatabaseDaoImpl(@Autowired CassandraOperations operations, @Autowired CassandraConfig configuraion) {
 		super(Database.class, new CassandraRepositoryFactory(operations).getEntityInformation(Database.class),
-				operations);
+				operations, configuraion);
 
 		Assert.isTrue(
-				((CassandraAccessor) operations.getCqlOperations()).getConsistencyLevel() == ConsistencyLevel.QUORUM,
+				((CassandraAccessor) operations.getCqlOperations()).getConsistencyLevel() == getConsistencyLevel(),
 				"ConsistencyLevel Must be QUORUM");
 	}
 

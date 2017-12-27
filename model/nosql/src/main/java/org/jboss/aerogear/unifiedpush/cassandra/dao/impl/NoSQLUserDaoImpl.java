@@ -12,6 +12,7 @@ import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
+import org.jboss.aerogear.unifiedpush.cassandra.CassandraConfig;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.DistinctUitils;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.User;
@@ -28,7 +29,6 @@ import org.springframework.data.cassandra.repository.support.CassandraRepository
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
-import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.SimpleStatement;
 import com.datastax.driver.core.querybuilder.Delete;
@@ -51,11 +51,12 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		months = Arrays.stream(Month.values()).map(month -> month.getValue()).collect(Collectors.toList());
 	}
 
-	public NoSQLUserDaoImpl(@Autowired CassandraOperations operations) {
-		super(User.class, new CassandraRepositoryFactory(operations).getEntityInformation(User.class), operations);
+	public NoSQLUserDaoImpl(@Autowired CassandraOperations operations, @Autowired CassandraConfig configuraion) {
+		super(User.class, new CassandraRepositoryFactory(operations).getEntityInformation(User.class), operations,
+				configuraion);
 
 		Assert.isTrue(
-				((CassandraAccessor) operations.getCqlOperations()).getConsistencyLevel() == ConsistencyLevel.QUORUM,
+				((CassandraAccessor) operations.getCqlOperations()).getConsistencyLevel() == getConsistencyLevel(),
 				"ConsistencyLevel Must be QUORUM");
 	}
 
