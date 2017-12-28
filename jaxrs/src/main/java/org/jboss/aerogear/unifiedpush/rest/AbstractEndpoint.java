@@ -6,8 +6,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-import org.jboss.aerogear.unifiedpush.rest.util.BearerHelper;
-
 public class AbstractEndpoint {
 	protected static ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
         // add response headers for the preflight request
@@ -23,15 +21,9 @@ public class AbstractEndpoint {
     }
 
 	protected Response appendAllowOriginHeader(ResponseBuilder rb, HttpServletRequest request) {
-		// "enable-cors" : true, is available at upsi.json (Subdomain proxy),
-		// therefore we want to prevent duplicated cors when using rest context.
-		//
-		if (!BearerHelper.isProxyRequest(request))
-			return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
-					.header("Access-Control-Allow-Credentials", "true")
-					.build();
-		else
-			return rb.build();
+		return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
+				.header("Access-Control-Allow-Credentials", "true")
+				.build();
     }
 
 	protected Response create401Response(final HttpServletRequest request) {
