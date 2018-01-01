@@ -60,6 +60,8 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 		// Disable CSRF for all URLS.
 		// TODO - Revisit this decision and consider CSRF for UI based requests.
 		http.csrf().disable();
+		http.rememberMe().disable();
+		http.sessionManagement().disable();
 
 		http.authorizeRequests() //
 				.antMatchers("/rest/database/**").hasAnyRole("INSTALLATION") //
