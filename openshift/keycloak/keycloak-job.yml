@@ -1,0 +1,90 @@
+kind: "Template"
+apiVersion: "v1"
+metadata:
+  name: "keycloak-ups-full" 
+  annotations:
+    openshift.io/display-name: "Deploy UnifiedPush Realm" 
+    description: "A job which will install the UPS realm into a KeyCloak server" 
+    tags: "aerogear,mobile,feedhenry" 
+    iconClass: "icon-paper-plane" 
+  labels:
+    mobile: "unified-push"
+message: "KeyCloak is being set up, please enjoy a refreshing beverage." 
+parameters:
+  - name: NAMESPACE
+    displayName: Namespace
+    description: The namespace the job will run in.
+    value: myproject
+    required: true
+  - name: KEYCLOAK_USER
+    displayName: Keycloak Admin Username
+    description: This is the username for the admin user of the keycloak application.
+    value: admin
+    required: true
+  - name: KEYCLOAK_PASSWORD
+    displayName: Keycloak Admin Password
+    description: This is the password for the admin user of the keycloak application.
+    value: password
+    required: true
+  - name: KEYCLOAK_URL
+    displayName: Keycloak URL
+    description: This is the url of the server that the realm is created on.
+    value: http://keycloak-server:8080/auth
+    required: true
+objects:  
+  - apiVersion: v1
+    kind: ImageStream
+    metadata: 
+      annotations:
+        openshift.io/display-name: keycloak-install-ups-realm-job-image
+      name: keycloak-install-ups-realm-job-image
+      namespace: ${NAMESPACE}
+    spec:
+      lookupPolicy:
+        local: true
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata: 
+      name: keycloak-install-ups-realm-job-image
+    spec:
+      triggers: 
+        - type: ConfigChange
+      source:
+        type: Git
+        git:
+          uri: https://github.com/secondsun/aerogear-unifiedpush-server
+          ref: AGPUSH-2216-1.2.0-os-template
+        contextDir: openshift/keycloak
+      strategy:
+        type: Docker
+      output:
+        to:
+          kind: ImageStreamTag
+          name: keycloak-install-ups-realm-job-image:latest
+  - apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: install-realm
+    spec:
+      parallelism: 1    
+      completions: 1    
+      template:         
+        metadata:
+          name: install-realm
+          annotations:
+            alpha.image.policy.openshift.io/resolve-names: '*'
+        spec:
+          containers:
+          - name: keycloak-install-ups-realm-job-image
+            imagePullPolicy: Always
+            image: keycloak-install-ups-realm-job-image:latest
+            env:
+              - name: HOME
+                value: /opt/jboss
+              - name: KEYCLOAK_ADMIN_USER
+                value: ${KEYCLOAK_USER}
+              - name: KEYCLOAK_ADMIN_PASS
+                value: ${KEYCLOAK_PASSWORD}
+              - name: KEYCLOAK_ADMIN_HOST
+                value: ${KEYCLOAK_URL}
+          restartPolicy: OnFailure    

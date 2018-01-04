@@ -1,0 +1,262 @@
+kind: "Template"
+apiVersion: "v1"
+metadata:
+  name: "keycloak-ups-full" 
+  annotations:
+    openshift.io/display-name: "KeyCloak Server with UnifiedPush Realm" 
+    description: "A standalone KeyCloak server bundled with the Realm for use with AeroGear UPS 1.2.0.  If you already have a KeyCloak instance to use with UPS please see keycloak-min.yaml" 
+    tags: "aerogear,mobile,feedhenry" 
+    iconClass: "icon-paper-plane" 
+  labels:
+    mobile: "unified-push"
+message: "KeyCloak is being set up, please enjoy a refreshing beverage.  Your admin credentials are ${KEYCLOAK_USER}:${KEYCLOAK_PASSWORD}" 
+parameters:
+  - name: NAMESPACE
+    displayName: Namespace
+    description: The OpenShift Namespace where the ImageStream resides.  This will usually
+      be your project name
+    required: true
+  - name: KEYCLOAK_PASSWORD
+    displayName: Keycloak Admin Password
+    description: This is the password for the admin user of the keycloak application.
+    value: password
+    required: true
+  - name: KEYCLOAK_USER
+    displayName: Keycloak Admin Username
+    description: This is the username for the admin user of the keycloak application.
+    value: admin
+    required: true
+  - name: DATABASE_SERVICE_NAME
+    displayName: Database Service Name
+    description: The name of the OpenShift Service exposed for the database.
+    value: postgresql
+    required: true
+  - name: POSTGRESQL_USER
+    displayName: PostgreSQL Connection Username
+    description: Username for PostgreSQL user that will be used for accessing the database.
+    generate: expression
+    from: user[A-Z0-9]{3}
+    required: true
+  - name: POSTGRESQL_PASSWORD
+    displayName: PostgreSQL Connection Password
+    description: Password for the PostgreSQL connection user.
+    generate: expression
+    from: "[a-zA-Z0-9]{16}"
+    required: true
+  - name: POSTGRESQL_ROOT_PASSWORD
+    displayName: PostgreSQL Root Password
+    description: Password for the PostgreSQL root user.
+    generate: expression
+    from: "[a-zA-Z0-9]{16}"
+    required: true
+  - name: POSTGRESQL_DATABASE
+    displayName: PostgreSQL Database Name
+    description: Name of the PostgreSQL database accessed.
+    value: keycloak
+    required: true
+  - name: VOLUME_CAPACITY
+    displayName: Volume Capacity
+    description: Volume space available for data, e.g. 512Mi, 2Gi.
+    value: 1Gi
+    required: true
+  - name: POSTGRESQL_IMAGE
+    displayName: Name of PostgreSQL Image
+    description: Name of PostgreSQL image to be used (centos/postgresql-94-centos7 or
+      centos/postgresql-92-centos7, or centos/postgresql-95-centos7).
+    value: centos/postgresql-95-centos7
+    required: true
+  - name: KEYCLOAK_IMAGE
+    displayName: Keycloak Image
+    description: Docker image to use for the Keycloak Server
+    value: jboss/keycloak-openshift:3.4.0.Final
+  - name: KEYCLOAK_URL
+    displayName: Keycloak URL
+    description: This is the url that will be the base route to the Keycloak server.
+    value: keycloak.127.0.0.1.nip.io
+objects:  
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: keycloak-localhost-unsecure
+  spec:
+    host: "${KEYCLOAK_URL}"
+    to:
+      kind: Service
+      name: keycloak-server
+      weight: 100
+    port:
+      targetPort: 8080-tcp
+    wildcardPolicy: None
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: keycloak-server
+  spec:
+    ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    - name: 8443-tcp
+      protocol: TCP
+      port: 8443
+      targetPort: 8443
+    selector:
+      deploymentconfig: keycloak-server
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: keycloak-server
+    labels:
+      app: keycloak-server
+  spec:
+    triggers:
+    - type: ConfigChange
+    replicas: 1
+    test: false
+    selector:
+      app: keycloak-server
+      deploymentconfig: keycloak-server
+    template:
+      metadata:
+        labels:
+          app: keycloak-server
+          deploymentconfig: keycloak-server
+      spec:
+        containers:
+        - name: keycloak-server
+          image: jboss/keycloak-openshift:3.4.0.Final
+          imagePullPolicy: Always
+          ports:
+          - name: 8080-tcp
+            containerPort: 8080
+            protocol: TCP
+          - name: 8443-tcp
+            containerPort: 8443
+            protocol: TCP
+          readinessProbe:
+            timeoutSeconds: 1
+            initialDelaySeconds: 90
+            exec:
+              command:
+              - "/bin/sh"
+              - "-i"
+              - "-c"
+              - curl localhost:8080/auth
+          env:
+          - name: POSTGRES_PORT_5432_TCP_ADDR
+            value: postgresql
+          - name: POSTGRES_PORT_5432_TCP_PORT
+            value: '5432'
+          - name: POSTGRES_DATABASE
+            value: "${POSTGRESQL_DATABASE}"
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: "${DATABASE_SERVICE_NAME}"
+                key: database-user
+          - name: KEYCLOAK_USER
+            value: "${KEYCLOAK_USER}"
+          - name: KEYCLOAK_PASSWORD
+            value: "${KEYCLOAK_PASSWORD}"
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: "${DATABASE_SERVICE_NAME}"
+                key: database-password
+          resources: {}
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: "${DATABASE_SERVICE_NAME}"
+  stringData:
+    database-user: "${POSTGRESQL_USER}"
+    database-password: "${POSTGRESQL_PASSWORD}"
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "${DATABASE_SERVICE_NAME}"
+  spec:
+    ports:
+    - name: postgres
+      port: 5432
+    selector:
+      name: "${DATABASE_SERVICE_NAME}"
+- kind: PersistentVolumeClaim
+  apiVersion: v1
+  metadata:
+    name: "${DATABASE_SERVICE_NAME}-vc"
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: "${VOLUME_CAPACITY}"
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: "${DATABASE_SERVICE_NAME}"
+  spec:
+    strategy:
+      type: Recreate
+    triggers:
+    - type: ConfigChange
+    replicas: 1
+    selector:
+      name: "${DATABASE_SERVICE_NAME}"
+    template:
+      metadata:
+        labels:
+          name: "${DATABASE_SERVICE_NAME}"
+      spec:
+        containers:
+        - name: postgresql
+          image: "${POSTGRESQL_IMAGE}"
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            timeoutSeconds: 1
+            initialDelaySeconds: 5
+            exec:
+              command:
+              - "/bin/sh"
+              - "-i"
+              - "-c"
+              - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
+                'SELECT 1'
+          livenessProbe:
+            timeoutSeconds: 1
+            initialDelaySeconds: 30
+            tcpSocket:
+              port: 5432
+          env:
+          - name: POSTGRESQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: "${DATABASE_SERVICE_NAME}"
+                key: database-user
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: "${DATABASE_SERVICE_NAME}"
+                key: database-password
+          - name: POSTGRESQL_DATABASE
+            value: "${POSTGRESQL_DATABASE}"
+          resources:
+            limits:
+              memory: "512Mi"
+          volumeMounts:
+          - name: "${DATABASE_SERVICE_NAME}-data"
+            mountPath: "/var/lib/pgsql/data"
+          terminationMessagePath: "/dev/termination-log"
+          imagePullPolicy: IfNotPresent
+          capabilities: {}
+          securityContext:
+            capabilities: {}
+            privileged: false
+        volumes:
+        - name: "${DATABASE_SERVICE_NAME}-data"
+          persistentVolumeClaim:
+            claimName: "${DATABASE_SERVICE_NAME}-vc"
+

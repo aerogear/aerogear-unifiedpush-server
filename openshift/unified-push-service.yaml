@@ -1,0 +1,206 @@
+kind: "Template"
+apiVersion: "v1"
+metadata:
+  name: "aerogear-unified-push"
+  annotations:
+    description: "The AeroGear Unified Push Server provides an API and web console for sending push messages to Android, iOS, Windows Phone, and other push messaging services."
+    tags: mobile
+    iconClass: icon-node
+parameters:
+  - name: NAMESPACE
+    displayName: Namespace
+    description: The OpenShift Namespace where the ImageStream resides.
+    value: openshift
+    required: true
+  - name: UPS_URL
+    displayName: UPS URL
+    description: This is the url that will be the base route to the UPS server.
+    value: ups.127.0.0.1.nip.io
+    required: true
+  - name: MYSQL_IMAGE
+    displayName: MySQL Image
+    description: Docker image to use for the MySQL database servers
+    value: centos/mysql-57-centos7
+    required: true
+  - name: UPS_IMAGE
+    displayName: UPS Image
+    description: Docker image to use for the UPS Server
+    value: aerogear/unifiedpush-wildfly:1.2.1.3
+    required: true
+  - name: KEYCLOAK_HOSTNAME
+    displayName: Keycloak URL
+    description: The URL of the running keycloak service with the aerogear realm.
+    required: true
+  - name: KEYCLOAK_PORT
+    displayName: Keycloak Port
+    description: The Port of the running keycloak service with the aerogear realm.
+    value:  '80'
+    required: true  
+objects:
+  - kind: Secret
+    apiVersion: v1
+    metadata:
+      name: unifiedpush
+    stringData:
+      database-user: unifiedpush
+      database-password: unifiedpush
+      database-root-password: unifiedpush
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: unifiedpush
+    spec:
+      ports:
+        - name: mysql
+          port: 3306
+      selector:
+        name: unifiedpush
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: unifiedpush
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: unifiedpush
+    spec:
+      strategy:
+        type: Recreate
+      triggers:
+        - type: ConfigChange
+      replicas: 1
+      selector:
+        name: unifiedpush
+      template:
+        metadata:
+          labels:
+            name: unifiedpush
+        spec:
+          containers:
+            - name: mysql
+              image: "${MYSQL_IMAGE}"
+              ports:
+                - containerPort: 3306
+              readinessProbe:
+                timeoutSeconds: 1
+                initialDelaySeconds: 5
+                exec:
+                  command:
+                    - "/bin/sh"
+                    - "-i"
+                    - "-c"
+                    - MYSQL_PWD="unifiedpush" mysql -h 127.0.0.1 -u $MYSQL_USER -D unifiedpush
+                      -e 'SELECT 1'
+              livenessProbe:
+                timeoutSeconds: 1
+                initialDelaySeconds: 30
+                tcpSocket:
+                  port: 3306
+              env:
+                - name: MYSQL_USER
+                  value: unifiedpush
+                - name: MYSQL_PASSWORD
+                  value: unifiedpush
+                - name: MYSQL_ROOT_PASSWORD
+                  value: unifiedpush
+                - name: MYSQL_DATABASE
+                  value: unifiedpush
+              resources:
+                limits:
+                  memory: 512Mi
+              volumeMounts:
+                - name: unifiedpush-data
+                  mountPath: "/var/lib/mysql/data"
+              imagePullPolicy: IfNotPresent
+          volumes:
+            - name: unifiedpush-data
+              persistentVolumeClaim:
+                claimName: unifiedpush
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      name: ups-localhost-unsecure
+    spec:
+      host: "${UPS_URL}"
+      to:
+        kind: Service
+        name: unifiedpush-server
+        weight: 100
+      port:
+        targetPort: 8080-tcp
+      wildcardPolicy: None
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: unifiedpush-server
+    spec:
+      ports:
+        - name: 8080-tcp
+          protocol: TCP
+          port: 8080
+          targetPort: 8080
+        - name: 8443-tcp
+          protocol: TCP
+          port: 8443
+          targetPort: 8443
+      selector:
+        deploymentconfig: unifiedpush-server
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: unifiedpush-server
+    spec:
+      triggers:
+        - type: ConfigChange
+      replicas: 1
+      test: false
+      selector:
+        app: unifiedpush-server
+        deploymentconfig: unifiedpush-server
+      template:
+        metadata:
+          labels:
+            app: unifiedpush-server
+            deploymentconfig: unifiedpush-server
+        spec:
+          containers:
+            - name: unifiedpush-server
+              image: "${UPS_IMAGE}"
+              ports:
+                - name: 8080-tcp
+                  containerPort: 8080
+                  protocol: TCP
+                - name: 8443-tcp
+                  containerPort: 8443
+                  protocol: TCP
+              readinessProbe:
+                timeoutSeconds: 1
+                initialDelaySeconds: 90
+                exec:
+                  command:
+                    - "/bin/sh"
+                    - "-i"
+                    - "-c"
+                    - 'wget http://localhost:8080/ag-push '
+              env:
+                - name: MYSQL_SERVICE_HOST
+                  value: unifiedpush
+                - name: MYSQL_SERVICE_PORT
+                  value: '3306'
+                - name: MYSQL_DATABASE
+                  value: unifiedpush
+                - name: MYSQL_USER
+                  value: unifiedpush
+                - name: MYSQL_PASSWORD
+                  value: unifiedpush
+                - name: KEYCLOAK_SERVICE_HOST
+                  value: ${KEYCLOAK_HOSTNAME}
+                - name: KEYCLOAK_SERVICE_PORT
+                  value: "${KEYCLOAK_PORT}"
+              resources: {}
