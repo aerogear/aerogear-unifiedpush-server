@@ -23,6 +23,18 @@
       "value": "ups.127.0.0.1.nip.io"
     },
     {
+      "name": "KEYCLOAK_HOSTNAME",
+      "displayName": "Keycloak Hostame",
+      "description": "The URL of the running Keycloak with the Aerogear UPS realm.",
+      "value": "keycloak.127.0.0.1.nip.io"
+    },
+    {
+      "name": "KEYCLOAK_PORT",
+      "displayName": "Keycloak Port",
+      "description": "The port the running Keycloak with the Aerogear UPS realm (80 for http route, 443 for https route).",
+      "value": "443"
+    },
+    {
       "name": "MYSQL_IMAGE",
       "displayName": "MySQL Image",
       "description": "Docker image to use for the MySQL database servers",
@@ -32,7 +44,38 @@
       "name": "UPS_IMAGE",
       "displayName": "UPS Image",
       "description": "Docker image to use for the UPS Server",
-      "value": "aerogear/unifiedpush-wildfly"
+      "value": "aerogear/unifiedpush-wildfly:1.2.1.3"
+    },
+    {
+      "name": "UPS_DB_SIZE",
+      "displayName": "UPS DB Size",
+      "description": "Size of Persistent Volume dedicated to UPS database",
+      "value": "1Gi",
+      "required": true
+    },
+    {
+      "name": "UPS_DB_USER",
+      "displayName": "Username for DB",
+      "description": "Username for UPS MySQL database",
+      "generate": "expression",
+      "from": "user[A-Z0-9]{8}",
+      "required": true
+    },
+    {
+      "name": "UPS_DB_PASSWORD",
+      "displayName": "Password for DB",
+      "description": "Password for UPS MySQL database",
+      "generate": "expression",
+      "from": "[a-zA-Z0-9]{16}",
+      "required": true
+    },
+    {
+      "name": "UPS_DB_ROOT_PASSWORD",
+      "displayName": "Root Password for DB",
+      "description": "Root Password for UPS MySQL database",
+      "generate": "expression",
+      "from": "[a-zA-Z0-9]{16}",
+      "required": true
     }
   ],
   "objects": [
@@ -43,9 +86,9 @@
         "name": "unifiedpush"
       },
       "stringData": {
-        "database-user": "unifiedpush",
-        "database-password": "unifiedpush",
-        "database-root-password": "unifiedpush"
+        "database-user": "${UPS_DB_USER}",
+        "database-password": "${UPS_DB_PASSWORD}",
+        "database-root-password": "${UPS_DB_ROOT_PASSWORD}"
       }
     },
     {
@@ -78,7 +121,7 @@
         ],
         "resources": {
           "requests": {
-            "storage": "1Gi"
+            "storage": "${UPS_DB_SIZE}"
           }
         }
       }
@@ -126,7 +169,7 @@
                       "/bin/sh",
                       "-i",
                       "-c",
-                      "MYSQL_PWD=\"unifiedpush\" mysql -h 127.0.0.1 -u $MYSQL_USER -D unifiedpush -e 'SELECT 1'"
+                      "MYSQL_PWD=\"$MYSQL_PASSWORD\" mysql -h 127.0.0.1 -u $MYSQL_USER -D unifiedpush -e 'SELECT 1'"
                     ]
                   }
                 },
@@ -140,15 +183,29 @@
                 "env": [
                   {
                     "name": "MYSQL_USER",
-                    "value": "unifiedpush"
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "unifiedpush",
+                        "key": "database-user"
+                      }
+                    }
                   },
                   {
                     "name": "MYSQL_PASSWORD",
-                    "value": "unifiedpush"
-                  },
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "unifiedpush",
+                        "key": "database-password"
+                      }
+                    }
                   {
                     "name": "MYSQL_ROOT_PASSWORD",
-                    "value": "unifiedpush"
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "unifiedpush",
+                        "key": "database-root-password"
+                      }
+                    }
                   },
                   {
                     "name": "MYSQL_DATABASE",
@@ -174,151 +231,6 @@
                 "name": "unifiedpush-data",
                 "persistentVolumeClaim": {
                   "claimName": "unifiedpush"
-                }
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "kind": "Secret",
-      "apiVersion": "v1",
-      "metadata": {
-        "name": "keycloak-mysql"
-      },
-      "stringData": {
-        "database-user": "keycloak",
-        "database-password": "keycloak",
-        "database-root-password": "keycloak"
-      }
-    },
-    {
-      "kind": "Service",
-      "apiVersion": "v1",
-      "metadata": {
-        "name": "keycloak-mysql"
-      },
-      "spec": {
-        "ports": [
-          {
-            "name": "mysql",
-            "port": 3306
-          }
-        ],
-        "selector": {
-          "name": "keycloak-mysql"
-        }
-      }
-    },
-    {
-      "kind": "PersistentVolumeClaim",
-      "apiVersion": "v1",
-      "metadata": {
-        "name": "keycloak-mysql"
-      },
-      "spec": {
-        "accessModes": [
-          "ReadWriteOnce"
-        ],
-        "resources": {
-          "requests": {
-            "storage": "1Gi"
-          }
-        }
-      }
-    },
-    {
-      "kind": "DeploymentConfig",
-      "apiVersion": "v1",
-      "metadata": {
-        "name": "keycloak-mysql"
-      },
-      "spec": {
-        "strategy": {
-          "type": "Recreate"
-        },
-        "triggers": [
-          {
-            "type": "ConfigChange"
-          }
-        ],
-        "replicas": 1,
-        "selector": {
-          "name": "keycloak-mysql"
-        },
-        "template": {
-          "metadata": {
-            "labels": {
-              "name": "keycloak-mysql"
-            }
-          },
-          "spec": {
-            "containers": [
-              {
-                "name": "mysql",
-                "image": "${MYSQL_IMAGE}",
-                "ports": [
-                  {
-                    "containerPort": 3306
-                  }
-                ],
-                "readinessProbe": {
-                  "timeoutSeconds": 1,
-                  "initialDelaySeconds": 5,
-                  "exec": {
-                    "command": [
-                      "/bin/sh",
-                      "-i",
-                      "-c",
-                      "MYSQL_PWD=\"keycloak\" mysql -h 127.0.0.1 -u $MYSQL_USER -D keycloak -e 'SELECT 1'"
-                    ]
-                  }
-                },
-                "livenessProbe": {
-                  "timeoutSeconds": 1,
-                  "initialDelaySeconds": 30,
-                  "tcpSocket": {
-                    "port": 3306
-                  }
-                },
-                "env": [
-                  {
-                    "name": "MYSQL_USER",
-                    "value": "keycloak"
-                  },
-                  {
-                    "name": "MYSQL_PASSWORD",
-                    "value": "keycloak"
-                  },
-                  {
-                    "name": "MYSQL_ROOT_PASSWORD",
-                    "value": "keycloak"
-                  },
-                  {
-                    "name": "MYSQL_DATABASE",
-                    "value": "keycloak"
-                  }
-                ],
-                "resources": {
-                  "limits": {
-                    "memory": "512Mi"
-                  }
-                },
-                "volumeMounts": [
-                  {
-                    "name": "keycloak-data",
-                    "mountPath": "/var/lib/mysql/data"
-                  }
-                ],
-                "imagePullPolicy": "IfNotPresent"
-              }
-            ],
-            "volumes": [
-              {
-                "name": "keycloak-data",
-                "persistentVolumeClaim": {
-                  "claimName": "keycloak-mysql"
                 }
               }
             ]
@@ -439,32 +351,30 @@
                     "value": "unifiedpush"
                   },
                   {
-                    "name": "KEYCLOAK_PORT_3306_TCP_ADDR",
-                    "value": "keycloak-mysql"
-                  },
-                  {
-                    "name": "KEYCLOAK_PORT_3306_TCP_PORT",
-                    "value": "3306"
-                  },
-                  {
-                    "name": "KEYCLOAK_ENV_MYSQL_DATABASE",
-                    "value": "keycloak"
-                  },
-                  {
                     "name": "UNIFIEDPUSH_ENV_MYSQL_USER",
-                    "value": "unifiedpush"
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "unifiedpush",
+                        "key": "database-user"
+                      }
+                    }
                   },
                   {
                     "name": "UNIFIEDPUSH_ENV_MYSQL_PASSWORD",
-                    "value": "unifiedpush"
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "unifiedpush",
+                        "key": "database-password"
+                      }
+                    }
                   },
                   {
-                    "name": "KEYCLOAK_ENV_MYSQL_USER",
-                    "value": "keycloak"
+                    "name": "KEYCLOAK_SERVICE_HOST",
+                    "value": "${KEYCLOAK_HOSTNAME}"
                   },
                   {
-                    "name": "KEYCLOAK_ENV_MYSQL_PASSWORD",
-                    "value": "keycloak"
+                    "name": "KEYCLOAK_SERVICE_PORT",
+                    "value": "${KEYCLOAK_PORT}"
                   }
                 ],
                 "resources": {}
