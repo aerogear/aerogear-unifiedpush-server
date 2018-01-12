@@ -1,5 +1,5 @@
 keycloakServer:
-  image: jboss/keycloak:3.4.2.Final
+  image: jboss/keycloak:3.4.3.Final
   command: "-b 0.0.0.0 -Dkeycloak.import=/ups-keycloak-config/ups-realm-sample.json"
   volumes:
    - ../keycloak-realm:/ups-keycloak-config
