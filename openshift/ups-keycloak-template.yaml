@@ -1,0 +1,555 @@
+kind: "Template"
+apiVersion: "v1"
+metadata:
+  name: "aerogear-unified-push-with-keycloak"
+  annotations:
+    description: "The AeroGear Unified Push Server provides an API and web console for sending push messages to Android, iOS, Windows Phone, and other push messaging services. This templates embeds the deployment of a Keycloak server."
+    tags: mobile
+    iconClass: icon-node
+parameters:
+  - name: NAMESPACE
+    displayName: Namespace
+    description: The OpenShift Namespace where the ImageStream resides.
+    value: openshift
+    required: true
+  - name: UPS_URL
+    displayName: UPS URL
+    description: This is the url that will be the base route to the UPS server.
+    value: ups-namespace.pro-eu-west-1.openshiftapps.com
+    required: true
+  - name: KEYCLOAK_HOSTNAME
+    displayName: Keycloak URL
+    description: The URL of the running keycloak service with the aerogear realm.
+    value: keycloak-namespace.pro-eu-west-1.openshiftapps.com
+    required: true
+  - name: KEYCLOAK_PORT
+    displayName: Keycloak Port
+    description: The Port of the running keycloak service with the aerogear realm.
+    value:  '80'
+    required: true
+  - name: MYSQL_IMAGE
+    displayName: MySQL Image
+    description: Docker image to use for the MySQL database servers
+    value: centos/mysql-57-centos7
+    required: true
+  - name: KEYCLOAK_IMAGE
+    displayName: Keycloak Image
+    description: Docker image to use for the Keycloak Server
+    value: jboss/keycloak-openshift:3.4.3.Final
+    required: true
+  - name: UPS_IMAGE
+    displayName: UPS Image
+    description: Docker image to use for the UPS Server
+    value: aerogear/unifiedpush-wildfly:1.2.3
+    required: true
+  - name: UPS_DB_SIZE
+    displayName: UPS DB Size
+    description: Size of Persistent Volume dedicated to UPS database
+    value: 1Gi
+    required: true
+  - name: UPS_DB_USER
+    displayName: Username for DB
+    description: Username for UPS MySQL database
+    generate: expression
+    from: user[A-Z0-9]{8}
+    required: true
+  - name: UPS_DB_PASSWORD
+    displayName: Password for DB
+    description: Password for UPS MySQL database
+    generate: expression
+    from: '[a-zA-Z0-9]{16}'
+    required: true
+  - name: UPS_DB_ROOT_PASSWORD
+    displayName: Root Password for DB
+    description: Root Password for UPS MySQL database
+    generate: expression
+    from: '[a-zA-Z0-9]{16}'
+    required: true
+  - name: KEYCLOAK_DB_SIZE
+    displayName: Keycloak DB Size
+    description: Size of Persistent Volume dedicated to Keycloak database
+    value: 1Gi
+    required: true
+  - name: KEYCLOAK_DB_USER
+    displayName: Username for Keycloak DB
+    description: Username for Keycloak MySQL database
+    generate: expression
+    from: 'user[A-Z0-9]{8}'
+    required: true
+  - name: KEYCLOAK_DB_PASSWORD
+    displayName: Password for Keycloak DB
+    description: Password for Keycloak MySQL database
+    generate: expression
+    from: '[a-zA-Z0-9]{16}'
+    required: true
+  - name: KEYCLOAK_DB_ROOT_PASSWORD
+    displayName: Root Password for Keycloak DB
+    description: Root Password for Keycloak MySQL database
+    generate: expression
+    from: '[a-zA-Z0-9]{16}'
+    required: true
+objects:
+  - kind: Secret
+    apiVersion: v1
+    metadata:
+      name: unifiedpush
+    stringData:
+      database-user: "${UPS_DB_USER}"
+      database-password: "${UPS_DB_PASSWORD}"
+      database-root-password: "${UPS_DB_ROOT_PASSWORD}"
+  - kind: Secret
+    apiVersion: v1
+    metadata:
+      name: keycloak-mysql
+    stringData:
+      database-user: "${KEYCLOAK_DB_USER}"
+      database-password: "${KEYCLOAK_DB_PASSWORD}"
+      database-root-password: "${KEYCLOAK_DB_ROOT_PASSWORD}"
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: unifiedpush
+    spec:
+      ports:
+        - name: mysql
+          port: 3306
+      selector:
+        name: unifiedpush
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: keycloak-mysql
+    spec:
+      ports:
+        - name: mysql
+          port: 3306
+      selector:
+        name: keycloak-mysql
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: unifiedpush
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: "${UPS_DB_SIZE}"
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: keycloak-mysql
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: "${KEYCLOAK_DB_SIZE}"
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: unifiedpush
+    spec:
+      strategy:
+        type: Recreate
+      triggers:
+        - type: ConfigChange
+      replicas: 1
+      selector:
+        name: unifiedpush
+      template:
+        metadata:
+          labels:
+            name: unifiedpush
+        spec:
+          containers:
+            - name: mysql
+              image: "${MYSQL_IMAGE}"
+              ports:
+                - containerPort: 3306
+              readinessProbe:
+                timeoutSeconds: 1
+                initialDelaySeconds: 5
+                exec:
+                  command:
+                    - "/bin/sh"
+                    - "-i"
+                    - "-c"
+                    - MYSQL_PWD="$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u $MYSQL_USER -D unifiedpush
+                      -e 'SELECT 1'
+              livenessProbe:
+                timeoutSeconds: 1
+                initialDelaySeconds: 30
+                tcpSocket:
+                  port: 3306
+              env:
+                - name: MYSQL_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: unifiedpush
+                      key: database-user
+                - name: MYSQL_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: unifiedpush
+                      key: database-password
+                - name: MYSQL_ROOT_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: unifiedpush
+                      key: database-root-password
+                - name: MYSQL_DATABASE
+                  value: unifiedpush
+              resources:
+                limits:
+                  memory: 512Mi
+              volumeMounts:
+                - name: unifiedpush-data
+                  mountPath: "/var/lib/mysql/data"
+              imagePullPolicy: IfNotPresent
+          volumes:
+            - name: unifiedpush-data
+              persistentVolumeClaim:
+                claimName: unifiedpush
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: keycloak-mysql
+    spec:
+      strategy:
+        type: Recreate
+      triggers:
+        - type: ConfigChange
+      replicas: 1
+      selector:
+        name: keycloak-mysql
+      template:
+        metadata:
+          labels:
+            name: keycloak-mysql
+        spec:
+          containers:
+            - name: mysql
+              image: "${MYSQL_IMAGE}"
+              ports:
+                - containerPort: 3306
+              readinessProbe:
+                timeoutSeconds: 1
+                initialDelaySeconds: 5
+                exec:
+                  command:
+                    - "/bin/sh"
+                    - "-i"
+                    - "-c"
+                    - MYSQL_PWD="$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u $MYSQL_USER -D keycloak
+                      -e 'SELECT 1'
+              livenessProbe:
+                timeoutSeconds: 1
+                initialDelaySeconds: 30
+                tcpSocket:
+                  port: 3306
+              env:
+                - name: MYSQL_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: keycloak-mysql
+                      key: database-user
+                - name: MYSQL_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: keycloak-mysql
+                      key: database-password
+                - name: MYSQL_ROOT_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: keycloak-mysql
+                      key: database-root-password
+                - name: MYSQL_DATABASE
+                  value: keycloak
+              resources:
+                limits:
+                  memory: 512Mi
+              volumeMounts:
+                - name: keycloak-data
+                  mountPath: "/var/lib/mysql/data"
+              imagePullPolicy: IfNotPresent
+          volumes:
+            - name: keycloak-data
+              persistentVolumeClaim:
+                claimName: keycloak-mysql
+  - kind: Route
+    apiVersion: v1
+    metadata:
+      name: ups-localhost-unsecure
+    spec:
+      host: "${UPS_URL}"
+      to:
+        kind: Service
+        name: unifiedpush-server
+        weight: 100
+      port:
+        targetPort: 8080-tcp
+      wildcardPolicy: None
+  - kind: Route
+    apiVersion: v1
+    metadata:
+      name: keycloak-localhost-unsecure
+    spec:
+      host: "${KEYCLOAK_HOSTNAME}"
+      to:
+        kind: Service
+        name: keycloak
+      port:
+        targetPort: keycloak
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: unifiedpush-server
+    spec:
+      ports:
+        - name: 8080-tcp
+          protocol: TCP
+          port: 8080
+          targetPort: 8080
+        - name: 8443-tcp
+          protocol: TCP
+          port: 8443
+          targetPort: 8443
+      selector:
+        deploymentconfig: unifiedpush-server
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: keycloak
+    spec:
+      ports:
+      - protocol: TCP
+        port: 8080
+        targetPort: 8080
+        name: keycloak
+      - name: 8443-tcp
+        protocol: TCP
+        port: 8443
+        targetPort: 8443
+      selector:
+        deploymentconfig: keycloak
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: unifiedpush-server
+    spec:
+      triggers:
+        - type: ConfigChange
+      replicas: 1
+      test: false
+      selector:
+        app: unifiedpush-server
+        deploymentconfig: unifiedpush-server
+      template:
+        metadata:
+          labels:
+            app: unifiedpush-server
+            deploymentconfig: unifiedpush-server
+        spec:
+          containers:
+            - name: unifiedpush-server
+              image: "${UPS_IMAGE}"
+              imagePullPolicy: Always
+              ports:
+                - name: 8080-tcp
+                  containerPort: 8080
+                  protocol: TCP
+                - name: 8443-tcp
+                  containerPort: 8443
+                  protocol: TCP
+              readinessProbe:
+                timeoutSeconds: 1
+                initialDelaySeconds: 90
+                exec:
+                  command:
+                    - "/bin/sh"
+                    - "-i"
+                    - "-c"
+                    - 'wget http://localhost:8080/ag-push '
+              env:
+                - name: MYSQL_SERVICE_HOST
+                  value: unifiedpush
+                - name: MYSQL_SERVICE_PORT
+                  value: '3306'
+                - name: MYSQL_DATABASE
+                  value: unifiedpush
+                - name: MYSQL_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: unifiedpush
+                      key: database-user
+                - name: MYSQL_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: unifiedpush
+                      key: database-password
+                - name: KEYCLOAK_SERVICE_HOST
+                  value: ${KEYCLOAK_HOSTNAME}
+                - name: KEYCLOAK_SERVICE_PORT
+                  value: "${KEYCLOAK_PORT}"
+              resources:
+                limits:
+                  memory: 800Mi
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: "unifiedpush-keycloak-config"
+    data:
+      unifiedpush-realm.json: |-
+        {
+          "realm": "aerogear",
+          "enabled": true,
+          "accessTokenLifespan": 60,
+          "accessCodeLifespan": 60,
+          "accessCodeLifespanUserAction": 300,
+          "ssoSessionIdleTimeout": 600,
+          "ssoSessionMaxLifespan": 36000,
+          "sslRequired": "external",
+          "registrationAllowed": false,
+          "social": false,
+          "updateProfileOnInitialSocialLogin": false,
+          "requiredCredentials": [ "password" ],
+          "defaultRoles": [ "developer" ],
+          "users" : [
+            {
+              "username" : "admin",
+              "enabled": true,
+              "credentials" : [
+                  { "type" : "password",
+                  "value" : "123" }
+              ],
+              "requiredActions": [
+                  "UPDATE_PASSWORD"
+              ],
+              "realmRoles": [ "admin" ],
+              "applicationRoles": {
+                 "realm-management": [ "realm-admin" ],
+                 "account": [ "manage-account" ]
+              }
+            }
+          ],
+          "roles" : {
+            "realm" : [
+              {
+                "name": "admin",
+                "description": "Administrator privileges"
+              },
+              {
+                "name": "developer",
+                "description": "Developer privileges"
+              }
+            ]
+          },
+          "scopeMappings": [
+            {
+              "client": "unified-push-server-js",
+              "roles": ["admin", "developer"]
+            }
+          ],
+          "applications": [
+            {
+              "name": "unified-push-server",
+              "enabled": true,
+              "bearerOnly": true
+            },
+            {
+              "name": "unified-push-server-js",
+              "enabled": true,
+              "publicClient": true,
+              "webOrigins": [
+                "+"
+              ],
+              "redirectUris": [
+                "http://${UPS_URL}/*"
+              ]
+            }
+          ]
+        }
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: "keycloak"
+    spec:
+      strategy:
+        type: Recreate
+      triggers:
+      - type: ConfigChange
+      replicas: 1
+      selector:
+        name: keycloak
+      template:
+        metadata:
+          creationTimestamp:
+          labels:
+            name: keycloak
+        spec:
+          containers:
+          - name: keycloak-server
+            image: "${KEYCLOAK_IMAGE}"
+            ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: 8443-tcp
+              containerPort: 8443
+              protocol: TCP
+            - name: jolokia
+              containerPort: 8778
+              protocol: TCP
+            args:
+            - start-keycloak.sh
+            - "-b $(INTERNAL_POD_IP)"
+            - "-Djgroups.bind_addr=global"
+            - "-Djboss.node.name=$(INTERNAL_POD_IP)"
+            - "-Dkeycloak.import=/opt/jboss/keycloak/standalone/configuration/realm/unifiedpush-realm.json"
+            env:
+            - name: INTERNAL_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: KEYCLOAK_USER
+              value: admin
+            - name: KEYCLOAK_PASSWORD
+              value: "123"
+            - name: OPERATING_MODE
+              value: clustered
+            - name: DB_VENDOR
+              value: MYSQL
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-mysql
+                  key: database-user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-mysql
+                  key: database-password
+            - name: MYSQL_DATABASE
+              value: keycloak
+            - name: MYSQL_PORT_3306_TCP_ADDR
+              value: keycloak-mysql
+            - name: MYSQL_PORT_3306_TCP_PORT
+              value: "3306"
+            - name: OPENSHIFT_KUBE_PING_LABELS
+              value: deploymentconfig=keycloak
+            - name: OPENSHIFT_KUBE_PING_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            volumeMounts:
+            - name: unifiedpush-keycloak-config
+              mountPath: "/opt/jboss/keycloak/standalone/configuration/realm"
+            securityContext:
+              privileged: false
+          volumes:
+          - name: "unifiedpush-keycloak-config"
+            configMap:
+              name: "unifiedpush-keycloak-config"
+          restartPolicy: Always
+          dnsPolicy: ClusterFirst
