@@ -47,8 +47,6 @@ import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
-import com.qmino.miredot.annotations.ReturnType;
-
 @Path("/applications")
 public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     private static final int MAX_PAGE_SIZE = 25;
@@ -76,7 +74,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("org.jboss.aerogear.unifiedpush.api.PushApplication")
     public Response registerPushApplication(PushApplication pushApp) {
 
         try {
@@ -118,7 +115,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.PushApplication>")
     public Response listAllPushApplications(@QueryParam("page") Integer page,
                                             @QueryParam("per_page") Integer pageSize,
                                             @QueryParam("includeDeviceCount") @DefaultValue("false") boolean includeDeviceCount,
@@ -165,7 +161,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @GET
     @Path("/{pushAppID}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("org.jboss.aerogear.unifiedpush.api.PushApplication")
     public Response findById(
             @PathParam("pushAppID") String pushApplicationID,
             @QueryParam("includeDeviceCount") @DefaultValue("false") boolean includeDeviceCount,
@@ -216,7 +211,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Path("/{pushAppID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("java.lang.Void")
     public Response updatePushApplication(@PathParam("pushAppID") String pushApplicationID, PushApplication updatedPushApp) {
 
         PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
@@ -258,7 +252,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Path("/{pushAppID}/reset")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("org.jboss.aerogear.unifiedpush.api.PushApplication")
     public Response resetMasterSecret(@PathParam("pushAppID") String pushApplicationID) {
 
         //PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
@@ -288,7 +281,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @DELETE
     @Path("/{pushAppID}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("java.lang.Void")
     public Response deletePushApplication(@PathParam("pushAppID") String pushApplicationID) {
 
         PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
@@ -309,7 +301,6 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @GET
     @Path("/{pushAppID}/count")
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("java.util.Map<java.lang.String, java.lang.Long>")
     public Response countInstallations(@PathParam("pushAppID") String pushApplicationID) {
 
         Map<String, Long> result = pushAppService.countInstallationsByType(pushApplicationID);

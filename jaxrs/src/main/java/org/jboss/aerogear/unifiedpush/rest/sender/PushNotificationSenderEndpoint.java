@@ -16,8 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.sender;
 
-import com.qmino.miredot.annotations.BodyType;
-import com.qmino.miredot.annotations.ReturnType;
 import io.prometheus.client.Counter;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
@@ -93,8 +91,6 @@ public class PushNotificationSenderEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @BodyType("org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage")
-    @ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
     public Response send(final InternalUnifiedPushMessage message, @Context HttpServletRequest request) {
 
         promPrushRequestsTotal.inc();

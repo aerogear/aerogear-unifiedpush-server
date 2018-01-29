@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.metrics;
 
-import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
@@ -60,7 +59,6 @@ public class PushMetricsEndpoint {
     @GET
     @Path("/application/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation>")
     public Response pushMessageInformationPerApplication(
             @PathParam("id") String id,
             @QueryParam("page") Integer page,

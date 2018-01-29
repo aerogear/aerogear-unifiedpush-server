@@ -16,8 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import com.qmino.miredot.annotations.BodyType;
-import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
@@ -63,8 +61,6 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    @BodyType("org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm")
-    @ReturnType("org.jboss.aerogear.unifiedpush.api.iOSVariant")
     public Response registeriOSVariant(
             @MultipartForm iOSApplicationUploadForm form,
             @PathParam("pushAppID") String pushApplicationID,
@@ -122,7 +118,6 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("java.util.Set<org.jboss.aerogear.unifiedpush.api.iOSVariant>")
     public Response listAlliOSVariantsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, iOSVariant.class)).build();
@@ -143,7 +138,6 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     @Path("/{iOSID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("java.lang.Void")
     public Response updateiOSVariant(
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID,
@@ -181,8 +175,6 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     @Path("/{iOSID}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    @BodyType("org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm")
-    @ReturnType("java.lang.Void")
     public Response updateiOSVariant(
             @MultipartForm iOSApplicationUploadForm updatedForm,
             @PathParam("pushAppID") String pushApplicationId,

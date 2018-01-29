@@ -90,13 +90,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.qmino</groupId>
-            <artifactId>miredot-annotations</artifactId>
-            <version>1.3.1</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient_common</artifactId>
             <version>${prometheus.simpleclient.version}</version>
@@ -106,55 +99,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>com.qmino</groupId>
-                <artifactId>miredot-plugin</artifactId>
-                <version>1.6.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>restdoc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <licence>
-                        cHJvamVjdHxvcmcuamJvc3MuYWVyb2dlYXIudW5pZmllZHB1c2gudW5pZmllZHB1c2gtamF4cnN8MjAxNy0wNS0wMXx0cnVlfC0xI01Dd0NGQitaa0VVRVlsaU9LQjljR2h5TWNSWm1VMTREQWhRbUlHOXY3MExCR0FoT2FubklFSER2SWl1OVZnPT0=
-                    </licence>
-                    <output>
-                        <html>
-                            <baseUrl>https://SERVER:PORT/CONTEXT/rest</baseUrl>
-                            <initialCollapseLevel>100</initialCollapseLevel>
-                            <hideIssuesTab>false</hideIssuesTab>
-                        </html>
-                    </output>
-                    <restModel>
-                        <httpStatusCodes>
-                            <httpStatusCode>
-                                <httpCode>200</httpCode>
-                                <document>get</document>
-                                <defaultMessage>The service call has completed successfully</defaultMessage>
-                            </httpStatusCode>
-                            <httpStatusCode>
-                                <httpCode>500</httpCode>
-                                <document>explicit: java.util.concurrent.ExecutionException</document>
-                                <defaultMessage>The computation threw an exception</defaultMessage>
-                            </httpStatusCode>
-                            <httpStatusCode>
-                                <httpCode>500</httpCode>
-                                <document>explicit: java.lang.InterruptedException</document>
-                                <defaultMessage>The thread was interrupted</defaultMessage>
-                            </httpStatusCode>
-                        </httpStatusCodes>
-                    </restModel>
-                    <analysis>
-                        <checks>
-                            <JAVADOC_MISSING_AUTHORS>ignore</JAVADOC_MISSING_AUTHORS>
-                            <JAVADOC_MISSING_SUMMARY>ignore</JAVADOC_MISSING_SUMMARY>
-                        </checks>
-                    </analysis>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>

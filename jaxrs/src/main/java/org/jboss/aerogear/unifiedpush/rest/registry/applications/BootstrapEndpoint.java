@@ -16,9 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import com.qmino.miredot.annotations.BodyType;
-import com.qmino.miredot.annotations.ReturnType;
-
 import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -62,8 +59,6 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    @BodyType("org.jboss.aerogear.unifiedpush.rest.util.BootstrapForm")
-    @ReturnType("org.jboss.aerogear.unifiedpush.api.PushApplication")
     public Response registerPushApplicationAndVariants(@MultipartForm BootstrapForm form) {
 
         // some basic validation

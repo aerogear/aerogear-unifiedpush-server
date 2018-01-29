@@ -26,8 +26,6 @@ import javax.ws.rs.core.Response;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.resteasy.annotations.GZIP;
 
-import com.qmino.miredot.annotations.ReturnType;
-
 @Path("/export")
 public class ExportEndpoint extends AbstractBaseEndpoint {
 
@@ -42,7 +40,6 @@ public class ExportEndpoint extends AbstractBaseEndpoint {
     @Path("/{variantId}/installations/")
     @Produces(MediaType.APPLICATION_JSON)
     @GZIP
-    @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.Installation>")
     public Response exportInstallations(@PathParam("variantId") String variantId) {
         return Response.ok(getSearch().findAllInstallationsByVariantForDeveloper(variantId, 0, Integer.MAX_VALUE, null).getResultList()).build();
     }
