@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
@@ -53,7 +52,6 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("org.jboss.aerogear.unifiedpush.api.WindowsVariant")
     public Response registerWindowsVariant(
             WindowsVariant windowsVariant,
             @PathParam("pushAppID") String pushApplicationID,
@@ -92,7 +90,6 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("java.util.Set<org.jboss.aerogear.unifiedpush.api.WindowsVariant>")
     public Response listAllWindowsVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, WindowsVariant.class)).build();
@@ -114,7 +111,6 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
     @Path("/{windowsID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("java.lang.Void")
     public Response updateWindowsVariation(
             @PathParam("windowsID") String windowsID,
             WindowsVariant updatedWindowsVariant) {

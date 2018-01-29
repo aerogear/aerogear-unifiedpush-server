@@ -16,8 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-
-import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 
@@ -52,7 +50,6 @@ public class AdmVariantEndpoint extends AbstractVariantEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("org.jboss.aerogear.unifiedpush.api.AdmVariant")
     public Response registerAdmVariant(
             AdmVariant admVariant,
             @PathParam("pushAppID") String pushApplicationID,
@@ -92,7 +89,6 @@ public class AdmVariantEndpoint extends AbstractVariantEndpoint {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("java.util.Set<org.jboss.aerogear.unifiedpush.api.AdmVariant>")
     public Response listAllAdmVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, AdmVariant.class)).build();
@@ -114,7 +110,6 @@ public class AdmVariantEndpoint extends AbstractVariantEndpoint {
     @Path("/{admID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("java.lang.Void")
     public Response updateAndroidVariation(
             @PathParam("pushAppID") String id,
             @PathParam("admID") String androidID,
