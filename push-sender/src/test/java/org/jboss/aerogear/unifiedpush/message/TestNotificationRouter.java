@@ -69,7 +69,7 @@ public class TestNotificationRouter {
                 .withMessageModel()
                 .withDAOs()
                 .withServices()
-                .addMavenDependencies("net.wessendorf.kafka:kafka-cdi-extension")
+                .addMavenDependencies("org.aerogear.kafka:kafka-cdi-extension")
                 .addMavenDependencies("org.apache.kafka:kafka-clients")
                 .addPackage(DispatchToQueue.class.getPackage())
 

@@ -16,8 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.message.kafka;
 
-import net.wessendorf.kafka.SimpleKafkaProducer;
-import net.wessendorf.kafka.cdi.annotation.Producer;
+import org.aerogear.kafka.SimpleKafkaProducer;
+import org.aerogear.kafka.cdi.annotation.Producer;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.slf4j.Logger;

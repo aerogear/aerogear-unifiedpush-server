@@ -18,8 +18,8 @@ package org.jboss.aerogear.unifiedpush.rest.sender;
 
 import io.prometheus.client.Counter;
 
-import net.wessendorf.kafka.SimpleKafkaProducer;
-import net.wessendorf.kafka.cdi.annotation.Producer;
+import org.aerogear.kafka.SimpleKafkaProducer;
+import org.aerogear.kafka.cdi.annotation.Producer;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;

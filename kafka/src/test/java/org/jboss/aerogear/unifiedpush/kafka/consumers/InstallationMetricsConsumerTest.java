@@ -39,7 +39,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import net.wessendorf.kafka.impl.DelegationKafkaConsumer;
+import org.aerogear.kafka.impl.DelegationKafkaConsumer;
 
 /**
  * Test cases for {@link InstallationMetricsKafkaConsumer#consume(String)} method.

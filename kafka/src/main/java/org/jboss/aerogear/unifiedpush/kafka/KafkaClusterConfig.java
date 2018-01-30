@@ -16,7 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.kafka;
 
-import net.wessendorf.kafka.cdi.annotation.KafkaConfig;
+
+import org.aerogear.kafka.cdi.annotation.KafkaConfig;
 
 @KafkaConfig(bootstrapServers = "#{KAFKA_HOST}:#{KAFKA_PORT}")
 public class KafkaClusterConfig {

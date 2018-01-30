@@ -20,8 +20,8 @@ import com.google.android.gcm.server.Constants;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Message.Builder;
 
-import net.wessendorf.kafka.SimpleKafkaProducer;
-import net.wessendorf.kafka.cdi.annotation.Producer;
+import org.aerogear.kafka.SimpleKafkaProducer;
+import org.aerogear.kafka.cdi.annotation.Producer;
 
 import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;

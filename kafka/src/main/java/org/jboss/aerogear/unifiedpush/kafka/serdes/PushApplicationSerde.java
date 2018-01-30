@@ -16,8 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.kafka.serdes;
 
-import net.wessendorf.kafka.serialization.GenericDeserializer;
-import net.wessendorf.kafka.serialization.GenericSerializer;
+import org.aerogear.kafka.serialization.GenericDeserializer;
+import org.aerogear.kafka.serialization.GenericSerializer;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serializer;
