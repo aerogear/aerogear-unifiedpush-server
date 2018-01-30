@@ -23,6 +23,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.aerogear.kafka.cdi.extension.VerySimpleEnvironmentResolver;
 import org.aerogear.kafka.serialization.CafdiSerdes;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.streams.KafkaStreams;
@@ -100,7 +101,7 @@ public class NotificationRouterStreamsHook {
     private void startup(@Observes @Initialized(ApplicationScoped.class) Object init) {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "agpush_notificationRouterStreams");
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, org.aerogear.kafka.cdi.extension.VerySimpleEnvironmentResolver.simpleBootstrapServerResolver("#{KAFKA_HOST}:#{KAFKA_PORT}"));
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, VerySimpleEnvironmentResolver.simpleBootstrapServerResolver("#{KAFKA_SERVICE_HOST}:#{KAFKA_SERVICE_PORT}"));
         props.put(StreamsConfig.KEY_SERDE_CLASS_CONFIG, PushApplicationSerde.class);
         props.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG, InternalUnifiedPushMessageSerde.class);
 

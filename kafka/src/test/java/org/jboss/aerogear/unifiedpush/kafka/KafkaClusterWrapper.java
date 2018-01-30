@@ -43,7 +43,7 @@ public class KafkaClusterWrapper {
     public void start() throws IOException {
         dataDir = Testing.Files.createTestingDirectory("cluster");
         cluster = new KafkaCluster().usingDirectory(dataDir)
-                .withPorts(5000, ConfigurationUtils.tryGetIntegerProperty("KAFKA_PORT", 5001));
+                .withPorts(5000, ConfigurationUtils.tryGetIntegerProperty("KAFKA_SERVICE_PORT", 5001));
         cluster.addBrokers(1).startup();
     }
 

@@ -35,8 +35,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <systemPropertyVariables>
-                        <KAFKA_HOST>localhost</KAFKA_HOST>
-                        <KAFKA_PORT>5001</KAFKA_PORT>
+                        <KAFKA_SERVICE_HOST>localhost</KAFKA_SERVICE_HOST>
+                        <KAFKA_SERVICE_PORT>5001</KAFKA_SERVICE_PORT>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
