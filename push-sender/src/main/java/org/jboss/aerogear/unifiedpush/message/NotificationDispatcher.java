@@ -27,8 +27,8 @@ import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.wessendorf.kafka.SimpleKafkaProducer;
-import net.wessendorf.kafka.cdi.annotation.Producer;
+import org.aerogear.kafka.SimpleKafkaProducer;
+import org.aerogear.kafka.cdi.annotation.Producer;
 
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;

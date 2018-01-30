@@ -34,7 +34,7 @@
         </dependency>
 
          <dependency>
-            <groupId>net.wessendorf.kafka</groupId>
+            <groupId>org.aerogear.kafka</groupId>
             <artifactId>kafka-cdi-extension</artifactId>
             <version>${kafka.cdi.version}</version>
         </dependency>
@@ -94,7 +94,7 @@
 
         <!-- Apache Kafka CDI -->
         <dependency>
-            <groupId>net.wessendorf.kafka</groupId>
+            <groupId>org.aerogear.kafka</groupId>
             <artifactId>kafka-cdi-extension</artifactId>
             <version>${kafka.cdi.version}</version>
         </dependency>

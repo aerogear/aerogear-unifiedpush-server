@@ -29,8 +29,8 @@ import ar.com.fernandospr.wns.model.builders.WnsBadgeBuilder;
 import ar.com.fernandospr.wns.model.builders.WnsRawBuilder;
 import ar.com.fernandospr.wns.model.builders.WnsTileBuilder;
 import ar.com.fernandospr.wns.model.builders.WnsToastBuilder;
-import net.wessendorf.kafka.SimpleKafkaProducer;
-import net.wessendorf.kafka.cdi.annotation.Producer;
+import org.aerogear.kafka.SimpleKafkaProducer;
+import org.aerogear.kafka.cdi.annotation.Producer;
 
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;

@@ -25,7 +25,7 @@ import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.wessendorf.kafka.cdi.annotation.Consumer;
+import org.aerogear.kafka.cdi.annotation.Consumer;
 
 import static org.jboss.aerogear.unifiedpush.kafka.KafkaClusterConfig.KAFKA_INSTALLATION_TOPIC;
 import static org.jboss.aerogear.unifiedpush.kafka.KafkaClusterConfig.KAFKA_INSTALLATION_TOPIC_CONSUMER_GROUP_ID;

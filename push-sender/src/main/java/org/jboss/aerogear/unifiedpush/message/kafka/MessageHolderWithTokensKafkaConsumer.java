@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message.kafka;
 
-import net.wessendorf.kafka.cdi.annotation.Consumer;
+import org.aerogear.kafka.cdi.annotation.Consumer;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
