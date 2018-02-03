@@ -1,24 +1,25 @@
-package org.aerogear.push.iosserver.rest;
+package org.aerogear.push.swarm.fcm;
 
 import org.aerogear.kafka.cdi.annotation.Consumer;
 import org.aerogear.kafka.cdi.annotation.KafkaConfig;
-import org.aerogear.push.iosserver.rest.helper.MessageHolderWithTokens;
-import org.aerogear.push.iosserver.rest.org.aerogear.push.sender.ios.NotificationSenderCallback;
-import org.aerogear.push.iosserver.rest.org.aerogear.push.sender.ios.PushyApnsSender;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
+import org.jboss.aerogear.unifiedpush.message.sender.FCMPushNotificationSender;
+import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
 @KafkaConfig(bootstrapServers = "172.17.0.4:9092")
-public class Receiver {
+public class FcmReceiver {
 
-    private final Logger logger = LoggerFactory.getLogger(Receiver.class.getName());
+
+    private final Logger logger = LoggerFactory.getLogger(FcmReceiver.class.getName());
 
     @Inject
-    private PushyApnsSender sender;
+    private FCMPushNotificationSender sender;
 
-    @Consumer(topics = "agpush_APNsTokenTopic", groupId = "swarm-ios")
+    @Consumer(topics = "agpush_FCMTokenTopic", groupId = "swarm-fcm")
     public void receiveMessage(final MessageHolderWithTokens messageContainer) {
 
 
