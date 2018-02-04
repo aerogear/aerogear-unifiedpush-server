@@ -100,18 +100,6 @@
         </dependency>
 
         <dependency>
-            <groupId>net.jodah</groupId>
-            <artifactId>expiringmap</artifactId>
-            <version>0.5.8</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.turo</groupId>
-            <artifactId>pushy</artifactId>
-            <version>0.10.2</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.gcm</groupId>
             <artifactId>gcm-server</artifactId>
         </dependency>
@@ -126,12 +114,6 @@
                     <artifactId>jackson-jaxrs</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>java-adm</artifactId>
-            <version>0.1.0</version>
         </dependency>
 
     </dependencies>

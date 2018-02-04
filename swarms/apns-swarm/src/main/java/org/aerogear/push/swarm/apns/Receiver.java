@@ -1,16 +1,16 @@
-package org.aerogear.push.iosserver.rest;
+package org.aerogear.push.swarm.apns;
 
 import org.aerogear.kafka.cdi.annotation.Consumer;
 import org.aerogear.kafka.cdi.annotation.KafkaConfig;
-import org.aerogear.push.iosserver.rest.helper.MessageHolderWithTokens;
-import org.aerogear.push.iosserver.rest.org.aerogear.push.sender.ios.NotificationSenderCallback;
-import org.aerogear.push.iosserver.rest.org.aerogear.push.sender.ios.PushyApnsSender;
+import org.aerogear.push.swarm.apns.helper.MessageHolderWithTokens;
+import org.aerogear.push.apns.NotificationSenderCallback;
+import org.aerogear.push.apns.PushyApnsSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-@KafkaConfig(bootstrapServers = "172.17.0.4:9092")
+@KafkaConfig(bootstrapServers = "#{KAFKA_SERVICE_HOST}:#{KAFKA_SERVICE_PORT}")
 public class Receiver {
 
     private final Logger logger = LoggerFactory.getLogger(Receiver.class.getName());

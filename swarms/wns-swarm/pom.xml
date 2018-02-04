@@ -24,7 +24,7 @@
     </parent>
 
     <artifactId>unifiedpush-wns</artifactId>
-    <name>UnifiedPush Server WNS Push</name>
+    <name>UnifiedPush Swarm Server WNS Push</name>
     <packaging>war</packaging>
 
     <properties>

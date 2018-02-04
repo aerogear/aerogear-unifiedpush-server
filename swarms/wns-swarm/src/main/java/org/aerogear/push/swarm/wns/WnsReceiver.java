@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-@KafkaConfig(bootstrapServers = "172.17.0.4:9092")
+@KafkaConfig(bootstrapServers = "#{KAFKA_SERVICE_HOST}:#{KAFKA_SERVICE_PORT}")
 public class WnsReceiver {
 
 

@@ -24,7 +24,7 @@
     </parent>
 
     <artifactId>unifiedpush-apns</artifactId>
-    <name>UnifiedPush Server APNs Push</name>
+    <name>UnifiedPush Swarm Server APNs Push</name>
     <packaging>war</packaging>
 
     <properties>
@@ -130,6 +130,12 @@
         <dependency>
             <groupId>org.jboss.aerogear.unifiedpush</groupId>
             <artifactId>unifiedpush-push-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.aerogear.unifiedpush</groupId>
+            <artifactId>unifiedpush-common</artifactId>
             <version>${project.version}</version>
         </dependency>
 

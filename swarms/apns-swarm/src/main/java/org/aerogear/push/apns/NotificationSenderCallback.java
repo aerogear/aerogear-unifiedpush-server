@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aerogear.push.iosserver.rest.org.aerogear.push.sender.ios;
+package org.aerogear.push.apns;
 
 /**
  * A simple Callback interface used when sending {@link org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage} to

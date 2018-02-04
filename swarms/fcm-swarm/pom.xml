@@ -24,7 +24,7 @@
     </parent>
 
     <artifactId>unifiedpush-fcm</artifactId>
-    <name>UnifiedPush Server FCM Push</name>
+    <name>UnifiedPush Swarm Server FCM Push</name>
     <packaging>war</packaging>
 
     <properties>

@@ -1,4 +1,4 @@
-package org.aerogear.push.iosserver.rest.helper;
+package org.aerogear.push.swarm.apns.helper;
 
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;

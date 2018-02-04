@@ -2,15 +2,15 @@ package org.aerogear.push.swarm.fcm;
 
 import org.aerogear.kafka.cdi.annotation.Consumer;
 import org.aerogear.kafka.cdi.annotation.KafkaConfig;
+import org.aerogear.push.swarm.fcm.sender.FCMPushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.jboss.aerogear.unifiedpush.message.sender.FCMPushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-@KafkaConfig(bootstrapServers = "172.17.0.4:9092")
+@KafkaConfig(bootstrapServers = "#{KAFKA_SERVICE_HOST}:#{KAFKA_SERVICE_PORT}")
 public class FcmReceiver {
 
 
