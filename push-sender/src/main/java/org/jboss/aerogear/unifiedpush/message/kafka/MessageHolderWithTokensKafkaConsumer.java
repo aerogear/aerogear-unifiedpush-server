@@ -29,6 +29,7 @@ import javax.inject.Inject;
  * and triggers {@link org.jboss.aerogear.unifiedpush.message.NotificationDispatcher} to select
  * the correct sender network for each message
  */
+@Deprecated
 public class MessageHolderWithTokensKafkaConsumer {
 
     private final Logger logger = LoggerFactory.getLogger(MessageHolderWithTokensKafkaConsumer.class);

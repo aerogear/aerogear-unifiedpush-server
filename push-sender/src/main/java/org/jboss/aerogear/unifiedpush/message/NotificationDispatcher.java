@@ -44,6 +44,7 @@ import java.util.Collection;
  * the appropriate sender network
  */
 @Stateless
+@Deprecated
 public class NotificationDispatcher {
 
     private final Logger logger = LoggerFactory.getLogger(NotificationDispatcher.class);
