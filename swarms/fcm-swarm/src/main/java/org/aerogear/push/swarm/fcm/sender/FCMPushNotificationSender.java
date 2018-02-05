@@ -6,18 +6,14 @@ import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;
 import org.aerogear.kafka.SimpleKafkaProducer;
 import org.aerogear.kafka.cdi.annotation.Producer;
+import org.aerogear.push.swarm.fcm.helper.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
-import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Priority;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.*;
 
@@ -34,8 +30,8 @@ public class FCMPushNotificationSender {
                     Constants.ERROR_MISMATCH_SENDER_ID)    // incorrect token, from a different project/sender ID
             );
 
-    @Inject
-    private ClientInstallationService clientInstallationService;
+//    @Inject
+//    private ClientInstallationService clientInstallationService;
 
     private final Logger logger = LoggerFactory.getLogger(FCMPushNotificationSender.class);
 
@@ -151,81 +147,81 @@ public class FCMPushNotificationSender {
      */
     private void cleanupInvalidRegistrationIDsForVariant(String variantID, MulticastResult multicastResult, List<String> registrationIDs) {
 
-        // get the FCM send results for all of the client devices:
-        final List<Result> results = multicastResult.getResults();
-
-        // TODO to be removed when [AGPUSH-2189] is implemented
-        // storage for all the invalid registration IDs:
-        final Set<String> inactiveTokens = new HashSet<>();
-
-        // read the results:
-        for (int i = 0; i < results.size(); i++) {
-            // use the current index to access the individual results
-            final Result result = results.get(i);
-
-            final String errorCodeName = result.getErrorCodeName();
-            if (errorCodeName != null) {
-                logger.info(String.format("Processing [%s] error code from FCM response, for registration ID: [%s]", errorCodeName, registrationIDs.get(i)));
-            }
-
-            //after sending, lets find tokens that are inactive from now on and need to be replaced with the new given canonical id.
-            //according to fcm documentation, google refreshes tokens after some time. So the previous tokens will become invalid.
-            //When you send a notification to a registration id which is expired, for the 1st time the message(notification) will be delivered
-            //but you will get a new registration id with the name canonical id. Which mean, the registration id you sent the message to has
-            //been changed to this canonical id, so change it on your server side as well.
-
-            //check if current index of result has canonical id
-            String canonicalRegId = result.getCanonicalRegistrationId();
-            if (canonicalRegId != null) {
-                // same device has more than one registration id: update it, if needed!
-                // let's see if the canonical id is already in our system:
-                Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variantID, canonicalRegId);
-
-                if (installation != null) {
-                    // ok, there is already a device, with newest/latest registration ID (aka canonical id)
-                    // It is time to remove the old reg id, to avoid duplicated messages in the future!
-
-                    // TODO to be removed when [AGPUSH-2189] is implemented
-                    inactiveTokens.add(registrationIDs.get(i));
-
-                    // add an invalid token to Kafka topic
-                    invalidTokenProducer.send(KAFKA_INVALID_TOKEN_TOPIC, variantID, registrationIDs.get(i));
-
-                } else {
-                    // since there is no registered device with newest/latest registration ID (aka canonical id),
-                    // this means the new token/regId was never stored on the server. Let's update the device and change its token to new canonical id:
-                    installation = clientInstallationService.findInstallationForVariantByDeviceToken(variantID, registrationIDs.get(i));
-                    installation.setDeviceToken(canonicalRegId);
-
-                    //update installation with the new token
-                    logger.info(String.format("Based on returned canonical id from FCM, updating Android installations with registration id [%s] with new token [%s] ", registrationIDs.get(i), canonicalRegId));
-                    clientInstallationService.updateInstallation(installation);
-                }
-
-            } else {
-                // is there any 'interesting' error code, which requires a clean up of the registration IDs
-                if (FCM_ERROR_CODES.contains(errorCodeName)) {
-
-                    // Ok the result at INDEX 'i' represents a 'bad' registrationID
-
-                    // Now use the INDEX of the _that_ result object, and look
-                    // for the matching registrationID inside of the List that contains
-                    // _all_ the used registration IDs and store it:
-
-                    // TODO to be removed when [AGPUSH-2189] is implemented
-                    inactiveTokens.add(registrationIDs.get(i));
-
-                    // add an invalid token to Kafka topic
-                    invalidTokenProducer.send(KAFKA_INVALID_TOKEN_TOPIC, variantID, registrationIDs.get(i));
-                }
-            }
-        }
-
-        if (!inactiveTokens.isEmpty()) {
-            // TODO to be removed when [AGPUSH-2189] is implemented
-            // trigger asynchronous deletion:
-            logger.info(String.format("Based on FCM response data and error codes, deleting %d invalid or duplicated Android installations", inactiveTokens.size()));
-            clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, inactiveTokens);
-        }
+//        // get the FCM send results for all of the client devices:
+//        final List<Result> results = multicastResult.getResults();
+//
+//        // TODO to be removed when [AGPUSH-2189] is implemented
+//        // storage for all the invalid registration IDs:
+//        final Set<String> inactiveTokens = new HashSet<>();
+//
+//        // read the results:
+//        for (int i = 0; i < results.size(); i++) {
+//            // use the current index to access the individual results
+//            final Result result = results.get(i);
+//
+//            final String errorCodeName = result.getErrorCodeName();
+//            if (errorCodeName != null) {
+//                logger.info(String.format("Processing [%s] error code from FCM response, for registration ID: [%s]", errorCodeName, registrationIDs.get(i)));
+//            }
+//
+//            //after sending, lets find tokens that are inactive from now on and need to be replaced with the new given canonical id.
+//            //according to fcm documentation, google refreshes tokens after some time. So the previous tokens will become invalid.
+//            //When you send a notification to a registration id which is expired, for the 1st time the message(notification) will be delivered
+//            //but you will get a new registration id with the name canonical id. Which mean, the registration id you sent the message to has
+//            //been changed to this canonical id, so change it on your server side as well.
+//
+//            //check if current index of result has canonical id
+//            String canonicalRegId = result.getCanonicalRegistrationId();
+//            if (canonicalRegId != null) {
+//                // same device has more than one registration id: update it, if needed!
+//                // let's see if the canonical id is already in our system:
+//                Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variantID, canonicalRegId);
+//
+//                if (installation != null) {
+//                    // ok, there is already a device, with newest/latest registration ID (aka canonical id)
+//                    // It is time to remove the old reg id, to avoid duplicated messages in the future!
+//
+//                    // TODO to be removed when [AGPUSH-2189] is implemented
+//                    inactiveTokens.add(registrationIDs.get(i));
+//
+//                    // add an invalid token to Kafka topic
+//                    invalidTokenProducer.send(KAFKA_INVALID_TOKEN_TOPIC, variantID, registrationIDs.get(i));
+//
+//                } else {
+//                    // since there is no registered device with newest/latest registration ID (aka canonical id),
+//                    // this means the new token/regId was never stored on the server. Let's update the device and change its token to new canonical id:
+//                    installation = clientInstallationService.findInstallationForVariantByDeviceToken(variantID, registrationIDs.get(i));
+//                    installation.setDeviceToken(canonicalRegId);
+//
+//                    //update installation with the new token
+//                    logger.info(String.format("Based on returned canonical id from FCM, updating Android installations with registration id [%s] with new token [%s] ", registrationIDs.get(i), canonicalRegId));
+//                    clientInstallationService.updateInstallation(installation);
+//                }
+//
+//            } else {
+//                // is there any 'interesting' error code, which requires a clean up of the registration IDs
+//                if (FCM_ERROR_CODES.contains(errorCodeName)) {
+//
+//                    // Ok the result at INDEX 'i' represents a 'bad' registrationID
+//
+//                    // Now use the INDEX of the _that_ result object, and look
+//                    // for the matching registrationID inside of the List that contains
+//                    // _all_ the used registration IDs and store it:
+//
+//                    // TODO to be removed when [AGPUSH-2189] is implemented
+//                    inactiveTokens.add(registrationIDs.get(i));
+//
+//                    // add an invalid token to Kafka topic
+//                    invalidTokenProducer.send(KAFKA_INVALID_TOKEN_TOPIC, variantID, registrationIDs.get(i));
+//                }
+//            }
+//        }
+//
+//        if (!inactiveTokens.isEmpty()) {
+//            // TODO to be removed when [AGPUSH-2189] is implemented
+//            // trigger asynchronous deletion:
+//            logger.info(String.format("Based on FCM response data and error codes, deleting %d invalid or duplicated Android installations", inactiveTokens.size()));
+//            clientInstallationService.removeInstallationsForVariantByDeviceTokens(variantID, inactiveTokens);
+//        }
     }
 }

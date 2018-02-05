@@ -76,7 +76,7 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>fabric8-maven-plugin</artifactId>
-                        <version>3.5.34</version>
+                        <version>3.5.30</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -109,6 +109,7 @@
             <version>7.0</version>
             <scope>provided</scope>
         </dependency>
+
         <!-- WildFly Swarm Fractions -->
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
@@ -118,7 +119,7 @@
         <dependency>
             <groupId>org.aerogear.kafka</groupId>
             <artifactId>kafka-cdi-extension</artifactId>
-            <version>0.0.10</version>
+            <version>0.0.11-SNAPSHOT</version>
         </dependency>
 
         <dependency>

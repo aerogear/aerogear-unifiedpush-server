@@ -2,9 +2,9 @@ package org.aerogear.push.swarm.fcm;
 
 import org.aerogear.kafka.cdi.annotation.Consumer;
 import org.aerogear.kafka.cdi.annotation.KafkaConfig;
+import org.aerogear.push.swarm.fcm.helper.MessageHolderWithTokens;
 import org.aerogear.push.swarm.fcm.sender.FCMPushNotificationSender;
-import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
-import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
+import org.aerogear.push.swarm.fcm.sender.NotificationSenderCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

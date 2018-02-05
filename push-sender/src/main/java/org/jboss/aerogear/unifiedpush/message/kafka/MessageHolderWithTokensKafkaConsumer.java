@@ -26,7 +26,6 @@ import javax.inject.Inject;
 
 /**
  * Consumes {@link MessageHolderWithTokens} objects from various topics
- * and triggers {@link org.jboss.aerogear.unifiedpush.message.NotificationDispatcher} to select
  * the correct sender network for each message
  */
 @Deprecated
