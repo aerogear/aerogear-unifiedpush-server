@@ -37,9 +37,13 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.aerogear.push.apns.helper.Resolver.resolve;
+
 public class PushyApnsSender {
 
     private static final Logger logger = LoggerFactory.getLogger(PushyApnsSender.class);
+
+    private final SimpleApnsClientCache simpleApnsClientCache = SimpleApnsClientCache.getInstance();
 
     public static final String KAFKA_INVALID_TOKEN_TOPIC = "agpush_invalidToken";
 
@@ -80,46 +84,43 @@ public class PushyApnsSender {
             }
         }
 
-        final ApnsClient apnsClient = buildApnsClient(iOSVariant);
-
-        final Future<Void> connectFuture = apnsClient.connect(ApnsClient.DEVELOPMENT_APNS_HOST, ApnsClient.DEFAULT_APNS_PORT);
-        connectFuture.addListener(future -> {
-
-
-            if (future.isSuccess()) {
-                logger.debug("connected!");
-
-
-                if (apnsClient.isConnected()) {
-
-                    // we have managed to connect and will send tokens ;-)
-                    senderCallback.onSuccess();
-
-                    final String defaultApnsTopic = ApnsUtil.readDefaultTopic(iOSVariant.getCertificate(), iOSVariant.getPassphrase().toCharArray());
-                    logger.info("sending payload for all tokens for {} to APNs ({})", iOSVariant.getVariantID(), defaultApnsTopic);
-
-
-                    tokens.forEach(token -> {
-                        final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token, defaultApnsTopic, payload);
-                        final Future<PushNotificationResponse<SimpleApnsPushNotification>> notificationSendFuture = apnsClient.sendNotification(pushNotification);
-
-                        notificationSendFuture.addListener(sendfuture -> {
-
-                            if (sendfuture .isSuccess()) {
-                                handlePushNotificationResponsePerToken(notificationSendFuture.get(), pushMessageInformationId, variant.getId());
-                            }
-                        });
-                    });
-
-                } else {
-                    logger.error("Unable to send notifications, client is not connected. Removing from cache pool");
-                    senderCallback.onError("Unable to send notifications, client is not connected");
-                }
-            } else {
-                final Throwable t = future.cause();
-                logger.warn(t.getMessage(), t);
+        final ApnsClient apnsClient;
+        {
+            try {
+                apnsClient = receiveApnsConnection(iOSVariant);
+            } catch (IllegalArgumentException iae) {
+                logger.error(iae.getMessage(), iae);
+                senderCallback.onError(String.format("Unable to connect to APNs (%s))", iae.getMessage()));
+                return;
             }
-        });
+        }
+
+        if (apnsClient.isConnected()) {
+
+            // we have managed to connect and will send tokens ;-)
+            senderCallback.onSuccess();
+
+            final String defaultApnsTopic = ApnsUtil.readDefaultTopic(iOSVariant.getCertificate(), iOSVariant.getPassphrase().toCharArray());
+            logger.error("sending payload for all tokens for {} to APNs ({})", iOSVariant.getVariantID(), defaultApnsTopic);
+
+
+            tokens.forEach(token -> {
+                final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token, defaultApnsTopic, payload);
+                final Future<PushNotificationResponse<SimpleApnsPushNotification>> notificationSendFuture = apnsClient.sendNotification(pushNotification);
+
+                notificationSendFuture.addListener(future -> {
+
+                    if (future.isSuccess()) {
+                        handlePushNotificationResponsePerToken(notificationSendFuture.get(), pushMessageInformationId, variant.getId());
+                    }
+                });
+            });
+
+        } else {
+            logger.error("Unable to send notifications, client is not connected. Removing from cache pool");
+            senderCallback.onError("Unable to send notifications, client is not connected");
+            //variantUpdateEventEvent.fire(new iOSVariantUpdateEvent(iOSVariant));
+        }
     }
 
     private void handlePushNotificationResponsePerToken(final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse, final String pushMessageInformationId, final String variantID) {
@@ -129,6 +130,8 @@ public class PushyApnsSender {
         if (pushNotificationResponse.isAccepted()) {
 
             // Sends success to the "agpush_apnsTokenDeliveryMetrics" topic
+          //  tokenDeliveryMetricsProducer.send(KAFKA_APNS_TOKEN_DELIVERY_METRICS_TOPIC, pushMessageInformationId, KAFKA_APNS_TOKEN_DELIVERY_SUCCESS);
+
             logger.trace("Push notification for '{}' (payload={})", deviceToken, pushNotificationResponse.getPushNotification().getPayload());
 
         } else {
@@ -137,12 +140,14 @@ public class PushyApnsSender {
             logger.trace("Push Message has been rejected with reason: {}", rejectReason);
 
             // Sends failure to the "agpush_apnsTokenDeliveryMetrics" topic
+         //   tokenDeliveryMetricsProducer.send(KAFKA_APNS_TOKEN_DELIVERY_METRICS_TOPIC, pushMessageInformationId, KAFKA_APNS_TOKEN_DELIVERY_FAILURE);
 
             // token is either invalid, or did just expire
             if ((pushNotificationResponse.getTokenInvalidationTimestamp() != null) || ("BadDeviceToken".equals(rejectReason))) {
                 logger.info(rejectReason + ", removing token: " + deviceToken);
 
                 // add invalid token to a Kafka Topic
+         //       invalidTokenProducer.send(KAFKA_INVALID_TOKEN_TOPIC, variantID, deviceToken);
             }
 
         }
@@ -177,6 +182,20 @@ public class PushyApnsSender {
         return payloadBuilder.buildWithDefaultMaximumLength();
     }
 
+    private ApnsClient receiveApnsConnection(final iOSVariant iOSVariant) {
+        return simpleApnsClientCache.getApnsClientForVariant(iOSVariant, () -> {
+            final ApnsClient apnsClient = buildApnsClient(iOSVariant);
+
+            // connect and wait:
+            logger.error("establishing the connection for {}", iOSVariant.getVariantID());
+            connectToDestinations(iOSVariant, apnsClient);
+
+            // APNS client has auto-reconnect, but let's log when that happens
+            apnsClient.getReconnectionFuture().addListener(future -> logger.trace("Reconnecting to APNs"));
+            return apnsClient;
+        });
+    }
+
     private ApnsClient buildApnsClient(final iOSVariant iOSVariant) {
 
         // this check should not be needed, but you never know:
@@ -204,4 +223,46 @@ public class PushyApnsSender {
         throw new IllegalArgumentException("Not able to construct APNS client");
     }
 
+
+
+    private synchronized void connectToDestinations(final iOSVariant iOSVariant, final ApnsClient apnsClient) {
+
+        String apnsHost;
+        int apnsPort = ApnsClient.DEFAULT_APNS_PORT;
+
+        // are we production or development ?
+        if (iOSVariant.isProduction()) {
+            apnsHost = ApnsClient.PRODUCTION_APNS_HOST;
+        } else {
+            apnsHost = ApnsClient.DEVELOPMENT_APNS_HOST;
+        }
+
+
+        final String customAerogearApnsPushHost = resolve(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
+        final Integer customAerogearApnsPushPort = Integer.getInteger(resolve(CUSTOM_AEROGEAR_APNS_PUSH_PORT), null);
+
+
+        //Or is there even a custom ost&port provided by a system property, for tests ?
+        if(customAerogearApnsPushHost != null){
+            apnsHost = customAerogearApnsPushHost;
+
+            if(customAerogearApnsPushPort != null) {
+                apnsPort = customAerogearApnsPushPort;
+            }
+        }
+
+        // Once we've created a client, we can connect it to the APNs gateway.
+        // Note that this process is asynchronous; we'll get a Future right
+        // away, but we'll need to wait for it to complete before we can send
+        // any notifications. Note that this is a Netty Future, which is an
+        // extension of the Java Future interface that allows callers to add
+        // listeners and adds methods for checking the status of the Future.
+        logger.debug("connecting to APNs");
+        final Future<Void> connectFuture = apnsClient.connect(apnsHost, apnsPort);
+        try {
+            connectFuture.await();
+        } catch (InterruptedException e) {
+            logger.error("Error connecting to APNs", e);
+        }
+    }
 }

@@ -15,6 +15,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.aerogear.push.apns.helper.Resolver.resolve;
+
 public class ApnsConsumer implements Runnable {
 
     private static final String KAFKA_SERVICE_HOST = "KAFKA_SERVICE_HOST";
@@ -30,7 +32,7 @@ public class ApnsConsumer implements Runnable {
     public ApnsConsumer() {
         final Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, resolveKafkaService());
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "apns-agents-ocp2");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "apns-agents-ocp22");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, GenericDeserializer.class);
         consumer = new KafkaConsumer(props);
@@ -99,17 +101,4 @@ public class ApnsConsumer implements Runnable {
                 .append(resolve(KAFKA_SERVICE_PORT)).toString();
     }
 
-    private static String resolve(final String variable) {
-
-        String value = System.getProperty(variable);
-        if (value == null) {
-
-            value = System.getenv(variable);
-
-            if (value == null) {
-                throw new RuntimeException("Could not resolve: " + variable);
-            }
-        }
-        return value;
-    }
 }

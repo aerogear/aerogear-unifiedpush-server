@@ -71,15 +71,6 @@
                   <goal>resource</goal>
                   <goal>build</goal>
                 </goals>
-                <configuration>
-                  <resources>
-                    <labels>
-                      <service>
-                        <expose>true</expose>
-                      </service>
-                    </labels>
-                  </resources>
-                </configuration>
               </execution>
             </executions>
             <configuration>
