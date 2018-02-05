@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message.sender.fcm;
+package org.aerogear.push.swarm.fcm.sender;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -25,22 +25,22 @@ import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import com.google.android.gcm.server.Sender;
 
 public class ConfigurableFCMSender extends Sender {
-	
-	public static final String CUSTOM_AEROGEAR_FCM_PUSH_HOST = "custom.aerogear.fcm.push.host";
-	
-	public static final String FCM_ENDPOINT_HOST = "https://fcm.googleapis.com/fcm/send";
 
-	public ConfigurableFCMSender(String key) {
-		super(key);
-	}
+    public static final String CUSTOM_AEROGEAR_FCM_PUSH_HOST = "custom.aerogear.fcm.push.host";
 
-	@Override
-	protected HttpURLConnection getConnection(String url) throws IOException {
-		
-		// let's see if there is a different URL we should post to (e.g. load/stress testing)
-		final String fcmURL = ConfigurationUtils.tryGetProperty(CUSTOM_AEROGEAR_FCM_PUSH_HOST, FCM_ENDPOINT_HOST);
-		
-		return (HttpURLConnection) new URL(fcmURL).openConnection();
-	}
-	
+    public static final String FCM_ENDPOINT_HOST = "https://fcm.googleapis.com/fcm/send";
+
+    public ConfigurableFCMSender(String key) {
+        super(key);
+    }
+
+    @Override
+    protected HttpURLConnection getConnection(String url) throws IOException {
+
+        // let's see if there is a different URL we should post to (e.g. load/stress testing)
+        final String fcmURL = ConfigurationUtils.tryGetProperty(CUSTOM_AEROGEAR_FCM_PUSH_HOST, FCM_ENDPOINT_HOST);
+
+        return (HttpURLConnection) new URL(fcmURL).openConnection();
+    }
+
 }

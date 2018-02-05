@@ -1,3 +1,5 @@
+package org.aerogear.push.apns;
+
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
@@ -14,36 +16,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message.sender.apns;
 
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.ApnsClientBuilder;
 import com.turo.pushy.apns.PushNotificationResponse;
-import com.turo.pushy.apns.proxy.HttpProxyHandlerFactory;
-import com.turo.pushy.apns.proxy.Socks5ProxyHandlerFactory;
 import com.turo.pushy.apns.util.ApnsPayloadBuilder;
 import com.turo.pushy.apns.util.SimpleApnsPushNotification;
 import io.netty.util.concurrent.Future;
 import org.aerogear.kafka.SimpleKafkaProducer;
 import org.aerogear.kafka.cdi.annotation.Producer;
+import org.aerogear.push.iosserver.cache.SimpleApnsClientCache;
+import org.aerogear.push.swarm.apns.helper.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
-import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.apns.APNs;
-import org.jboss.aerogear.unifiedpush.message.cache.SimpleApnsClientCache;
-import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
-import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
-import org.jboss.aerogear.unifiedpush.message.sender.SenderType;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
-import org.jboss.aerogear.unifiedpush.service.proxy.ProxyConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
@@ -53,15 +45,16 @@ import java.util.Map;
 import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetIntegerProperty;
 import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetProperty;
 
-@Stateless
-@SenderType(VariantType.IOS)
-public class PushyApnsSender implements PushNotificationSender {
+public class PushyApnsSender {
 
     private final Logger logger = LoggerFactory.getLogger(PushyApnsSender.class);
 
+    public static final String KAFKA_INVALID_TOKEN_TOPIC = "agpush_invalidToken";
+
+
     /**
-    * Topic to which a "success" message will be sent if a token was accepted and "failure" message otherwise.
-    */
+     * Topic to which a "success" message will be sent if a token was accepted and "failure" message otherwise.
+     */
     public static final String KAFKA_APNS_TOKEN_DELIVERY_METRICS_TOPIC = "agpush_apnsTokenDeliveryMetrics";
     public static final String KAFKA_APNS_TOKEN_DELIVERY_SUCCESS = "agpush_apnsTokenDeliverySuccess";
     public static final String KAFKA_APNS_TOKEN_DELIVERY_FAILURE = "agpush_pnsTokenDeliveryFailure";
@@ -70,25 +63,21 @@ public class PushyApnsSender implements PushNotificationSender {
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
     private static final String customAerogearApnsPushHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
     private static final Integer customAerogearApnsPushPort = tryGetIntegerProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
-    
+
     @Inject
     private SimpleApnsClientCache simpleApnsClientCache;
 
     @Inject
-    private ClientInstallationService clientInstallationService;
-
-    @Inject
     private Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
-    
+
     @Producer
     private SimpleKafkaProducer<String, String> invalidTokenProducer;
-    
+
 
     @Producer
     private SimpleKafkaProducer<String, String> tokenDeliveryMetricsProducer;
 
 
-    @Override
     public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final String pushMessageInformationId, final NotificationSenderCallback senderCallback) {
         // no need to send empty list
         if (tokens.isEmpty()) {
@@ -125,7 +114,7 @@ public class PushyApnsSender implements PushNotificationSender {
             senderCallback.onSuccess();
 
             final String defaultApnsTopic = ApnsUtil.readDefaultTopic(iOSVariant.getCertificate(), iOSVariant.getPassphrase().toCharArray());
-            logger.debug("sending payload for all tokens for {} to APNs ({})", iOSVariant.getVariantID(), defaultApnsTopic);
+            logger.error("sending payload for all tokens for {} to APNs ({})", iOSVariant.getVariantID(), defaultApnsTopic);
 
 
             tokens.forEach(token -> {
@@ -169,7 +158,7 @@ public class PushyApnsSender implements PushNotificationSender {
             // token is either invalid, or did just expire
             if ((pushNotificationResponse.getTokenInvalidationTimestamp() != null) || ("BadDeviceToken".equals(rejectReason))) {
                 logger.info(rejectReason + ", removing token: " + deviceToken);
-                
+
                 // add invalid token to a Kafka Topic
                 invalidTokenProducer.send(KAFKA_INVALID_TOKEN_TOPIC, variantID, deviceToken);
             }
@@ -211,7 +200,7 @@ public class PushyApnsSender implements PushNotificationSender {
             final ApnsClient apnsClient = buildApnsClient(iOSVariant);
 
             // connect and wait:
-            logger.debug("establishing the connection for {}", iOSVariant.getVariantID());
+            logger.error("establishing the connection for {}", iOSVariant.getVariantID());
             connectToDestinations(iOSVariant, apnsClient);
 
             // APNS client has auto-reconnect, but let's log when that happens
@@ -231,19 +220,6 @@ public class PushyApnsSender implements PushNotificationSender {
 
                 final ApnsClientBuilder builder = new ApnsClientBuilder();
                 builder.setClientCredentials(stream, iOSVariant.getPassphrase());
-
-                if (ProxyConfiguration.hasHttpProxyConfig()) {
-                    if (ProxyConfiguration.hasBasicAuth()) {
-                        String user =  ProxyConfiguration.getProxyUser();
-                        String pass = ProxyConfiguration.getProxyPass();
-                        builder.setProxyHandlerFactory(new HttpProxyHandlerFactory(ProxyConfiguration.proxyAddress(), user, pass));
-                    } else {
-                        builder.setProxyHandlerFactory(new HttpProxyHandlerFactory(ProxyConfiguration.proxyAddress()));
-                    }
-
-                } else if (ProxyConfiguration.hasSocksProxyConfig()) {
-                    builder.setProxyHandlerFactory(new Socks5ProxyHandlerFactory(ProxyConfiguration.socks()));
-                }
 
                 final ApnsClient apnsClient = builder.build();
 

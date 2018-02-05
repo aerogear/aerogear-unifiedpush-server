@@ -58,6 +58,7 @@
         <module>jaxrs</module>
         <module>dependencies</module>
         <module>servers</module>
+        <module>swarms</module>
         <module>kafka</module>
     </modules>
 
@@ -213,9 +214,9 @@
         <aerogear.bom.version>1.1.7</aerogear.bom.version>
         <admin-ui.version>1.2.12</admin-ui.version>
 
-        <kafka.clients.version>0.10.2.1</kafka.clients.version>
-        <kafka.cdi.version>0.0.10</kafka.cdi.version>
-        <debezium.version>0.5.1</debezium.version>
+        <kafka.clients.version>1.0.0</kafka.clients.version>
+        <kafka.cdi.version>0.0.11-SNAPSHOT</kafka.cdi.version>
+        <debezium.version>0.7.2</debezium.version>
 
         <!-- Override versions of AeroGear BOMs-->
         <junit.version>4.11</junit.version>

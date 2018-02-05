@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.message.cache;
+package org.aerogear.push.iosserver.cache;
 
 import com.turo.pushy.apns.ApnsClient;
 import io.netty.util.concurrent.Future;
