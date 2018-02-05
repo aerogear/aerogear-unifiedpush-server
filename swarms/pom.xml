@@ -30,6 +30,5 @@
     <modules>
         <module>apns-swarm</module>
         <module>fcm-swarm</module>
-        <module>wns-swarm</module>
     </modules>
 </project>

@@ -13,7 +13,6 @@ import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Priority;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
-import org.jboss.aerogear.unifiedpush.message.sender.fcm.ConfigurableFCMSender;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +37,7 @@ public class FCMPushNotificationSender {
     @Inject
     private ClientInstallationService clientInstallationService;
 
-    private final Logger logger = LoggerFactory.getLogger(org.jboss.aerogear.unifiedpush.message.sender.FCMPushNotificationSender.class);
+    private final Logger logger = LoggerFactory.getLogger(FCMPushNotificationSender.class);
 
     @Producer
     private SimpleKafkaProducer<String, String> invalidTokenProducer;
@@ -96,7 +95,7 @@ public class FCMPushNotificationSender {
         try {
             logger.debug("Sending transformed FCM payload: {}", fcmMessage);
 
-            final org.jboss.aerogear.unifiedpush.message.sender.fcm.ConfigurableFCMSender sender = new org.jboss.aerogear.unifiedpush.message.sender.fcm.ConfigurableFCMSender(androidVariant.getGoogleKey());
+            final ConfigurableFCMSender sender = new ConfigurableFCMSender(androidVariant.getGoogleKey());
 
             // send out a message to a batch of devices...
             processFCM(androidVariant, pushTargets, fcmMessage , sender);
