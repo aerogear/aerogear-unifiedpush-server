@@ -64,6 +64,8 @@ public final class ApnsUtil {
             LOGGER.error("Error parsing .p12 file content", e);
         }
 
+        LOGGER.info("No topic inside the .p12 file was found");
+
         return null; // if no topic was found we try with null
     }
 }

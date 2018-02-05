@@ -10,15 +10,8 @@ import java.util.Map;
 
 public class GenericDeserializer<T> implements Deserializer<T> {
 
-    private Class<T> type = (Class<T>) MessageHolderWithTokens.class;
+    private final Class<T> type = (Class<T>) MessageHolderWithTokens.class;
     private ObjectMapper mapper = new ObjectMapper();
-
-    public GenericDeserializer() {
-    }
-
-    public GenericDeserializer(Class<T> type) {
-        this.type = type;
-    }
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {

@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public class ApnsAgent {
 
-    private static Logger LOGGER = Logger.getLogger(ApnsAgent.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ApnsAgent.class.getName());
 
     public static void main(String... args) {
 
@@ -19,18 +19,15 @@ public class ApnsAgent {
         final ApnsConsumer apnsConsumer = new ApnsConsumer();
         executor.submit(apnsConsumer);
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                apnsConsumer.shutdown();
-                executor.shutdown();
-                try {
-                    executor.awaitTermination(5000, TimeUnit.MILLISECONDS);
-                } catch (InterruptedException ie) {
-                    LOGGER.log(Level.SEVERE, "Error on close", ie);
-                }
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            apnsConsumer.shutdown();
+            executor.shutdown();
+            try {
+                executor.awaitTermination(5000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException ie) {
+                LOGGER.log(Level.SEVERE, "Error on close", ie);
             }
-        });
+        }));
    }
 
 }

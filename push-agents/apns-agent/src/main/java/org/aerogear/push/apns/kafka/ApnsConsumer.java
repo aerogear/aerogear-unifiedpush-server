@@ -22,7 +22,7 @@ public class ApnsConsumer implements Runnable {
     private static final String APNS_TOPIC = "agpush_APNsTokenTopic";
 
     private final AtomicBoolean running = new AtomicBoolean(Boolean.TRUE);
-    private final Logger logger = Logger.getLogger(ApnsConsumer.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ApnsConsumer.class.getName());
     private final KafkaConsumer<String, MessageHolderWithTokens> consumer;
     private final PushyApnsSender sender;
 
@@ -30,7 +30,7 @@ public class ApnsConsumer implements Runnable {
     public ApnsConsumer() {
         final Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, resolveKafkaService());
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "apns-agents-ocp");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "apns-agents-ocp2");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, GenericDeserializer.class);
         consumer = new KafkaConsumer(props);
@@ -41,11 +41,8 @@ public class ApnsConsumer implements Runnable {
     public void run() {
         try {
             consumer.subscribe(Collections.singleton(APNS_TOPIC));
-
-            // fix me
-            while (true) {
+            while (isRunning()) {
                 final ConsumerRecords<String, MessageHolderWithTokens> records = consumer.poll(Long.MAX_VALUE);
-
 
                 records.forEach(record -> {
 
@@ -66,19 +63,17 @@ public class ApnsConsumer implements Runnable {
         } catch (WakeupException e) {
             // Ignore exception if closing
             if (isRunning()) {
-                logger.log(Level.FINE, "Exception on close", e);
+                LOGGER.log(Level.FINE, "Exception on close", e);
                 throw e;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "error", e);
+            LOGGER.log(Level.SEVERE, "error", e);
 
         } finally {
-            logger.info("Close the consumer.");
+            LOGGER.info("Close the consumer.");
             consumer.close();
         }
-
     }
-
 
     /**
      * True when a consumer is running; otherwise false
@@ -91,32 +86,30 @@ public class ApnsConsumer implements Runnable {
      * Shutdown hook which can be called from a separate thread.
      */
     public void shutdown() {
-        logger.info("Shutting down the consumer.");
+        LOGGER.info("Shutting down the consumer.");
         running.set(Boolean.FALSE);
         consumer.wakeup();
     }
 
     private static String resolveKafkaService() {
 
-        final StringBuilder sb = new StringBuilder()
+        return new StringBuilder()
                 .append(resolve(KAFKA_SERVICE_HOST))
                 .append(":")
-                .append(resolve(KAFKA_SERVICE_PORT));
-
-        return sb.toString();
+                .append(resolve(KAFKA_SERVICE_PORT)).toString();
     }
-
 
     private static String resolve(final String variable) {
 
         String value = System.getProperty(variable);
         if (value == null) {
+
             value = System.getenv(variable);
-        }
-        if (value == null) {
-            throw new RuntimeException("Could not resolve: " + variable);
+
+            if (value == null) {
+                throw new RuntimeException("Could not resolve: " + variable);
+            }
         }
         return value;
     }
-
 }

@@ -35,13 +35,13 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 public class PushyApnsSender {
 
-    private final Logger logger = LoggerFactory.getLogger(PushyApnsSender.class);
+    private static final Logger logger = LoggerFactory.getLogger(PushyApnsSender.class);
 
     public static final String KAFKA_INVALID_TOKEN_TOPIC = "agpush_invalidToken";
-
 
     /**
      * Topic to which a "success" message will be sent if a token was accepted and "failure" message otherwise.
@@ -53,13 +53,17 @@ public class PushyApnsSender {
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_HOST = "custom.aerogear.apns.push.host";
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
 
-
-
     public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final String pushMessageInformationId, final NotificationSenderCallback senderCallback) {
+
+        // some assertions:
+        Objects.requireNonNull(variant, "Variant can not be null");
+        Objects.requireNonNull(tokens, "device tokens can not be null");
+        Objects.requireNonNull(pushMessage, "push message content can not be null");
+        Objects.requireNonNull(pushMessageInformationId, "push message ID can not be null");
+        Objects.requireNonNull(senderCallback, "sender cb can not be null");
 
         // no need to send empty list
         if (tokens.isEmpty()) {
-            System.out.println(tokens);
             return;
         }
 
@@ -85,18 +89,17 @@ public class PushyApnsSender {
             if (future.isSuccess()) {
                 logger.debug("connected!");
 
-System.out.println("connected ? " + apnsClient.isConnected());
+
                 if (apnsClient.isConnected()) {
 
                     // we have managed to connect and will send tokens ;-)
                     senderCallback.onSuccess();
 
                     final String defaultApnsTopic = ApnsUtil.readDefaultTopic(iOSVariant.getCertificate(), iOSVariant.getPassphrase().toCharArray());
-                    logger.error("sending payload for all tokens for {} to APNs ({})", iOSVariant.getVariantID(), defaultApnsTopic);
+                    logger.info("sending payload for all tokens for {} to APNs ({})", iOSVariant.getVariantID(), defaultApnsTopic);
 
 
                     tokens.forEach(token -> {
-                        System.out.println("processing token: " + token);
                         final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token, defaultApnsTopic, payload);
                         final Future<PushNotificationResponse<SimpleApnsPushNotification>> notificationSendFuture = apnsClient.sendNotification(pushNotification);
 
@@ -112,21 +115,11 @@ System.out.println("connected ? " + apnsClient.isConnected());
                     logger.error("Unable to send notifications, client is not connected. Removing from cache pool");
                     senderCallback.onError("Unable to send notifications, client is not connected");
                 }
-
-
-
-
-
             } else {
                 final Throwable t = future.cause();
                 logger.warn(t.getMessage(), t);
             }
         });
-
-
-
-
-
     }
 
     private void handlePushNotificationResponsePerToken(final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse, final String pushMessageInformationId, final String variantID) {
