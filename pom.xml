@@ -59,6 +59,7 @@
         <module>dependencies</module>
         <module>servers</module>
         <module>swarms</module>
+        <module>push-agents</module>
         <module>kafka</module>
     </modules>
 
