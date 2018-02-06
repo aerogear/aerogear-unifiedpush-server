@@ -22,6 +22,7 @@ public class ApnsConsumer implements Runnable {
     private static final String KAFKA_SERVICE_HOST = "KAFKA_SERVICE_HOST";
     private static final String KAFKA_SERVICE_PORT = "KAFKA_SERVICE_PORT";
     private static final String APNS_TOPIC = "agpush_APNsTokenTopic";
+    private static final String KAFKA_APNS_CONSUMER_GROUP = "apns-agents-ocp";
 
     private final AtomicBoolean running = new AtomicBoolean(Boolean.TRUE);
     private static final Logger LOGGER = Logger.getLogger(ApnsConsumer.class.getName());
@@ -32,7 +33,7 @@ public class ApnsConsumer implements Runnable {
     public ApnsConsumer() {
         final Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, resolveKafkaService());
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "apns-agents-ocp22");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, KAFKA_APNS_CONSUMER_GROUP);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, GenericDeserializer.class);
         consumer = new KafkaConsumer(props);

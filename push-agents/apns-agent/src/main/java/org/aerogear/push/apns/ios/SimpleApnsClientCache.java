@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 public final class SimpleApnsClientCache {
 
     private static final SimpleApnsClientCache INSTANCE = new SimpleApnsClientCache();
+    private static final Logger logger = LoggerFactory.getLogger(SimpleApnsClientCache.class);
 
     private SimpleApnsClientCache() {
         // no-op
@@ -42,8 +43,6 @@ public final class SimpleApnsClientCache {
     public static SimpleApnsClientCache getInstance(){
         return INSTANCE;
     }
-
-    private final Logger logger = LoggerFactory.getLogger(SimpleApnsClientCache.class);
 
     final ConcurrentMap<String, ApnsClient> apnsClientExpiringMap;
     {
@@ -104,11 +103,10 @@ public final class SimpleApnsClientCache {
 //    }
 
     private String extractConnectionKey(final iOSVariant iOSVariant) {
-        final StringBuilder sb = new StringBuilder()
+        return new StringBuilder()
                 .append(iOSVariant.getVariantID())
-                .append(iOSVariant.isProduction() ? "-prod" : "-dev");
-
-        return  sb.toString();
+                .append(iOSVariant.isProduction() ? "-prod" : "-dev")
+                .toString();
     }
 
     private void putApnsClientForVariantID(final String variantID, final ApnsClient apnsClient) {
