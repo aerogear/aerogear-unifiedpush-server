@@ -29,6 +29,8 @@
 
     <modules>
         <module>apns-swarm</module>
+        <module>core-swarm</module>
         <module>fcm-swarm</module>
     </modules>
 </project>
+
