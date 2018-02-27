@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.rest.prometheus;
 
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.exporter.common.TextFormat;
+import io.prometheus.client.hotspot.DefaultExports;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -30,6 +31,10 @@ import java.io.Writer;
 @Path("/prometheus")
 public class SimplePrometheusEndpoint {
 
+    {
+        // Initialize the default metrics for the hotspot VM
+        DefaultExports.initialize();
+    }
 
     @GET
     @Path("/metrics")

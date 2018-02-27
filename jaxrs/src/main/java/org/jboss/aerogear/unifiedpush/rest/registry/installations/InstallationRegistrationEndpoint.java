@@ -60,7 +60,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     public static final ObjectMapper mapper = new ObjectMapper();
 
     private static final Counter promDeviceRegisterRequestsTotal = Counter.build()
-            .name("device_register_requests_total")
+            .name("aerogear_ups_device_register_requests_total")
             .help("Total number of Device register requests.")
             .register();
 
