@@ -95,6 +95,12 @@
             <version>${prometheus.simpleclient.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_hotspot</artifactId>
+            <version>${prometheus.simpleclient.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

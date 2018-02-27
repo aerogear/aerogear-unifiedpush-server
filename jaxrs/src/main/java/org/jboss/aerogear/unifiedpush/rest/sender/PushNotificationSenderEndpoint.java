@@ -44,7 +44,7 @@ public class PushNotificationSenderEndpoint {
     private final Logger logger = LoggerFactory.getLogger(PushNotificationSenderEndpoint.class);
 
     private static final Counter promPrushRequestsTotal = Counter.build()
-            .name("push_requests_total")
+            .name("aerogear_ups_push_requests_total")
             .help("Total number of push requests.")
             .register();
 
