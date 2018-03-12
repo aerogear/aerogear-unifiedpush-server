@@ -46,7 +46,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
 
     private PomEquippedResolveStage resolver;
-    private static final String WEB_RESOURCE_PATH = "../servers/src/main/webapp/WEB-INF/";
+    private static final String WEB_RESOURCE_PATH = "../servers/keycloak/src/main/webapp/WEB-INF/";
 
     public UnifiedPushArchiveImpl(Archive<?> delegate) {
         super(delegate);
