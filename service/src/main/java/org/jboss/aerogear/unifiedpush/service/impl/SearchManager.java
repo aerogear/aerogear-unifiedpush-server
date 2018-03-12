@@ -18,8 +18,6 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.KeycloakSecurityContext;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
@@ -54,12 +52,14 @@ public class SearchManager implements Serializable {
      */
     public PushSearchService getSearchService() {
 
-        boolean isAdmin = httpServletRequest.isUserInRole("admin");
+        boolean isDev = httpServletRequest.isUserInRole("developer");
 
-        if (isAdmin) {
-            return searchAll;
+        if (isDev) {
+            return searchByDeveloper;
         }
-        return searchByDeveloper;
+
+
+        return searchAll;
     }
 
     /**
@@ -70,9 +70,7 @@ public class SearchManager implements Serializable {
     @Produces
     @LoggedIn
     public String extractUsername() {
-        KeycloakPrincipal p = (KeycloakPrincipal) httpServletRequest.getUserPrincipal();
-        KeycloakSecurityContext kcSecurityContext = p.getKeycloakSecurityContext();
-        return kcSecurityContext.getToken().getPreferredUsername();
+        return "admin";
 
     }
 }

@@ -35,9 +35,6 @@ import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.KeycloakSecurityContext;
-import org.keycloak.representations.AccessToken;
 import org.mockito.Mock;
 
 import javax.annotation.PreDestroy;
@@ -51,19 +48,11 @@ import javax.persistence.Persistence;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
-import static org.mockito.Mockito.when;
-
 @RunWith(ApplicationComposer.class)
 public abstract class AbstractBaseServiceTest {
 
     @Mock
     protected HttpServletRequest httpServletRequest;
-
-    @Mock
-    protected KeycloakSecurityContext context;
-
-    @Mock
-    protected KeycloakPrincipal keycloakPrincipal;
 
     @Inject
     protected SearchManager searchManager;
@@ -81,13 +70,13 @@ public abstract class AbstractBaseServiceTest {
      */
     @Before
     public void setUp(){
-        // Keycloak test environment
-        AccessToken token = new AccessToken();
-        //The current developer will always be the admin in this testing scenario
-        token.setPreferredUsername("admin");
-        when(context.getToken()).thenReturn(token);
-        when(keycloakPrincipal.getKeycloakSecurityContext()).thenReturn(context);
-        when(httpServletRequest.getUserPrincipal()).thenReturn(keycloakPrincipal);
+//        // Keycloak test environment
+//        AccessToken token = new AccessToken();
+//        //The current developer will always be the admin in this testing scenario
+//        token.setPreferredUsername("admin");
+//        when(context.getToken()).thenReturn(token);
+//        when(keycloakPrincipal.getKeycloakSecurityContext()).thenReturn(context);
+//        when(httpServletRequest.getUserPrincipal()).thenReturn(keycloakPrincipal);
 
         // glue it to serach mgr
         searchManager.setHttpServletRequest(httpServletRequest);
