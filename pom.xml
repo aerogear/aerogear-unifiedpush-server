@@ -164,6 +164,7 @@
                                 <addLicense>true</addLicense>
                             </properties>
                             <excludeScope>provided</excludeScope>
+                            <excludeGroupIds>org.aerogear.unifiedpush,org.jboss.aerogear.unifiedpush</excludeGroupIds>
                             <excludeArtifactIds>servlet-api,jstl</excludeArtifactIds>
                         </configuration>
                     </execution>
