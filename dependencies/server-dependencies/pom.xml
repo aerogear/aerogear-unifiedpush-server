@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.jboss.aerogear.unifiedpush</groupId>
         <artifactId>unifiedpush-dependencies-parent</artifactId>
-        <version>1.3.0-no-auth.Final</version>
+        <version>1.3.1.no-auth-SNAPSHOT</version>
     </parent>
 
     <artifactId>unifiedpush-server-dependencies</artifactId>
