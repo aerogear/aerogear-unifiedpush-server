@@ -503,8 +503,9 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 		Alias aliasObj = aliasService.find(pushApplicationId.toString(), alias);
 
 		if (aliasObj == null) {
-			logger.debug("Alias {} is missing, storing by token-id", alias);
-			aliasObj = getAliasByToken(pushApplicationId, ClientAuthHelper.getDeviceToken(request));
+			String deviceToken = ClientAuthHelper.getDeviceToken(request);
+			logger.warn("Alias is missing. storing by token-id. appId={}, token={}, alias={}", pushApplicationId, deviceToken, alias);
+			aliasObj = getAliasByToken(pushApplicationId, deviceToken);
 		}
 
 		DocumentMetadata metadata = new DocumentMetadata(pushApplicationId, database, aliasObj,
@@ -780,8 +781,9 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 
 			// Alias scope document, but alias was not found.
 			if (aliasObj == null) {
-				logger.debug("Alias {} is missing, quering by token-id", alias);
-				aliasObj = getAliasByToken(pushApplicationId, ClientAuthHelper.getDeviceToken(request));
+				String deviceToken = ClientAuthHelper.getDeviceToken(request);
+				logger.warn("Alias is missing querying by token-id. appId={}, token={}, alias={}", pushApplicationId, deviceToken, alias);
+				aliasObj = getAliasByToken(pushApplicationId, deviceToken);
 			}
 		} else {
 			// application scope document
