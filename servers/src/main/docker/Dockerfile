@@ -1,5 +1,5 @@
 # Use latest jboss/wildfly image as the base
-FROM jboss/wildfly:12.0.0.Final
+FROM ${base}
 MAINTAINER Matthias Wessendorf <matzew@apache.org>
 
 # Run everything below as root user
@@ -9,7 +9,7 @@ USER root
 RUN yum install -y unzip wget && yum -q clean all
 
 # WildFly configuration file ready for JMS and HSQL
-ADD configuration/standalone-full.xml $JBOSS_HOME/standalone/configuration/standalone.xml
+ADD ${configFile} $JBOSS_HOME/standalone/configuration/standalone.xml
 
 # Switch to the working dir /opt/jboss/wildfly
 WORKDIR /opt/jboss/wildfly
@@ -21,7 +21,7 @@ USER jboss
 WORKDIR /opt/jboss/wildfly/standalone/deployments
 
 # add war files
-ADD servers/target/ag-push.war $JBOSS_HOME/standalone/deployments
+COPY maven/ $JBOSS_HOME/standalone/deployments
 
 # Expose default port
 EXPOSE 8080

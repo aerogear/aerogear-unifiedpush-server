@@ -28,6 +28,13 @@
     <packaging>war</packaging>
     <name>UnifiedPush Server for Wildfly (WAR)</name>
 
+    <properties>
+        <base>jboss/wildfly:12.0.0.Final</base>
+        <configFile>standalone-full.xml</configFile>
+        <project.artifactId>${project.artifactId}</project.artifactId>
+    </properties>
+
+
     <dependencies>
 
         <dependency>
@@ -99,6 +106,41 @@
                     </execution>
                 </executions>
             </plugin>
+
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.24.0</version>
+          <executions>
+              <execution>
+                  <id>dmp</id>
+                  <phase>package</phase>
+                  <goals>
+                      <goal>build</goal>
+                  </goals>
+              </execution>
+          </executions>
+        <configuration>
+          <images>
+            <image>
+              <name>aerogear/ups:dev</name>
+              <alias>server</alias>
+              <build>
+                <!-- filter>@</filter-->
+                <dockerFileDir>${project.basedir}/src/main/docker</dockerFileDir>
+                <assembly>
+                  <descriptorRef>rootWar</descriptorRef>
+                </assembly>
+              </build>
+              <run>
+                <ports>
+                  <port>8080:8080</port>
+                </ports>
+              </run>
+            </image>
+          </images>
+        </configuration>
+      </plugin>
 
         </plugins>
     </build>
