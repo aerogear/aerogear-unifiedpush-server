@@ -1,0 +1,8 @@
+unifiedpush:
+  image: postgres:9.5
+  environment:
+   - POSTGRES_USER=unifiedpush
+   - POSTGRES_PASSWORD=unifiedpush
+   - POSTGRES_DATABASE=unifiedpush
+  ports:
+  - 15432:5432
