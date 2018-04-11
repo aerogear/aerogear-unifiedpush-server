@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
 		<param name="target" value="system.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="FILE" class="org.apache.log4j.RollingFileAppender">
+		<param name="append" value="false" />
+		<param name="file" value="${jboss.server.log.dir}/unifiedpush.log" />
+
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %m%n" />
 		</layout>
@@ -14,6 +23,7 @@
 
 	<root>
 		<priority value="INFO" />
-		<appender-ref ref="console" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
 	</root>
 </log4j:configuration>

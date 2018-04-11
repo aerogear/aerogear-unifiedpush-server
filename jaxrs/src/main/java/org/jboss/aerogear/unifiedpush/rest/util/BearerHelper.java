@@ -108,16 +108,6 @@ public final class BearerHelper {
 		return BearerHelper.getBarearToken(request).isPresent();
 	}
 
-	public static Boolean isProxyRequest(HttpServletRequest request) {
-		String referer = BearerHelper.getRefererHeader(request);
-		return StringUtils.isNoneEmpty(referer) && !request.getRequestURI().startsWith(referer);
-	}
-
-	public static String getRefererHeader(HttpServletRequest request) {
-		String referer = request.getHeader(REFERER_HEADER);
-		return StringUtils.isEmpty(referer) ? request.getHeader(CAP_REFERER_HEADER) : referer;
-	}
-
 	public static String getRefererHeader(Request request) {
 		String referer = request.getHeader(REFERER_HEADER);
 		return StringUtils.isEmpty(referer) ? request.getHeader(CAP_REFERER_HEADER) : referer;
