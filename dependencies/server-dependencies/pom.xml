@@ -160,13 +160,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.aerogear.unifiedpush</groupId>
-            <artifactId>admin-ui</artifactId>
-            <version>${admin-ui.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
     </dependencies>
 
 </project>
