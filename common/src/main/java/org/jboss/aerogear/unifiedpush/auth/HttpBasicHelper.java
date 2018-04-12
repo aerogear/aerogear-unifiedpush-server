@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.rest.util;
+package org.jboss.aerogear.unifiedpush.auth;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,24 +29,24 @@ public final class HttpBasicHelper {
     private HttpBasicHelper() {
     }
 
-    private static boolean isBasic(String authorizationHeader) {
+    private static boolean isBasic(final String authorizationHeader) {
         return authorizationHeader.startsWith(HTTP_BASIC_SCHEME);
     }
 
-    private static String getAuthorizationHeader(HttpServletRequest request) {
+    private static String getAuthorizationHeader(final HttpServletRequest request) {
         return request.getHeader("Authorization");
     }
 
-    public static String[] extractUsernameAndPasswordFromBasicHeader(HttpServletRequest request) {
+    public static String[] extractUsernameAndPasswordFromBasicHeader(final HttpServletRequest request) {
         String username = "";
         String password = "";
-        String authorizationHeader = getAuthorizationHeader(request);
+        final String authorizationHeader = getAuthorizationHeader(request);
 
         if (authorizationHeader != null && isBasic(authorizationHeader)) {
             final String base64Token = authorizationHeader.substring(HTTP_BASIC_SCHEME.length());
             final String token = new String(Base64.getDecoder().decode(base64Token), StandardCharsets.UTF_8);
 
-            int delimiter = token.indexOf(':');
+            final int delimiter = token.indexOf(':');
 
             if (delimiter != -1) {
                 username = token.substring(0, delimiter);

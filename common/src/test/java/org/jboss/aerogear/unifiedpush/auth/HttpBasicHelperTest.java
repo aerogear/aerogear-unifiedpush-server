@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.rest.util;
+package org.jboss.aerogear.unifiedpush.auth;
 
+import org.jboss.aerogear.unifiedpush.auth.HttpBasicHelper;
 import org.junit.Test;
 import org.mockito.Mockito;
 
