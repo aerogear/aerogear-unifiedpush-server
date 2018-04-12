@@ -92,7 +92,7 @@
     <profile>
         <subsystem xmlns="urn:jboss:domain:logging:4.0">
             <console-handler name="CONSOLE">
-                <level name="INFO"/>
+                <level name="DEBUG"/>
                 <formatter>
                     <named-formatter name="COLOR-PATTERN"/>
                 </formatter>
@@ -105,6 +105,12 @@
                 <suffix value=".yyyy-MM-dd"/>
                 <append value="true"/>
             </periodic-rotating-file-handler>
+            <logger category="org.jboss.weld">
+                <level name="ERROR"/>
+            </logger>
+            <logger category="org.hibernate">
+                <level name="ERROR"/>
+            </logger>
             <logger category="com.arjuna">
                 <level name="WARN"/>
             </logger>
@@ -113,6 +119,9 @@
             </logger>
             <logger category="sun.rmi">
                 <level name="WARN"/>
+            </logger>
+            <logger category="org.jboss.aerogear.unifiedpush">
+                <level name="DEBUG"/>
             </logger>
             <root-logger>
                 <level name="INFO"/>

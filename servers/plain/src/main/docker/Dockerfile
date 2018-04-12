@@ -8,6 +8,8 @@ USER root
 # Clean the metadata
 RUN yum install -y unzip wget && yum -q clean all
 
+ARG CACHEBUST=1
+
 # WildFly configuration file ready for JMS and HSQL
 ADD ${configFile} $JBOSS_HOME/standalone/configuration/standalone.xml
 
