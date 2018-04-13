@@ -16,10 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import org.jboss.aerogear.unifiedpush.auth.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
@@ -35,6 +38,7 @@ import java.io.Serializable;
 public class SearchManager implements Serializable {
 
     private static final long serialVersionUID = -6665967856424444078L;
+    private static final Logger logger = LoggerFactory.getLogger(SearchManager.class);
 
     private HttpServletRequest httpServletRequest;
 
@@ -59,6 +63,7 @@ public class SearchManager implements Serializable {
         if (isAdmin) {
             return searchAll;
         }
+
         return searchByDeveloper;
     }
 
@@ -70,9 +75,22 @@ public class SearchManager implements Serializable {
     @Produces
     @LoggedIn
     public String extractUsername() {
-        KeycloakPrincipal p = (KeycloakPrincipal) httpServletRequest.getUserPrincipal();
-        KeycloakSecurityContext kcSecurityContext = p.getKeycloakSecurityContext();
-        return kcSecurityContext.getToken().getPreferredUsername();
 
+        final KeycloakPrincipal principal = (KeycloakPrincipal) httpServletRequest.getUserPrincipal();
+        if (principal != null) {
+            logger.debug("Running with Keycloak context");
+            KeycloakSecurityContext kcSecurityContext = principal.getKeycloakSecurityContext();
+            return kcSecurityContext.getToken().getPreferredUsername();
+        }
+
+        logger.debug("Running outside of Keycloak context");
+        final String basicUsername = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(httpServletRequest)[0];
+        if (! basicUsername.isEmpty()) {
+            logger.debug("running HttpBasic auth");
+            return basicUsername;
+        }
+
+        logger.debug("Running without any Auth context");
+        return "developer"; // by default, we are developer!
     }
 }
