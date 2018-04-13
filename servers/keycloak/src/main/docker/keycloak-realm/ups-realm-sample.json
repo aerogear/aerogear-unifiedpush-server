@@ -1,0 +1,69 @@
+{
+    "realm": "aerogear",
+    "enabled": true,
+    "accessTokenLifespan": 60,
+    "accessCodeLifespan": 60,
+    "accessCodeLifespanUserAction": 300,
+    "ssoSessionIdleTimeout": 600,
+    "ssoSessionMaxLifespan": 36000,
+    "sslRequired": "external",
+    "registrationAllowed": false,
+    "social": false,
+    "updateProfileOnInitialSocialLogin": false,
+    "requiredCredentials": [ "password" ],
+    "defaultRoles": [ "developer" ],
+    "users" : [
+        {
+            "username" : "admin",
+            "enabled": true,
+            "credentials" : [
+                { "type" : "password",
+                    "value" : "123" }
+            ],
+            "requiredActions": [
+                "UPDATE_PASSWORD"
+            ],
+            "realmRoles": [ "admin" ],
+            "applicationRoles": {
+               "realm-management": [ "realm-admin" ],
+               "account": [ "manage-account" ]
+            }
+        }
+    ],
+    "roles" : {
+        "realm" : [
+            {
+                "name": "admin",
+                "description": "Administrator privileges"
+            },
+            {
+                "name": "developer",
+                "description": "Developer privileges"
+            }
+        ]
+    },
+    "scopeMappings": [
+        {
+            "client": "unified-push-server-js",
+            "roles": ["admin", "developer"]
+        }
+    ],
+    "applications": [
+        {
+            "name": "unified-push-server",
+            "enabled": true,
+            "bearerOnly": true
+        },
+        {
+            "name": "unified-push-server-js",
+            "enabled": true,
+            "publicClient": true,
+            "webOrigins": [
+                "*"
+            ],
+            "redirectUris": [
+                "*"
+            ]
+        }
+    ]
+}
