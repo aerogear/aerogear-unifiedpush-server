@@ -4,7 +4,7 @@
 	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
 		<param name="target" value="system.out" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %m%n" />
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %m%n" />
 		</layout>
 	</appender>
 
@@ -13,7 +13,7 @@
 		<param name="file" value="${jboss.server.log.dir}/unifiedpush.log" />
 
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %m%n" />
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %m%n" />
 		</layout>
 	</appender>
 
