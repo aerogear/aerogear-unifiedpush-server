@@ -29,6 +29,7 @@ import ar.com.fernandospr.wns.model.builders.WnsBadgeBuilder;
 import ar.com.fernandospr.wns.model.builders.WnsRawBuilder;
 import ar.com.fernandospr.wns.model.builders.WnsTileBuilder;
 import ar.com.fernandospr.wns.model.builders.WnsToastBuilder;
+import io.prometheus.client.Counter;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
@@ -58,6 +59,11 @@ public class WNSPushNotificationSender implements PushNotificationSender {
 
     private final Logger logger = LoggerFactory.getLogger(WNSPushNotificationSender.class);
 
+    private static final Counter promPrushRequestsWindows = Counter.build()
+            .name("aerogear_ups_push_requests_windows_wns")
+            .help("Total number of Windows (WNS) push batch requests.")
+            .register();
+
     private static final String CORDOVA = "cordova";
     static final String CORDOVA_PAGE = "/Plugins/aerogear-cordova-push/P.xaml";
     private String pushMessageInformationId;
@@ -86,6 +92,9 @@ public class WNSPushNotificationSender implements PushNotificationSender {
             if (ttl != -1) {
                 optional.ttl = String.valueOf(ttl);
             }
+
+            // about to deliver messages for this batch
+            promPrushRequestsWindows.inc();
 
             final List<WnsNotificationResponse> responses;
             if (message.getWindows().getType() != null) {

@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender.apns;
 
+import io.prometheus.client.Counter;
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.ApnsClientBuilder;
 import com.turo.pushy.apns.PushNotificationResponse;
@@ -63,6 +64,11 @@ public class PushyApnsSender implements PushNotificationSender {
     private static final String customAerogearApnsPushHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
     private static final Integer customAerogearApnsPushPort = tryGetIntegerProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
 
+    private static final Counter promPrushRequestsIOS = Counter.build()
+            .name("aerogear_ups_push_requests_ios")
+            .help("Total number of iOS push batch requests.")
+            .register();
+
     private final ConcurrentSkipListSet<String> invalidTokens = new ConcurrentSkipListSet();
 
     @Inject
@@ -104,6 +110,10 @@ public class PushyApnsSender implements PushNotificationSender {
         }
 
         if (apnsClient.isConnected()) {
+
+            // we are connected and are about to send
+            // notifications to all tokens of the batch
+            promPrushRequestsIOS.inc();
 
             // we have managed to connect and will send tokens ;-)
             senderCallback.onSuccess();
