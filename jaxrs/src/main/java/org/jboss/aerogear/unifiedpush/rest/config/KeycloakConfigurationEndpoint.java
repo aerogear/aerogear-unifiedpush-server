@@ -59,11 +59,13 @@ public class KeycloakConfigurationEndpoint {
 
         private String realm = "aerogear";
         @JsonProperty("auth-server-url")
-        private String authServerUrl = "/auth";
+        private String authServerUrl;
         @JsonProperty("ssl-required")
         private final String sslRequired = "external";
         @JsonProperty("public-client")
         private final boolean publicClient = true;
+        @JsonProperty("auth-enabled")
+        private boolean authEnabled = false;
         private final String resource = "unified-push-server-js";
 
         public Config(String realmName, String authServerUrl) {
@@ -72,6 +74,7 @@ public class KeycloakConfigurationEndpoint {
             }
             if(authServerUrl != null && !authServerUrl.isEmpty()) {
                 this.authServerUrl = authServerUrl;
+                this.authEnabled = true;
             }
         }
 
@@ -94,6 +97,8 @@ public class KeycloakConfigurationEndpoint {
         public boolean isPublicClient() {
             return publicClient;
         }
+
+        public boolean isAuthEnabled() { return authEnabled; }
 
     }
 }
