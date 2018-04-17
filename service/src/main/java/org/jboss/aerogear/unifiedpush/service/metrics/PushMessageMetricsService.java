@@ -29,6 +29,8 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service class to handle different aspects of the Push Message Information metadata for the "Push Message History" view
@@ -36,6 +38,8 @@ import org.jboss.aerogear.unifiedpush.utils.DateUtils;
  */
 @Stateless
 public class PushMessageMetricsService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PushMessageMetricsService.class);
 
     // system property name used as the configurable maximum days the message information objects are stored
     public static final String AEROGEAR_METRICS_STORAGE_MAX_DAYS = "aerogear.metrics.storage.days";
@@ -64,7 +68,12 @@ public class PushMessageMetricsService {
     public void appendError(final FlatPushMessageInformation pushMessageInformation, final Variant variant, final String errorMessage) {
         final VariantErrorStatus ves = new VariantErrorStatus(pushMessageInformation, variant, errorMessage);
         pushMessageInformation.getErrors().add(ves);
-        flatPushMessageInformationDao.update(pushMessageInformation);
+        try {
+            flatPushMessageInformationDao.update(pushMessageInformation);
+        } catch (Exception e) {
+            logger.info("Failed to save pushMessageInformation: {}", e.getMessage());
+            logger.debug("Details:", e);
+        }
     }
 
     public PageResult<FlatPushMessageInformation, MessageMetrics> findAllFlatsForPushApplication(String pushApplicationID, String search, boolean sorting, Integer page, Integer pageSize) {
