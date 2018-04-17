@@ -31,7 +31,7 @@ During the build of the project the `aerogear/ups:plain` is build. Afterwards, s
 docker run -p 18081:8080 -it aerogear/ups:plain 
 ```
 
-This brings the UPS containers. Now, go to `http://localhost:18080/ag-push` and you can use it right away!
+This brings the UPS containers. Now, go to `http://localhost:18081/` and you can use it right away!
 
 
 ### Keycloak UPS 
@@ -42,4 +42,4 @@ During the build of the project the `aerogear/ups:kc` is build. Afterwards, simp
 docker run -p 8080:8080 -it aerogear/ups:kc
 ```
 
-This brings up both, Keycloak and the UPS containers. Now, go to `http://localhost:8080/ag-push` to login to the UPS!
+This brings up both, Keycloak and the UPS containers. Now, go to `http://localhost:8080/` to login to the UPS!
