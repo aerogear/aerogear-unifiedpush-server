@@ -31,7 +31,6 @@ WORKDIR /opt/jboss/wildfly/standalone/deployments
 
 # add war files
 COPY maven/ $JBOSS_HOME/standalone/deployments
-RUN mv $JBOSS_HOME/standalone/deployments/ROOT.war $JBOSS_HOME/standalone/deployments/ag-push.war
 
 # Expose default port
 EXPOSE 8080
