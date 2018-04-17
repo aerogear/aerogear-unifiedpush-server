@@ -31,7 +31,7 @@ import javax.ws.rs.core.Response;
 
 import static org.jboss.aerogear.unifiedpush.rest.util.CommonUtils.removeDefaultHttpPorts;
 
-@Path("/keycloak/config")
+@Path("/auth/config")
 public class KeycloakConfigurationEndpoint {
 
     private static final String REALM_NAME_PROPERTY = "ups.realm.name";
@@ -59,7 +59,7 @@ public class KeycloakConfigurationEndpoint {
 
         private String realm = "aerogear";
         @JsonProperty("auth-server-url")
-        private String authServerUrl;
+        private String authServerUrl = "/auth";
         @JsonProperty("ssl-required")
         private final String sslRequired = "external";
         @JsonProperty("public-client")
