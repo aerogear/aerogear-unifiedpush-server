@@ -75,6 +75,12 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
+                                    <groupId>org.aerogear.unifiedpush</groupId>
+                                    <artifactId>admin-ui</artifactId>
+                                    <version>${admin-ui.version}</version>
+                                    <classifier>sources</classifier>
+                                </artifactItem>
+                                <artifactItem>
                                     <groupId>${project.groupId}</groupId>
                                     <artifactId>unifiedpush-jaxrs</artifactId>
                                     <version>${project.version}</version>
