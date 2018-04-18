@@ -46,7 +46,7 @@
         <dependency>
             <groupId>org.aerogear.unifiedpush</groupId>
             <artifactId>admin-ui</artifactId>
-            <version>1.2.12</version>
+            <version>${admin-ui.version}</version>
             <scope>compile</scope>
         </dependency>
 

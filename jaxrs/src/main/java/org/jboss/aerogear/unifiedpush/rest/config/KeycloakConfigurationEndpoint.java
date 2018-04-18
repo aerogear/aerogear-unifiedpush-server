@@ -31,7 +31,7 @@ import javax.ws.rs.core.Response;
 
 import static org.jboss.aerogear.unifiedpush.rest.util.CommonUtils.removeDefaultHttpPorts;
 
-@Path("/keycloak/config")
+@Path("/auth/config")
 public class KeycloakConfigurationEndpoint {
 
     private static final String REALM_NAME_PROPERTY = "ups.realm.name";
@@ -64,6 +64,8 @@ public class KeycloakConfigurationEndpoint {
         private final String sslRequired = "external";
         @JsonProperty("public-client")
         private final boolean publicClient = true;
+        @JsonProperty("auth-enabled")
+        private boolean authEnabled = false;
         private final String resource = "unified-push-server-js";
 
         public Config(String realmName, String authServerUrl) {
@@ -72,6 +74,7 @@ public class KeycloakConfigurationEndpoint {
             }
             if(authServerUrl != null && !authServerUrl.isEmpty()) {
                 this.authServerUrl = authServerUrl;
+                this.authEnabled = true;
             }
         }
 
@@ -94,6 +97,8 @@ public class KeycloakConfigurationEndpoint {
         public boolean isPublicClient() {
             return publicClient;
         }
+
+        public boolean isAuthEnabled() { return authEnabled; }
 
     }
 }
