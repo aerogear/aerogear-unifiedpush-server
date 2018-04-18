@@ -43,7 +43,7 @@ public class PushNotificationSenderEndpoint {
 
     private final Logger logger = LoggerFactory.getLogger(PushNotificationSenderEndpoint.class);
 
-    private static final Counter promPrushRequestsTotal = Counter.build()
+    private static final Counter promPushRequestsTotal = Counter.build()
             .name("aerogear_ups_push_requests_total")
             .help("Total number of push requests.")
             .register();
@@ -93,7 +93,7 @@ public class PushNotificationSenderEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response send(final InternalUnifiedPushMessage message, @Context HttpServletRequest request) {
 
-        promPrushRequestsTotal.inc();
+        promPushRequestsTotal.inc();
 
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
         if (pushApplication == null) {

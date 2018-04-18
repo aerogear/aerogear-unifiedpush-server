@@ -105,6 +105,12 @@
         </dependency>
 
         <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_common</artifactId>
+            <version>${prometheus.simpleclient.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.google.gcm</groupId>
             <artifactId>gcm-server</artifactId>
         </dependency>

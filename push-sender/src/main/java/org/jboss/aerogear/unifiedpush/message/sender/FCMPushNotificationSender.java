@@ -21,6 +21,7 @@ import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Message.Builder;
 import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;
+import io.prometheus.client.Counter;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -44,6 +45,11 @@ import java.util.Set;
 
 @SenderType(VariantType.ANDROID)
 public class FCMPushNotificationSender implements PushNotificationSender {
+
+    private static final Counter promPrushRequestsAndroid = Counter.build()
+            .name("aerogear_ups_push_requests_android")
+            .help("Total number of Android push batch requests.")
+            .register();
 
     // collection of error codes we check for in the FCM response
     // in order to clean-up invalid or incorrect device tokens
@@ -114,6 +120,9 @@ public class FCMPushNotificationSender implements PushNotificationSender {
             logger.debug("Sending transformed FCM payload: {}", fcmMessage);
 
             final ConfigurableFCMSender sender = new ConfigurableFCMSender(androidVariant.getGoogleKey());
+
+            // we are about to send HTTP requests for all tokens of topics of this batch
+            promPrushRequestsAndroid.inc();
 
             // send out a message to a batch of devices...
             processFCM(androidVariant, pushTargets, fcmMessage , sender);

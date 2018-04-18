@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.message.sender;
 
 
+import io.prometheus.client.Counter;
 import org.jboss.aerogear.adm.ADM;
 import org.jboss.aerogear.adm.AdmService;
 import org.jboss.aerogear.adm.PayloadBuilder;
@@ -33,6 +34,11 @@ import java.util.Collection;
 @SenderType(VariantType.ADM)
 public class AdmPushNotificationSender implements PushNotificationSender {
     private final Logger logger = LoggerFactory.getLogger(AdmPushNotificationSender.class);
+
+    private static final Counter promPrushRequestsAdm = Counter.build()
+            .name("aerogear_ups_push_requests_adm")
+            .help("Total number of Android push batch requests.")
+            .register();
 
     @Override
     public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
@@ -63,6 +69,9 @@ public class AdmPushNotificationSender implements PushNotificationSender {
         builder.dataField(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId);
 
         final AdmVariant admVariant = (AdmVariant) variant;
+
+        // we are about to send notifications for all tokens of the batch:
+        promPrushRequestsAdm.inc();
 
         clientIdentifiers.forEach(token -> {
             try {
