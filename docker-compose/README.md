@@ -43,3 +43,11 @@ docker run -p 8080:8080 -it aerogear/ups:kc
 ```
 
 This brings up both, Keycloak and the UPS containers. Now, go to `http://localhost:8080/` to login to the UPS!
+
+### Standalone Keycloak 
+
+It might be handy to just run Keycloak in a Linux container, like: 
+
+```
+docker-compose -f keycloak-standalone.yaml up -d
+```
