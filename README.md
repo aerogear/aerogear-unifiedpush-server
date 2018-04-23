@@ -57,11 +57,16 @@ and start the latest build, locally, like `docker run -p 18081:8080 -it aerogear
 
 ## Releasing the UnifiedPush Server
 
-The content of the [Release Process](https://github.com/aerogear/collateral/wiki/Release-Process-(Java)) is valid for this project as well. However, to build the `distribution` bundle, you need to include these profiles:
+The content of the [Release Process](https://github.com/aerogear/collateral/wiki/Release-Process-(Java)) is valid for this project as well. However, to build the full `distribution` bundle, you need to fire off the release like:
 
 ```
-mvn release:GOAL -Pdist,test
+## prepare the release and define the TAG and adjust the versions:
+mvn release:prepare -Dtag=x.y.z.Final -Darguments=-Dgpg.passphrase=$MY_SECRET_PASS_PHRASE -Pdist,test
+
+## run the actual release process and load the artifacts to JBoss Nexus
+mvn release:perform -DperformRelease=true -Darguments=-Dgpg.passphrase=$MY_SECRET_PASS_PHRASE -Dgpg.useagent=true -Pdist,test
 ```
+
 ## Contributing
 
 If you would like to help develop AeroGear you can join our [developer's mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-dev), join #aerogear on Freenode, or shout at us on Twitter @aerogears.
