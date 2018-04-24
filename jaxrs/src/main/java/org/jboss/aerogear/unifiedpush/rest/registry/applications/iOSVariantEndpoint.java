@@ -76,6 +76,8 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         try {
             validateModelClass(form);
         } catch (ConstraintViolationException cve) {
+            logger.trace("Unable to validate given form upload");
+
             // Build and return the 400 (Bad Request) response
             ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
             return builder.build();
@@ -93,6 +95,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         try {
             validateModelClass(iOSVariant);
         } catch (ConstraintViolationException cve) {
+            logger.trace("Unable to create iOS variant entity");
 
             // Build and return the 400 (Bad Request) response
             ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
@@ -100,9 +103,9 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             return builder.build();
         }
 
+        logger.trace("Register iOS variant with Push Application '{}'", pushApplicationID);
         // store the iOS variant:
         variantService.addVariant(iOSVariant);
-
         // add iOS variant, and merge:
         pushAppService.addVariant(pushApp, iOSVariant);
 
@@ -151,6 +154,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             iOSVariant.setName(updatediOSVariant.getName());
             iOSVariant.setDescription(updatediOSVariant.getDescription());
             iOSVariant.setProduction(updatediOSVariant.isProduction());
+            logger.trace("Updating text details on iOS Variant '{}'", iOSID);
 
             variantService.updateVariant(iOSVariant);
             return Response.noContent().build();
@@ -199,13 +203,12 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
             iOSVariant.setCertificate(updatedForm.getCertificate());
             iOSVariant.setProduction(updatedForm.getProduction());
 
-            // update performed, we now need to invalidate existing connection w/ APNs:
-            variantUpdateEventEvent.fire(new iOSVariantUpdateEvent(iOSVariant));
-
             // some model validation on the entity:
             try {
                 validateModelClass(iOSVariant);
             } catch (ConstraintViolationException cve) {
+                logger.info("Unable to update iOS Variant '{}'", iOSVariant.getVariantID());
+                logger.debug("Details: {}", cve);
 
                 // Build and return the 400 (Bad Request) response
                 ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
@@ -213,6 +216,9 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
                 return builder.build();
             }
 
+            // update performed, we now need to invalidate existing connection w/ APNs:
+            logger.trace("Updating iOS Variant '{}'", iOSVariant.getVariantID());
+            variantUpdateEventEvent.fire(new iOSVariantUpdateEvent(iOSVariant));
             variantService.updateVariant(iOSVariant);
             return Response.ok(iOSVariant).build();
         }

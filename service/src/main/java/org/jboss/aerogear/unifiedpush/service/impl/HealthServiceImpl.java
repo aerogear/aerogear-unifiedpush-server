@@ -20,6 +20,8 @@ import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAHealthDao;
 import org.jboss.aerogear.unifiedpush.service.HealthDBService;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
 import org.jboss.aerogear.unifiedpush.service.impl.health.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
@@ -29,6 +31,9 @@ import java.util.concurrent.Future;
 
 @Stateless
 public class HealthServiceImpl implements HealthDBService {
+
+    private static final Logger logger = LoggerFactory.getLogger(HealthServiceImpl.class);
+
     @Inject
     private JPAHealthDao healthDao;
 
@@ -39,6 +44,7 @@ public class HealthServiceImpl implements HealthDBService {
         details.setDescription("Database connection");
         details.start();
         try {
+            logger.trace("Call the DB if it is online");
             healthDao.dbCheck();
             details.setTestStatus(Status.OK);
             details.setResult("connected");

@@ -57,7 +57,7 @@ import java.util.stream.Collectors;
 @SenderType(VariantType.WINDOWS_WNS)
 public class WNSPushNotificationSender implements PushNotificationSender {
 
-    private final Logger logger = LoggerFactory.getLogger(WNSPushNotificationSender.class);
+    private static final Logger logger = LoggerFactory.getLogger(WNSPushNotificationSender.class);
 
     private static final Counter promPrushRequestsWindows = Counter.build()
             .name("aerogear_ups_push_requests_windows_wns")

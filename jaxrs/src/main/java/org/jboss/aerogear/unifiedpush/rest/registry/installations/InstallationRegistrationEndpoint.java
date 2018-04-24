@@ -64,7 +64,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             .help("Total number of Device register requests.")
             .register();
 
-    private final Logger logger = LoggerFactory.getLogger(InstallationRegistrationEndpoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(InstallationRegistrationEndpoint.class);
     @Inject
     private ClientInstallationService clientInstallationService;
     @Inject
@@ -173,7 +173,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         // Poor up-front validation for required token
         final String deviceToken = entity.getDeviceToken();
         if (deviceToken == null || !DeviceTokenValidator.isValidDeviceTokenForVariant(deviceToken, variant.getType())) {
-            logger.trace(String.format("Invalid device token was delivered: %s for variant type: %s", deviceToken, variant.getType()));
+            logger.trace("Invalid device token was delivered: {} for variant type: {}", deviceToken, variant.getType());
             return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST), request);
         }
 
@@ -184,10 +184,11 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
         //The token has changed, remove the old one
         if (!oldToken.isEmpty() && !oldToken.equals(entity.getDeviceToken())) {
-            logger.info(String.format("Deleting old device token %s", oldToken));
+            logger.info("Deleting old device token {}", oldToken);
             clientInstallationService.removeInstallationForVariantByDeviceToken(variant.getVariantID(), oldToken);
         }
 
+        logger.trace("Adding new device to {} variant", variant.getName());
         // async:
         clientInstallationService.addInstallation(variant, entity);
 
@@ -229,6 +230,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
         //let's do update the analytics
         if (pushMessageId != null) {
+            logger.trace("Push Notification '{}' was used to open the application on the device", pushMessageId);
             metricsService.updateAnalytics(pushMessageId);
         }
 
@@ -362,7 +364,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         return Response.ok(EmptyJSON.STRING).build();
     }
 
-    private static ResponseBuilder appendPreflightResponseHeaders(HttpHeaders headers, ResponseBuilder response) {
+    private static ResponseBuilder appendPreflightResponseHeaders(final HttpHeaders headers, final ResponseBuilder response) {
         // add response headers for the preflight request
         // required
         response.header("Access-Control-Allow-Origin", headers.getRequestHeader("Origin").get(0)) // return submitted origin
@@ -375,7 +377,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         return response;
     }
 
-    private static Response appendAllowOriginHeader(ResponseBuilder rb, HttpServletRequest request) {
+    private static Response appendAllowOriginHeader(final ResponseBuilder rb, final HttpServletRequest request) {
 
         return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
                 .header("Access-Control-Allow-Credentials", "true")
@@ -394,13 +396,12 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * returns application if the masterSecret is valid for the request
      * PushApplicationEntity
      */
-    private Variant loadVariantWhenAuthorized(
-            HttpServletRequest request) {
+    private Variant loadVariantWhenAuthorized(final HttpServletRequest request) {
         // extract the pushApplicationID and its secret from the HTTP Basic
         // header:
-        String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
-        String variantID = credentials[0];
-        String secret = credentials[1];
+        final String[] credentials = HttpBasicHelper.extractUsernameAndPasswordFromBasicHeader(request);
+        final String variantID = credentials[0];
+        final String secret = credentials[1];
 
         final Variant variant = genericVariantService.findByVariantID(variantID);
         if (variant != null && variant.getSecret().equals(secret)) {

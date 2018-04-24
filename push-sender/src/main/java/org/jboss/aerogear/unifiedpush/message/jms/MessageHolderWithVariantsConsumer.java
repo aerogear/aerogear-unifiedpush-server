@@ -22,6 +22,8 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Consumes {@link MessageHolderWithVariants} from queue and pass them as a CDI event for further processing.
@@ -31,12 +33,15 @@ import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class MessageHolderWithVariantsConsumer extends AbstractJMSMessageListener<MessageHolderWithVariants> {
 
+    private static final Logger logger = LoggerFactory.getLogger(MessageHolderWithVariantsConsumer.class);
+
     @Inject
     @Dequeue
     private Event<MessageHolderWithVariants> dequeueEvent;
 
     @Override
     public void onMessage(MessageHolderWithVariants message) {
+        logger.trace("receiving variant container from queue, triggering the TokenLoader class");
         dequeueEvent.fire(message);
     }
 }

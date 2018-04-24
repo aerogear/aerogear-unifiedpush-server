@@ -54,7 +54,7 @@ import java.util.List;
 @Stateless
 public class NotificationRouter {
 
-    private final Logger logger = LoggerFactory.getLogger(NotificationRouter.class);
+    private static final Logger logger = LoggerFactory.getLogger(NotificationRouter.class);
 
     @Inject
     private Instance<GenericVariantService> genericVariantService;

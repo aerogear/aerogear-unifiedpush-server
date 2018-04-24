@@ -25,6 +25,8 @@ import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.dto.Count;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.TypedQuery;
 import java.util.Collection;
@@ -36,6 +38,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class JPAInstallationDao extends JPABaseDao<Installation, String> implements InstallationDao {
+
+    private static final Logger logger = LoggerFactory.getLogger(JPAInstallationDao.class);
 
     private static final String FIND_ALL_DEVICES_FOR_VARIANT_QUERY = "select distinct installation.deviceToken"
                     + " from Installation installation"
@@ -138,11 +142,15 @@ public class JPAInstallationDao extends JPABaseDao<Installation, String> impleme
     public ResultsStream.QueryBuilder<String> findAllDeviceTokenForVariantIDByCriteria(String variantID, List<String> categories, List<String> aliases, List<String> deviceTypes, final int maxResults, String lastTokenFromPreviousBatch, boolean oldGCM) {
         // the required part: Join + all tokens for variantID;
 
+        if (oldGCM) {
+            logger.debug("Query for old GCM tokens");
+        }
+
         final StringBuilder jpqlString = oldGCM ? new StringBuilder(FIND_ALL_DEVICES_FOR_VARIANT_QUERY_LEGACY) : new StringBuilder(FIND_ALL_DEVICES_FOR_VARIANT_QUERY);
         final Map<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("variantID", variantID);
 
-        // apend query conditions based on specified message parameters
+        // append query conditions based on specified message parameters
         appendDynamicQuery(jpqlString, parameters, categories, aliases, deviceTypes);
 
         // sort on ids so that we can handle paging properly

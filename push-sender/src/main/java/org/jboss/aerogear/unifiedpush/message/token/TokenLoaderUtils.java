@@ -31,15 +31,15 @@ public final class TokenLoaderUtils {
     }
 
     /**
-     * Extracts GCM topic names out of a given Criteria object (e.g. /topics/nameOfcategory).
+     * Extracts FCM topic names out of a given Criteria object (e.g. /topics/nameOfcategory).
      * If the Criteria is empty, the given variant ID will be returned as topic name (/topics/variantID)
      *
      * @param criteria the push message filter criteria
-     * @param variantID variant ID, used as global fallback GCM topic name
+     * @param variantID variant ID, used as global fallback FCM topic name
      *
-     * @return GCM topic names for the given push message criteria filter.
+     * @return FCM topic names for the given push message criteria filter.
      */
-    public static Set<String> extractGCMTopics(final Criteria criteria, final String variantID) {
+    public static Set<String> extractFCMTopics(final Criteria criteria, final String variantID) {
         final Set<String> topics = new TreeSet<>();
 
         if (isEmptyCriteria(criteria)) {
@@ -56,7 +56,7 @@ public final class TokenLoaderUtils {
     }
 
     /**
-     * Helper method to check if only categories are applied. Useful in GCM land, where we use topics
+     * Helper method to check if only categories are applied. Useful in FCM land, where we use topics
      */
     public static boolean isCategoryOnlyCriteria(final Criteria criteria) {
 
@@ -66,7 +66,7 @@ public final class TokenLoaderUtils {
     }
 
     /**
-     * Helper method to check if all criteria are empty. Useful in GCM land, where we use topics.
+     * Helper method to check if all criteria are empty. Useful in FCM land, where we use topics.
      */
     public static boolean isEmptyCriteria(final Criteria criteria) {
 
@@ -76,9 +76,9 @@ public final class TokenLoaderUtils {
     }
 
     /**
-     * Helper method to check if we should do GCM topic request.
+     * Helper method to check if we should do FCM topic request.
      */
-    public static boolean isGCMTopicRequest(final Criteria criteria) {
+    public static boolean isFCMTopicRequest(final Criteria criteria) {
         return isEmptyCriteria(criteria) || isCategoryOnlyCriteria(criteria);
     }
 

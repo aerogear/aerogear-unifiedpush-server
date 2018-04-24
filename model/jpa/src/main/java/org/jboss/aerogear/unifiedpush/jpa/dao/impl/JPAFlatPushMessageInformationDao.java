@@ -33,7 +33,7 @@ public class JPAFlatPushMessageInformationDao extends JPABaseDao<FlatPushMessage
     private static final String ASC = "ASC";
     private static final String DESC = "DESC";
 
-    private final Logger logger = LoggerFactory.getLogger(JPAFlatPushMessageInformationDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(JPAFlatPushMessageInformationDao.class);
 
 
     @Override

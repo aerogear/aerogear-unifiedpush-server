@@ -63,8 +63,8 @@ public class TokenLoaderUtilsTest {
     public void testGcmTopicExtractionForEmptyCriteria() {
         final Criteria criteria = new Criteria();
 
-        assertThat(TokenLoaderUtils.extractGCMTopics(criteria, "123")).isNotEmpty();
-        assertThat(TokenLoaderUtils.extractGCMTopics(criteria, "123")).containsOnly(
+        assertThat(TokenLoaderUtils.extractFCMTopics(criteria, "123")).isNotEmpty();
+        assertThat(TokenLoaderUtils.extractFCMTopics(criteria, "123")).containsOnly(
                 Constants.TOPIC_PREFIX+"123"
         );
     }
@@ -76,8 +76,8 @@ public class TokenLoaderUtilsTest {
 
         assertThat(TokenLoaderUtils.isCategoryOnlyCriteria(criteria)).isTrue();
 
-        assertThat(TokenLoaderUtils.extractGCMTopics(criteria, "123")).isNotEmpty();
-        assertThat(TokenLoaderUtils.extractGCMTopics(criteria, "123")).containsOnly(
+        assertThat(TokenLoaderUtils.extractFCMTopics(criteria, "123")).isNotEmpty();
+        assertThat(TokenLoaderUtils.extractFCMTopics(criteria, "123")).containsOnly(
                 Constants.TOPIC_PREFIX+"football"
         );
     }
@@ -89,14 +89,14 @@ public class TokenLoaderUtilsTest {
 
         assertThat(TokenLoaderUtils.isCategoryOnlyCriteria(criteria)).isFalse();
 
-        assertThat(TokenLoaderUtils.extractGCMTopics(criteria, "123")).isEmpty();
+        assertThat(TokenLoaderUtils.extractFCMTopics(criteria, "123")).isEmpty();
     }
 
     @Test
     public void testGCMTopic() {
         final Criteria criteria = new Criteria();
-        assertThat(TokenLoaderUtils.isGCMTopicRequest(criteria)).isTrue();
-        assertThat(TokenLoaderUtils.extractGCMTopics(criteria, "123")).containsOnly(
+        assertThat(TokenLoaderUtils.isFCMTopicRequest(criteria)).isTrue();
+        assertThat(TokenLoaderUtils.extractFCMTopics(criteria, "123")).containsOnly(
                 Constants.TOPIC_PREFIX+"123"
         );
     }
@@ -105,8 +105,8 @@ public class TokenLoaderUtilsTest {
     public void testGCMTopicForCategory() {
         final Criteria criteria = new Criteria();
         criteria.setCategories(Arrays.asList("football"));
-        assertThat(TokenLoaderUtils.isGCMTopicRequest(criteria)).isTrue();
-        assertThat(TokenLoaderUtils.extractGCMTopics(criteria, "123")).containsOnly(
+        assertThat(TokenLoaderUtils.isFCMTopicRequest(criteria)).isTrue();
+        assertThat(TokenLoaderUtils.extractFCMTopics(criteria, "123")).containsOnly(
                 Constants.TOPIC_PREFIX+"football"
         );
     }
@@ -115,14 +115,14 @@ public class TokenLoaderUtilsTest {
     public void testGCMTopicForAlias() {
         final Criteria criteria = new Criteria();
         criteria.setAliases(Arrays.asList("foo@bar.org"));
-        assertThat(TokenLoaderUtils.isGCMTopicRequest(criteria)).isFalse();
+        assertThat(TokenLoaderUtils.isFCMTopicRequest(criteria)).isFalse();
     }
 
     @Test
     public void testGCMTopicForVariant() {
         final Criteria criteria = new Criteria();
         criteria.setVariants(Arrays.asList("variant1", "variant2"));
-        assertThat(TokenLoaderUtils.isGCMTopicRequest(criteria)).isTrue();
+        assertThat(TokenLoaderUtils.isFCMTopicRequest(criteria)).isTrue();
     }
 
     @Test
@@ -131,8 +131,8 @@ public class TokenLoaderUtilsTest {
         criteria.setVariants(Arrays.asList("variant1", "variant2"));
         criteria.setCategories(Arrays.asList("football"));
 
-        assertThat(TokenLoaderUtils.isGCMTopicRequest(criteria)).isTrue();
-        assertThat(TokenLoaderUtils.extractGCMTopics(criteria, "123")).containsOnly(
+        assertThat(TokenLoaderUtils.isFCMTopicRequest(criteria)).isTrue();
+        assertThat(TokenLoaderUtils.extractFCMTopics(criteria, "123")).containsOnly(
                 Constants.TOPIC_PREFIX+"football"
         );
 
@@ -144,6 +144,6 @@ public class TokenLoaderUtilsTest {
         criteria.setVariants(Arrays.asList("variant1", "variant2"));
         criteria.setAliases(Arrays.asList("foo@bar.org"));
 
-        assertThat(TokenLoaderUtils.isGCMTopicRequest(criteria)).isFalse();
+        assertThat(TokenLoaderUtils.isFCMTopicRequest(criteria)).isFalse();
     }
 }

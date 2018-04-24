@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 @Stateless
 public class ClientInstallationServiceImpl implements ClientInstallationService {
 
-    private final Logger logger = LoggerFactory.getLogger(ClientInstallationServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClientInstallationServiceImpl.class);
 
     @Inject
     private InstallationDao installationDao;

@@ -16,12 +16,17 @@
  */
 package org.jboss.aerogear.unifiedpush.service.metrics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 
 @Singleton
 public class DeleteOldPushMessageInformationScheduler {
+
+    private static final Logger logger = LoggerFactory.getLogger(DeleteOldPushMessageInformationScheduler.class);
 
     @Inject
     private PushMessageMetricsService service;
@@ -34,6 +39,7 @@ public class DeleteOldPushMessageInformationScheduler {
      */
     @Schedule
     public void deleteOutdatedFlatMetrics(){
+        logger.trace("scheduled deletion for outdated push info data");
         service.deleteOutdatedFlatPushInformationData();
     }
 }

@@ -38,7 +38,7 @@ public class KeycloakConfigurationEndpoint {
     private static final String REALM_URL_PROPERTY = "ups.auth.server.url";
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    private final Logger logger = LoggerFactory.getLogger(KeycloakConfigurationEndpoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(KeycloakConfigurationEndpoint.class);
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -73,6 +73,7 @@ public class KeycloakConfigurationEndpoint {
                 this.realm = realmName;
             }
             if(authServerUrl != null && !authServerUrl.isEmpty()) {
+                logger.trace("UPS is protected by an authentification broker");
                 this.authServerUrl = authServerUrl;
                 this.authEnabled = true;
             }

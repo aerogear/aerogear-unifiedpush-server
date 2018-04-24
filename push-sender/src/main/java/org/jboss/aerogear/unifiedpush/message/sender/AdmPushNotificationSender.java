@@ -33,7 +33,7 @@ import java.util.Collection;
 
 @SenderType(VariantType.ADM)
 public class AdmPushNotificationSender implements PushNotificationSender {
-    private final Logger logger = LoggerFactory.getLogger(AdmPushNotificationSender.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdmPushNotificationSender.class);
 
     private static final Counter promPrushRequestsAdm = Counter.build()
             .name("aerogear_ups_push_requests_adm")

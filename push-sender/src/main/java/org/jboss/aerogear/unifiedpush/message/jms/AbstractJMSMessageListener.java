@@ -38,7 +38,7 @@ public abstract class AbstractJMSMessageListener<T> implements MessageListener {
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    private final Logger logger = LoggerFactory.getLogger(AbstractJMSMessageListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractJMSMessageListener.class);
 
     public abstract void onMessage(T message);
 
