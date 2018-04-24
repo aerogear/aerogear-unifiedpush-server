@@ -58,13 +58,13 @@ public class SearchManager implements Serializable {
      */
     public PushSearchService getSearchService() {
 
-        boolean isAdmin = httpServletRequest.isUserInRole("admin");
+        boolean isDev = httpServletRequest.isUserInRole("developer");
 
-        if (isAdmin) {
-            return searchAll;
+        if (isDev) {
+            return searchByDeveloper;
         }
 
-        return searchByDeveloper;
+        return searchAll;
     }
 
     /**
@@ -91,6 +91,6 @@ public class SearchManager implements Serializable {
         }
 
         logger.debug("Running without any Auth context");
-        return "developer"; // by default, we are developer!
+        return "admin"; // by default, we are admin!
     }
 }
