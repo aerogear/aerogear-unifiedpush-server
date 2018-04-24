@@ -91,6 +91,6 @@ public class SearchManager implements Serializable {
         }
 
         logger.debug("Running without any Auth context");
-        return "developer"; // by default, we are developer!
+        return "admin"; // by default, we are admin!
     }
 }
