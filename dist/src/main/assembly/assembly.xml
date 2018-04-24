@@ -24,6 +24,11 @@
     </formats>
     
     <fileSets>
+        <!-- Bundle the JMS configuration files and modules -->
+        <fileSet>
+            <directory>${project.basedir}/../configuration</directory>
+            <outputDirectory>/configuration</outputDirectory>
+        </fileSet>
         <!-- Bundle the database configuration files and modules -->
         <fileSet>
             <directory>${project.basedir}/../databases</directory>
