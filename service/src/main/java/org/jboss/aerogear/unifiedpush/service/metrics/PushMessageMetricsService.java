@@ -55,6 +55,7 @@ public class PushMessageMetricsService {
         information.setPushApplicationId(pushAppId);
         information.setClientIdentifier(clientIdentifier);
 
+        logger.trace("starting to track a new Push Message request in the database");
         flatPushMessageInformationDao.create(information);
         flatPushMessageInformationDao.flushAndClear();
 
@@ -97,6 +98,7 @@ public class PushMessageMetricsService {
      */
     public void deleteOutdatedFlatPushInformationData() {
         final Date historyDate = DateUtils.calculatePastDate(ConfigurationUtils.tryGetIntegerProperty(AEROGEAR_METRICS_STORAGE_MAX_DAYS, 30));
+        logger.trace("Delete all until {}", historyDate.getTime());
         flatPushMessageInformationDao.deletePushInformationOlderThan(historyDate);
     }
 
@@ -117,6 +119,7 @@ public class PushMessageMetricsService {
                 pushMessageInformation.setLastOpenDate(new Date());
             }
             //update the general counter
+            logger.trace("Incrementing 'open counter' for Push Notification '{}' ", aerogearPushId);
             pushMessageInformation.incrementAppOpenCounter();
         }
 

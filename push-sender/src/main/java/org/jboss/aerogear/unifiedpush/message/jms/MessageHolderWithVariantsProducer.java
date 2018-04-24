@@ -23,6 +23,8 @@ import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Receives CDI event with {@link MessageHolderWithVariants} payload and dispatches this payload to JMS queue selected by a type of the variant specified in payload.
@@ -31,6 +33,8 @@ import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
  */
 @Stateless
 public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProducer {
+
+    private static final Logger logger = LoggerFactory.getLogger(MessageHolderWithVariantsProducer.class);
 
     @Resource(mappedName = "java:/queue/AdmPushMessageQueue")
     private Queue admPushMessageQueue;
@@ -45,6 +49,7 @@ public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProduce
     private Queue wnsPushMessageQueue;
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithVariants msg) {
+        logger.trace("dispatching for processing variants and trigger token querying/batching");
         sendTransacted(selectQueue(msg.getVariantType()), msg);
     }
 

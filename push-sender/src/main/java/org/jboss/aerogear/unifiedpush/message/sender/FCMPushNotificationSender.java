@@ -63,7 +63,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
     @Inject
     private ClientInstallationService clientInstallationService;
 
-    private final Logger logger = LoggerFactory.getLogger(FCMPushNotificationSender.class);
+    private static final Logger logger = LoggerFactory.getLogger(FCMPushNotificationSender.class);
 
     /**
      * Sends FCM notifications ({@link UnifiedPushMessage}) to all devices, that are represented by

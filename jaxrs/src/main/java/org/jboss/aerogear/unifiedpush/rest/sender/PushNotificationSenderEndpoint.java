@@ -41,7 +41,7 @@ import javax.ws.rs.core.Response.Status;
 @Path("/sender")
 public class PushNotificationSenderEndpoint {
 
-    private final Logger logger = LoggerFactory.getLogger(PushNotificationSenderEndpoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(PushNotificationSenderEndpoint.class);
 
     private static final Counter promPushRequestsTotal = Counter.build()
             .name("aerogear_ups_push_requests_total")
@@ -111,7 +111,7 @@ public class PushNotificationSenderEndpoint {
 
         // submitted to EJB:
         notificationRouter.submit(pushApplication, message);
-        logger.debug(String.format("Push Message Request from [%s] API was internally submitted for further processing", message.getClientIdentifier()));
+        logger.debug("Push Message Request from [{}] API was internally submitted for further processing", message.getClientIdentifier());
 
         return Response.status(Status.ACCEPTED).entity(EmptyJSON.STRING).build();
     }

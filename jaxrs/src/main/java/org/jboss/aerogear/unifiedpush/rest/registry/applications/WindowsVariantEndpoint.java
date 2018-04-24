@@ -67,6 +67,7 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
         try {
             validateModelClass(windowsVariant);
         } catch (ConstraintViolationException cve) {
+            logger.trace("Unable to create Windows variant");
 
             // Build and return the 400 (Bad Request) response
             Response.ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
@@ -74,6 +75,7 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
             return builder.build();
         }
 
+        logger.trace("Register Windows variant with Push Application '{}'", pushApplicationID);
         // store the Windows variant:
         variantService.addVariant(windowsVariant);
         // add iOS variant, and merge:
@@ -122,6 +124,8 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
             try {
                 validateModelClass(updatedWindowsVariant);
             } catch (ConstraintViolationException cve) {
+                logger.info("Unable to update Windows Variant '{}'", windowsVariant.getVariantID());
+                logger.debug("Details: {}", cve);
 
                 // Build and return the 400 (Bad Request) response
                 Response.ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
@@ -137,6 +141,9 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
             }
             windowsVariant.setName(updatedWindowsVariant.getName());
             windowsVariant.setDescription(updatedWindowsVariant.getDescription());
+
+            logger.trace("Updating Windows Variant '{}'", windowsVariant.getVariantID());
+
             variantService.updateVariant(windowsVariant);
             return Response.ok(windowsVariant).build();
         }

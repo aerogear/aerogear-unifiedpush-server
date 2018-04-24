@@ -57,7 +57,7 @@ import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetPro
 @SenderType(VariantType.IOS)
 public class PushyApnsSender implements PushNotificationSender {
 
-    private final Logger logger = LoggerFactory.getLogger(PushyApnsSender.class);
+    private static final Logger logger = LoggerFactory.getLogger(PushyApnsSender.class);
 
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_HOST = "custom.aerogear.apns.push.host";
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";

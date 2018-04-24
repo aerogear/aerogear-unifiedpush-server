@@ -43,7 +43,7 @@ import javax.enterprise.inject.Produces;
  */
 public class SenderConfigurationProvider {
 
-    private final Logger logger = LoggerFactory.getLogger(SenderConfigurationProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(SenderConfigurationProvider.class);
 
     @Produces @ApplicationScoped @SenderType(VariantType.ANDROID)
     public SenderConfiguration produceAndroidConfiguration() {

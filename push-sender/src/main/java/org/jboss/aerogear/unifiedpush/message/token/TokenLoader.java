@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
 @Stateless
 public class TokenLoader {
 
-    private final Logger logger = LoggerFactory.getLogger(TokenLoader.class);
+    private static final Logger logger = LoggerFactory.getLogger(TokenLoader.class);
 
     @Inject
     private ClientInstallationService clientInstallationService;
@@ -130,17 +130,17 @@ public class TokenLoader {
                 // the entire batch size
                 int batchesToLoad= configuration.batchesToLoad();
 
-                // Some checks for GCM, because of GCM-3 topics
-                boolean gcmTopicRequest = (isAndroid && TokenLoaderUtils.isGCMTopicRequest(criteria));
-                if (gcmTopicRequest) {
-
-                    // If we are able to do push for GCM topics...
+                // Some checks for FCM, because of topics feature from FCM (and GCM-3 in the past)
+                boolean fcmTopicRequest = (isAndroid && TokenLoaderUtils.isFCMTopicRequest(criteria));
+                if (fcmTopicRequest) {
+                    // If we are able to do push for FCM topics...
+                    logger.trace("Processing Firebase Topic request");
 
                     // 1)
                     // find all topics, BUT only on the very first round of batches
                     // otherwise after 10 (or what ever the max. is) another request would be sent to that topic
                     if (serialId == 0) {
-                        topics.addAll(TokenLoaderUtils.extractGCMTopics(criteria, variant.getVariantID()));
+                        topics.addAll(TokenLoaderUtils.extractFCMTopics(criteria, variant.getVariantID()));
 
                         // topics are handled as a first extra batch,
                         // therefore we have to adjust the number by adding this extra batch
@@ -151,7 +151,13 @@ public class TokenLoader {
                     tokenStream = clientInstallationService.findAllOldGoogleCloudMessagingDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes, configuration.tokensToLoad(), lastTokenFromPreviousBatch)
                             .fetchSize(configuration.batchSize())
                             .executeQuery();
+
+                    if (tokenStream.next()) {
+                        logger.warn("The application still has old tokens that are not compliant to the InstanceID format");
+                    }
+
                 } else {
+                    logger.trace("Processing Firebase token request");
                     tokenStream = clientInstallationService.findAllDeviceTokenForVariantIDByCriteria(variant.getVariantID(), categories, aliases, deviceTypes, configuration.tokensToLoad(), lastTokenFromPreviousBatch)
                             .fetchSize(configuration.batchSize())
                             .executeQuery();
@@ -208,7 +214,7 @@ public class TokenLoader {
 
                     if (tokensLoaded == 0 && lastTokenFromPreviousBatch == null) {
                         // no tokens were loaded at all!
-                        if (gcmTopicRequest) {
+                        if (fcmTopicRequest) {
                             logger.debug("No legacy(non-InstanceID) tokens found. Just pure GCM topic requests");
                         } else {
                             logger.warn("Check your push query: Not a single token was loaded from the DB!");

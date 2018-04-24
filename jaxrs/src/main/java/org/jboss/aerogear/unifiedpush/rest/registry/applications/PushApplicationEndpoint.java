@@ -79,10 +79,12 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         try {
             validateModelClass(pushApp);
         } catch (ConstraintViolationException cve) {
+            logger.trace("Unable to create Push Application");
             return createBadRequestResponse(cve.getConstraintViolations()).build();
         }
 
         try {
+            logger.trace("Invoke service to create a push application");
             pushAppService.addPushApplication(pushApp);
         } catch (IllegalArgumentException e) {
             return Response.status(Status.CONFLICT).entity(e.getMessage()).build();
@@ -129,14 +131,17 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             page = 0;
         }
 
+        logger.trace("Query paged push applications with {} items for page {}", pageSize, page);
         final PageResult<PushApplication, Count> pageResult = getSearch().findAllPushApplicationsForDeveloper(page, pageSize);
         ResponseBuilder response = Response.ok(pageResult.getResultList());
         response.header("total", pageResult.getAggregate().getCount());
         for (PushApplication app : pageResult.getResultList()) {
             if (includeActivity) {
+                logger.trace("Include activity header");
                 putActivityIntoResponseHeaders(app, response);
             }
             if (includeDeviceCount) {
+                logger.trace("Include device count header");
                 putDeviceCountIntoResponseHeaders(app, response);
             }
         }
@@ -169,11 +174,14 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp != null) {
+            logger.trace("Query details for push application {}", pushApp.getName());
             ResponseBuilder response = Response.ok(pushApp);
             if (includeActivity) {
+                logger.trace("Include activity header");
                 putActivityIntoResponseHeaders(pushApp, response);
             }
             if (includeDeviceCount) {
+                logger.trace("Include device count header");
                 putDeviceCountIntoResponseHeaders(pushApp, response);
             }
             return response.build();
@@ -221,7 +229,8 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             try {
                 validateModelClass(updatedPushApp);
             } catch (ConstraintViolationException cve) {
-
+                logger.info("Unable to update Push Application '{}'", pushApplicationID);
+                logger.debug("Details: {}", cve);
                 // Build and return the 400 (Bad Request) response
                 ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
 
@@ -231,6 +240,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             // update name/desc:
             pushApp.setDescription(updatedPushApp.getDescription());
             pushApp.setName(updatedPushApp.getName());
+            logger.trace("Invoke service to update a push application");
             pushAppService.updatePushApplication(pushApp);
 
             return Response.noContent().build();
@@ -261,6 +271,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             // generate the new 'masterSecret' and apply it:
             String newMasterSecret = UUID.randomUUID().toString();
             pushApp.setMasterSecret(newMasterSecret);
+            logger.info("Invoke service to change master secret of a push application '{}'", pushApp.getPushApplicationID());
             pushAppService.updatePushApplication(pushApp);
 
             return Response.ok(pushApp).build();
@@ -286,6 +297,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp != null) {
+            logger.trace("Invoke service to delete a push application");
             pushAppService.removePushApplication(pushApp);
             return Response.noContent().build();
         }
@@ -303,8 +315,8 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response countInstallations(@PathParam("pushAppID") String pushApplicationID) {
 
+        logger.trace("counting devices by type for push application '{}'", pushApplicationID);
         Map<String, Long> result = pushAppService.countInstallationsByType(pushApplicationID);
-
         return Response.ok(result).build();
     }
 }

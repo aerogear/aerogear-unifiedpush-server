@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 @Singleton
 public class SimpleApnsClientCache {
 
-    private final Logger logger = LoggerFactory.getLogger(SimpleApnsClientCache.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleApnsClientCache.class);
 
     final ConcurrentMap<String, ApnsClient> apnsClientExpiringMap;
     {

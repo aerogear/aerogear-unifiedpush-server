@@ -40,7 +40,7 @@ import java.util.Set;
  */
 public class FCMTopicManager {
 
-    private final Logger logger = LoggerFactory.getLogger(FCMTopicManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(FCMTopicManager.class);
 
     // Instance ID API URL
     public static final String IID_URL = "https://iid.googleapis.com/iid/v1/";

@@ -68,16 +68,17 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
         try {
             validateModelClass(androidVariant);
         } catch (ConstraintViolationException cve) {
-
+            logger.trace("Unable to create Android variant");
             // Build and return the 400 (Bad Request) response
             ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
 
             return builder.build();
         }
 
+        logger.trace("Register Android variant with Push Application '{}'", pushApplicationID);
         // store the Android variant:
         variantService.addVariant(androidVariant);
-        // add iOS variant, and merge:
+        // add Android variant, and merge:
         pushAppService.addVariant(pushApp, androidVariant);
 
         return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(androidVariant.getVariantID())).build()).entity(androidVariant).build();
@@ -125,6 +126,8 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
             try {
                 validateModelClass(updatedAndroidApplication);
             } catch (ConstraintViolationException cve) {
+                logger.info("Unable to update Android Variant '{}'", androidVariant.getVariantID());
+                logger.debug("Details: {}", cve);
 
                 // Build and return the 400 (Bad Request) response
                 ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
@@ -137,6 +140,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
             androidVariant.setProjectNumber(updatedAndroidApplication.getProjectNumber());
             androidVariant.setName(updatedAndroidApplication.getName());
             androidVariant.setDescription(updatedAndroidApplication.getDescription());
+            logger.trace("Updating Android Variant '{}'", androidID);
             variantService.updateVariant(androidVariant);
             return Response.ok(androidVariant).build();
         }
