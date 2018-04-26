@@ -70,6 +70,23 @@
             <includes>
                 <include>README.md</include>
             </includes>
-        </fileSet>                        
+        </fileSet>
     </fileSets>
+    <!-- Include the license files for the server archives, and the project itself -->
+    <files>
+        <file>
+            <source>${project.basedir}/../servers/keycloak/target/classes/META-INF/licenses.xml</source>
+            <outputDirectory>/licenses</outputDirectory>
+            <destName>ups_keycloak_licenses.xml</destName>
+        </file>
+        <file>
+            <source>${project.basedir}/../servers/plain/target/classes/META-INF/licenses.xml</source>
+            <outputDirectory>/licenses</outputDirectory>
+            <destName>ups_plain_licenses.xml</destName>
+        </file>
+        <file>
+            <source>${project.basedir}/../LICENSE.txt</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+    </files>
 </assembly>
