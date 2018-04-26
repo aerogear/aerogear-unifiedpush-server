@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   unifiedpushserver:
-    image: docker.io/aerogear/unifiedpush-wildfly:2.0.0
+    image: docker.io/aerogear/unifiedpush-wildfly:2.0.2
     volumes:
        - ./helper:/ups-helper:z
     entrypoint: "/ups-helper/exportKeycloakHost.sh"
