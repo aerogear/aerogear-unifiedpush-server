@@ -36,9 +36,6 @@ public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProduce
 
     private static final Logger logger = LoggerFactory.getLogger(MessageHolderWithVariantsProducer.class);
 
-    @Resource(mappedName = "java:/queue/AdmPushMessageQueue")
-    private Queue admPushMessageQueue;
-
     @Resource(mappedName = "java:/queue/APNsPushMessageQueue")
     private Queue apnsPushMessageQueue;
 
@@ -55,8 +52,6 @@ public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProduce
 
     private Queue selectQueue(VariantType variantType) {
         switch (variantType) {
-            case ADM:
-                return admPushMessageQueue;
             case ANDROID:
                 return gcmPushMessageQueue;
             case IOS:

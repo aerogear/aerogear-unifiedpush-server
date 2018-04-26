@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
@@ -82,7 +81,6 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
         AndroidVariant androidVariant;
         iOSVariant iOSVariant;
         WindowsVariant windowsVariant = null;
-        AdmVariant admVariant;
 
         // Android around ?
         if (form.getAndroidVariantName() != null) {
@@ -123,18 +121,6 @@ public class BootstrapEndpoint extends AbstractBaseEndpoint {
             // store the model, add variant references and merge:
             variantService.addVariant(windowsVariant);
             pushAppService.addVariant(pushApplication, windowsVariant);
-        }
-
-        // Android around ?
-        if (form.getAdmVariantName() != null) {
-            admVariant = new AdmVariant();
-            admVariant.setName(form.getAdmVariantName());
-            admVariant.setClientId(form.getAdmClientId());
-            admVariant.setClientSecret(form.getAdmClientSecret());
-
-            // store the model, add variant references and merge:
-            variantService.addVariant(admVariant);
-            pushAppService.addVariant(pushApplication, admVariant);
         }
 
         return Response.created(

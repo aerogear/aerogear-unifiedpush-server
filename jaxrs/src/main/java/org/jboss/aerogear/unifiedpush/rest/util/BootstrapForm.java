@@ -48,11 +48,6 @@ public class BootstrapForm {
     private String windowsSid;
     private String windowsClientSecret;
 
-    // ADM details
-    private String admVariantName;
-    private String admClientId;
-    private String admClientSecret;
-
 
     public BootstrapForm() {
     }
@@ -165,33 +160,6 @@ public class BootstrapForm {
     @FormParam("windowsClientSecret")
     public void setWindowsClientSecret(String windowsClientSecret) {
         this.windowsClientSecret = windowsClientSecret;
-    }
-
-    public String getAdmVariantName() {
-        return admVariantName;
-    }
-
-    @FormParam("admVariantName")
-    public void setAdmVariantName(String admVariantName) {
-        this.admVariantName = admVariantName;
-    }
-
-    public String getAdmClientId() {
-        return admClientId;
-    }
-
-    @FormParam("admClientId")
-    public void setAdmClientId(String admClientId) {
-        this.admClientId = admClientId;
-    }
-
-    public String getAdmClientSecret() {
-        return admClientSecret;
-    }
-
-    @FormParam("admClientSecret")
-    public void setAdmClientSecret(String admClientSecret) {
-        this.admClientSecret = admClientSecret;
     }
 
     /**

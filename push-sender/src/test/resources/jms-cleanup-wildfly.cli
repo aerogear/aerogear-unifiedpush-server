@@ -5,11 +5,6 @@ connect
 
 batch
 
-/subsystem=messaging-activemq/server=default/jms-queue=AdmPushMessageQueue:remove()
-/subsystem=messaging-activemq/server=default/address-setting=jms.queue.AdmPushMessageQueue:remove()
-/subsystem=messaging-activemq/server=default/jms-queue=AdmTokenBatchQueue:remove()
-/subsystem=messaging-activemq/server=default/address-setting=jms.queue.AdmTokenBatchQueue:remove()
-
 /subsystem=messaging-activemq/server=default/jms-queue=APNsPushMessageQueue:remove()
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.APNsPushMessageQueue:remove()
 /subsystem=messaging-activemq/server=default/jms-queue=APNsTokenBatchQueue:remove()
