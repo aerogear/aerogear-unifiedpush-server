@@ -469,8 +469,6 @@
                     <role name="guest" send="true" consume="true" create-non-durable-queue="true" delete-non-durable-queue="true"/>
                 </security-setting>
                 <address-setting name="#" dead-letter-address="jms.queue.DLQ" expiry-address="jms.queue.ExpiryQueue" max-size-bytes="10485760" page-size-bytes="2097152" message-counter-history-day-limit="10"/>
-                <address-setting name="jms.queue.AdmPushMessageQueue" redelivery-delay="1500" redelivery-multiplier="1.5" max-delivery-attempts="-1" max-redelivery-delay="5000"/>
-                <address-setting name="jms.queue.AdmTokenBatchQueue" max-size-bytes="40000" address-full-policy="FAIL"/>
                 <address-setting name="jms.queue.APNsPushMessageQueue" redelivery-delay="1500" redelivery-multiplier="1.5" max-delivery-attempts="-1" max-redelivery-delay="5000"/>
                 <address-setting name="jms.queue.APNsTokenBatchQueue" max-size-bytes="40000" address-full-policy="FAIL"/>
                 <address-setting name="jms.queue.GCMPushMessageQueue" redelivery-delay="1500" redelivery-multiplier="1.5" max-delivery-attempts="-1" max-redelivery-delay="5000"/>
@@ -498,8 +496,6 @@
                 </in-vm-acceptor>
                 <jms-queue name="ExpiryQueue" entries="java:/jms/queue/ExpiryQueue"/>
                 <jms-queue name="DLQ" entries="java:/jms/queue/DLQ"/>
-                <jms-queue name="AdmPushMessageQueue" entries="queue/AdmPushMessageQueue"/>
-                <jms-queue name="AdmTokenBatchQueue" entries="queue/AdmTokenBatchQueue"/>
                 <jms-queue name="APNsPushMessageQueue" entries="queue/APNsPushMessageQueue"/>
                 <jms-queue name="APNsTokenBatchQueue" entries="queue/APNsTokenBatchQueue"/>
                 <jms-queue name="GCMPushMessageQueue" entries="queue/GCMPushMessageQueue"/>

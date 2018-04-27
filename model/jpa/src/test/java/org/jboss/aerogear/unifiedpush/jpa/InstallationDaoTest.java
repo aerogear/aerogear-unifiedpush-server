@@ -34,7 +34,6 @@ import javax.validation.ConstraintViolationException;
 
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 
-import org.jboss.aerogear.unifiedpush.api.AdmVariant;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
@@ -393,27 +392,6 @@ public class InstallationDaoTest {
         variant.setName("Windows Variant Name");
         variant.setClientSecret("12");
         variant.setSid("12");
-
-        // when
-        deviceTokenTest(installation, variant);
-    }
-
-    @Test
-    public void shouldSaveWhenValidateDeviceIdAdm() {
-        // given
-        final Installation installation = new Installation();
-        installation.setDeviceToken("amzn1.adm-registration.v3.Y29tLmFtYXpvbi5EZXZpY2VNZXNzYWdpbmcuUmVnaXN0cmF0a" +
-                "W9uSWRFbmNyeXB0aW9uS2V5ITEhWTlLSFlBZDlOSU12cTUzdlpIQzZJd3VZVk9CZ0g1bUdWUkJrL0hOTkZ5UGFPN1FxY3pP" +
-                "WXJVL0laWGdrczVKU1MwSG8rVDUva2hkS3h5WjE4YUZHM3NoTXpOMUxCa2tORDdsY2FxemVxcG5lWXR1eC9UeHZMTWVScUY" +
-                "wT3JwUXFzZFFCMi9vaHhmQjk2dERwK29JNEtFTm1TRGhLMFhnd0FPT3FPWGRwMi9GQllNSmN5TVh4YlZ4VlNQdVcvbHEveU" +
-                "JkZExoMTdrZnNaVWpOMGlVMTBDbndkNERSd3Z4VjlpVm9hUy9mTXhLdUsxSVV5cjY1cngrQWYwdjN4WGxvWWJGL3ZDNXF6T" +
-                "2FPa0JTL3Z6bGtxUUFUN3h4bXg1YitBTHlpbGkxazdJbHBIVm1PUm0rUkgveDFOdzFDQUVhQ1BXcE1Ud3ZpY2ROcUxGWlRt" +
-                "VFM2bml3PT0hQVcwQ2puM3g2THgvaWJ0cE9nMzBEUT09");
-
-        final AdmVariant variant = new AdmVariant();
-        variant.setName("ADM variant Name");
-        variant.setClientSecret("12");
-        variant.setClientId("12");
 
         // when
         deviceTokenTest(installation, variant);

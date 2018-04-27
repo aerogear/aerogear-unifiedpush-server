@@ -50,11 +50,6 @@ public class SenderConfigurationProvider {
         return loadConfigurationFor(VariantType.ANDROID, new SenderConfiguration(10, 1000));
     }
 
-    @Produces @ApplicationScoped @SenderType(VariantType.ADM)
-    public SenderConfiguration produceAdmConfiguration() {
-        return loadConfigurationFor(VariantType.ADM, new SenderConfiguration(10, 1000));
-    }
-
     @Produces @ApplicationScoped @SenderType(VariantType.IOS)
     public SenderConfiguration produceIosConfiguration() {
         return loadConfigurationFor(VariantType.IOS, new SenderConfiguration(3, 2000));

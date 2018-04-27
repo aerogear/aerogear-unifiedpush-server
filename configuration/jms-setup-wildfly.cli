@@ -4,11 +4,6 @@ connect
 #/subsystem=logging/logger=org.jboss.aerogear.unifiedpush:add(level=FINEST,use-parent-handlers=false,handlers=["AEROGEAR"])
 
 try
-  /subsystem=messaging-activemq/server=default/jms-queue=AdmPushMessageQueue:add(entries=[queue/AdmPushMessageQueue])
-  /subsystem=messaging-activemq/server=default/address-setting=jms.queue.AdmPushMessageQueue:add(redelivery-delay=1500, redelivery-multiplier=1.5, max-redelivery-delay=5000, max-delivery-attempts=-1)
-  /subsystem=messaging-activemq/server=default/jms-queue=AdmTokenBatchQueue:add(entries=[queue/AdmTokenBatchQueue])
-  /subsystem=messaging-activemq/server=default/address-setting=jms.queue.AdmTokenBatchQueue:add(address-full-policy=FAIL, max-size-bytes=40000)
-
   /subsystem=messaging-activemq/server=default/jms-queue=APNsPushMessageQueue:add(entries=[queue/APNsPushMessageQueue])
   /subsystem=messaging-activemq/server=default/address-setting=jms.queue.APNsPushMessageQueue:add(redelivery-delay=1500, redelivery-multiplier=1.5, max-redelivery-delay=5000, max-delivery-attempts=-1)
   /subsystem=messaging-activemq/server=default/jms-queue=APNsTokenBatchQueue:add(entries=[queue/APNsTokenBatchQueue])
@@ -55,11 +50,6 @@ try
 
 catch
   ## Remove all previous config and set up again
-  /subsystem=messaging-activemq/server=default/jms-queue=AdmPushMessageQueue:remove
-  /subsystem=messaging-activemq/server=default/address-setting=jms.queue.AdmPushMessageQueue:remove
-  /subsystem=messaging-activemq/server=default/jms-queue=AdmTokenBatchQueue:remove
-  /subsystem=messaging-activemq/server=default/address-setting=jms.queue.AdmTokenBatchQueue:remove
-
   /subsystem=messaging-activemq/server=default/jms-queue=APNsPushMessageQueue:remove
   /subsystem=messaging-activemq/server=default/address-setting=jms.queue.APNsPushMessageQueue:remove
   /subsystem=messaging-activemq/server=default/jms-queue=APNsTokenBatchQueue:remove
@@ -96,11 +86,6 @@ catch
   /subsystem=messaging-activemq/server=default/jms-queue=FreeServiceSlotQueue:remove
 
   /subsystem=messaging-activemq/server=default/jms-topic=MetricsProcessingStartedTopic:remove
-
-  /subsystem=messaging-activemq/server=default/jms-queue=AdmPushMessageQueue:add(entries=[queue/AdmPushMessageQueue])
-  /subsystem=messaging-activemq/server=default/address-setting=jms.queue.AdmPushMessageQueue:add(redelivery-delay=1500, redelivery-multiplier=1.5, max-redelivery-delay=5000, max-delivery-attempts=-1)
-  /subsystem=messaging-activemq/server=default/jms-queue=AdmTokenBatchQueue:add(entries=[queue/AdmTokenBatchQueue])
-  /subsystem=messaging-activemq/server=default/address-setting=jms.queue.AdmTokenBatchQueue:add(address-full-policy=FAIL, max-size-bytes=40000)
 
   /subsystem=messaging-activemq/server=default/jms-queue=APNsPushMessageQueue:add(entries=[queue/APNsPushMessageQueue])
   /subsystem=messaging-activemq/server=default/address-setting=jms.queue.APNsPushMessageQueue:add(redelivery-delay=1500, redelivery-multiplier=1.5, max-redelivery-delay=5000, max-delivery-attempts=-1)

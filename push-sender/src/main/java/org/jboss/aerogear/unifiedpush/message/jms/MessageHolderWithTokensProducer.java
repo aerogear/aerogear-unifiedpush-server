@@ -39,9 +39,6 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
     @Inject
     private JmsClient jmsClient;
 
-    @Resource(mappedName = "java:/queue/AdmTokenBatchQueue")
-    private Queue admTokenBatchQueue;
-
     @Resource(mappedName = "java:/queue/APNsTokenBatchQueue")
     private Queue apnsTokenBatchQueue;
 
@@ -60,8 +57,6 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
 
     private Queue selectQueue(VariantType variantType) {
         switch (variantType) {
-            case ADM:
-                return admTokenBatchQueue;
             case ANDROID:
                 return gcmTokenBatchQueue;
             case IOS:
