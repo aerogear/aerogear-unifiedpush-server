@@ -109,7 +109,7 @@ public class PushyApnsSender implements PushNotificationSender {
             }
         }
 
-        if (apnsClient.isConnected()) {
+        if (apnsClient != null && apnsClient.isConnected()) {
 
             // we are connected and are about to send
             // notifications to all tokens of the batch
@@ -193,13 +193,17 @@ public class PushyApnsSender implements PushNotificationSender {
         return simpleApnsClientCache.getApnsClientForVariant(iOSVariant, () -> {
             final ApnsClient apnsClient = buildApnsClient(iOSVariant);
 
-            // connect and wait:
-            logger.debug("establishing the connection for {}", iOSVariant.getVariantID());
-            connectToDestinations(iOSVariant, apnsClient);
+            if (apnsClient != null) {
 
-            // APNS client has auto-reconnect, but let's log when that happens
-            apnsClient.getReconnectionFuture().addListener(future -> logger.trace("Reconnecting to APNs"));
-            return apnsClient;
+                // connect and wait, ONLY when we have a valid client
+                logger.debug("establishing the connection for {}", iOSVariant.getVariantID());
+                connectToDestinations(iOSVariant, apnsClient);
+
+                // APNS client has auto-reconnect, but let's log when that happens
+                apnsClient.getReconnectionFuture().addListener(future -> logger.trace("Reconnecting to APNs"));
+                return apnsClient;
+            }
+            return null;
         });
     }
 
@@ -208,35 +212,42 @@ public class PushyApnsSender implements PushNotificationSender {
         // this check should not be needed, but you never know:
         if (iOSVariant.getCertificate() != null && iOSVariant.getPassphrase() != null) {
 
-            // add the certificate:
-            try {
-                final ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate());
+            // only process valid certs!
+            if (ApnsUtil.checkValidity(iOSVariant.getCertificate(), iOSVariant.getPassphrase().toCharArray())) {
 
-                final ApnsClientBuilder builder = new ApnsClientBuilder();
-                builder.setClientCredentials(stream, iOSVariant.getPassphrase());
+                // add the certificate:
+                try {
+                    final ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate());
 
-                if (ProxyConfiguration.hasHttpProxyConfig()) {
-                    if (ProxyConfiguration.hasBasicAuth()) {
-                        String user =  ProxyConfiguration.getProxyUser();
-                        String pass = ProxyConfiguration.getProxyPass();
-                        builder.setProxyHandlerFactory(new HttpProxyHandlerFactory(ProxyConfiguration.proxyAddress(), user, pass));
-                    } else {
-                        builder.setProxyHandlerFactory(new HttpProxyHandlerFactory(ProxyConfiguration.proxyAddress()));
+                    final ApnsClientBuilder builder = new ApnsClientBuilder();
+                    builder.setClientCredentials(stream, iOSVariant.getPassphrase());
+
+                    if (ProxyConfiguration.hasHttpProxyConfig()) {
+                        if (ProxyConfiguration.hasBasicAuth()) {
+                            String user = ProxyConfiguration.getProxyUser();
+                            String pass = ProxyConfiguration.getProxyPass();
+                            builder.setProxyHandlerFactory(new HttpProxyHandlerFactory(ProxyConfiguration.proxyAddress(), user, pass));
+                        } else {
+                            builder.setProxyHandlerFactory(new HttpProxyHandlerFactory(ProxyConfiguration.proxyAddress()));
+                        }
+
+                    } else if (ProxyConfiguration.hasSocksProxyConfig()) {
+                        builder.setProxyHandlerFactory(new Socks5ProxyHandlerFactory(ProxyConfiguration.socks()));
                     }
 
-                } else if (ProxyConfiguration.hasSocksProxyConfig()) {
-                    builder.setProxyHandlerFactory(new Socks5ProxyHandlerFactory(ProxyConfiguration.socks()));
+                    final ApnsClient apnsClient = builder.build();
+
+                    // release the stream
+                    stream.close();
+
+                    return apnsClient;
+                } catch (Exception e) {
+                    logger.error("Error reading certificate", e);
+                    // will be thrown below
                 }
-
-                final ApnsClient apnsClient = builder.build();
-
-                // release the stream
-                stream.close();
-
-                return apnsClient;
-            } catch (Exception e) {
-                logger.error("Error reading certificate", e);
-                // will be thrown below
+            } else {
+                // no client could created, since certificate is not valid
+                return null;
             }
         }
         // indicating an incomplete service
