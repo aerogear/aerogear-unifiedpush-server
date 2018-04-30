@@ -91,9 +91,9 @@ public class SenderConfigurationProvider {
             Class<T> expectedType) {
         String systemPropertyName = getSystemPropertyName(type, property);
         if (expectedType == String.class) {
-            return (T) ConfigurationUtils.tryGetProperty(systemPropertyName, (String) defaultValue);
+            return (T) ConfigurationUtils.tryGetGlobalProperty(systemPropertyName, (String) defaultValue);
         } else if (expectedType == Integer.class) {
-            return (T) ConfigurationUtils.tryGetIntegerProperty(systemPropertyName, (Integer) defaultValue);
+            return (T) ConfigurationUtils.tryGetGlobalIntegerProperty(systemPropertyName, (Integer) defaultValue);
         } else {
             throw new IllegalStateException("Unexpected type: " + expectedType);
         }

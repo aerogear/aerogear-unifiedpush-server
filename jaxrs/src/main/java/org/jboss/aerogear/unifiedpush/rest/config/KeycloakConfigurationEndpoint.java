@@ -44,8 +44,8 @@ public class KeycloakConfigurationEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response configurationFile() throws JsonProcessingException {
 
-        final String realmName = ConfigurationUtils.tryGetProperty(REALM_NAME_PROPERTY);
-        final String keycloakServerURL = removeDefaultHttpPorts(ConfigurationUtils.tryGetProperty(REALM_URL_PROPERTY));
+        final String realmName = ConfigurationUtils.tryGetGlobalProperty(REALM_NAME_PROPERTY);
+        final String keycloakServerURL = removeDefaultHttpPorts(ConfigurationUtils.tryGetGlobalProperty(REALM_URL_PROPERTY));
 
         final Config config = new Config(realmName, keycloakServerURL);
 
