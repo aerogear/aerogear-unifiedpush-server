@@ -216,9 +216,7 @@ public class PushyApnsSender implements PushNotificationSender {
             if (ApnsUtil.checkValidity(iOSVariant.getCertificate(), iOSVariant.getPassphrase().toCharArray())) {
 
                 // add the certificate:
-                try {
-                    final ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate());
-
+                try(final ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate())) {
                     final ApnsClientBuilder builder = new ApnsClientBuilder();
                     builder.setClientCredentials(stream, iOSVariant.getPassphrase());
 
@@ -236,10 +234,6 @@ public class PushyApnsSender implements PushNotificationSender {
                     }
 
                     final ApnsClient apnsClient = builder.build();
-
-                    // release the stream
-                    stream.close();
-
                     return apnsClient;
                 } catch (Exception e) {
                     logger.error("Error reading certificate", e);

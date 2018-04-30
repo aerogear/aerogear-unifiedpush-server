@@ -21,15 +21,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.security.auth.x500.X500Principal;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
-import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,20 +80,17 @@ public final class ApnsUtil {
                 final String alias = aliases.nextElement();
                 final X509Certificate certificate = (X509Certificate) keyStore.getCertificate(alias);
 
-
                 try{
                     certificate.checkValidity();
                 } catch (CertificateExpiredException | CertificateNotYetValidException e) {
-                    LOGGER.error("Provided APNs .p12 file is not valid");
-
+                    LOGGER.error("Provided APNs .p12 file is expired or not yet valid");
                     return false;
                 }
             }
+            return true;
         } catch (Exception e) {
             LOGGER.error("Error parsing .p12 file content", e);
             return false; // garbage is also not valid
         }
-
-        return true; // yes, it's all good, man!.
     }
 }
