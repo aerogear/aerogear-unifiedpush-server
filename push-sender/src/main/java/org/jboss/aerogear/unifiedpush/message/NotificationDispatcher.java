@@ -62,15 +62,14 @@ public class NotificationDispatcher {
         final Collection<String> deviceTokens = msg.getDeviceTokens();
 
         logger.info("Received UnifiedPushMessage from JMS queue, will now trigger the Push Notification delivery for the %s variant ({})", variant.getType().getTypeName(), variant.getVariantID());
-
         senders.select(new SenderTypeLiteral(variant.getType())).get()
-                            .sendPushMessage(variant, deviceTokens, unifiedPushMessage, msg.getPushMessageInformation().getId(),
-                                    new SenderServiceCallback(
-                                            variant,
-                                            deviceTokens.size(),
-                                            msg.getPushMessageInformation()
-                                    )
-                            );
+          .sendPushMessage(variant, deviceTokens, unifiedPushMessage, msg.getPushMessageInformation().getId(),
+            new SenderServiceCallback(
+              variant,
+              deviceTokens.size(),
+              msg.getPushMessageInformation()
+            )
+          );
     }
 
     private class SenderServiceCallback implements NotificationSenderCallback {
