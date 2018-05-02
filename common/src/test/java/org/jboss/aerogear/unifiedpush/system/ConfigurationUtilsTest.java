@@ -72,4 +72,10 @@ public class ConfigurationUtilsTest {
         assertThat(ConfigurationUtils.tryGetGlobalProperty("test.env.var"))
           .isEqualTo("Ok");
     }
+
+    @Test
+    public void testEnvVarUppercaseLookup() {
+        assertThat(ConfigurationUtils.tryGetGlobalProperty("TEST_ENV_VAR"))
+          .isEqualTo("Ok");
+    }
 }
