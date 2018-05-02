@@ -85,12 +85,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Keycloak dependencies -->
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk16</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-core</artifactId>
