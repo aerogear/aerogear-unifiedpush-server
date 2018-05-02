@@ -22,15 +22,25 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.x500.X500Principal;
 import java.io.ByteArrayInputStream;
 import java.security.KeyStore;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class ApnsUtil {
 
     private static final String KEYSTORE_TYPE = "PKCS12";
-    private static final String TOPIC_PATTERN = ".*UID=([^,]+).*";
+    private static final Pattern TOPIC_PATTERN = Pattern.compile(".*UID=([^,]+).*");
+    private static final Pattern COMMON_NAME_PATTERN = Pattern.compile("CN=(.*?)\\:");
+    private static final List<String> PUSH_SUBJECTS =
+            Arrays.asList(
+                    "Apple Push Services",
+                    "Apple Production IOS Push Services",
+                    "Apple Development IOS Push Services");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApnsUtil.class);
 
@@ -52,8 +62,7 @@ public final class ApnsUtil {
                 final String subject = subjectX500Principal.getName();
                 if (subject != null ) {
 
-                    final Pattern pattern = Pattern.compile(TOPIC_PATTERN);
-                    final Matcher matcher = pattern.matcher(subject);
+                    final Matcher matcher = TOPIC_PATTERN.matcher(subject);
 
                     if (matcher.matches()) {
                         return matcher.group(1);
@@ -65,5 +74,43 @@ public final class ApnsUtil {
         }
 
         return null; // if no topic was found we try with null
+    }
+
+    public static boolean checkValidity(final byte[] keystore, final char[] password) {
+        try {
+            final KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE);
+            keyStore.load(new ByteArrayInputStream(keystore), password);
+
+            final Enumeration<String> aliases = keyStore.aliases();
+
+            while (aliases.hasMoreElements()) {
+                final String alias = aliases.nextElement();
+                final X509Certificate certificate = (X509Certificate) keyStore.getCertificate(alias);
+                final X500Principal subjectX500Principal = certificate.getSubjectX500Principal();
+                final String subject = subjectX500Principal.getName();
+
+                final Matcher matcher = COMMON_NAME_PATTERN.matcher(subject);
+                while(matcher.find())  {
+
+                    // if the CN field contains some Apple Push stuff,
+                    // we check if the cert is indeed invalid
+                    if (PUSH_SUBJECTS.contains(matcher.group(1))) {
+                        try{
+                            certificate.checkValidity();
+                            // We can break here because otherwise we coud end up checking the same certificate
+                            // multiple times
+                            break;
+                        } catch (CertificateExpiredException | CertificateNotYetValidException e) {
+                            LOGGER.error("Provided APNs .p12 file is expired or not yet valid");
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("Error parsing .p12 file content", e);
+            return false; // garbage is also not valid
+        }
     }
 }
