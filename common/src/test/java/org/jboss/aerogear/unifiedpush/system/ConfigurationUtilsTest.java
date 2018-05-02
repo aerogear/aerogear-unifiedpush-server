@@ -61,4 +61,15 @@ public class ConfigurationUtilsTest {
         assertThat(ConfigurationUtils.tryGetGlobalIntegerProperty(TEST_PROPERTY_NAME, 123)).isEqualTo(123);
     }
 
+    @Test
+    public void testEnvVarFormat() {
+        assertThat(ConfigurationUtils.formatEnvironmentVariable("custom.aerogear.apns.push.host"))
+          .isEqualTo("CUSTOM_AEROGEAR_APNS_PUSH_HOST");
+    }
+
+    @Test
+    public void testEnvVarLookup() {
+        assertThat(ConfigurationUtils.tryGetGlobalProperty("test.env.var"))
+          .isEqualTo("Ok");
+    }
 }

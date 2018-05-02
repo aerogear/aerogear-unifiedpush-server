@@ -66,7 +66,7 @@ public final class ConfigurationUtils {
      * @param key String System Property Key
      * @return String Key as environment variable
      */
-    private static String formatEnvironmentVariable(String key) {
+    public static String formatEnvironmentVariable(String key) {
         return key.toUpperCase().replaceAll("\\.", "_");
     }
 
