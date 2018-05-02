@@ -38,7 +38,7 @@ public class ConfigurableFCMSender extends Sender {
 	protected HttpURLConnection getConnection(String url) throws IOException {
 		
 		// let's see if there is a different URL we should post to (e.g. load/stress testing)
-		final String fcmURL = ConfigurationUtils.tryGetProperty(CUSTOM_AEROGEAR_FCM_PUSH_HOST, FCM_ENDPOINT_HOST);
+		final String fcmURL = ConfigurationUtils.tryGetGlobalProperty(CUSTOM_AEROGEAR_FCM_PUSH_HOST, FCM_ENDPOINT_HOST);
 		
 		return (HttpURLConnection) new URL(fcmURL).openConnection();
 	}

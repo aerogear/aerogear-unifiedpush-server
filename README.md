@@ -54,6 +54,17 @@ mvn clean install
 
 and start the latest build, locally, like `docker run -p 18081:8080 -it aerogear/ups:plain`
 
+## Configuration
+
+The Unified Push Server can be configured with either System Properties (passed to the Java commandline) or Environment Variables. The two options have different formats and the following list describes them using `System Property Name`/`Env Var Name`: `Purpose`.
+
+* _custom.aerogear.apns.push.host/CUSTOM_AEROGEAR_APNS_PUSH_HOST_: Custom host for sending Apple push notifications. Can be used for testing
+* _custom.aerogear.apns.push.port/CUSTOM_AEROGEAR_APNS_PUSH_PORT_: Custom port for the Apple Push Network host
+* _custom.aerogear.fcm.push.host/CUSTOM_AEROGEAR_FCM_PUSH_HOST_: Custom host for sending Google Firebase push notifications. Can be used for testing
+* _ups.realm.name/UPS_REALM_NAME_: Override Keycloak Realm
+* _ups.auth.server.url/UPS_AUTH_SERVER_URL_: Override Keycloak authentication redirect
+* _aerogear.metrics.storage.days/AEROGEAR_METRICS_STORAGE_DAYS_: Override the number of days the metrics are stored (default is 30 days)
+
 ## Releasing the UnifiedPush Server
 
 The content of the [Release Process](https://github.com/aerogear/collateral/wiki/Release-Process-(Java)) is valid for this project as well. However, to build the full `distribution` bundle, you need to fire off the release like:

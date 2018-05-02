@@ -37,28 +37,45 @@ public class ConfigurationUtilsTest {
     @Test
     public void testExistingTryGetProperty(){
         System.setProperty(TEST_PROPERTY_NAME, "MyNiceValue");
-        assertThat(ConfigurationUtils.tryGetProperty(TEST_PROPERTY_NAME)).isEqualTo("MyNiceValue");
+        assertThat(ConfigurationUtils.tryGetGlobalProperty(TEST_PROPERTY_NAME)).isEqualTo("MyNiceValue");
     }
 
     @Test
     public void testNonExistingTryGetProperty(){
-        assertThat(ConfigurationUtils.tryGetProperty(TEST_PROPERTY_NAME)).isNull();
+        assertThat(ConfigurationUtils.tryGetGlobalProperty(TEST_PROPERTY_NAME)).isNull();
     }
 
     @Test
     public void testExistingTryGetIntegerProperty() {
         System.setProperty(TEST_PROPERTY_NAME, "123456");
-        assertThat(ConfigurationUtils.tryGetIntegerProperty(TEST_PROPERTY_NAME)).isEqualTo(123456);
+        assertThat(ConfigurationUtils.tryGetGlobalIntegerProperty(TEST_PROPERTY_NAME)).isEqualTo(123456);
     }
 
     @Test
     public void testNonExistingTryGetIntegerProperty() {
-        assertThat(ConfigurationUtils.tryGetIntegerProperty(TEST_PROPERTY_NAME)).isNull();
+        assertThat(ConfigurationUtils.tryGetGlobalIntegerProperty(TEST_PROPERTY_NAME)).isNull();
     }
 
     @Test
     public void testNonExistingTryGetIntegerPropertyWithDefaultValue() {
-        assertThat(ConfigurationUtils.tryGetIntegerProperty(TEST_PROPERTY_NAME, 123)).isEqualTo(123);
+        assertThat(ConfigurationUtils.tryGetGlobalIntegerProperty(TEST_PROPERTY_NAME, 123)).isEqualTo(123);
     }
 
+    @Test
+    public void testEnvVarFormat() {
+        assertThat(ConfigurationUtils.formatEnvironmentVariable("custom.aerogear.apns.push.host"))
+          .isEqualTo("CUSTOM_AEROGEAR_APNS_PUSH_HOST");
+    }
+
+    @Test
+    public void testEnvVarLookup() {
+        assertThat(ConfigurationUtils.tryGetGlobalProperty("test.env.var"))
+          .isEqualTo("Ok");
+    }
+
+    @Test
+    public void testEnvVarUppercaseLookup() {
+        assertThat(ConfigurationUtils.tryGetGlobalProperty("TEST_ENV_VAR"))
+          .isEqualTo("Ok");
+    }
 }

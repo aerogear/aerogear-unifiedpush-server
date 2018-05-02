@@ -34,16 +34,16 @@ import java.util.concurrent.Future;
 
 import static org.jboss.aerogear.unifiedpush.message.sender.apns.PushyApnsSender.CUSTOM_AEROGEAR_APNS_PUSH_HOST;
 import static org.jboss.aerogear.unifiedpush.message.sender.apns.PushyApnsSender.CUSTOM_AEROGEAR_APNS_PUSH_PORT;
-import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetIntegerProperty;
-import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetProperty;
+import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetGlobalIntegerProperty;
+import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetGlobalProperty;
 
 /**
  * Checks the health of the push networks.
  */
 @Stateless
 public class HealthNetworkServiceImpl implements HealthNetworkService {
-    private static final String customAerogearApnsPushHost = tryGetProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
-    private static final Integer customAerogearApnsPushPort = tryGetIntegerProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
+    private static final String customAerogearApnsPushHost = tryGetGlobalProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
+    private static final Integer customAerogearApnsPushPort = tryGetGlobalIntegerProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
 
     private static final String FCM_SEND_ENDPOINT = ConfigurableFCMSender.FCM_ENDPOINT_HOST.substring("https://".length(), ConfigurableFCMSender.FCM_ENDPOINT_HOST.indexOf('/', "https://".length()));
     public static final String WNS_SEND_ENDPOINT = "db3.notify.windows.com";
