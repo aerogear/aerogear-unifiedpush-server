@@ -185,7 +185,8 @@ public class PushyApnsSender implements PushNotificationSender {
                 .setActionButtonLabel(apns.getAction())
                 .setUrlArguments(apns.getUrlArgs())
                 .setCategoryName(apns.getActionCategory())
-                .setContentAvailable(apns.isContentAvailable());
+                .setContentAvailable(apns.isContentAvailable())
+                .setMutableContent(apns.hasMutableContent());
 
         // custom fields
         final Map<String, Object> userData = message.getUserData();
