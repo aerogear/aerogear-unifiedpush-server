@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
 import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
@@ -26,13 +27,7 @@ import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -225,5 +220,52 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
+    /**
+     * Get the iOS Variant for the given ID
+     *
+     * @param variantId id of {@link Variant}
+     * @return          requested {@link Variant}
+     *
+     * @statuscode 404 The requested iOS Variant resource does not exist
+     */
+    @GET
+    @Path("/{variantId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findVariantById(@PathParam("variantId") String variantId) {
+        return doFindVariantById(variantId, iOSVariant.class);
+    }
+
+    /**
+     * Delete the iOS Variant
+     *
+     * @param variantId id of {@link Variant}
+     *
+     * @return no content or 404
+     *
+     * @statuscode 204 The Variant successfully deleted
+     * @statuscode 404 The requested iOS Variant resource does not exist
+     */
+    @DELETE
+    @Path("/{variantId}")
+    public Response deleteVariant(@PathParam("variantId") String variantId) {
+        return this.doDeleteVariant(variantId, iOSVariant.class);
+    }
+
+    /**
+     * Reset secret of the given iOS Variant
+     *
+     * @param variantId id of {@link Variant}
+     * @return          {@link Variant} with new secret
+     *
+     * @statuscode 200 The secret of iOS Variant reset successfully
+     * @statuscode 404 The requested iOS Variant resource does not exist
+     */
+    @PUT
+    @Path("/{variantId}/reset")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response resetSecret(@PathParam("variantId") String variantId) {
+        return doResetSecret(variantId, iOSVariant.class);
+    }
 
 }

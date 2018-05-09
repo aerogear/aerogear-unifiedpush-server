@@ -23,14 +23,6 @@ import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Objects;
 import java.util.Set;
@@ -56,28 +48,29 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
      * @return          {@link Variant} with new secret
      *
      * @statuscode 200 The secret of Variant reset successfully
-     * @statuscode 404 The requested Variant resource does not exist
+     * @statuscode 404 The requested Variant resource does not exist or it is not of the given type
      */
-    @PUT
-    @Path("/{variantId}/reset")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response resetSecret(@PathParam("variantId") String variantId) {
+    protected <T extends Variant> Response doResetSecret(String variantId, Class<T> type) {
 
         Variant variant = variantService.findByVariantID(variantId);
 
-        if (variant != null) {
-            logger.trace("Resetting secret for: {}", variant.getName());
-
-            // generate the new 'secret' and apply it:
-            String newSecret = UUID.randomUUID().toString();
-            variant.setSecret(newSecret);
-            variantService.updateVariant(variant);
-
-            return Response.ok(variant).build();
+        if (variant == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
-        return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+        if (!type.isInstance(variant)) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Requested Variant is of another type/platform").build();
+        }
+
+        logger.trace("Resetting secret for: {}", variant.getName());
+
+        // generate the new 'secret' and apply it:
+        String newSecret = UUID.randomUUID().toString();
+        variant.setSecret(newSecret);
+        variantService.updateVariant(variant);
+
+        return Response.ok(variant).build();
+
     }
 
     /**
@@ -86,20 +79,21 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
      * @param variantId id of {@link Variant}
      * @return          requested {@link Variant}
      *
-     * @statuscode 404 The requested Variant resource does not exist
+     * @statuscode 404 The requested Variant resource does not exist or it is not of the given type
      */
-    @GET
-    @Path("/{variantId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response findVariantById(@PathParam("variantId") String variantId) {
+    protected <T extends Variant> Response doFindVariantById(String variantId, Class<T> type) {
 
         Variant variant = variantService.findByVariantID(variantId);
 
-        if (variant != null) {
-            return Response.ok(variant).build();
+        if (variant == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
-        return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+        if (!type.isInstance(variant)) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Requested Variant is of another type/platform").build();
+        }
+
+        return Response.ok(variant).build();
     }
 
     /**
@@ -110,22 +104,24 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
      * @return no content or 404
      *
      * @statuscode 204 The Variant successfully deleted
-     * @statuscode 404 The requested Variant resource does not exist
+     * @statuscode 404 The requested Variant resource does not exist or it is not of the given type
      */
-    @DELETE
-    @Path("/{variantId}")
-    public Response deleteVariant(@PathParam("variantId") String variantId) {
+    protected <T extends Variant> Response doDeleteVariant(String variantId, Class<T> type) {
 
         Variant variant = variantService.findByVariantID(variantId);
 
-        if (variant != null) {
-            logger.trace("Deleting: {}", variant.getClass().getSimpleName());
-
-            variantService.removeVariant(variant);
-            return Response.noContent().build();
+        if (variant == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
-        return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+        if (!type.isInstance(variant)) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Requested Variant is of another type/platform").build();
+        }
+
+        logger.trace("Deleting: {}", variant.getClass().getSimpleName());
+
+        variantService.removeVariant(variant);
+        return Response.noContent().build();
     }
 
     protected <T extends Variant> Set<T> getVariantsByType(PushApplication application, Class<T> type) {

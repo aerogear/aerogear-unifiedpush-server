@@ -16,18 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
-import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
+import org.jboss.aerogear.unifiedpush.api.*;
 
 import javax.validation.ConstraintViolationException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -149,6 +141,54 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
         }
 
         return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+    }
+
+    /**
+     * Get the Windows Variant for the given ID
+     *
+     * @param variantId id of {@link Variant}
+     * @return          requested {@link Variant}
+     *
+     * @statuscode 404 The requested Windows Variant resource does not exist
+     */
+    @GET
+    @Path("/{variantId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findVariantById(@PathParam("variantId") String variantId) {
+        return doFindVariantById(variantId, WindowsVariant.class);
+    }
+
+    /**
+     * Delete the Windows Variant
+     *
+     * @param variantId id of {@link Variant}
+     *
+     * @return no content or 404
+     *
+     * @statuscode 204 The Variant successfully deleted
+     * @statuscode 404 The requested Windows Variant resource does not exist
+     */
+    @DELETE
+    @Path("/{variantId}")
+    public Response deleteVariant(@PathParam("variantId") String variantId) {
+        return this.doDeleteVariant(variantId, WindowsVariant.class);
+    }
+
+    /**
+     * Reset secret of the given Windows Variant
+     *
+     * @param variantId id of {@link Variant}
+     * @return          {@link Variant} with new secret
+     *
+     * @statuscode 200 The secret of Windows Variant reset successfully
+     * @statuscode 404 The requested Windows Variant resource does not exist
+     */
+    @PUT
+    @Path("/{variantId}/reset")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response resetSecret(@PathParam("variantId") String variantId) {
+        return doResetSecret(variantId, WindowsVariant.class);
     }
 
 }
