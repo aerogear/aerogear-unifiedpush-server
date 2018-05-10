@@ -16,7 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
-import javax.inject.Inject;
+import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import org.jboss.resteasy.annotations.GZIP;
+
 import javax.validation.Validator;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -25,15 +28,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
-import org.jboss.resteasy.annotations.GZIP;
-
 @Path("/export")
 public class ExportEndpoint extends AbstractBaseEndpoint {
 
-    @Inject
-    public ExportEndpoint(Validator validator, SearchManager searchManager) {
+    // required for RESTEasy
+    public ExportEndpoint() {
+    }
+
+    // required for tests
+    protected ExportEndpoint(Validator validator, SearchManager searchManager) {
         super(validator, searchManager);
     }
 

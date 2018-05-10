@@ -43,8 +43,12 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     @Inject
     protected Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
 
-    @Inject
-    public iOSVariantEndpoint(Validator validator, SearchManager searchManager) {
+    // required for RESTEasy
+    public iOSVariantEndpoint() {
+    }
+
+    // required for tests
+    protected iOSVariantEndpoint(Validator validator, SearchManager searchManager) {
         super(validator, searchManager);
     }
 

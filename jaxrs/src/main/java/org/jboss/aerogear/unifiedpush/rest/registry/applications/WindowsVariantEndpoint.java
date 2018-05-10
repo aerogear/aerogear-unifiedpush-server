@@ -16,10 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import org.jboss.aerogear.unifiedpush.api.*;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
+import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
-import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.ws.rs.*;
@@ -31,8 +33,12 @@ import javax.ws.rs.core.UriInfo;
 @Path("/applications/{pushAppID}/windows{type}")
 public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
 
-    @Inject
-    public WindowsVariantEndpoint(Validator validator, SearchManager searchManager) {
+    // required for RESTEasy
+    public WindowsVariantEndpoint() {
+    }
+
+    // required for tests
+    protected WindowsVariantEndpoint(Validator validator, SearchManager searchManager) {
         super(validator, searchManager);
     }
 

@@ -21,7 +21,6 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
-import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.ws.rs.*;
@@ -35,8 +34,12 @@ import javax.ws.rs.core.UriInfo;
 @Path("/applications/{pushAppID}/android")
 public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
 
-    @Inject
-    public AndroidVariantEndpoint(Validator validator, SearchManager searchManager) {
+    // required for RESTEasy
+    public AndroidVariantEndpoint() {
+    }
+
+    // required for tests
+    protected AndroidVariantEndpoint(Validator validator, SearchManager searchManager) {
         super(validator, searchManager);
     }
 

@@ -43,8 +43,12 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     @Inject
     protected GenericVariantService variantService;
 
-    @Inject
-    public AbstractVariantEndpoint(Validator validator, SearchManager searchManager) {
+    // required for RESTEasy
+    public AbstractVariantEndpoint() {
+    }
+
+    // required for tests
+    protected AbstractVariantEndpoint(Validator validator, SearchManager searchManager) {
         super(validator, searchManager);
     }
 

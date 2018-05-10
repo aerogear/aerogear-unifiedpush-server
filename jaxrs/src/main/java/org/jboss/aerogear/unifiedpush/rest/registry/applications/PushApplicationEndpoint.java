@@ -16,29 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import java.net.URI;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.inject.Inject;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
-
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
@@ -48,6 +25,19 @@ import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+
+import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
+import java.util.Map;
+import java.util.UUID;
 
 @Path("/applications")
 public class PushApplicationEndpoint extends AbstractBaseEndpoint {
@@ -63,8 +53,12 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Inject
     private InstallationDao installationDao;
 
-    @Inject
-    public PushApplicationEndpoint(Validator validator, SearchManager searchManager) {
+    // required for RESTEasy
+    public PushApplicationEndpoint() {
+    }
+
+    // required for tests
+    protected PushApplicationEndpoint(Validator validator, SearchManager searchManager) {
         super(validator, searchManager);
     }
 
