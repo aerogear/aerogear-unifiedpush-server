@@ -21,8 +21,10 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
 import javax.inject.Inject;
+import javax.validation.Validator;
 import javax.ws.rs.core.Response;
 import java.util.Objects;
 import java.util.Set;
@@ -40,6 +42,11 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     protected GenericVariantService variantService;
+
+    @Inject
+    public AbstractVariantEndpoint(Validator validator, SearchManager searchManager) {
+        super(validator, searchManager);
+    }
 
     /**
      * Secret Reset

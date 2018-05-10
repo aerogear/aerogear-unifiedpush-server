@@ -17,8 +17,11 @@
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.api.*;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
+import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -27,6 +30,11 @@ import javax.ws.rs.core.UriInfo;
 
 @Path("/applications/{pushAppID}/windows{type}")
 public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
+
+    @Inject
+    public WindowsVariantEndpoint(Validator validator, SearchManager searchManager) {
+        super(validator, searchManager);
+    }
 
     /**
      * Add Windows Variant
@@ -105,7 +113,7 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
     @Path("/{windowsID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateWindowsVariation(
+    public Response updateWindowsVariant(
             @PathParam("windowsID") String windowsID,
             WindowsVariant updatedWindowsVariant) {
 

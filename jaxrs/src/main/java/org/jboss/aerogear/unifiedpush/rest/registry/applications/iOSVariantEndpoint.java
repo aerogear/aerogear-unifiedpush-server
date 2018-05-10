@@ -22,11 +22,13 @@ import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
 import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -39,7 +41,12 @@ import javax.ws.rs.core.UriInfo;
 public class iOSVariantEndpoint extends AbstractVariantEndpoint {
 
     @Inject
-    private Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
+    protected Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
+
+    @Inject
+    public iOSVariantEndpoint(Validator validator, SearchManager searchManager) {
+        super(validator, searchManager);
+    }
 
     /**
      * Add iOS Variant

@@ -19,8 +19,11 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
+import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -31,6 +34,11 @@ import javax.ws.rs.core.UriInfo;
 
 @Path("/applications/{pushAppID}/android")
 public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
+
+    @Inject
+    public AndroidVariantEndpoint(Validator validator, SearchManager searchManager) {
+        super(validator, searchManager);
+    }
 
     /**
      * Add Android Variant
@@ -109,7 +117,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     @Path("/{androidID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateAndroidVariation(
+    public Response updateAndroidVariant(
             @PathParam("pushAppID") String id,
             @PathParam("androidID") String androidID,
             AndroidVariant updatedAndroidApplication) {

@@ -42,14 +42,17 @@ public abstract class AbstractBaseEndpoint {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Inject
     private Validator validator;
-
-    @Inject
     private SearchManager searchManager;
 
     @Context
     private HttpServletRequest httpServletRequest;
+
+    @Inject
+    public AbstractBaseEndpoint(Validator validator, SearchManager searchManager) {
+        this.validator = validator;
+        this.searchManager = searchManager;
+    }
 
     /**
      * Generic validator used to identify constraint violations of the given model class. 

@@ -27,6 +27,7 @@ import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.auth.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Validator;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -72,6 +74,11 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
     @Inject
     private PushMessageMetricsService metricsService;
+
+    @Inject
+    public InstallationRegistrationEndpoint(Validator validator, SearchManager searchManager) {
+        super(validator, searchManager);
+    }
 
     /**
      * Cross Origin for Installations
