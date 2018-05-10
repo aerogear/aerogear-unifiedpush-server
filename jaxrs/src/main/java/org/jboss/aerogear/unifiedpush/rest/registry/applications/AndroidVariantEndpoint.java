@@ -148,7 +148,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
      *
      * @param variantId id of {@link Variant}
      * @return          requested {@link Variant}
-     *
+     * @statuscode 400 The requested Variant resource exists but it is not for Android
      * @statuscode 404 The requested Android Variant resource does not exist
      */
     @GET
@@ -166,6 +166,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
      * @return no content or 404
      *
      * @statuscode 204 The Variant successfully deleted
+     * @statuscode 400 The requested Variant resource exists but it is not for Android
      * @statuscode 404 The requested Android Variant resource does not exist
      */
     @DELETE
@@ -181,6 +182,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
      * @return          {@link Variant} with new secret
      *
      * @statuscode 200 The secret of Android Variant reset successfully
+     * @statuscode 400 The requested Variant resource exists but it is not for Android
      * @statuscode 404 The requested Android Variant resource does not exist
      */
     @PUT

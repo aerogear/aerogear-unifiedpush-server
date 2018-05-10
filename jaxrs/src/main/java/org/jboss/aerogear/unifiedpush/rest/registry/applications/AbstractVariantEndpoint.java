@@ -48,7 +48,8 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
      * @return          {@link Variant} with new secret
      *
      * @statuscode 200 The secret of Variant reset successfully
-     * @statuscode 404 The requested Variant resource does not exist or it is not of the given type
+     * @statuscode 400 The requested Variant resource exists but it is not of the given type
+     * @statuscode 404 The requested Variant resource does not exist
      */
     protected <T extends Variant> Response doResetSecret(String variantId, Class<T> type) {
 
@@ -59,7 +60,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         }
 
         if (!type.isInstance(variant)) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Requested Variant is of another type/platform").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Requested Variant is of another type/platform").build();
         }
 
         logger.trace("Resetting secret for: {}", variant.getName());
@@ -79,7 +80,8 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
      * @param variantId id of {@link Variant}
      * @return          requested {@link Variant}
      *
-     * @statuscode 404 The requested Variant resource does not exist or it is not of the given type
+     * @statuscode 400 The requested Variant resource exists but it is not of the given type
+     * @statuscode 404 The requested Variant resource does not exist
      */
     protected <T extends Variant> Response doFindVariantById(String variantId, Class<T> type) {
 
@@ -90,7 +92,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         }
 
         if (!type.isInstance(variant)) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Requested Variant is of another type/platform").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Requested Variant is of another type/platform").build();
         }
 
         return Response.ok(variant).build();
@@ -104,7 +106,8 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
      * @return no content or 404
      *
      * @statuscode 204 The Variant successfully deleted
-     * @statuscode 404 The requested Variant resource does not exist or it is not of the given type
+     * @statuscode 400 The requested Variant resource exists but it is not of the given type
+     * @statuscode 404 The requested Variant resource does not exist
      */
     protected <T extends Variant> Response doDeleteVariant(String variantId, Class<T> type) {
 
@@ -115,7 +118,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         }
 
         if (!type.isInstance(variant)) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Requested Variant is of another type/platform").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Requested Variant is of another type/platform").build();
         }
 
         logger.trace("Deleting: {}", variant.getClass().getSimpleName());
