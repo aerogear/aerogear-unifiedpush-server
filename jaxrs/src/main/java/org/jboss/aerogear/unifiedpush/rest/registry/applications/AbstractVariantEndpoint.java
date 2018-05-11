@@ -25,8 +25,9 @@ import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
 import javax.inject.Inject;
 import javax.validation.Validator;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -35,7 +36,10 @@ import java.util.stream.Collectors;
  * Abstract base class for all the concrete variant endpoints. Shares common
  * functionality.
  */
-public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
+@SuppressWarnings("CdiManagedBeanInconsistencyInspection")
+public abstract class AbstractVariantEndpoint<T extends Variant> extends AbstractBaseEndpoint {
+
+    private final Class<T> type;
 
     @Inject
     protected PushApplicationService pushAppService;
@@ -44,12 +48,14 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
     protected GenericVariantService variantService;
 
     // required for RESTEasy
-    public AbstractVariantEndpoint() {
+    AbstractVariantEndpoint(Class<T> type) {
+        this.type = type;
     }
 
     // required for tests
-    protected AbstractVariantEndpoint(Validator validator, SearchManager searchManager) {
+    AbstractVariantEndpoint(Validator validator, SearchManager searchManager, Class<T> type ) {
         super(validator, searchManager);
+        this.type = type;
     }
 
     /**
@@ -62,7 +68,11 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
      * @statuscode 400 The requested Variant resource exists but it is not of the given type
      * @statuscode 404 The requested Variant resource does not exist
      */
-    protected <T extends Variant> Response doResetSecret(String variantId, Class<T> type) {
+    @PUT
+    @Path("/{variantId}/reset")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response resetSecret(@PathParam("variantId") String variantId) {
 
         Variant variant = variantService.findByVariantID(variantId);
 
@@ -94,7 +104,10 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
      * @statuscode 400 The requested Variant resource exists but it is not of the given type
      * @statuscode 404 The requested Variant resource does not exist
      */
-    protected <T extends Variant> Response doFindVariantById(String variantId, Class<T> type) {
+    @GET
+    @Path("/{variantId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findVariantById(@PathParam("variantId") String variantId) {
 
         Variant variant = variantService.findByVariantID(variantId);
 
@@ -120,7 +133,9 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
      * @statuscode 400 The requested Variant resource exists but it is not of the given type
      * @statuscode 404 The requested Variant resource does not exist
      */
-    protected <T extends Variant> Response doDeleteVariant(String variantId, Class<T> type) {
+    @DELETE
+    @Path("/{variantId}")
+    public Response deleteVariant(@PathParam("variantId") String variantId) {
 
         Variant variant = variantService.findByVariantID(variantId);
 
@@ -138,10 +153,9 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
         return Response.noContent().build();
     }
 
-    protected <T extends Variant> Set<T> getVariantsByType(PushApplication application, Class<T> type) {
-        Objects.requireNonNull(type, "type");
+    protected Set<T> getVariantsByType(PushApplication application) {
         return application.getVariants().stream()
-                .filter(variant -> variant.getClass().equals(type))
+                .filter(variant -> type.isAssignableFrom(variant.getClass()))
                 .map(variant -> (T) variant)
                 .collect(Collectors.toSet());
     }

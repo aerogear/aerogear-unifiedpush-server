@@ -18,7 +18,6 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
 import javax.validation.ConstraintViolationException;
@@ -32,15 +31,16 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 @Path("/applications/{pushAppID}/android")
-public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
+public class AndroidVariantEndpoint extends AbstractVariantEndpoint<AndroidVariant> {
 
     // required for RESTEasy
     public AndroidVariantEndpoint() {
+        super(AndroidVariant.class);
     }
 
     // required for tests
-    protected AndroidVariantEndpoint(Validator validator, SearchManager searchManager) {
-        super(validator, searchManager);
+    AndroidVariantEndpoint(Validator validator, SearchManager searchManager) {
+        super(validator, searchManager, AndroidVariant.class);
     }
 
     /**
@@ -100,7 +100,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
-        return Response.ok(getVariantsByType(application, AndroidVariant.class)).build();
+        return Response.ok(getVariantsByType(application)).build();
     }
 
     /**
@@ -154,53 +154,4 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint {
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
 
-    /**
-     * Get the Android Variant for the given ID
-     *
-     * @param variantId id of {@link Variant}
-     * @return          requested {@link Variant}
-     * @statuscode 400 The requested Variant resource exists but it is not for Android
-     * @statuscode 404 The requested Android Variant resource does not exist
-     */
-    @GET
-    @Path("/{variantId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response findVariantById(@PathParam("variantId") String variantId) {
-        return doFindVariantById(variantId, AndroidVariant.class);
-    }
-
-    /**
-     * Delete the Android Variant
-     *
-     * @param variantId id of {@link Variant}
-     *
-     * @return no content or 404
-     *
-     * @statuscode 204 The Variant successfully deleted
-     * @statuscode 400 The requested Variant resource exists but it is not for Android
-     * @statuscode 404 The requested Android Variant resource does not exist
-     */
-    @DELETE
-    @Path("/{variantId}")
-    public Response deleteVariant(@PathParam("variantId") String variantId) {
-        return this.doDeleteVariant(variantId, AndroidVariant.class);
-    }
-
-    /**
-     * Reset secret of the given Android Variant
-     *
-     * @param variantId id of {@link Variant}
-     * @return          {@link Variant} with new secret
-     *
-     * @statuscode 200 The secret of Android Variant reset successfully
-     * @statuscode 400 The requested Variant resource exists but it is not for Android
-     * @statuscode 404 The requested Android Variant resource does not exist
-     */
-    @PUT
-    @Path("/{variantId}/reset")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response resetSecret(@PathParam("variantId") String variantId) {
-        return doResetSecret(variantId, AndroidVariant.class);
-    }
 }
