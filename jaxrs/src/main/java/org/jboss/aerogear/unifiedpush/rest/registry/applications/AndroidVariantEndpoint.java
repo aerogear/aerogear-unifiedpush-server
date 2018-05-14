@@ -100,7 +100,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint<AndroidVaria
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
-        return Response.ok(getVariantsByType(application)).build();
+        return Response.ok(getVariants(application)).build();
     }
 
     /**

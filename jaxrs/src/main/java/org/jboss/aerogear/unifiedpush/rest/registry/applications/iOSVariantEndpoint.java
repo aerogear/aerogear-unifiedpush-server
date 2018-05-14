@@ -129,7 +129,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAlliOSVariantsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
-        return Response.ok(getVariantsByType(application)).build();
+        return Response.ok(getVariants(application)).build();
     }
 
     /**

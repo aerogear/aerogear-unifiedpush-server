@@ -100,7 +100,7 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint<WindowsVaria
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllWindowsVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
-        return Response.ok(getVariantsByType(application)).build();
+        return Response.ok(getVariants(application)).build();
     }
 
     /**

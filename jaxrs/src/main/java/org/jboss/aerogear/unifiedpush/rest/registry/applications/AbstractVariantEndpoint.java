@@ -153,7 +153,7 @@ public abstract class AbstractVariantEndpoint<T extends Variant> extends Abstrac
         return Response.noContent().build();
     }
 
-    protected Set<T> getVariantsByType(PushApplication application) {
+    protected Set<T> getVariants(PushApplication application) {
         return application.getVariants().stream()
                 .filter(variant -> type.isAssignableFrom(variant.getClass()))
                 .map(variant -> (T) variant)
