@@ -51,6 +51,16 @@ public abstract class AbstractBaseEndpoint {
     @Context
     private HttpServletRequest httpServletRequest;
 
+    // required for RESTEasy
+    public AbstractBaseEndpoint() {
+    }
+
+    // required for tests
+    protected AbstractBaseEndpoint(Validator validator, SearchManager searchManager) {
+        this.validator = validator;
+        this.searchManager = searchManager;
+    }
+
     /**
      * Generic validator used to identify constraint violations of the given model class. 
      * 

@@ -21,18 +21,14 @@ import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
 import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.validation.Validator;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -41,10 +37,20 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 @Path("/applications/{pushAppID}/ios")
-public class iOSVariantEndpoint extends AbstractVariantEndpoint {
+public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
 
     @Inject
-    private Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
+    protected Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
+
+    // required for RESTEasy
+    public iOSVariantEndpoint() {
+        super(iOSVariant.class);
+    }
+
+    // required for tests
+    iOSVariantEndpoint(Validator validator, SearchManager searchManager) {
+        super(validator, searchManager, iOSVariant.class);
+    }
 
     /**
      * Add iOS Variant
@@ -123,7 +129,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAlliOSVariantsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
-        return Response.ok(getVariantsByType(application, iOSVariant.class)).build();
+        return Response.ok(getVariants(application)).build();
     }
 
     /**
@@ -224,6 +230,4 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint {
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
     }
-
-
 }
