@@ -47,7 +47,6 @@ public abstract class AbstractVariantEndpoint<T extends Variant> extends Abstrac
     @Inject
     protected GenericVariantService variantService;
 
-    // required for RESTEasy
     AbstractVariantEndpoint(Class<T> type) {
         this.type = type;
     }
