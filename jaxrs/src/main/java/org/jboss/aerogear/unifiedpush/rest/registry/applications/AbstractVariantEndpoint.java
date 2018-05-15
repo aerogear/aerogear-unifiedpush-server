@@ -21,18 +21,13 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.validation.Validator;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -41,13 +36,26 @@ import java.util.stream.Collectors;
  * Abstract base class for all the concrete variant endpoints. Shares common
  * functionality.
  */
-public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
+@SuppressWarnings("CdiManagedBeanInconsistencyInspection")
+public abstract class AbstractVariantEndpoint<T extends Variant> extends AbstractBaseEndpoint {
+
+    private final Class<T> type;
 
     @Inject
     protected PushApplicationService pushAppService;
 
     @Inject
     protected GenericVariantService variantService;
+
+    AbstractVariantEndpoint(Class<T> type) {
+        this.type = type;
+    }
+
+    // required for tests
+    AbstractVariantEndpoint(Validator validator, SearchManager searchManager, Class<T> type ) {
+        super(validator, searchManager);
+        this.type = type;
+    }
 
     /**
      * Secret Reset
@@ -56,6 +64,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
      * @return          {@link Variant} with new secret
      *
      * @statuscode 200 The secret of Variant reset successfully
+     * @statuscode 400 The requested Variant resource exists but it is not of the given type
      * @statuscode 404 The requested Variant resource does not exist
      */
     @PUT
@@ -66,18 +75,23 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
 
         Variant variant = variantService.findByVariantID(variantId);
 
-        if (variant != null) {
-            logger.trace("Resetting secret for: {}", variant.getName());
-
-            // generate the new 'secret' and apply it:
-            String newSecret = UUID.randomUUID().toString();
-            variant.setSecret(newSecret);
-            variantService.updateVariant(variant);
-
-            return Response.ok(variant).build();
+        if (variant == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
-        return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+        if (!type.isInstance(variant)) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Requested Variant is of another type/platform").build();
+        }
+
+        logger.trace("Resetting secret for: {}", variant.getName());
+
+        // generate the new 'secret' and apply it:
+        String newSecret = UUID.randomUUID().toString();
+        variant.setSecret(newSecret);
+        variantService.updateVariant(variant);
+
+        return Response.ok(variant).build();
+
     }
 
     /**
@@ -86,6 +100,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
      * @param variantId id of {@link Variant}
      * @return          requested {@link Variant}
      *
+     * @statuscode 400 The requested Variant resource exists but it is not of the given type
      * @statuscode 404 The requested Variant resource does not exist
      */
     @GET
@@ -95,11 +110,15 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
 
         Variant variant = variantService.findByVariantID(variantId);
 
-        if (variant != null) {
-            return Response.ok(variant).build();
+        if (variant == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
-        return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+        if (!type.isInstance(variant)) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Requested Variant is of another type/platform").build();
+        }
+
+        return Response.ok(variant).build();
     }
 
     /**
@@ -110,6 +129,7 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
      * @return no content or 404
      *
      * @statuscode 204 The Variant successfully deleted
+     * @statuscode 400 The requested Variant resource exists but it is not of the given type
      * @statuscode 404 The requested Variant resource does not exist
      */
     @DELETE
@@ -118,20 +138,23 @@ public abstract class AbstractVariantEndpoint extends AbstractBaseEndpoint {
 
         Variant variant = variantService.findByVariantID(variantId);
 
-        if (variant != null) {
-            logger.trace("Deleting: {}", variant.getClass().getSimpleName());
-
-            variantService.removeVariant(variant);
-            return Response.noContent().build();
+        if (variant == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
         }
 
-        return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+        if (!type.isInstance(variant)) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Requested Variant is of another type/platform").build();
+        }
+
+        logger.trace("Deleting: {}", variant.getClass().getSimpleName());
+
+        variantService.removeVariant(variant);
+        return Response.noContent().build();
     }
 
-    protected <T extends Variant> Set<T> getVariantsByType(PushApplication application, Class<T> type) {
-        Objects.requireNonNull(type, "type");
+    protected Set<T> getVariants(PushApplication application) {
         return application.getVariants().stream()
-                .filter(variant -> variant.getClass().equals(type))
+                .filter(variant -> type.isAssignableFrom(variant.getClass()))
                 .map(variant -> (T) variant)
                 .collect(Collectors.toSet());
     }

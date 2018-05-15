@@ -19,22 +19,28 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.WindowsVariant;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
 import javax.validation.ConstraintViolationException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.validation.Validator;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 @Path("/applications/{pushAppID}/windows{type}")
-public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
+public class WindowsVariantEndpoint extends AbstractVariantEndpoint<WindowsVariant> {
+
+    // required for RESTEasy
+    public WindowsVariantEndpoint() {
+        super(WindowsVariant.class);
+    }
+
+    // required for tests
+    WindowsVariantEndpoint(Validator validator, SearchManager searchManager) {
+        super(validator, searchManager, WindowsVariant.class);
+    }
 
     /**
      * Add Windows Variant
@@ -94,7 +100,7 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllWindowsVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
-        return Response.ok(getVariantsByType(application, WindowsVariant.class)).build();
+        return Response.ok(getVariants(application)).build();
     }
 
     /**
@@ -113,7 +119,7 @@ public class WindowsVariantEndpoint extends AbstractVariantEndpoint {
     @Path("/{windowsID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateWindowsVariation(
+    public Response updateWindowsVariant(
             @PathParam("windowsID") String windowsID,
             WindowsVariant updatedWindowsVariant) {
 

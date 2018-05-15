@@ -18,6 +18,8 @@ package org.jboss.aerogear.unifiedpush.event;
 
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 
+import java.util.Objects;
+
 /**
  * Fired when the iOS variant is updated to contain a new .p12 file,
  * therefore the update event is used to trigger a removal from the internal connection cache.
@@ -32,5 +34,18 @@ public class iOSVariantUpdateEvent {
 
     public iOSVariant getiOSVariant() {
         return iOSVariant;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof iOSVariantUpdateEvent)) return false;
+        iOSVariantUpdateEvent that = (iOSVariantUpdateEvent) o;
+        return Objects.equals(iOSVariant, that.iOSVariant);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(iOSVariant);
     }
 }
