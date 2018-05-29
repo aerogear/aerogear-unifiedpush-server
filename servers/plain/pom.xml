@@ -116,7 +116,6 @@
       <plugin>
         <groupId>io.fabric8</groupId>
         <artifactId>docker-maven-plugin</artifactId>
-        <version>0.24.0</version>
           <executions>
               <execution>
                   <id>dmp</id>
