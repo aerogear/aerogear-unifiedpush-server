@@ -23,6 +23,7 @@
       "action-category": "some value",
       "url-args": null,
       "content-available": true,
+      "mutable-content": false,
       "localized-key": null,
       "localized-arguments": null,
       "localized-title-key": null,

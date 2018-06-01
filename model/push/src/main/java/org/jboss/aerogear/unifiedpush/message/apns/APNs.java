@@ -52,6 +52,9 @@ public class APNs implements Serializable {
     @JsonProperty("content-available")
     private boolean contentAvailable;
 
+    @JsonProperty("mutable-content")
+    private boolean mutableContent;
+
     /**
      * Returns the value of the 'action-category', which is used on the client (iOS for now),
      * to invoke a certain "user action" on the device, based on the push message. Implemented for iOS8
@@ -94,6 +97,18 @@ public class APNs implements Serializable {
 
     public void setContentAvailable(boolean contentAvailable) {
         this.contentAvailable = contentAvailable;
+    }
+
+    /**
+     * Returns the value of the 'mutable-content' key from the submitted payload.
+     * This key was introduced in iOS 10 and indicates if the remote notification’s content should be modified.
+     */
+    public boolean hasMutableContent() {
+        return mutableContent;
+    }
+
+    public void setMutableContent(boolean mutableContent) {
+        this.mutableContent = mutableContent;
     }
 
     /**
