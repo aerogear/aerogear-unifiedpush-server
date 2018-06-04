@@ -29,7 +29,7 @@
     <name>UnifiedPush Server for Wildfly (Plain)</name>
 
     <properties>
-        <base>jboss/wildfly:12.0.0.Final</base>
+        <base>jboss/wildfly:13.0.0.Final</base>
         <configFile>standalone-full.xml</configFile>
         <project.artifactId>${project.artifactId}</project.artifactId>
     </properties>
