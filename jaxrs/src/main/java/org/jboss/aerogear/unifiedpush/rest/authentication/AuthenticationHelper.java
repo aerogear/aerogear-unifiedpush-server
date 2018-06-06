@@ -34,10 +34,6 @@ public class AuthenticationHelper {
 	@Inject
 	private AliasService aliasService;
 
-	public PushApplication loadApplicationWhenAuthorized(HttpServletRequest request) {
-		return loadApplicationWhenAuthorized(request, null);
-	}
-
 	/**
 	 * Returns the {@link PushApplication}. First try variant based
 	 * authentication, then try application based authentication.
@@ -55,7 +51,7 @@ public class AuthenticationHelper {
 
 		// Try device based authentication
 		if (StringUtils.isNotEmpty(deviceToken)) {
-			final Variant variant = loadVariantWhenAuthorized(deviceToken, true, request);
+			final Variant variant = loadVariantWhenAuthorized(deviceToken, request);
 
 			if (variant == null) {
 				return null;
@@ -99,7 +95,7 @@ public class AuthenticationHelper {
 		// Extract device token
 		String deviceToken = ClientAuthHelper.getDeviceToken(request);
 
-		Variant variant = loadVariantWhenAuthorized(deviceToken, false, request);
+		Variant variant = loadVariantWhenAuthorized(deviceToken, request);
 
 		if (variant != null) {
 			return Optional.ofNullable(clientInstallationService
@@ -121,8 +117,7 @@ public class AuthenticationHelper {
 	 * @param request
 	 *            {@link HttpServletRequest}
 	 */
-	private Variant loadVariantWhenAuthorized(String deviceToken, boolean forceExistingInstallation,
-			HttpServletRequest request) {
+	private Variant loadVariantWhenAuthorized(String deviceToken, HttpServletRequest request) {
 
 		if (StringUtils.isEmpty(deviceToken)) {
 			logger.warn("API request missing device-token header ({}), URI - > {}", deviceToken,
@@ -149,20 +144,6 @@ public class AuthenticationHelper {
 				// Variant is missing to anonymous/otp mode
 				logger.warn("UnAuthorized basic authentication using token-id {} API: {}", deviceToken,
 						request.getRequestURI());
-				return null;
-			}
-		}
-
-		if (forceExistingInstallation) {
-			// Variant can't be null at this point.
-			Installation installation = clientInstallationService
-					.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
-
-			// Installation should always be present and enabled.
-			if (installation == null || installation.isEnabled() == false) {
-				logger.info(
-						"API request to non-existing / disabled installation variant id: {} API: {} device-token: {}",
-						variant.getVariantID(), request.getRequestURI(), deviceToken);
 				return null;
 			}
 		}

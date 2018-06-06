@@ -84,7 +84,7 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 			installationService.addInstallation(variant, iosInstallation);
 
 			Installation inst = installationService.findById(iosInstallation.getId());
-			Assert.assertTrue(inst != null && inst.isEnabled() == false);
+			Assert.assertTrue(inst != null && inst.isEnabled() == true);
 
 			// Register alias
 			PushApplication pushApplication = applicationService.findByVariantID(DEFAULT_VARIENT_ID);

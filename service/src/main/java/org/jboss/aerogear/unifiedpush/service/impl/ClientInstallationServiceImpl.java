@@ -127,10 +127,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		if (installation == null) {
 			logger.trace("Performing new device/client registration");
 
-			// Verification process required, disable device.
-			if (shouldVerifiy)
-				entity.setEnabled(false);
-
 			// store the installation:
 			storeInstallationAndSetReferences(variant, entity);
 		} else {

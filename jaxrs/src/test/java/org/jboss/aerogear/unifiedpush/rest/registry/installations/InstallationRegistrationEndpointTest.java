@@ -101,7 +101,7 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
 
 			Installation inst = installationService.findById(iosInstallation.getId());
 			assertTrue("Installation is null", inst != null);
-			assertEquals(inst.isEnabled(), false);
+			assertEquals(inst.isEnabled(), true);
 
 			// Register alias
 			PushApplication app = applicationService.findByVariantID(variant.getVariantID());
