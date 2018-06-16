@@ -33,7 +33,7 @@ services:
       timeout: 20s
       retries: 10
   keycloakServer:
-    image: docker.io/jboss/keycloak:3.4.3.Final
+    image: docker.io/jboss/keycloak:4.0.0.Final
     command: "-b 0.0.0.0 -Dkeycloak.import=/ups-keycloak-config/ups-realm-sample.json"
     volumes:
       - ./keycloak-realm:/ups-keycloak-config:z
