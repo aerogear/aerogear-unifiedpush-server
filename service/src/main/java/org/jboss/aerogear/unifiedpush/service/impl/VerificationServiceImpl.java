@@ -182,11 +182,6 @@ public class VerificationServiceImpl implements VerificationService {
 
 			return VerificationResult.SUCCESS;
 		} else {
-			// Special case when installation was already enabled
-			if (installation.isEnabled()) {
-				return VerificationResult.SUCCESS;
-			}
-
 			logger.debug("Verification attempt failed for tokenId: {}, VariantId: {}, code: {}", okey.getTokenId(),
 					okey.getVariantId(), okey.getCode());
 			return VerificationResult.FAIL;
