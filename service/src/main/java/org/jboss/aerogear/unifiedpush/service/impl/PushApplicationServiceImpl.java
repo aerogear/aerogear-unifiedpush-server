@@ -28,6 +28,7 @@ import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PostDelete;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -46,7 +47,9 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 	private AliasService aliasService;
 	@Autowired
 	private CacheManager cacheManager;
-
+	@Inject
+	private IKeycloakService keycloakService;
+	
 	public PushApplicationServiceImpl() {
 	}
 
@@ -60,6 +63,9 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 
 		pushApp.setDeveloper(user.get());
 		pushApplicationDao.create(pushApp);
+		
+		// Create keycloak client.
+		keycloakService.createClientIfAbsent(pushApp);
 	}
 
 	@Override
@@ -71,6 +77,9 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 	public void addVariant(PushApplication pushApp, Variant variant) {
 		pushApp.getVariants().add(variant);
 		pushApplicationDao.update(pushApp);
+		
+		// Create keycloak client if absent.
+		keycloakService.createClientIfAbsent(pushApp);
 	}
 
 	@Override
