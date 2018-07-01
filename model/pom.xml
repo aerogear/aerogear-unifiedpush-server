@@ -19,7 +19,7 @@
 
 	<artifactId>unifiedpush-model-parent</artifactId>
 	<packaging>pom</packaging>
-	<name>AeroBase Model Layer</name>
+	<name>AeroGear Model Layer</name>
 
 	<modules>
 		<module>api</module>

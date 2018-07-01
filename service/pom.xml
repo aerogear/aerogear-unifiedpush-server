@@ -19,7 +19,7 @@
 
 	<artifactId>unifiedpush-service</artifactId>
 	<packaging>jar</packaging>
-	<name>AeroBase Service Layer</name>
+	<name>AeroGear Service Layer</name>
 
 	<dependencies>
 		<dependency>

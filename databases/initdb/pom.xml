@@ -19,7 +19,7 @@
 
 	<artifactId>unifiedpush-initdb</artifactId>
 	<packaging>jar</packaging>
-	<name>AeroBase Create DB Schema</name>
+	<name>AeroGear Create DB Schema</name>
 
 	<dependencies>
 		<dependency>

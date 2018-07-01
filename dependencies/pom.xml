@@ -26,7 +26,7 @@
 
     <artifactId>unifiedpush-dependencies-parent</artifactId>
     <packaging>pom</packaging>
-    <name>AeroBase Dependencies Parent</name>
+    <name>AeroGear Dependencies Parent</name>
 
     <modules>
         <module>server-dependencies</module>

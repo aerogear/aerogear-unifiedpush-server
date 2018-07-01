@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
+import org.jboss.aerogear.unifiedpush.service.impl.AliasServiceImpl.Associated;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration;
 import org.junit.Test;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,9 +48,9 @@ public class AliasServiceTest extends AbstractCassandraServiceTest {
 		UUID pushAppId = UUID.fromString(pushApplication.getPushApplicationID());
 
 		List<Alias> aliasesList = new ArrayList<>();
-		aliasesList.add(new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroBase.org"));
-		aliasesList.add(new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroBase.org"));
-		aliasesList.add(new Alias(pushAppId, UUIDs.timeBased(), "Help@AeroBase.org"));
+		aliasesList.add(new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroGear.org"));
+		aliasesList.add(new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroGear.org"));
+		aliasesList.add(new Alias(pushAppId, UUIDs.timeBased(), "Help@AeroGear.org"));
 		aliasesList.add(new Alias(pushAppId, UUIDs.timeBased(), "gfgfd337765567"));
 
 		// Sync 4 aliases
@@ -75,9 +76,9 @@ public class AliasServiceTest extends AbstractCassandraServiceTest {
 		PushApplication pushApplication = new PushApplication();
 		UUID pushAppId = UUID.fromString(pushApplication.getPushApplicationID());
 
-		Alias[] legacyAliases = new Alias[] { new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroBase.org"),
-				new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroBase.org"),
-				new Alias(pushAppId, UUIDs.timeBased(), "Help@AeroBase.org") };
+		Alias[] legacyAliases = new Alias[] { new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroGear.org"),
+				new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroGear.org"),
+				new Alias(pushAppId, UUIDs.timeBased(), "Help@AeroGear.org") };
 		List<Alias> aliasList = Arrays.asList(legacyAliases);
 
 		// Sync 3 aliases
@@ -103,9 +104,9 @@ public class AliasServiceTest extends AbstractCassandraServiceTest {
 		PushApplication pushApplication = new PushApplication();
 		UUID pushAppId = UUID.fromString(pushApplication.getPushApplicationID());
 
-		Alias[] legacyAliases = new Alias[] { new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroBase.org"),
-				new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroBase.org"),
-				new Alias(pushAppId, UUIDs.timeBased(), "Help@AeroBase.org") };
+		Alias[] legacyAliases = new Alias[] { new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroGear.org"),
+				new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroGear.org"),
+				new Alias(pushAppId, UUIDs.timeBased(), "Help@AeroGear.org") };
 		List<Alias> aliasList = Arrays.asList(legacyAliases);
 
 		// Sync 3 aliases
@@ -127,7 +128,7 @@ public class AliasServiceTest extends AbstractCassandraServiceTest {
 	@Test
 	@Transactional
 	public void addPushApplication() {
-		String domain = "aerobase.com";
+		String domain = "aerogear.com";
 		String appName = "xxx";
 
 		System.setProperty(OAuth2Configuration.KEY_OAUTH2_ENFORE_DOMAIN, domain);
@@ -139,18 +140,19 @@ public class AliasServiceTest extends AbstractCassandraServiceTest {
 
 		pushApplicationService.addPushApplication(pushApplication, new LoggedInUser(DEFAULT_USER));
 
-		Alias[] aliases = new Alias[] { new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroBase.org"),
-				new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroBase.org"),
-				new Alias(pushAppId, UUIDs.timeBased(), "Help@AeroBase.org") };
+		Alias[] aliases = new Alias[] { new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroGear.org"),
+				new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroGear.org"),
+				new Alias(pushAppId, UUIDs.timeBased(), "Help@AeroGear.org") };
 		List<Alias> aliasList = Arrays.asList(aliases);
 
 		// Sync 3 aliases
 		aliasService.addAll(pushApplication, aliasList, false);
-		boolean result = aliasService.associated(aliases[0].getEmail(), appName + "-" + domain);
-		assertThat(result).isTrue();
+		Associated associated = aliasService.associated(aliases[0].getEmail(), appName + "-" + domain);
+	
+		assertThat(associated != null && associated.isAssociated()).isTrue();
 
-		result = aliasService.associated(aliases[0].getEmail(), null);
-		assertThat(result).isTrue();
+		associated = aliasService.associated(aliases[0].getEmail(), null);
+		assertThat(associated != null && associated.isAssociated()).isTrue();
 	}
 
 	@Override

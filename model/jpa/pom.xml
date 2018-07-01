@@ -17,7 +17,7 @@
 	</parent>
 
 	<artifactId>unifiedpush-model-jpa</artifactId>
-	<name>AeroBase Server Model JPA implementation</name>
+	<name>AeroGear Server Model JPA implementation</name>
 
 	<dependencies>
 

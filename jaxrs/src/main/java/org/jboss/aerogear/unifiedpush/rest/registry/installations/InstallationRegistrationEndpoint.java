@@ -180,7 +180,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase UnifiedPush
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush
 	 *                 Server" (only for 401 response)
 	 *
 	 * @statuscode 200 Successful storage of the device metadata
@@ -248,7 +248,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * @param request the request
      * @return              empty JSON body
      *
-     * @responseheader WWW-Authenticate Basic realm="AeroBase UnifiedPush Server" (only for 401 response)
+     * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
      *
      * @statuscode 200 Successful storage of the device metadata
      * @statuscode 401 The request requires authentication
@@ -298,7 +298,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 *            the request
 	 * @return empty JSON body
 	 *
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase UnifiedPush
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush
 	 *                 Server" (only for 401 response)
 	 *
 	 * @statuscode 200 Successful storage of the device metadata
@@ -346,7 +346,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase UnifiedPush
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush
 	 *                 Server" (only for 401 response)
 	 *
 	 * @statuscode 204 Successful unregistration
@@ -423,7 +423,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 *            the request
 	 * @return empty JSON body
 	 *
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase UnifiedPush
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush
 	 *                 Server" (only for 401 response)
 	 *
 	 * @statuscode 200 Successful submission of import job
@@ -495,7 +495,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase UnifiedPush
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush
 	 *                 Server" (only for 401 response)
 	 *
 	 * @statuscode 200 Successful storage of the device metadata
@@ -549,7 +549,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase UnifiedPush
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush
 	 *                 Server" (only for 401 response)
 	 *
 	 * @statuscode 200 resend went through

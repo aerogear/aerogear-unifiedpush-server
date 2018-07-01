@@ -132,8 +132,8 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 				new DocumentMetadata(pushApplicationId, "STATUS", NullAlias.getAlias(pushApplicationId)));
 
 		// Create alias specific documents
-		Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerobase.org");
-		Alias alias2 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerobase.org");
+		Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerogear.org");
+		Alias alias2 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerogear.org");
 
 		aliasDao.create(alias1);
 		aliasDao.create(alias2);
@@ -176,8 +176,8 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 
 		try {
 			// Create alias specific documents
-			Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerobase.org");
-			Alias alias2 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerobase.org");
+			Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerogear.org");
+			Alias alias2 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerogear.org");
 
 			aliasDao.create(alias1);
 			aliasDao.create(alias2);
@@ -236,7 +236,7 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 
 		try {
 			// Create alias specific documents
-			Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerobase.org");
+			Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerogear.org");
 
 			aliasDao.create(alias1);
 
@@ -272,7 +272,7 @@ public class NoSQLDocumentDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 
 		try {
 			// Create alias specific documents
-			Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerobase.org");
+			Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerogear.org");
 			aliasDao.create(alias1);
 
 			DocumentKey key = new DocumentKey(new DocumentMetadata(pushApplicationId.toString(), "STATUS", alias1));

@@ -186,7 +186,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear Server" (only for
 	 *                 401 response)
 	 *
 	 * @statuscode 204 Successful store of the document.
@@ -234,7 +234,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear Server" (only for
 	 *                 401 response)
 	 *
 	 * @statuscode 204 Successful store of the document.
@@ -288,7 +288,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear Server" (only for
 	 *                 401 response)
 	 *
 	 * @statuscode 204 Successful update of the document.
@@ -345,7 +345,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *     "any-attribute-2" : "example1",
 	 *     "any-attribute-3" : "example1"
 	 *   }'
-	 *   "https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.orgt"
+	 *   "https://SERVER:PORT/context/rest/database/users/alias/support@aerogear.orgt"
 	 * </pre>
 	 *
 	 * @param document
@@ -362,7 +362,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear Server" (only for
 	 *                 401 response)
 	 *
 	 * @statuscode 204 Successful update of the document.
@@ -396,7 +396,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *     "contentType":"application/json",
 	 *     "documentId":"ANY ID"}'
 	 *   }
-	 *   "https://SERVER:PORT/context/rest/database/DEVICES/alias/support@aerobase.org"
+	 *   "https://SERVER:PORT/context/rest/database/DEVICES/alias/support@aerogear.org"
 	 * </pre>
 	 *
 	 * @param documents
@@ -413,7 +413,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear Server" (only for
 	 *                 401 response)
 	 *
 	 * @statuscode 204 Successful store of the document.
@@ -451,7 +451,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 *     "any-attribute-2" : "example1",
 	 *     "any-attribute-3" : "example1"
 	 *   }'
-	 *   "https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.org/snapshot"
+	 *   "https://SERVER:PORT/context/rest/database/users/alias/support@aerogear.org/snapshot"
 	 * </pre>
 	 *
 	 * @param document
@@ -470,7 +470,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear Server" (only for
 	 *                 401 response)
 	 *
 	 * @statuscode 204 Successful update of the document.
@@ -549,7 +549,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear Server" (only for
 	 *                 401 response)
 	 *
 	 * @statuscode 204 The HEAD method is identical to GET except that the
@@ -600,7 +600,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear Server" (only for
 	 *                 401 response)
 	 *
 	 * @statuscode 200 Successful query of the documents.
@@ -633,7 +633,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * curl -u "variantID:secret"
 	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
 	 *   -X HEAD
-	 *   "https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.org/"
+	 *   "https://SERVER:PORT/context/rest/database/users/alias/support@aerogear.org/"
 	 * </pre>
 	 *
 	 * @param database
@@ -654,7 +654,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear Server" (only for
 	 *                 401 response)
 	 *
 	 * @statuscode 204 The HEAD method is identical to GET except that the
@@ -687,7 +687,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * curl -u "variantID:secret"
 	 *   -v -H "Accept: application/json" -H "Content-type: application/json"
 	 *   -X GET
-	 *   https://SERVER:PORT/context/rest/database/users/alias/support@aerobase.org/
+	 *   https://SERVER:PORT/context/rest/database/users/alias/support@aerogear.org/
 	 * </pre>
 	 *
 	 * @param database
@@ -708,7 +708,7 @@ public class DatabaseEndpoint extends AbstractEndpoint {
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear Server" (only for
 	 *                 401 response)
 	 *
 	 * @statuscode 200 Successful query of the documents.

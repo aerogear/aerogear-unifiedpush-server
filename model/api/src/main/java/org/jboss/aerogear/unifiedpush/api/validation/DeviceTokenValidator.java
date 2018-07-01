@@ -46,7 +46,7 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
 
     /**
      * The SimplePush token is an URI. While we strongly recommend https, it is in theory possible that users of the
-     * AeroBase SimplePush Server do not protect the "update" endpoint via SSL.
+     * AeroGear SimplePush Server do not protect the "update" endpoint via SSL.
      */
     private static final Pattern SIMPLE_PUSH_DEVICE_TOKEN = Pattern.compile("https?://.{0,2000}");
 

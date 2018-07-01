@@ -25,7 +25,7 @@
 	</parent>
 
 	<artifactId>unifiedpush-jaxrs</artifactId>
-	<name>AeroBase RESTful Endpoint</name>
+	<name>AeroGear RESTful Endpoint</name>
 
 	<dependencies>
 		<dependency>

@@ -33,7 +33,7 @@ public class AliasEndpointTest extends RestEndpointTest {
 		ResteasyWebTarget target = client
 				.target(getRestFullPath() + "/alias");
 
-		Alias original = new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Supprot@AeroBase.org");
+		Alias original = new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Supprot@AeroGear.org");
 		// Create Alias
 		Response response = HttpBasicHelper.basic(target.request(), DEFAULT_APP_ID, DEFAULT_APP_PASS)
 				.post(Entity.entity(original, MediaType.APPLICATION_JSON_TYPE));
@@ -68,9 +68,9 @@ public class AliasEndpointTest extends RestEndpointTest {
 		ResteasyWebTarget target = getAllAliasesTarget(getRestFullPath());
 
 		List<Alias> aliases = new ArrayList<>();
-		aliases.add(new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Supprot@AeroBase.org"));
-		aliases.add(new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Test@AeroBase.org"));
-		aliases.add(new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Help@AeroBase.org"));
+		aliases.add(new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Supprot@AeroGear.org"));
+		aliases.add(new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Test@AeroGear.org"));
+		aliases.add(new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Help@AeroGear.org"));
 
 		// Create 3 Aliases
 		Response response = target.request().post(Entity.entity(aliases, MediaType.APPLICATION_JSON_TYPE));
@@ -109,7 +109,7 @@ public class AliasEndpointTest extends RestEndpointTest {
 		ResteasyWebTarget target = client
 				.target(getRestFullPath() + "/alias");
 
-		Alias original = new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Supprot888@AeroBase.org");
+		Alias original = new Alias(UUID.fromString(DEFAULT_APP_ID), UUIDs.timeBased(), "Supprot888@AeroGear.org");
 		// Create Alias
 		Response response = HttpBasicHelper.basic(target.request(), DEFAULT_APP_ID, DEFAULT_APP_PASS)
 				.post(Entity.entity(original, MediaType.APPLICATION_JSON_TYPE));

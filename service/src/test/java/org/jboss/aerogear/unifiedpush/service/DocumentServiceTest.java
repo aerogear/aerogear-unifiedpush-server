@@ -368,7 +368,7 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 
 		try {
 			// Create alias specific documents
-			Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerobase.org");
+			Alias alias1 = new Alias(pushApplicationId, UUIDs.timeBased(), "supprot@aerogear.org");
 
 			aliasService.create(alias1);
 

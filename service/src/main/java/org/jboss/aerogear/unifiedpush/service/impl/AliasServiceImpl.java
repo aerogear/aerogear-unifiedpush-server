@@ -33,6 +33,7 @@ import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PostDelete;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.KeycloakServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -137,7 +138,7 @@ public class AliasServiceImpl implements AliasService {
 	 * @param fqdn
 	 *            domain / team name.
 	 */
-	public boolean associated(String alias, String fqdn) {
+	public Associated associated(String alias, String fqdn) {
 		PushApplication pushApplication = null;
 
 		// Return application name from fqdn.
@@ -146,12 +147,12 @@ public class AliasServiceImpl implements AliasService {
 			pushApplication = pushApplicationService.findByName(applicationName);
 		}
 
-		// TODO - Disallow query when fqdn is missing.
-		// This can be done only when: 1) 1.6.0 is out of market 2) CAPTCHA was
-		// added to login template.
 		Alias aliasObj = find(pushApplication == null ? null : pushApplication.getPushApplicationID(), alias);
-
-		return aliasObj != null;
+		
+		if (aliasObj != null)
+			return new Associated(true, getClientId(aliasObj.getPushApplicationId()));
+		
+		return new Associated(false);
 	}
 
 	private Alias exists(UUID pushApplicationUUID, Alias aliasToFind) {
@@ -176,6 +177,11 @@ public class AliasServiceImpl implements AliasService {
 		}
 
 		return alias;
+	}
+	
+	private String getClientId(UUID pushApplicationUUID) {
+		PushApplication pushApp = pushApplicationService.findByPushApplicationID(pushApplicationUUID.toString());
+		return KeycloakServiceImpl.getClientd(pushApp);
 	}
 
 	/*
@@ -239,6 +245,30 @@ public class AliasServiceImpl implements AliasService {
 	@Async
 	public void createAsynchronous(Alias alias) {
 		create(alias);
+	}
+	
+	public class Associated {
+		private boolean associated;
+		private String client;
+
+		public Associated(boolean associated, String client) {
+			super();
+			this.associated = associated;
+			this.client = client;
+		}
+		
+		public Associated(boolean associated) {
+			super();
+			this.associated = associated;
+		}
+
+		public boolean isAssociated() {
+			return associated;
+		}
+
+		public String getClient() {
+			return client;
+		}
 	}
 
 }

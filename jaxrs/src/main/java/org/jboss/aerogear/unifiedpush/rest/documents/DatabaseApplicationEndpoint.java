@@ -70,7 +70,7 @@ public class DatabaseApplicationEndpoint extends AbstractEndpoint {
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
 	 *                 header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroBase Server" (only for
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear Server" (only for
 	 *                 401 response)
 	 *
 	 * @statuscode 200 Successful query of documents.

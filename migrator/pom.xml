@@ -8,7 +8,7 @@
 	</parent>
 
 	<artifactId>unifiedpush-migrator</artifactId>
-	<name>AeroBase Database Migrator</name>
+	<name>AeroGear Database Migrator</name>
 
 	<dependencies>
 		<dependency>

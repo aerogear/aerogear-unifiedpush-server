@@ -17,7 +17,7 @@
 	</parent>
 
 	<artifactId>unifiedpush-push-sender</artifactId>
-	<name>AeroBase Push Notification Networks</name>
+	<name>AeroGear Push Notification Networks</name>
 
 	<dependencies>
 		<dependency>

@@ -62,7 +62,7 @@ public class VerificationServiceImpl implements VerificationService {
 			if (cacheManager == null) {
 				synchronized (this) {
 					if (cacheManager == null) {
-						cacheManager = (CacheContainer) new InitialContext().lookup("java:jboss/infinispan/Aerobase");
+						cacheManager = (CacheContainer) new InitialContext().lookup("java:jboss/infinispan/aerogear");
 						if (EmbeddedCacheManager.class.isAssignableFrom(cacheManager.getClass())) {
 							initContainerManaged(cacheManager);
 						}
@@ -70,10 +70,10 @@ public class VerificationServiceImpl implements VerificationService {
 				}
 
 				logger.info("Using container managed Infinispan cache container, lookup={}",
-						"java:jboss/infinispan/Aerobase");
+						"java:jboss/infinispan/aerogear");
 			}
 		} catch (NamingException e) {
-			logger.warn("Unable to lookup infinispan cache java:jboss/infinispan/Aerobase");
+			logger.warn("Unable to lookup infinispan cache java:jboss/infinispan/aerogear");
 		} finally {
 			synchronized (this) {
 				if (deviceToToken == null) {

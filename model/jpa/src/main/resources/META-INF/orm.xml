@@ -22,7 +22,7 @@
                  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm
 http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
                  version="2.0">
-    <description>AeroBase Unified Push Server Model API</description>
+    <description>AeroGear Unified Push Server Model API</description>
     <package>org.jboss.aerogear.unifiedpush.api</package>
 
     <mapped-superclass class="BaseModel" access="FIELD">

@@ -23,7 +23,7 @@
 	<version>1.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>AeroBase Server</name>
+	<name>AeroGear Server</name>
 	<url>http://aerogear.org/push</url>
 
 	<scm>

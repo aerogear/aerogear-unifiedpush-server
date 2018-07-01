@@ -335,7 +335,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 		return isClientExists(getClientd(pushApp));
 	}
 
-	private String getClientd(PushApplication pushApp) {
+	public static String getClientd(PushApplication pushApp) {
 		return CLIENT_PREFIX + pushApp.getName().toLowerCase();
 	}
 

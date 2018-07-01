@@ -133,8 +133,8 @@ public class VerificyingClientInstallationServiceTest extends AbstractCassandraS
 
 		result = verificationService.verifyDevice(device, androidVariant,
 				new InstallationVerificationAttempt(newVerificationCode, device.getDeviceToken()));
-		// Device is already enabled so always return success.
-		assertEquals(VerificationResult.SUCCESS, result);
+		// Device was already enabled so return fail.
+		assertEquals(VerificationResult.FAIL, result);
 	}
 
 }

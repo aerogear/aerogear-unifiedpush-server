@@ -62,13 +62,13 @@ public class KeycloakServiceTest {
 
 	@Test
 	public void test() {
-		assertThat(DomainMatcher.DOT.matches("test.aerobase"), is("test"));
-		assertThat(DomainMatcher.DOT.matches("a-bc.test.aerobase.eu.uk"), is("a-bc"));
-		assertThat(DomainMatcher.DASH.matches("test-aerobase"), is("test"));
-		assertThat(DomainMatcher.DASH.matches("a-bc-test-aerobase"), is("a-bc-test"));
-		assertThat(DomainMatcher.DASH.matches("a-bc-test-aerobase.eu.uk"), is("a-bc-test"));
-		assertThat(DomainMatcher.NONE.matches("test.aerobase.eu.uk"), is("test.aerobase.eu.uk"));
-		assertThat(DomainMatcher.NONE.matches("test-aerobase.eu.uk"), is("test-aerobase.eu.uk"));
+		assertThat(DomainMatcher.DOT.matches("test.aerogear"), is("test"));
+		assertThat(DomainMatcher.DOT.matches("a-bc.test.aerogear.eu.uk"), is("a-bc"));
+		assertThat(DomainMatcher.DASH.matches("test-aerogear"), is("test"));
+		assertThat(DomainMatcher.DASH.matches("a-bc-test-aerogear"), is("a-bc-test"));
+		assertThat(DomainMatcher.DASH.matches("a-bc-test-aerogear.eu.uk"), is("a-bc-test"));
+		assertThat(DomainMatcher.NONE.matches("test.aerogear.eu.uk"), is("test.aerogear.eu.uk"));
+		assertThat(DomainMatcher.NONE.matches("test-aerogear.eu.uk"), is("test-aerogear.eu.uk"));
 	}
 
 	@After

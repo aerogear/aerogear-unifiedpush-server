@@ -31,7 +31,7 @@ while [ -n "$1" ]; do
                 cat <<__EOF__
 Usage: $0
         --database=database - Database name
-        --config-path=path  - Path for -Daerobase.config.dir param - Default /tmp/db.properties
+        --config-path=path  - Path for -Daerogear.config.dir param - Default /tmp/db.properties
 __EOF__
         exit 1
     esac
@@ -42,7 +42,7 @@ done
 [ -z "${CONFIG}" ] && export CONFIG=/tmp/db.properties
 
 ${JAVA_HOME}/bin/java ${DEBUG_OPTS} \
-        -Daerobase.config.dir=${CONFIG} \
+        -Daerogear.config.dir=${CONFIG} \
         -Dorg.jboss.aerogear.unifiedpush.initdb.database=${DATABASE} \
         -cp "../lib/*" \
         org.jboss.aerogear.unifiedpush.DBMaintenance \

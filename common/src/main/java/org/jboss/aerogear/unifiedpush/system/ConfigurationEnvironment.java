@@ -17,7 +17,7 @@ import org.springframework.core.env.Environment;
 
 @Configuration
 @PropertySource(name = "environment", value = { "classpath:default.properties",
-		"file://${aerobase.config.dir}/environment.properties" }, ignoreResourceNotFound = true)
+		"file://${aerogear.config.dir}/environment.properties" }, ignoreResourceNotFound = true)
 public class ConfigurationEnvironment {
 	private final Logger logger = LoggerFactory.getLogger(ConfigurationEnvironment.class);
 

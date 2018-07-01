@@ -36,9 +36,9 @@ import com.zaxxer.hikari.HikariDataSource;
 @EnableJpaRepositories(basePackageClasses = JPABaseDao.class)
 @ComponentScan(basePackageClasses = { JPABaseDao.class })
 @PropertySource(name = "database", value = { "classpath:META-INF/db.properties",
-		"file://${aerobase.config.dir}/db.properties" }, ignoreResourceNotFound = true)
+		"file://${aerogear.config.dir}/db.properties" }, ignoreResourceNotFound = true)
 @PropertySource(name = "hibernate", value = { "classpath:META-INF/hibernate.properties",
-		"file://${aerobase.config.dir}/hibernate.properties" }, ignoreResourceNotFound = true)
+		"file://${aerogear.config.dir}/hibernate.properties" }, ignoreResourceNotFound = true)
 public class JPAConfig {
 	private static String[] RESOURCES = new String[] { "META-INF/orm.xml",
 			"org/jboss/aerogear/unifiedpush/api/Installation.hbm.xml",

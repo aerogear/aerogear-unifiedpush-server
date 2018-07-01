@@ -17,7 +17,7 @@
 	</parent>
 
 	<artifactId>unifiedpush-server-dependencies</artifactId>
-	<name>AeroBase Server Dependencies Server</name>
+	<name>AeroGear Server Dependencies Server</name>
 	<packaging>pom</packaging>
 
 	<dependencies>

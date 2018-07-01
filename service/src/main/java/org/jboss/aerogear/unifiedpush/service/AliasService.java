@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.service.impl.AliasServiceImpl.Associated;
 
 public interface AliasService {
 	/**
@@ -54,7 +55,7 @@ public interface AliasService {
 
 	boolean registered(String alias);
 
-	boolean associated(String fqdn, String alias);
+	Associated associated(String fqdn, String alias);
 
 	Alias find(String pushApplicationId, String alias);
 

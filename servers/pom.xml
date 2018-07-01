@@ -18,7 +18,7 @@
 
 	<artifactId>unifiedpush-server-wildfly</artifactId>
 	<packaging>war</packaging>
-	<name>AeroBase Server for Wildfly (WAR)</name>
+	<name>AeroGear Server for Wildfly (WAR)</name>
 
 	<dependencies>
 

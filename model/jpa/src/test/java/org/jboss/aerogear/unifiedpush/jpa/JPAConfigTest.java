@@ -62,7 +62,7 @@ public class JPAConfigTest {
 			e.printStackTrace();
 		}
 
-		System.setProperty("aerobase.config.dir", dirPath);
+		System.setProperty("aerogear.config.dir", dirPath);
 	}
 
 	@Test
