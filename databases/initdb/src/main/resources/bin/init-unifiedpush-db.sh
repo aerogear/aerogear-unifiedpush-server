@@ -39,7 +39,7 @@ __EOF__
 done
 
 [ -z "${DATABASE}" ] && die "Missing database! Usage: ./init-unifiedpush-db.sh database name"
-[ -z "${CONFIG}" ] && export CONFIG=/tmp/db.properties
+[ -z "${CONFIG}" ] && export CONFIG=/tmp/
 
 ${JAVA_HOME}/bin/java ${DEBUG_OPTS} \
         -Daerogear.config.dir=${CONFIG} \
