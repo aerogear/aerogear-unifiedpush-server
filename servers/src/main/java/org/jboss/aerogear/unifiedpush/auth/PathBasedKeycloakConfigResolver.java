@@ -24,11 +24,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.rest.util.BearerHelper;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.KeycloakDeployment;
 import org.keycloak.adapters.spi.HttpFacade.Request;
 import org.keycloak.common.util.KeycloakUriBuilder;
 import org.keycloak.constants.ServiceUrlConstants;
+import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,7 @@ import org.springframework.context.ApplicationContext;
 
 public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 	private static final Logger logger = LoggerFactory.getLogger(PathBasedKeycloakConfigResolver.class);
+	private static final String DEFAULT_REALM_FILE = "keycloak";
 
 	// TODO - Convert to
 	private static final Map<String, CustomKeycloakDeployment> cache = new ConcurrentHashMap<String, CustomKeycloakDeployment>();
@@ -45,19 +48,25 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 
 	@Override
 	public KeycloakDeployment resolve(Request request) {
-		String realm = "keycloak";
+		String realm = DEFAULT_REALM_FILE;
 
-		String referer = BearerHelper.getRefererHeader(request);
+		AccessToken accessToken = BearerHelper.getTokenDataFromBearer(request).orNull();
+		if (accessToken != null) {
+			String issuer = accessToken.getIssuer();
 
-		// TODO - Use proxy subdomain as realm name.
-		if (isProxyRequest(referer, request)) {
-			if (logger.isTraceEnabled())
-				logger.trace("Identified proxy request, using upsi realm! URI: {}, referer: {}", request.getURI(), referer);
-			realm = "upsi";
-		} else {
-			if (logger.isTraceEnabled())
-				logger.trace("Identified non-proxy request, using keycloak realm! URI: {}, referer: {}", request.getURI(), referer);
+			if (StringUtils.isNoneEmpty(issuer)) {
+				issuer = URLUtils.removeLastSlash(issuer);
+				String jwtRealm = URLUtils.getLastPart(issuer);
+
+				if (!OAuth2Configuration.DEFAULT_OAUTH2_UPS_REALM.equalsIgnoreCase(jwtRealm)) {
+					realm = "upsi";
+				}
+			}
 		}
+
+		if (logger.isTraceEnabled())
+			logger.trace("Identified Bearer request, using keycloak realm! URI: {}, realm: {}", request.getURI(),
+					realm);
 
 		CustomKeycloakDeployment deployment = cache.get(realm);
 		if (null == deployment) {
@@ -132,9 +141,5 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 		deployment.setUnregisterNodeUrl(
 				authUrlBuilder.clone().path(ServiceUrlConstants.CLIENTS_MANAGEMENT_UNREGISTER_NODE_PATH)
 						.build(deployment.getRealm()).toString());
-	}
-
-	private Boolean isProxyRequest(String referer, Request request) {
-		return StringUtils.isNoneEmpty(referer) && !request.getURI().startsWith(referer);
 	}
 }

@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.rest.util;
 
 import java.util.Enumeration;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -64,10 +65,15 @@ public final class BearerHelper {
 		return clientId;
 	}
 
+	public static Optional<AccessToken> getTokenDataFromBearer(org.keycloak.adapters.spi.HttpFacade.Request request) {
+		return getTokenDataFromBearer(getBarearToken(request).orNull());
+	}
+	
 	public static Optional<AccessToken> getTokenDataFromBearer(HttpServletRequest request) {
-
-		String tokenString = getBarearToken(request).orNull();
-
+		return getTokenDataFromBearer(getBarearToken(request).orNull());
+	}
+	
+	private static Optional<AccessToken> getTokenDataFromBearer(String tokenString) {
 		if (tokenString != null) {
 			try {
 				JWSInput input = new JWSInput(tokenString);
@@ -81,8 +87,17 @@ public final class BearerHelper {
 	}
 
 	// Barear authentication allowed only using keycloack context
+	public static Optional<String> getBarearToken(org.keycloak.adapters.spi.HttpFacade.Request request) {
+		return getBarearToken(new Vector<String>(request.getHeaders("Authorization")).elements());
+	}
+	
+	// Barear authentication allowed only using keycloack context
 	public static Optional<String> getBarearToken(HttpServletRequest request) {
-		Enumeration<String> authHeaders = request.getHeaders("Authorization");
+		return getBarearToken(request.getHeaders("Authorization"));
+	}
+	
+	// Barear authentication allowed only using keycloack context
+	private static Optional<String> getBarearToken(Enumeration<String> authHeaders) {
 		if (authHeaders == null || !authHeaders.hasMoreElements()) {
 			return Optional.absent();
 		}
