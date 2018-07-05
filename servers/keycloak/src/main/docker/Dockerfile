@@ -23,8 +23,8 @@ ADD ups-realm-sample.json /opt/jboss/ups-realm-sample.json
 WORKDIR /opt/jboss/wildfly
 
 # WildFly configuration file ready for JMS and HSQL
-COPY keycloak-overlay-4.0.0.Final.tar.gz $JBOSS_HOME
-RUN tar xf keycloak-overlay-4.0.0.Final.tar.gz
+COPY keycloak-overlay-4.1.0.Final.tar.gz $JBOSS_HOME
+RUN tar xf keycloak-overlay-4.1.0.Final.tar.gz
 
 # Switch to the working dir $JBOSS_HOME/standalone/deployments
 WORKDIR /opt/jboss/wildfly/standalone/deployments
