@@ -91,6 +91,8 @@
 
     <table name="SA.IOS_VARIANT"/>
 
+    <table name="SA.WEBPUSH_VARIANT"/>
+    
     <table name="SA.INSTALLATION">
         <column>id</column>
         <column>enabled</column>

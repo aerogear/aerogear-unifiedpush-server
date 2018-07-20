@@ -16,11 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.WebPushVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 
 import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -32,16 +32,27 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
 @Path("/applications/{pushAppID}/webPush")
-public class WebPushVariantEndpoint extends AbstractVariantEndpoint {
+public class WebPushVariantEndpoint extends AbstractVariantEndpoint<WebPushVariant> {
+
+    // required for RESTEasy
+    public WebPushVariantEndpoint() {
+        super(WebPushVariant.class);
+    }
+
+    // required for tests
+    WebPushVariantEndpoint(Validator validator, SearchManager searchManager) {
+        super(validator, searchManager, WebPushVariant.class);
+    }
 
     /**
      * Add WebPush Variant
      *
-     * @param webPushVariant    new {@link WebPushVariant}
+     * @param webPushVariant new {@link WebPushVariant}
      * @param pushApplicationID id of {@link PushApplication}
-     * @return                  created {@link WebPushVariant}
+     * @return created {@link WebPushVariant}
      *
      * @statuscode 201 The WebPush Variant created successfully
      * @statuscode 400 The format of the client request was incorrect
@@ -49,8 +60,7 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint {
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("org.jboss.aerogear.unifiedpush.api.WebPushVariant")
+    @Produces(MediaType.APPLICATION_JSON)    
     public Response registerWebPushVariant(
             WebPushVariant webPushVariant,
             @PathParam("pushAppID") String pushApplicationID,
@@ -90,11 +100,10 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint {
      * List WebPush Variants for Push Application
      *
      * @param pushApplicationID id of {@link PushApplication}
-     * @return                  list of {@link WebPushVariant}s
+     * @return list of {@link WebPushVariant}s
      */
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("java.util.Set<org.jboss.aerogear.unifiedpush.api.WebPushVariant>")
+    @Produces(MediaType.APPLICATION_JSON)    
     public Response listAllWebPushVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariantsByType(application, WebPushVariant.class)).build();
@@ -103,8 +112,8 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint {
     /**
      * Update WebPush Variant
      *
-     * @param id                    id of {@link PushApplication}
-     * @param webPushID             id of {@link WebPushVariant}
+     * @param id id of {@link PushApplication}
+     * @param webPushID id of {@link WebPushVariant}
      * @param updatedWebPushVariant new info of {@link WebPushVariant}
      *
      * @statuscode 200 The WebPush Variant updated successfully
@@ -114,8 +123,7 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint {
     @PUT
     @Path("/{webPushID}")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @ReturnType("org.jboss.aerogear.unifiedpush.api.WebPushVariant")
+    @Produces(MediaType.APPLICATION_JSON)    
     public Response updateWebPushVariation(
             @PathParam("pushAppID") String id,
             @PathParam("webPushID") String webPushID,

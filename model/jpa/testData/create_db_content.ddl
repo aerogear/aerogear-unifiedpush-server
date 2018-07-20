@@ -23,6 +23,14 @@ CREATE TABLE ios_variant (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE webpush_variant (
+  fcm_server_key  VARCHAR(1000) NOT NULL,
+  fcm_sender_id VARCHAR(255),
+  custom_server_url BOOLEAN,
+  id         VARCHAR(255)  NOT NULL,
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE simple_push_variant (
   id VARCHAR(255) NOT NULL,
   PRIMARY KEY (id)

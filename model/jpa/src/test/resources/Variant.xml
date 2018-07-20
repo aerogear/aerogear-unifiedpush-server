@@ -54,6 +54,7 @@
         </row>
     </table>
     <table name="SA.IOS_VARIANT"/>
+    <table name="SA.WEBPUSH_VARIANT"/>
     <table name="SA.SIMPLE_PUSH_VARIANT"/>
 
     <table name="SA.INSTALLATION">

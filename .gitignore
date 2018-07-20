@@ -22,6 +22,7 @@ release.properties
 .classpath
 .project
 .settings/
+nb-configuration.xml
 
 .DS_Store
 *.checkstyle
