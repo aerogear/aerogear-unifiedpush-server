@@ -3,6 +3,8 @@ package org.jboss.aerogear.unifiedpush.service.impl.spring;
 import java.util.List;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.keycloak.authentication.actiontoken.verifyemail.VerifyEmailActionToken;
+import org.keycloak.common.VerificationException;
 import org.springframework.cache.annotation.Cacheable;
 
 public interface IKeycloakService {
@@ -26,4 +28,6 @@ public interface IKeycloakService {
 	boolean isInitialized();
 
 	String strip(String fqdn);
+	
+	VerifyEmailActionToken validateEmailActionToken(String token) throws VerificationException;
 }
