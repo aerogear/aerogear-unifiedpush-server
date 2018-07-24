@@ -47,7 +47,7 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
      * Pattern for web-push is a valid uri that begins with https and updates.push.services.mozilla.com, e.g.
      * https://updates.push.services.mozilla.com/wpush/v1/gAAAAABXlQW2uvaJJk3Q6hey1cj2PjZYtGaDcY82DffVUF1OiV4Eu6SA1lds8jzKgZCR9JjIbioyv5jKwZQo2n6UxT8yRU3Es1qM2Fxmdv-p0cqGBhh4CjT5QNzlBAFRJ0OTLvisXB8e
      */
-    private static final Pattern WEB_PUSH_DEVICE_TOKEN = Pattern.compile("^https?://updates.push.services.mozilla.com+([-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])");
+    private static final Pattern WEB_PUSH_DEVICE_TOKEN = Pattern.compile("^https?://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
 
     @Override
     public void initialize(DeviceTokenCheck constraintAnnotation) {

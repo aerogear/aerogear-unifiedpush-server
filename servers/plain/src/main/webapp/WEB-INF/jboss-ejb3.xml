@@ -83,7 +83,26 @@
                 </activation-config-property>
             </activation-config>
         </message-driven>
-        
+        <message-driven>
+            <ejb-name>WebPushMessageConsumer</ejb-name>
+            <ejb-class>org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithVariantsConsumer</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>destination</activation-config-property-name>
+                    <activation-config-property-value>queue/WebPushMessageQueue</activation-config-property-value>
+                </activation-config-property>
+                <activation-config-property>
+                    <activation-config-property-name>destinationType</activation-config-property-name>
+                    <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+                </activation-config-property>
+                <activation-config-property>
+                    <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+                    <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+                
         <!-- Token Batch Queue MDBs -->
         <message-driven>
             <ejb-name>APNsTokenBatchConsumer</ejb-name>
@@ -154,6 +173,25 @@
                 </activation-config-property>
             </activation-config>
         </message-driven>
-        
+        <message-driven>
+            <ejb-name>WebPushTokenBatchConsumer</ejb-name>
+            <ejb-class>org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithTokensConsumer</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>destination</activation-config-property-name>
+                    <activation-config-property-value>queue/WebPushTokenBatchQueue</activation-config-property-value>
+                </activation-config-property>
+                <activation-config-property>
+                    <activation-config-property-name>destinationType</activation-config-property-name>
+                    <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+                </activation-config-property>
+                <activation-config-property>
+                    <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+                    <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+                
     </enterprise-beans>
 </jboss:ejb-jar>
