@@ -1,9 +1,15 @@
 package org.jboss.aerogear.unifiedpush.rest.shortlinks;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -14,11 +20,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.RandomStringUtils;
+import org.jboss.aerogear.unifiedpush.api.Alias;
+import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
+import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.rest.AbstractEndpoint;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
-import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
-import org.keycloak.common.VerificationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -29,11 +40,11 @@ import com.qmino.miredot.annotations.ReturnType;
 @Path("/shortlinks")
 public class ShortLinksEndpoint extends AbstractEndpoint {
 	private final Logger logger = LoggerFactory.getLogger(ShortLinksEndpoint.class);
+	private final static int VERIFICATION_CODE_LENGTH = 5;
+	private final static int VERIFICATION_LINK_LENGTH = 10;
 
 	@Inject
 	private DocumentService documentService;
-	@Inject
-	private IKeycloakService keycloakService;
 	@Inject
 	private AliasService aliasService;
 
@@ -76,35 +87,67 @@ public class ShortLinksEndpoint extends AbstractEndpoint {
 	 * @statuscode 200 Successful response for your request
 	 */
 	@OPTIONS
-	@Path("/{alias}")
+	@Path("/type/{type}/username/{alias}")
 	@ReturnType("java.lang.Void")
 	public Response crossOriginForApplicationPut(@Context HttpHeaders headers) {
 		return appendPreflightResponseHeaders(headers, Response.ok()).build();
 	}
 
-	@PUT	
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@PUT
+	@Consumes(MediaType.TEXT_PLAIN)
 	@ReturnType("java.lang.Void")
-	@Path("/{alias}")
-	public Response saveForAlias(@PathParam("alias") String alias, //
-			@FormParam("jwt") String token, //
+	@Path("/type/{type}/username/{alias}")
+	public Response code(@PathParam("type") String type, //
+			@PathParam("alias") String alias, //
+			String link, //
 			@Context HttpServletRequest request) { //
 
-		// Get device-token authentication
-		try {
-			keycloakService.validateEmailActionToken(token);
-		} catch (VerificationException e) {
-			logger.warn("Unable to verify JWT token");
-			logger.debug("Unable to verify JWT token", e);
+		long ttl = 3600;
+		String code = getCode(type);
+
+		// TODO - Validate JWT and use expire as TTL
+		// JWT validation should be enabled/disabled using -D to allow unit test
+
+		Alias aliasObj = aliasService.find(null, alias);
+		if (aliasObj == null) {
+			logger.warn("Unable to find alias " + alias + " for shortlinks generation");
+			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST), request);
 		}
-		
-		// TODO - store json for future usage.
-		// Extract jwt expiration and use it as document ttl
-		
+
+		DocumentContent doc = new DocumentContent(new DocumentKey(NullUUID.NULL.getUuid(), "SHORTLINKS"), link,
+				code);
+		documentService.save(doc, Long.valueOf(ttl).intValue());
+
 		try {
-			return appendAllowOriginHeader(Response.noContent(), request);
+			return appendAllowOriginHeader(Response.ok(code), request);
 		} catch (Exception ex) {
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
 		}
+	}
+
+	@GET
+	@Path("/{short}")
+	public Response code(@PathParam("short") String shortlink, //
+			@Context HttpServletRequest request) { //
+		
+		Stream<DocumentContent> docs = documentService.find(new DocumentMetadata(NullUUID.NULL.getUuid(), "SHORTLINKS", NullUUID.NULL.getUuid()), new QueryOptions(shortlink));
+		List<DocumentContent> links = docs.collect(Collectors.toList());
+		if (links.isEmpty()) {
+			return create401Response(request);
+		}
+		
+		try {
+			return Response.temporaryRedirect(new URI(links.get(0).getContent())).build();
+		} catch (URISyntaxException e) {
+			logger.error("Unable to redirect request", e);
+			return create401Response(request);
+		}
+	}
+
+	private String getCode(String type) {
+		if (type.equalsIgnoreCase("link"))
+			return RandomStringUtils.random(VERIFICATION_LINK_LENGTH, true, true);
+		else
+			return RandomStringUtils.random(VERIFICATION_CODE_LENGTH, false, true);
 	}
 }

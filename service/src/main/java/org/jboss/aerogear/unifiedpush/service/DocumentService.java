@@ -13,6 +13,8 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 public interface DocumentService {
 
 	DocumentContent save(DocumentContent doc);
+	
+	DocumentContent save(DocumentContent doc, int ttl);
 
 	DocumentContent save(DocumentMetadata metadata, String content, String id);
 

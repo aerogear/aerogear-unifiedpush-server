@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.cassandra.core.CassandraOperations;
+import org.springframework.data.cassandra.core.InsertOptions;
 import org.springframework.data.cassandra.core.cql.CassandraAccessor;
 import org.springframework.data.cassandra.repository.query.CassandraEntityInformation;
 import org.springframework.data.cassandra.repository.support.SimpleCassandraRepository;
@@ -40,7 +41,12 @@ public abstract class CassandraBaseDao<T, ID extends Serializable> extends Simpl
 			logger.warn("Using ConsistencyLevel ({}) lower then QUORUM might lead to inconsistency read/write",
 					getConsistencyLevel());
 	}
-
+	
+	public <S extends T> S save(S entity, int ttl) {
+		operations.insert(entity, InsertOptions.builder().ttl(ttl).build());
+		return entity;
+	}
+	
 	@Override
 	public <S extends T> S insert(S entity) {
 		throw new UnsupportedOperationException(

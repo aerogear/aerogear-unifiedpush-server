@@ -34,6 +34,10 @@ public class DocumentServiceImpl implements DocumentService {
 	public DocumentContent save(DocumentContent doc){
 		return (DocumentContent) documentDao.create(doc);
 	}
+	
+	public DocumentContent save(DocumentContent doc, int ttl){
+		return (DocumentContent) documentDao.create(doc, ttl);
+	}
 
 	@Override
 	public DocumentContent save(DocumentMetadata metadate, String content, String id) {

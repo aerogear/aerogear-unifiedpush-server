@@ -12,6 +12,8 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 public interface DocumentDao<T, ID> {
 
 	DocumentContent create(DocumentContent document);
+	
+	DocumentContent create(DocumentContent document, int ttl);
 
 	void delete(UUID pushApplicationId);
 
