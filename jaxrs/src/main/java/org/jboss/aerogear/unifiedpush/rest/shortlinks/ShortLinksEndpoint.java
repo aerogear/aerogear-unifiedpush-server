@@ -109,7 +109,6 @@ public class ShortLinksEndpoint extends AbstractEndpoint {
 			String link, //
 			@Context HttpServletRequest request) { //
 
-		long ttl = 3600;
 		String code = getCode(type);
 		String shortLink = getShortLink(code, request);
 
@@ -123,7 +122,7 @@ public class ShortLinksEndpoint extends AbstractEndpoint {
 		}
 
 		DocumentContent doc = new DocumentContent(new DocumentKey(NullUUID.NULL.getUuid(), "SHORTLINKS"), link, code);
-		documentService.save(doc, Long.valueOf(ttl).intValue());
+		documentService.save(doc);
 
 		try {
 			return appendAllowOriginHeader(Response.ok(shortLink), request);
@@ -163,10 +162,11 @@ public class ShortLinksEndpoint extends AbstractEndpoint {
 		try {
 			// extract code from short link
 			URI uri = new URI(shortlink);
+			String code = uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1);
 
 			Stream<DocumentContent> docs = documentService.find(
 					new DocumentMetadata(NullUUID.NULL.getUuid(), "SHORTLINKS", NullUUID.NULL.getUuid()),
-					new QueryOptions(uri.getPath()));
+					new QueryOptions(code));
 			List<DocumentContent> links = docs.collect(Collectors.toList());
 			if (links.isEmpty()) {
 				return create401Response(request);
