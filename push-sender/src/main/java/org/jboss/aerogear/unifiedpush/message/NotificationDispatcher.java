@@ -34,6 +34,8 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.Collection;
+import org.jboss.aerogear.unifiedpush.dto.Subscription;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithSubscriptions;
 
 /**
  * Receives a request for dispatching push notifications to specified devices from {@link TokenLoader}
@@ -72,6 +74,30 @@ public class NotificationDispatcher {
           );
     }
 
+    /**
+     * Receives a {@link UnifiedPushMessage} and list of device subscriptions that the
+     * message should be sent to, selects appropriate sender implementation that
+     * the push notifications are submitted to.
+     *
+     * @param msg object containing details about the payload and the related
+     * device tokens
+     */
+    public void sendMessagesToPushNetwork(@Observes @Dequeue MessageHolderWithSubscriptions msg) {
+        final Variant variant = msg.getVariant();
+        final UnifiedPushMessage unifiedPushMessage = msg.getUnifiedPushMessage();
+        final Collection<Subscription> deviceTokens = msg.getSubscriptions();
+
+        logger.info("Received UnifiedPushMessage from JMS queue, will now trigger the Push Notification delivery for the %s variant ({})", variant.getType().getTypeName(), variant.getVariantID());
+        senders.select(new SenderTypeLiteral(variant.getType())).get()
+                .sendPushMessage(variant, deviceTokens, unifiedPushMessage, msg.getPushMessageInformation().getId(),
+                        new SenderServiceCallback(
+                                variant,
+                                deviceTokens.size(),
+                                msg.getPushMessageInformation()
+                        )
+                );
+    }    
+    
     private class SenderServiceCallback implements NotificationSenderCallback {
         private final Variant variant;
         private final int tokenSize;

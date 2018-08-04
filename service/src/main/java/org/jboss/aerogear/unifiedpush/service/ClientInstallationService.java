@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 
 import java.util.List;
 import java.util.Set;
+import org.jboss.aerogear.unifiedpush.api.WebInstallation;
 
 /**
  * Service class used by the Server to work with Installations
@@ -37,6 +38,14 @@ public interface ClientInstallationService {
      */
     void addInstallation(Variant variant, Installation installation);
 
+    /**
+     * Store a new WebInstallation object on the database.
+     *
+     * @param variant the variant to store on
+     * @param webInstallation the web installation
+     */
+    void addWebInstallation(Variant variant, WebInstallation webInstallation);    
+    
     /**
      * Add new Installations objects, for importing devices on the database.
      *
@@ -77,6 +86,13 @@ public interface ClientInstallationService {
     void removeInstallation(Installation installation);
 
     /**
+     * Removes the related web installation entity.
+     *
+     * @param installation the installation
+     */    
+    void removeWebInstallationByInstallationId(Installation installation);
+    
+    /**
      * Removes all the installation entities in the {@link List}.
      *
      * @param installations list of installations
@@ -111,7 +127,19 @@ public interface ClientInstallationService {
      */
     Installation findInstallationForVariantByDeviceToken(String variantID, String deviceToken);
 
-
+    /**
+     * Used to get extra information by which a browser registered to receive push notifications
+     *
+     * Finder that returns the actual web client installation, identified by its
+     * device-token, for the given variant.
+     *
+     * @param variantID id of the variant
+     * @param deviceTokens list of tokens
+     *
+     * @return List of WebInstallation entities
+     */
+    List<WebInstallation> findWebInstallationsForVariantByDeviceToken(String variantID, List<String> deviceTokens);
+    
     /**
      * Used for Android installations which have less/other categories on repeated registration
      *

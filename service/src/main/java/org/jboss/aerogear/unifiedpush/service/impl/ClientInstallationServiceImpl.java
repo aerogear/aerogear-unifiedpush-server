@@ -37,6 +37,8 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.jboss.aerogear.unifiedpush.api.WebInstallation;
+import org.jboss.aerogear.unifiedpush.dao.WebInstallationDao;
 
 /**
  * (Default) implementation of the {@code ClientInstallationService} interface.
@@ -50,6 +52,9 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Inject
     private InstallationDao installationDao;
 
+    @Inject
+    private WebInstallationDao webInstallationDao;    
+    
     @Inject
     private CategoryDao categoryDao;
 
@@ -87,6 +92,38 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         }
     }
 
+    @Override
+    @Asynchronous    
+    public void addWebInstallation(Variant variant, WebInstallation entity){
+        
+        // does it already exist ?
+        Installation installation = this.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getInstallation().getDeviceToken());
+
+        // Needed for the Admin UI Only. Help for setting up Routes
+        entity.getInstallation().setPlatform(variant.getType().getTypeName());
+
+        // new device/client ?
+        if (installation == null) {
+            logger.trace("Performing new device/client registration");
+
+            // store the installation:
+            storeInstallationAndSetReferences(variant, entity.getInstallation());
+            webInstallationDao.create(entity);
+        } else {
+            // We only update the metadata, if the device is enabled:
+            if (installation.isEnabled()) {
+                logger.trace("Updating received metadata for an 'enabled' installation");
+
+                // fix variant property of installation object
+                installation.setVariant(variant);
+
+                // update the entity:
+                this.updateInstallation(installation, entity.getInstallation());
+                webInstallationDao.update(entity);
+            }
+        }        
+    }
+    
     @Override
     @Asynchronous
     public void addInstallations(Variant variant, List<Installation> installations) {
@@ -178,6 +215,11 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     @Override
+    public void removeWebInstallationByInstallationId(Installation installation) {
+        webInstallationDao.removeWebInstallationByInstallationId(installation.getId());
+    }    
+    
+    @Override
     @Asynchronous
     public void removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens) {
         // collect inactive installations for the given variant:
@@ -189,7 +231,9 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     @Override
     @Asynchronous
     public void removeInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
-        removeInstallation(findInstallationForVariantByDeviceToken(variantID, deviceToken));
+        Installation installation = findInstallationForVariantByDeviceToken(variantID, deviceToken);
+        removeWebInstallationByInstallationId(installation);
+        removeInstallation(installation);
     }
 
     @Override
@@ -197,6 +241,11 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         return installationDao.findInstallationForVariantByDeviceToken(variantID, deviceToken);
     }
 
+    @Override
+    public List<WebInstallation> findWebInstallationsForVariantByDeviceToken(String variantID, List<String> deviceTokens) {
+        return webInstallationDao.findWebInstallationForVariantByDeviceToken(variantID, deviceTokens);
+    }
+    
     @Override
     @Asynchronous
     public void unsubscribeOldTopics(Installation installation) {

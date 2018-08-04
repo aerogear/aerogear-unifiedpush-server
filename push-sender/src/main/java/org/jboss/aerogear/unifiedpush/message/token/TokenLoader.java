@@ -16,7 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.message.token;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -34,8 +36,10 @@ import javax.jms.JMSException;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.api.WebInstallation;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
+import org.jboss.aerogear.unifiedpush.dto.Subscription;
 import org.jboss.aerogear.unifiedpush.message.Criteria;
 import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
@@ -43,6 +47,7 @@ import org.jboss.aerogear.unifiedpush.message.configuration.SenderConfiguration;
 import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
 import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
 import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
+import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithSubscriptions;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
@@ -71,6 +76,10 @@ public class TokenLoader {
     @DispatchToQueue
     private Event<MessageHolderWithTokens> dispatchTokensEvent;
 
+    @Inject
+    @DispatchToQueue
+    private Event<MessageHolderWithSubscriptions> dispatchSubscriptionsEvent;    
+    
     @Inject
     @DispatchToQueue
     private Event<MessageHolderWithVariants> nextBatchEvent;
@@ -186,12 +195,36 @@ public class TokenLoader {
                     }
 
                     if (tokens.size() > 0) {
-                        if (tryToDispatchTokens(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens, serialId))) {
-                            logger.info(String.format("Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID()));
+                        if(VariantType.WEB_PUSH.equals(variant.getType())){
+                            Set<Subscription> subscriptions = new HashSet<>();                            
+                            List<String> tokenList = new ArrayList<>(tokens);
+                            final int STEP = 999;
+                            for(int i = 0; i < tokens.size(); i+=STEP){
+                                List<WebInstallation> webInstallations = 
+                                    clientInstallationService.findWebInstallationsForVariantByDeviceToken(variant.getId(), tokenList.subList(i, Math.min(i+STEP, tokens.size())));
+                                webInstallations.stream().forEach(
+                                        webInstallation -> 
+                                        subscriptions.add(new Subscription(
+                                                webInstallation.getInstallation().getDeviceToken(), 
+                                                webInstallation.getEndpoint(), 
+                                                webInstallation.getKey(), 
+                                                webInstallation.getAuth())));
+                            }                                    
+                            if (tryToDispatchSubscriptions(new MessageHolderWithSubscriptions(msg.getPushMessageInformation(), message, variant, subscriptions, serialId))) {
+                                logger.info(String.format("Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size(), variant.getType().getTypeName(), variant.getVariantID()));
+                            } else {
+                                logger.debug(String.format("Failing token loading transaction for batch token #%s for %s variant (%s), since queue is full, will retry...", serialId, variant.getType().getTypeName(), variant.getVariantID()));
+                                context.setRollbackOnly();
+                                return;
+                            }                            
                         } else {
-                            logger.debug(String.format("Failing token loading transaction for batch token #%s for %s variant (%s), since queue is full, will retry...", serialId, variant.getType().getTypeName(), variant.getVariantID()));
-                            context.setRollbackOnly();
-                            return;
+                            if (tryToDispatchTokens(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens, serialId))) {
+                                logger.info(String.format("Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size(), variant.getType().getTypeName(), variant.getVariantID()));
+                            } else {
+                                logger.debug(String.format("Failing token loading transaction for batch token #%s for %s variant (%s), since queue is full, will retry...", serialId, variant.getType().getTypeName(), variant.getVariantID()));
+                                context.setRollbackOnly();
+                                return;
+                            }                            
                         }
                         logger.info("Loaded batch #{}, containing {} tokens, for {} variant ({})", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID());
 
@@ -246,6 +279,26 @@ public class TokenLoader {
         }
     }
 
+    /**
+     * Tries to dispatch subscriptions; returns true if subscriptions were successfully
+     * queued. Detects when queue is full and in that case returns false.
+     *
+     * @return returns true if subscriptions were successfully queued; returns false if
+     * queue was full
+     */
+    private boolean tryToDispatchSubscriptions(MessageHolderWithSubscriptions msg) {
+        try {
+            dispatchSubscriptionsEvent.fire(msg);
+            return true;
+        } catch (MessageDeliveryException e) {
+            Throwable cause = e.getCause();
+            if (isQueueFullException(cause)) {
+                return false;
+            }
+            throw e;
+        }
+    }    
+    
     /*
      * When queue is full, ActiveMQ/Artemis throws an instance of org.apache.activemq.artemis.api.core.ActiveMQAddressFullException
      * In order to avoid hard dependency on that API for this check, we detect that queue is full by analyzing the name of the thrown exception.

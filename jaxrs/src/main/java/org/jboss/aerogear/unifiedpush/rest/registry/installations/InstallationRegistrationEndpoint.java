@@ -43,6 +43,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.util.List;
+import org.jboss.aerogear.unifiedpush.api.WebInstallation;
 
 @Path("/registry/device")
 public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
@@ -186,6 +187,88 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         return appendAllowOriginHeader(Response.ok(entity), request);
     }
 
+    /**
+     * RESTful API for Device registration. The Endpoint is protected using
+     * <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
+     *
+     * <pre>
+     * curl -u "variantID:secret"
+     *   -v -H "Accept: application/json" -H "Content-type: application/json" -H "aerogear-push-id: someid"
+     *   -X POST
+     *   -d '{
+     *    "installation": {
+     *         "deviceToken" : "someTokenString",
+     *         "deviceType" : "iPad",
+     *         "operatingSystem" : "iOS",
+     *         "osVersion" : "6.1.2",
+     *         "alias" : "someUsername or email adress...",
+     *         "categories" : ["football", "sport"]
+     *    },
+     *    "endpoint" : "anEndPoint",
+     *    "key" : "aSubscriptionKey",
+     *    "auth" : "aUserSubscriptionAuth"
+     *   }'
+     *   https://SERVER:PORT/context/rest/registry/device/web
+     * </pre>
+     *
+     * Details about JSON format can be found HERE!
+     *
+     * @param oldToken The previously registered deviceToken or an empty String. Provided by the header x-ag-old-token.
+     * @param entity {@link Installation} for Device registration
+     * @param request the request object @return registered {@link Installation}
+     *
+     * @requestheader x-ag-old-token the old push service dependant token (ie InstanceID in FCM). If present these tokens will be forcefully unregistered before the new token is registered.
+     *
+     * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
+     * @responseheader Access-Control-Allow-Credentials true
+     * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
+     *
+     * @statuscode 200 Successful storage of the device metadata
+     * @statuscode 400 The format of the client request was incorrect (e.g. missing required values)
+     * @statuscode 401 The request requires authentication
+     */
+    @POST
+    @Path("/web")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response registerWebInstallation(
+            @DefaultValue("") @HeaderParam("x-ag-old-token") final String oldToken,
+            WebInstallation entity,
+            @Context HttpServletRequest request) {
+
+        promDeviceRegisterRequestsTotal.inc();
+
+        // find the matching variation:
+        final Variant variant = loadVariantWhenAuthorized(request);
+        if (variant == null) {
+            return create401Response(request);
+        }
+
+        // Poor up-front validation for required token
+        final String deviceToken = entity.getInstallation().getDeviceToken();
+        if (deviceToken == null || !DeviceTokenValidator.isValidDeviceTokenForVariant(deviceToken, variant.getType())) {
+            logger.trace("Invalid device token was delivered: {} for variant type: {}", deviceToken, variant.getType());
+            return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST), request);
+        }
+
+        // The 'mobile application' on the device/client was launched.
+        // If the installation is already in the DB, let's update the metadata,
+        // otherwise we register a new installation:
+        logger.trace("Mobile Application on device was launched");
+
+        //The token has changed, remove the old one
+        if (!oldToken.isEmpty() && !oldToken.equals(entity.getInstallation().getDeviceToken())) {
+            logger.info("Deleting old device token {}", oldToken);
+            clientInstallationService.removeInstallationForVariantByDeviceToken(variant.getVariantID(), oldToken);
+        }
+
+        logger.trace("Adding new device to {} variant", variant.getName());
+        // async:
+        clientInstallationService.addWebInstallation(variant, entity);
+
+        return appendAllowOriginHeader(Response.ok(entity), request);
+    }    
+    
     /**
      * RESTful API for Push Notification metrics registration.
      * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).

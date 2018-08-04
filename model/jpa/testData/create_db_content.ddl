@@ -62,6 +62,15 @@ CREATE TABLE installation (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE web_installation (
+  id                VARCHAR(255) NOT NULL,
+  installation_id   VARCHAR(255)  NOT NULL,
+  endpoint          VARCHAR(5120) NOT NULL,
+  subscription_key  VARCHAR(255)  NOT NULL,
+  subscription_auth VARCHAR(255)  NOT NULL,
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE category (
   id   BIGINT NOT NULL,
   name VARCHAR(255) DEFAULT NULL,

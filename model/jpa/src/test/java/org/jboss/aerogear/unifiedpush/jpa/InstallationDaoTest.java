@@ -483,7 +483,7 @@ public class InstallationDaoTest {
     public void shouldSaveWhenWebPushTokenValid() {
         // given
         final Installation installation = new Installation();
-        installation.setDeviceToken("https://updates.push.services.mozilla.com/wpush/v1/gAAAAABXlQW2uvaJJk3Q6hey1cj2PjZYtGaDcY82DffVUF1OiV4Eu6SA1lds8jzKgZCR9JjIbioyv5jKwZQo2n6UxT8yRU3Es1qM2Fxmdv-p0cqGBhh4CjT5QNzlBAFRJ0OTLvisXB8e");
+        installation.setDeviceToken("dMHRCBKHZIc:APA91bHx4B6wSTnyIkdxnBzcog_jewh2Gwx0pq_TXdXFpVYyMAp-b3bKiCfyeiuJ0iIkVi3ZjXhI2YIoGkqh6E_zPsqxklT59N2b3WpqGOmFzE2QkeMvPBb4OCLJj2ssxMOsF_-eED0xgTo-O69QLdNAUgiN44XkQQ");
         
         final WebPushVariant variant = new WebPushVariant();
         variant.setName("WebPush Variant Name");

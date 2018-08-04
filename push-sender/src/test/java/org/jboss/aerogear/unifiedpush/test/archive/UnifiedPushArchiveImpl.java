@@ -29,6 +29,8 @@ import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageListener;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageProducer;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
+import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithSubscriptionsConsumer;
+import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithSubscriptionsProducer;
 import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithTokensConsumer;
 import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithTokensProducer;
 import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithVariantsConsumer;
@@ -80,6 +82,7 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
         return addClasses(AbstractJMSMessageListener.class)
                 .addClasses(MessageHolderWithVariantsConsumer.class, MessageHolderWithVariantsProducer.class)
                 .addClasses(MessageHolderWithTokensConsumer.class, MessageHolderWithTokensProducer.class)
+                .addClasses(MessageHolderWithSubscriptionsConsumer.class, MessageHolderWithSubscriptionsProducer.class)
                 .addAsWebInfResource(new File(WEB_RESOURCE_PATH + "jboss-ejb3.xml"), "jboss-ejb3.xml");
     }
 

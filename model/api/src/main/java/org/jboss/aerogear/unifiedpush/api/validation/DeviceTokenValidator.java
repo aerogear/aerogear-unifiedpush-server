@@ -44,10 +44,10 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
      */
     private static final Pattern WINDOWS_DEVICE_TOKEN = Pattern.compile("https?://.{0,1024}");
     /**
-     * Pattern for web-push is a valid uri that begins with https and updates.push.services.mozilla.com, e.g.
-     * https://updates.push.services.mozilla.com/wpush/v1/gAAAAABXlQW2uvaJJk3Q6hey1cj2PjZYtGaDcY82DffVUF1OiV4Eu6SA1lds8jzKgZCR9JjIbioyv5jKwZQo2n6UxT8yRU3Es1qM2Fxmdv-p0cqGBhh4CjT5QNzlBAFRJ0OTLvisXB8e
+     * Pattern for WebPush is harder to define that is why we kept it lenient it is at least 100 characters long and can
+     * consist of digits, alphas, - , _ and . and all have one of these separators
      */
-    private static final Pattern WEB_PUSH_DEVICE_TOKEN = Pattern.compile("^https?://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+    private static final Pattern WEB_PUSH_DEVICE_TOKEN = Pattern.compile("[0-9A-Za-z\\-_:]{100,}");
 
     @Override
     public void initialize(DeviceTokenCheck constraintAnnotation) {

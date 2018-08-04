@@ -50,6 +50,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAWebInstallationDao;
 
 import static org.mockito.Mockito.when;
 
@@ -115,6 +116,7 @@ public abstract class AbstractBaseServiceTest {
         beans.addManagedClass(ClientInstallationServiceImpl.class);
         beans.addManagedClass(JPAFlatPushMessageInformationDao.class);
         beans.addManagedClass(JPAInstallationDao.class);
+        beans.addManagedClass(JPAWebInstallationDao.class);
         beans.addManagedClass(GenericVariantServiceImpl.class);
         beans.addManagedClass(JPAVariantDao.class);
         beans.addManagedClass(JPACategoryDao.class);

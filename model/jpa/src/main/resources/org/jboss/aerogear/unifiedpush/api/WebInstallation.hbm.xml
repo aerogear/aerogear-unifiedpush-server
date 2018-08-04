@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="org.jboss.aerogear.unifiedpush.api.WebInstallation" table="web_installation">
+        <id name="id" type="java.lang.String">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>        
+        <many-to-one name="installation" cascade="all" column="installation_id" unique="true"/>                
+        <property name="endpoint" type="java.lang.String">
+            <column name="endpoint" />
+        </property>       
+        <property name="key" type="java.lang.String">
+            <column name="subscription_key" />
+        </property>        
+        <property name="auth" type="java.lang.String">
+            <column name="subscription_auth" />
+        </property>                        
+    </class>
+</hibernate-mapping>

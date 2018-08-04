@@ -16,27 +16,32 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import org.apache.http.HttpHeaders;
+import java.util.HashSet;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.WebPushVariant;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
+import java.util.Set;
+import nl.martijndwars.webpush.Notification;
+import nl.martijndwars.webpush.PushService;
+import org.jboss.aerogear.unifiedpush.dto.Subscription;
 
 @SenderType(VariantType.WEB_PUSH)
 public class WebPushNotificationSender implements PushNotificationSender {
 
     private final Logger logger = LoggerFactory.getLogger(WebPushNotificationSender.class);
 
+    /**
+     * The Time to live of GCM notifications
+     */
+    private static final int TTL = 255;    
+    
     private enum WebPushProvider {
 
         MPS("https://updates.push.services.mozilla.com/wpush/v1/"),
@@ -55,7 +60,7 @@ public class WebPushNotificationSender implements PushNotificationSender {
     }
 
     @Override
-    public void sendPushMessage(Variant variant, Collection<String> clientIdentifiers, UnifiedPushMessage pushMessage,
+    public void sendPushMessage(Variant variant, Object clientIdentifiers, UnifiedPushMessage pushMessage,
             String pushMessageInformationId, NotificationSenderCallback senderCallback) {
 
         int ttl = pushMessage.getConfig().getTimeToLive();
@@ -63,44 +68,53 @@ public class WebPushNotificationSender implements PushNotificationSender {
             ttl = 0;
         }
 
+        Set<Subscription> subscriptions = (HashSet<Subscription>) clientIdentifiers;
         int successCount = 0;
-        for (String endpoint : clientIdentifiers) {
+        for (Subscription subscription : subscriptions) {            
             try {
                 final WebPushVariant wpVariant = (WebPushVariant) variant;
-
-                final WebPushProvider wpp = defineProvider(endpoint, wpVariant.getCustomServerUrl());
-
-                final String postUrl = getPostUrl(endpoint, wpp);
-
-                final Request request = Request
-                        .Post(postUrl)
-                        .addHeader("TTL", String.valueOf(ttl));
+                final WebPushProvider wpp = defineProvider(subscription.getEndpoint(), wpVariant.getCustomServerUrl());
+                
+                Notification notification = null;
+                PushService pushService = null;                               
 
                 switch (wpp) {
                     case MPS:
-                        // nothing to do
+                        // Create a notification with the endpoint, userPublicKey from the subscription and a custom payload
+                        notification = new Notification(
+                                subscription.getEndpoint(),
+                                subscription.getKey(),
+                                subscription.getAuth(),
+                                pushMessage.getMessage().getAlert()
+                        );
+
+                        // Instantiate the push service, no need to use an API key for Push API
+                        pushService = new PushService();
                         break;
                     case FCM:
-                        final JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("to", extractSubscriptionId(endpoint));
-                        final String body = jsonObject.toJSONString();
 
-                        request.addHeader(HttpHeaders.AUTHORIZATION, "key=" + wpVariant.getFcmServerKey())
-                                .bodyString(body, ContentType.APPLICATION_JSON);
+                        // Or create a GcmNotification, in case of Google Cloud Messaging
+                        notification = new Notification(
+                                subscription.getEndpoint(),
+                                subscription.getUserPublicKey(),
+                                subscription.getAuthAsBytes(),
+                                pushMessage.getMessage().getAlert().getBytes("UTF-8"),
+                                TTL
+                        );
+
+                        // Instantiate the push service with a GCM API key
+                        pushService = new PushService(wpVariant.getFcmServerKey());
+                        
                         break;
                     case CUSTOM:
-                        request.bodyString(pushMessage.getMessage().getAlert(), ContentType.TEXT_PLAIN);
+                        // do nothing
                         break;
                     default:
                         throw new IllegalArgumentException("Unsupported WebPush provider: " + wpp);
                 }
 
-                logger.debug("WebPush request to {}: {}", wpp, request);
-
-                final HttpResponse response = request
-                        .execute()
-                        .returnResponse();
-
+                HttpResponse response = pushService.send(notification);
+                
                 final int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode >= HttpStatus.SC_OK && statusCode <= HttpStatus.SC_NO_CONTENT) {
                     senderCallback.onSuccess();
@@ -116,7 +130,7 @@ public class WebPushNotificationSender implements PushNotificationSender {
                 senderCallback.onError(e.getMessage());
             }
         }
-        logger.info("Sent {} web push notification of {}", successCount, clientIdentifiers.size());
+        logger.info("Sent {} web push notification of {}", successCount, subscriptions.size());
     }
 
     private static WebPushProvider defineProvider(String endpoint, String customServerUrl) {

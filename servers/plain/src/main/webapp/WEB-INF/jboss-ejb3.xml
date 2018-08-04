@@ -175,7 +175,7 @@
         </message-driven>
         <message-driven>
             <ejb-name>WebPushTokenBatchConsumer</ejb-name>
-            <ejb-class>org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithTokensConsumer</ejb-class>
+            <ejb-class>org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithSubscriptionsConsumer</ejb-class>
             <transaction-type>Container</transaction-type>
             <activation-config>
                 <activation-config-property>

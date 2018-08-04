@@ -133,6 +133,12 @@
             <version>4.3.6</version>
         </dependency>
 
+        <dependency>
+            <groupId>nl.martijndwars</groupId>
+            <artifactId>web-push</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+
     </dependencies>
 
     <profiles>
