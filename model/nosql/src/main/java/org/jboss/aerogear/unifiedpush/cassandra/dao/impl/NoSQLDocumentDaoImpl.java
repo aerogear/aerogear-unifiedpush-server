@@ -68,16 +68,6 @@ public class NoSQLDocumentDaoImpl extends CassandraBaseDao<DocumentContent, Docu
 		return document;
 	}
 	
-	public DocumentContent create(DocumentContent document, int ttl) {
-		if (document.getKey().getSnapshot() == null)
-			document.getKey().snapshot = UUIDs.timeBased();
-		
-		save(document, ttl);
-		createDb(document);
-		
-		return document;
-	}
-	
 	private void createDb(DocumentContent document) {
 		// Populate database object if doesn't exists.
 		DatabaseQueryKey qkey = new DatabaseQueryKey(document);

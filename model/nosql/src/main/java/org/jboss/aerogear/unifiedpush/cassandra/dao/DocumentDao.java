@@ -13,8 +13,6 @@ public interface DocumentDao<T, ID> {
 
 	DocumentContent create(DocumentContent document);
 	
-	DocumentContent create(DocumentContent document, int ttl);
-
 	void delete(UUID pushApplicationId);
 
 	void delete(UUID pushApplicaitonId, Alias alias);
