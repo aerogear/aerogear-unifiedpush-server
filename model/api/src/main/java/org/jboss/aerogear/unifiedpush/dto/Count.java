@@ -16,10 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.dto;
 
+import java.io.Serializable;
+
 /**
  * DTO transferring counts
  */
-public class Count {
+public class Count implements Serializable {
 
     private final long count;
 

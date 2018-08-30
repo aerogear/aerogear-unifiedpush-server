@@ -15,6 +15,7 @@
  */
 package org.jboss.aerogear.unifiedpush.dto;
 
+import java.io.Serializable;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -31,7 +32,7 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * DTO transferring device token with other required subscription data such as key, auth and endpoint
  */
-public class Subscription {
+public class Subscription implements Serializable {
     
     private String token;
     private String endpoint;

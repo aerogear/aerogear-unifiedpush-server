@@ -16,10 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.dto;
 
+import java.io.Serializable;
+
 /**
  * DTO transferring count together with number of receivers and app opened counter
  */
-public class MessageMetrics {
+public class MessageMetrics implements Serializable {
 
     private final long count;
     private final long appOpenedCounter;

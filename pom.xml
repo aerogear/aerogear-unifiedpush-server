@@ -130,7 +130,7 @@
                 <artifactId>bcprov-jdk15on</artifactId>
                 <version>1.60</version>
             </dependency>
-                        
+
          </dependencies>
     </dependencyManagement>
 

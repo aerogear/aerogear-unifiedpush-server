@@ -49,7 +49,7 @@ public class JPAWebInstallationDao extends JPABaseDao<WebInstallation, String> i
         return createQuery("select webInstallation from WebInstallation webInstallation "
                 + " join webInstallation.installation installation "
                 + " join installation.variant abstractVariant"
-                + " where abstractVariant.variantID = :variantID"
+                + " where abstractVariant.id = :variantID"
                 + " and installation.deviceToken IN :deviceTokens")
                 .setParameter("variantID", variantID)
                 .setParameter("deviceTokens", deviceTokens)

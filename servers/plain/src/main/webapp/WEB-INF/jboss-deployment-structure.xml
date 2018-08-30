@@ -2,7 +2,9 @@
     <deployment>
         <dependencies>
             <module name="org.jboss.resteasy.resteasy-jackson2-provider"  services="import" />
-            <module name="org.jboss.xnio"/>
+            <module name="org.jboss.xnio"/>            
+            <module name="org.bouncycastle" />
+            <module name="org.apache.httpcomponents" />
         </dependencies>
     </deployment>
 </jboss-deployment-structure>
