@@ -16,7 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender;
 
-import java.util.HashSet;
+import java.util.Collection;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
@@ -27,7 +27,6 @@ import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Set;
 import nl.martijndwars.webpush.Notification;
 import nl.martijndwars.webpush.PushService;
 import org.jboss.aerogear.unifiedpush.dto.Subscription;
@@ -68,7 +67,7 @@ public class WebPushNotificationSender implements PushNotificationSender {
             ttl = 0;
         }
 
-        Set<Subscription> subscriptions = (HashSet<Subscription>) clientIdentifiers;
+        Collection<Subscription> subscriptions = (Collection<Subscription>) clientIdentifiers;
         int successCount = 0;
         for (Subscription subscription : subscriptions) {            
             try {

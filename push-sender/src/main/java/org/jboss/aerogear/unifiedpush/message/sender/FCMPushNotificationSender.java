@@ -38,6 +38,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -70,7 +71,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
      */
     @Override
     public void sendPushMessage(Variant variant, Object clientIdentifiers, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback callback) {
-        List<String> tokens = (List<String>) clientIdentifiers; 
+        Collection<String> tokens = (Collection<String>) clientIdentifiers; 
         // no need to send empty list
         if (tokens.isEmpty()) {
             return;

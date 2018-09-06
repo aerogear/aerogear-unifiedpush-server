@@ -46,7 +46,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -80,7 +80,7 @@ public class PushyApnsSender implements PushNotificationSender {
 
     @Override
     public void sendPushMessage(final Variant variant, final Object clientIdentifiers, final UnifiedPushMessage pushMessage, final String pushMessageInformationId, final NotificationSenderCallback senderCallback) {
-        List<String> tokens = (List<String>) clientIdentifiers;
+        Collection<String> tokens = (Collection<String>) clientIdentifiers;
         // no need to send empty list
         if (tokens.isEmpty()) {
             return;

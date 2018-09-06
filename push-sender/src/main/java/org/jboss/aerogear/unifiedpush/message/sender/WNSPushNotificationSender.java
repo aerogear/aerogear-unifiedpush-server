@@ -47,6 +47,7 @@ import javax.ws.rs.core.UriBuilder;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +74,7 @@ public class WNSPushNotificationSender implements PushNotificationSender {
     @Override
     public void sendPushMessage(Variant variant, Object tokens, UnifiedPushMessage pushMessage, String pushMessageInformationId, NotificationSenderCallback senderCallback) {
         setPushMessageInformationId(pushMessageInformationId);
-        List<String> clientIdentifiers = (List<String>) tokens;
+        Collection<String> clientIdentifiers = (Collection<String>) tokens;
         // no need to send empty list
         if (clientIdentifiers.isEmpty()) {
             return;
