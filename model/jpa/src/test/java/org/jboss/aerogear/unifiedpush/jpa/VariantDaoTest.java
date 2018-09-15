@@ -37,6 +37,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import org.jboss.aerogear.unifiedpush.api.WebInstallation;
+import org.jboss.aerogear.unifiedpush.api.WebPushVariant;
 
 @RunWith(Arquillian.class)
 public class VariantDaoTest {
@@ -79,13 +81,13 @@ public class VariantDaoTest {
     @Test
     public void findVariantsByIDs() {
 
-        //two valid and two invalid variantIDs
-        final List<String> variantIDs = Arrays.asList("1", "2", "foo", "bar");
+        //three valid and two invalid variantIDs
+        final List<String> variantIDs = Arrays.asList("1", "2", "3", "foo", "bar");
 
         final List<Variant> variants = variantDao.findAllVariantsByIDs(variantIDs);
 
-        assertThat(variants).hasSize(2);
-        assertThat(variants).extracting("name").contains("Android Variant", "Something more Android");
+        assertThat(variants).hasSize(3);
+        assertThat(variants).extracting("name").contains("Android Variant", "Something more Android", "web push variant");
     }
 
     @Test
@@ -179,6 +181,21 @@ public class VariantDaoTest {
         assertThat(entityManager.find(Installation.class, "1")).isNull();
     }
 
+    @Test
+    public void deleteVariantIncludingWebInstallations() {
+        WebPushVariant queriedVariant = (WebPushVariant) variantDao.findByVariantID("3");
+        assertThat(entityManager.find(Installation.class, "10")).isNotNull();
+        assertThat(entityManager.find(WebInstallation.class, "1")).isNotNull();
+
+        variantDao.delete(queriedVariant);
+        entityManager.flush();
+        entityManager.clear();
+        assertThat(variantDao.findByVariantID("3")).isNull();
+
+        // Installation should be gone...
+        assertThat(entityManager.find(WebInstallation.class, "1")).isNull();
+        assertThat(entityManager.find(Installation.class, "10")).isNull();       
+    }    
 
     @Test
     public void shouldDetectThatVariantIdNotExists() {

@@ -101,10 +101,10 @@
         </row>
     </table>
 
-	<table name="SA.WEBPUSH_VARIANT"/>
+    <table name="SA.WEBPUSH_VARIANT"/>
 
-    <table name="SA.SIMPLE_PUSH_VARIANT"/>
-
+    <table name="SA.SIMPLE_PUSH_VARIANT"/>    
+    
     <table name="SA.INSTALLATION">
         <column>id</column>
         <column>enabled</column>
@@ -129,6 +129,7 @@
             <value>3</value>
         </row>
     </table>
+    <table name="SA.WEB_INSTALLATION" />
     <table name="SA.CATEGORY"/>
     <table name="SA.INSTALLATION_CATEGORY"/>
     <table name="SA.FLAT_PUSH_MESSAGE_INFO" />

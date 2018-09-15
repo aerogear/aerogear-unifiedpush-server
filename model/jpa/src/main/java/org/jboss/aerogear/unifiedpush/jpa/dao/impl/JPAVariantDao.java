@@ -27,6 +27,8 @@ public class JPAVariantDao extends JPABaseDao<Variant, String> implements Varian
 
     @Override
     public void delete(Variant variant) {
+        entityManager.createQuery("delete from WebInstallation w where (select i.variant from Installation i where i = w.installation) in :variant")
+                .setParameter("variant", variant).executeUpdate();        
         entityManager.createQuery("delete from Installation i where i.variant in :variant")
             .setParameter("variant", variant).executeUpdate();
         entityManager.createQuery("delete from VariantErrorStatus ves where ves.variant in :variant")

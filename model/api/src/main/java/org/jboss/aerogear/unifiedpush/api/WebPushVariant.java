@@ -32,9 +32,6 @@ public class WebPushVariant extends Variant {
     @Size(max = 255, message = "Sender ID must be max. 255 chars long")
     private String fcmSenderID;
 
-    @Size(max = 255, message = "Custom server URL must be max. 255 chars long")
-    private String customServerUrl;
-
     /**
      * The Server Key from the Firebase Cloud Messaging Console of a project which has been enabled for FCM.
      *
@@ -60,20 +57,6 @@ public class WebPushVariant extends Variant {
 
     public void setFcmSenderID(final String fcmSenderID) {
         this.fcmSenderID = fcmSenderID;
-    }
-
-    /**
-     * The URL to the custom WebPush Server, which could be used for WebPush notification in intranet
-     * or for IoT devices.
-     *
-     * @return the custom server URL
-     */
-    public String getCustomServerUrl() {
-        return customServerUrl;
-    }
-
-    public void setCustomServerUrl(String customServerUrl) {
-        this.customServerUrl = customServerUrl;
     }
 
     @Override

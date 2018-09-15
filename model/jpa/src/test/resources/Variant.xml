@@ -39,6 +39,14 @@
             <value>0</value>
             <value>foo</value>
         </row>
+        <row>
+            <value>3</value>
+            <value>webPush</value>
+            <value>web push variant</value>
+            <value>3</value>
+            <value>3</value>
+            <value>web</value>
+        </row>        
     </table>
 
     <table name="SA.ANDROID_VARIANT">
@@ -53,8 +61,19 @@
             <value>XYZQWEAWSvw:GGG91bGd6o9D-tU9JJJyvlL1iXibUde4fckYLG-LOLebCnB07Z1kTSycOC3a7HHxP1JFv6S_xxxxxMWgXQ2hZZIQoo3o4Jv0JbzPdNg4x4b0MRdjPM4M4cFOxBF4l4lozBRx4looPYso</value>
         </row>
     </table>
-    <table name="SA.IOS_VARIANT"/>
-    <table name="SA.WEBPUSH_VARIANT"/>
+    <table name="SA.IOS_VARIANT"/>   
+    
+    <table name="SA.WEBPUSH_VARIANT">
+        <column>id</column>
+        <column>fcm_server_key</column>
+        <column>fcm_sender_id</column>        
+        <row>
+            <value>3</value>
+            <value>KEY</value>
+            <value>ID</value>            
+        </row>
+    </table>
+    
     <table name="SA.SIMPLE_PUSH_VARIANT"/>
 
     <table name="SA.INSTALLATION">
@@ -67,6 +86,27 @@
             <value>true</value>
             <value>1234543212232301234567890012345678900123456789001234567890012345678900123456789001234567890012345678</value>
             <value>1</value>
+        </row>
+        <row>
+            <value>10</value>
+            <value>true</value>
+            <value>1234543212232301234567890012345678900123456789001234567890012345678900123456789001234567890012345678</value>
+            <value>3</value>
+        </row>        
+    </table>
+
+    <table name="SA.WEB_INSTALLATION">
+        <column>id</column>
+        <column>installation_id</column>
+        <column>endpoint</column>
+        <column>subscription_key</column>
+        <column>subscription_auth</column>
+        <row>
+            <value>1</value>
+            <value>10</value>
+            <value>1234543212232301234567890012345678900123456789001234567890012345678900123456789001234567890012345678</value>
+            <value>key</value>
+            <value>auth</value>
         </row>
     </table>
 

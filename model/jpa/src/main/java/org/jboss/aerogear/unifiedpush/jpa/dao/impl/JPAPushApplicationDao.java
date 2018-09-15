@@ -36,6 +36,8 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
         PushApplication entity = entityManager.find(PushApplication.class, pushApplication.getId());
         final List<Variant> variants = entity.getVariants();
         if (!variants.isEmpty()) {
+            entityManager.createQuery("delete from WebInstallation w where (select i.variant from Installation i where i = w.installation) in :variants")
+                    .setParameter("variants", variants).executeUpdate();            
             entityManager.createQuery("delete from Installation i where i.variant in :variants")
                     .setParameter("variants", variants).executeUpdate();
         }

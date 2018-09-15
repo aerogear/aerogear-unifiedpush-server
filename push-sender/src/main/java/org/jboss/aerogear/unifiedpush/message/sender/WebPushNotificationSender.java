@@ -72,7 +72,7 @@ public class WebPushNotificationSender implements PushNotificationSender {
         for (Subscription subscription : subscriptions) {            
             try {
                 final WebPushVariant wpVariant = (WebPushVariant) variant;
-                final WebPushProvider wpp = defineProvider(subscription.getEndpoint(), wpVariant.getCustomServerUrl());
+                final WebPushProvider wpp = defineProvider(subscription.getEndpoint());
                 
                 Notification notification = null;
                 PushService pushService = null;                               
@@ -132,11 +132,9 @@ public class WebPushNotificationSender implements PushNotificationSender {
         logger.info("Sent {} web push notification of {}", successCount, subscriptions.size());
     }
 
-    private static WebPushProvider defineProvider(String endpoint, String customServerUrl) {
+    private static WebPushProvider defineProvider(String endpoint) {
         if (endpoint.startsWith(WebPushProvider.MPS.getUrl())) {
             return WebPushProvider.MPS;
-        } else if (customServerUrl != null && endpoint.startsWith(customServerUrl)) {
-            return WebPushProvider.CUSTOM;
         } else {
             return WebPushProvider.FCM;
         }
