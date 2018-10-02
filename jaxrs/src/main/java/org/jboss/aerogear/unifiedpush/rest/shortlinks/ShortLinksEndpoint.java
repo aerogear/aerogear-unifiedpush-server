@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
@@ -45,7 +46,8 @@ public class ShortLinksEndpoint extends AbstractEndpoint {
 	private final Logger logger = LoggerFactory.getLogger(ShortLinksEndpoint.class);
 	private final static int VERIFICATION_CODE_LENGTH = 5;
 	private final static int VERIFICATION_LINK_LENGTH = 10;
-
+	private final static String LINK_PREFIX = "/sl/";
+	
 	@Inject
 	private DocumentService documentService;
 	@Inject
@@ -190,6 +192,10 @@ public class ShortLinksEndpoint extends AbstractEndpoint {
 	private String getShortLink(String code, HttpServletRequest request) {
 		// SL links requires rewrite rule from https://xxx.com/sl/code to
 		// https://xxx.com/unifiedpus-server/rest/shortlinks/code
-		return request.getScheme() + "://" + request.getServerName() + "/sl/" + code;
+		return request.getScheme() + "://" + request.getServerName() + LINK_PREFIX + code;
+	}
+	
+	public static String getCodeFromLink(String link) {
+		return StringUtils.substringAfterLast(link, LINK_PREFIX);
 	}
 }

@@ -56,14 +56,14 @@ public class ShortLinksEndpointTest extends RestEndpointTest {
 		try {
 			ResteasyWebTarget target = client.target(getRestFullPath() + "/shortlinks/type/code/username/" + alias);
 			Response response = target.request().put(Entity.entity("https://www.google.com", MediaType.TEXT_PLAIN));
-			String shortCode = response.readEntity(String.class);
+			String link = response.readEntity(String.class);
 
 			Assert.assertTrue(response.getStatus() == 200);
-			Assert.assertTrue(StringUtils.isNoneEmpty(shortCode));
+			Assert.assertTrue(StringUtils.isNoneEmpty(link));
 			
 			response.close();
 			
-			target = client.target(getRestFullPath() + "/shortlinks/" + shortCode);
+			target = client.target(getRestFullPath() + "/shortlinks/" + ShortLinksEndpoint.getCodeFromLink(link));
 			response = target.request().get();
 			Assert.assertTrue(response.getStatus() == 307);
 			
