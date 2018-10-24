@@ -92,8 +92,9 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	public User update(User entity) {
 		// Read before write validation.
 		User user = findById(entity.getKey()).orElse(null);
-		if (user == null)
+		if (user == null) {
 			return super.insert(entity);
+		}
 
 		return super.save(entity);
 	}
