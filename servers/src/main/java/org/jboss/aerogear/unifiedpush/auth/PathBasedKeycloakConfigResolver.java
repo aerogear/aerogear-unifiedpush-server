@@ -67,8 +67,9 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 		if (logger.isTraceEnabled())
 			logger.trace("Identified Bearer request, using keycloak realm! URI: {}, realm: {}", request.getURI(),
 					realm);
-
-		CustomKeycloakDeployment deployment = cache.get(realm);
+		String host = getHost(request); 
+		
+		CustomKeycloakDeployment deployment = cache.get(getCacheKey(realm, host));
 		if (null == deployment) {
 			InputStream is = null;
 
@@ -88,7 +89,7 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 			KeycloakUriBuilder serverBuilder = KeycloakUriBuilder.fromUri(baseUrl);
 			resolveUrls(deployment, serverBuilder);
 
-			cache.put(realm, deployment);
+			cache.put(getCacheKey(realm, host), deployment);
 		}
 
 		return deployment;
@@ -141,5 +142,18 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 		deployment.setUnregisterNodeUrl(
 				authUrlBuilder.clone().path(ServiceUrlConstants.CLIENTS_MANAGEMENT_UNREGISTER_NODE_PATH)
 						.build(deployment.getRealm()).toString());
+	}
+	
+	private String getHost(Request request) {
+		String host = request.getHeader("Host");
+		if (StringUtils.isEmpty(host)) {
+			host = request.getHeader("host");
+		}
+		
+		return StringUtils.isEmpty(host)? StringUtils.EMPTY : host;
+	}
+	
+	private String getCacheKey(String realm, String host) {
+		return new StringBuffer(realm).append("-").append(host).toString();
 	}
 }
