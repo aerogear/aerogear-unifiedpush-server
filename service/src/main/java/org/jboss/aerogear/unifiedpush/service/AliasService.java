@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.UserKey;
 import org.jboss.aerogear.unifiedpush.service.impl.AliasServiceImpl.Associated;
 
 public interface AliasService {
@@ -61,7 +62,16 @@ public interface AliasService {
 
 	Alias find(UUID pushApplicationId, UUID userId);
 
-	void remove(UUID pushApplicationId, String alias);
+	/**
+	 * Removes all entries matching provided alias
+	 *
+	 * @param pushApplicationId
+	 * 		related push application id
+	 * @param alias
+	 * 		required alias
+	 * @return list of actually removed user keys
+	 */
+	List<UserKey> remove(UUID pushApplicationId, String alias);
 
 	/**
 	 * Remove alias and user in KC.
@@ -72,10 +82,11 @@ public interface AliasService {
 	 *            selected userId
 	 * @param destructive
 	 *            flag to also remove user in KC.
+	 * @return the list of actually removed user keys
 	 */
-	void remove(UUID pushApplicationId, UUID userId, boolean destructive);
+	List<UserKey> remove(UUID pushApplicationId, UUID userId, boolean destructive);
 
-	void remove(UUID pushApplicationId, UUID userId);
+	List<UserKey> remove(UUID pushApplicationId, UUID userId);
 
 	void removeAll(PushApplication pushApplication, boolean destructive, PostDelete action);
 
