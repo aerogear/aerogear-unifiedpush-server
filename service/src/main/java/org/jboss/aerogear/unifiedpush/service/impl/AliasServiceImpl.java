@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -28,6 +29,7 @@ import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullAlias;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.UserKey;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PostDelete;
@@ -76,26 +78,29 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	@Override
-	public void remove(UUID pushApplicationId, String alias) {
+	public List<UserKey> remove(UUID pushApplicationId, String alias) {
 		// Remove any aliases related to this alias name
-		remove(pushApplicationId, alias, false);
+		return remove(pushApplicationId, alias, false);
 	}
 
 	@Override
-	public void remove(UUID pushApplicationId, UUID userId) {
-		remove(pushApplicationId, userId, false);
+	public List<UserKey> remove(UUID pushApplicationId, UUID userId) {
+		return remove(pushApplicationId, userId, false);
 	}
 
 	@Override
-	public void remove(UUID pushApplicationId, UUID userId, boolean destructive) {
+	public List<UserKey> remove(UUID pushApplicationId, UUID userId, boolean destructive) {
 		Alias alias = aliasDao.findOne(pushApplicationId, userId);
-		this.remove(pushApplicationId, StringUtils.isNotEmpty(alias.getEmail()) ? alias.getEmail() : alias.getOther(),
+		if (alias == null) {
+			return Collections.emptyList();
+		}
+		return this.remove(pushApplicationId, StringUtils.isNotEmpty(alias.getEmail()) ? alias.getEmail() : alias.getOther(),
 				destructive);
 	}
 
-	private void remove(UUID pushApplicationId, String alias, boolean destructive) {
+	private List<UserKey> remove(UUID pushApplicationId, String alias, boolean destructive) {
 		// Remove any aliases belong to user_id
-		aliasDao.remove(pushApplicationId, alias);
+		List<UserKey> removed = aliasDao.remove(pushApplicationId, alias);
 
 		if (destructive) {
 			// Remove user from keyCloak
@@ -103,6 +108,7 @@ public class AliasServiceImpl implements AliasService {
 
 			documentService.delete(pushApplicationId, find(pushApplicationId.toString(), alias));
 		}
+		return removed;
 	}
 
 	@Override
@@ -148,10 +154,10 @@ public class AliasServiceImpl implements AliasService {
 		}
 
 		Alias aliasObj = find(pushApplication == null ? null : pushApplication.getPushApplicationID(), alias);
-		
+
 		if (aliasObj != null)
 			return new Associated(true, getClientId(aliasObj.getPushApplicationId()));
-		
+
 		return new Associated(false);
 	}
 
@@ -178,7 +184,7 @@ public class AliasServiceImpl implements AliasService {
 
 		return alias;
 	}
-	
+
 	private String getClientId(UUID pushApplicationUUID) {
 		PushApplication pushApp = pushApplicationService.findByPushApplicationID(pushApplicationUUID.toString());
 		return KeycloakServiceImpl.getClientd(pushApp);
@@ -246,7 +252,7 @@ public class AliasServiceImpl implements AliasService {
 	public void createAsynchronous(Alias alias) {
 		create(alias);
 	}
-	
+
 	public class Associated {
 		private boolean associated;
 		private String client;
@@ -256,7 +262,7 @@ public class AliasServiceImpl implements AliasService {
 			this.associated = associated;
 			this.client = client;
 		}
-		
+
 		public Associated(boolean associated) {
 			super();
 			this.associated = associated;
@@ -270,5 +276,4 @@ public class AliasServiceImpl implements AliasService {
 			return client;
 		}
 	}
-
 }

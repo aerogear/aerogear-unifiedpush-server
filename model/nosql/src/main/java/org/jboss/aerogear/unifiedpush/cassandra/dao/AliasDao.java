@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.User;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.UserKey;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -22,7 +23,7 @@ public interface AliasDao {
 	void removeAll(UUID pushApplicationId);
 
 	@CacheEvict(value = CACHE_NAME)
-	void remove(UUID pushApplicationId, String alias);
+	List<UserKey> remove(UUID pushApplicationId, String alias);
 
 	@Cacheable(value = CACHE_NAME, condition = "#pushApplicationId != null", unless = "#result == null")
 	Alias findByAlias(UUID pushApplicationId, String alias);

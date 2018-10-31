@@ -92,8 +92,9 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	public User update(User entity) {
 		// Read before write validation.
 		User user = findById(entity.getKey()).orElse(null);
-		if (user == null)
+		if (user == null) {
 			return super.insert(entity);
+		}
 
 		return super.save(entity);
 	}
@@ -207,10 +208,13 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	}
 
 	@Override
-	public void remove(UUID pushApplicationId, String alias) {
-		findUserIds(alias, pushApplicationId).forEach(row -> {
-			deleteById(getKey(row));
-		});
+	public List<UserKey> remove(UUID pushApplicationId, String alias) {
+		Stream<Row> findUserIds = findUserIds(alias, pushApplicationId);
+		List<UserKey> userKeys = findUserIds.map(NoSQLUserDaoImpl::getKey).collect(Collectors.toList());
+		for (UserKey userKey : userKeys) {
+			deleteById(userKey);
+		}
+		return userKeys;
 	}
 
 	/*
@@ -269,7 +273,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 
 	}
 
-	private UserKey getKey(Row row) {
+	private static UserKey getKey(Row row) {
 		return new UserKey(row.getUUID(0), row.getUUID(1), row.getString(2));
 	}
 

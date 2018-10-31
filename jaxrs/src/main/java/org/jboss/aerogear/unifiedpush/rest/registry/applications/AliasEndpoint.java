@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -41,6 +42,7 @@ import javax.ws.rs.core.Response.Status;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.AliasAlreadyExists;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.UserKey;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.PasswordContainer;
@@ -171,7 +173,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	@ReturnType("org.jboss.aerogear.unifiedpush.service.impl.AliasServiceImpl.Associated")
 	public Response isAssociated(@PathParam("alias") String alias, @QueryParam("fqdn") String fqdn,
 			@Context HttpServletRequest request) {
-		Associated associated = aliasService.associated(alias, fqdn);	
+		Associated associated = aliasService.associated(alias, fqdn);
 		return appendAllowOriginHeader(Response.ok().entity(associated), request);
 	}
 
@@ -484,24 +486,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-	public Response delete(@PathParam("id") String id, @Context HttpServletRequest request) {
-		try {
-			final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
-					pushAppService);
-			if (pushApplication == null) {
-				return Response.status(Status.UNAUTHORIZED)
-						.header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-						.entity("Unauthorized Request").build();
-			}
-
-			aliasService.remove(UUID.fromString(pushApplication.getPushApplicationID()), //
-					UUID.fromString(id));
-
-			return Response.ok().build();
-		} catch (Exception e) {
-			logger.error(String.format("Cannot delete alias by alias id %s", id), e);
-			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
-		}
+	public Response delete(@PathParam("id") String id, @QueryParam("mustExist") @DefaultValue("true") boolean mustExist, @Context HttpServletRequest request) {
+		return deleteBy(id, mustExist, request, pushAppId -> aliasService.remove(UUID.fromString(pushAppId), UUID.fromString(id)));
 	}
 
 	/**
@@ -527,7 +513,11 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	@Path("/name/{alias}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-	public Response deleteByName(@PathParam("alias") String alias, @Context HttpServletRequest request) {
+	public Response deleteByName(@PathParam("alias") String alias, @QueryParam("mustExist") @DefaultValue("true") boolean mustExist, @Context HttpServletRequest request) {
+		return deleteBy(alias, mustExist, request, pushAppId -> aliasService.remove(UUID.fromString(pushAppId), alias));
+	}
+
+	private Response deleteBy(Object key, boolean mustExist, HttpServletRequest request, Function<? super String, ? extends List<UserKey>> remover) {
 		try {
 			final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
 					pushAppService);
@@ -537,12 +527,20 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 						.entity("Unauthorized Request").build();
 			}
 
-			aliasService.remove(UUID.fromString(pushApplication.getPushApplicationID()), //
-					alias);
+
+			List<UserKey> removed = remover.apply(pushApplication.getPushApplicationID());
+
+			if (removed.isEmpty()) {
+				if (mustExist) {
+					throw new IllegalArgumentException("requested key " + key + " not found");
+				}
+
+				return Response.noContent().build();
+			}
 
 			return Response.ok().build();
 		} catch (Exception e) {
-			logger.error(String.format("Cannot delete alias by alias name %s", alias), e);
+			logger.error(String.format("Cannot delete user by alias key %s", key), e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
 		}
 	}
