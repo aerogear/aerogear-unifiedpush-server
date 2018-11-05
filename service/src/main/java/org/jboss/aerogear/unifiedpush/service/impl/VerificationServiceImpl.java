@@ -14,6 +14,7 @@ import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCode;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCodeKey;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
@@ -66,7 +67,37 @@ public class VerificationServiceImpl implements VerificationService {
 		return initiateDeviceVerification(installation, variant);
 	}
 
+	public String initiateDeviceVerification(String alias) {
+		// create a random string made up of numbers
+		String verificationCode = RandomStringUtils.random(VERIFICATION_CODE_LENGTH, false, true);
+
+		Alias aliasObj = aliasService.find(null, alias);
+
+		if (aliasObj == null) {
+			logger.warn("Missing alias, unable to send verification code!");
+			return null;
+		}
+
+		// Send Message
+		verificationService.sendVerificationMessage(aliasObj.getPushApplicationId().toString(), alias,
+				verificationCode);
+
+		OtpCodeKey okey = new OtpCodeKey(NullUUID.NULL.getUuid(), alias, verificationCode);
+
+		logger.debug("Add new otpcache code: {}, to variant: {}", okey.getCode(), okey.getVariantId());
+		addToCache(okey);
+
+		// Write code to cassandra with default ttl of one hour
+		codeService.save(okey);
+
+		return verificationCode;
+	}
+
 	@Override
+	@Deprecated
+	/**
+	 * Once only KC registration is supported, remove this method.
+	 */
 	public String initiateDeviceVerification(Installation installation, Variant variant) {
 		// create a random string made up of numbers
 		String verificationCode = RandomStringUtils.random(VERIFICATION_CODE_LENGTH, false, true);
@@ -98,28 +129,50 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 
 	@Override
+	public VerificationResult verifyDevice(String alias, UUID variantId,
+			InstallationVerificationAttempt verificationAttempt) {
+		Alias aliasObj = aliasService.find(null, alias);
+
+		if (aliasObj == null) {
+			logger.warn("Missing alias, unable to send verification code!");
+			return null;
+		}
+		
+		OtpCodeKey okey = new OtpCodeKey(variantId, alias, verificationAttempt.getCode());
+
+		Set<Object> codes = getCodes(okey);
+
+		if ((codes != null && codes.contains(verificationAttempt.getCode())) || isMasterCode(okey)) {
+			// Remove from local cache
+			deviceToToken.remove(okey);
+
+			// Remove from cassandra
+			codeService.delete(okey);
+
+			// Enable OAuth2 User
+			if (keycloakService.isInitialized() && verificationAttempt.isOauth2()) {
+				keycloakService.createVerifiedUserIfAbsent(alias, verificationAttempt.getCode());
+			}
+
+			return VerificationResult.SUCCESS;
+		} else {
+			logger.debug("Verification attempt failed for tokenId: {}, VariantId: {}, code: {}", okey.getTokenId(),
+					okey.getVariantId(), okey.getCode());
+			return VerificationResult.FAIL;
+		}
+	}
+
+	@Override
+	@Deprecated
+	/**
+	 * Once only KC registration is supported, remove this method.
+	 */
 	public VerificationResult verifyDevice(Installation installation, Variant variant,
 			InstallationVerificationAttempt verificationAttempt) {
 		OtpCodeKey okey = new OtpCodeKey(UUID.fromString(variant.getVariantID()), installation.getDeviceToken(),
 				verificationAttempt.getCode());
 
-		// Get code from local cache
-		Set<Object> codes = deviceToToken.get(okey);
-
-		// Reload from cassandra
-		if (codes == null) {
-			logger.debug("Missing code form local cache, trying to use cassandra backing cache");
-			OtpCode code = codeService.findOne(okey);
-			if (code != null) {
-				logger.debug("Otp code fetched form cassandra backing cache");
-				// Initialize local cache from backing cache
-				addToCache(code.getKey());
-				codes = deviceToToken.get(code.getKey());
-			} else {
-				logger.debug("Unable to locate verification code for tokenId: {}, VariantId: {}, code: {}",
-						okey.getTokenId(), okey.getVariantId(), okey.getCode());
-			}
-		}
+		Set<Object> codes = getCodes(okey);
 
 		if ((codes != null && codes.contains(verificationAttempt.getCode())) || isMasterCode(okey)) {
 			installation.setEnabled(true);
@@ -144,6 +197,28 @@ public class VerificationServiceImpl implements VerificationService {
 					okey.getVariantId(), okey.getCode());
 			return VerificationResult.FAIL;
 		}
+	}
+
+	private Set<Object> getCodes(OtpCodeKey okey) {
+		// Get code from local cache
+		Set<Object> codes = deviceToToken.get(okey);
+
+		// Reload from cassandra
+		if (codes == null) {
+			logger.debug("Missing code form local cache, trying to use cassandra backing cache");
+			OtpCode code = codeService.findOne(okey);
+			if (code != null) {
+				logger.debug("Otp code fetched form cassandra backing cache");
+				// Initialize local cache from backing cache
+				addToCache(code.getKey());
+				codes = deviceToToken.get(code.getKey());
+			} else {
+				logger.debug("Unable to locate verification code for tokenId: {}, VariantId: {}, code: {}",
+						okey.getTokenId(), okey.getVariantId(), okey.getCode());
+			}
+		}
+
+		return codes;
 	}
 
 	private boolean isMasterCode(OtpCodeKey okey) {

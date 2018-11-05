@@ -136,7 +136,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	@OPTIONS
 	@ReturnType("java.lang.Void")
 	public Response crossOriginForInstallations(@Context HttpHeaders headers) {
-
 		return appendPreflightResponseHeaders(headers, Response.ok()).build();
 	}
 

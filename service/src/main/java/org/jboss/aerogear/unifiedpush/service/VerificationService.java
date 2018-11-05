@@ -1,5 +1,7 @@
 package org.jboss.aerogear.unifiedpush.service;
 
+import java.util.UUID;
+
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -25,7 +27,9 @@ public interface VerificationService {
 	 * @return the verification code issued to the installation.
 	 */
 	String initiateDeviceVerification(Installation installation, Variant variant);
-
+	
+	String initiateDeviceVerification(String alias);
+	
 	String retryDeviceVerification(String deviceToken, Variant variant);
 
 	/**
@@ -44,6 +48,8 @@ public interface VerificationService {
 	VerificationResult verifyDevice(Installation installation, Variant variant,
 			InstallationVerificationAttempt verificationAttempt);
 
+	VerificationResult verifyDevice(String alias, UUID variantId,
+			InstallationVerificationAttempt verificationAttempt);
 	/**
 	 * Clear runtime cache
 	 */
