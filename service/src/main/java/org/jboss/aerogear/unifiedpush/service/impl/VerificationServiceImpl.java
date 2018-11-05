@@ -62,7 +62,7 @@ public class VerificationServiceImpl implements VerificationService {
 			if (cacheManager == null) {
 				synchronized (this) {
 					if (cacheManager == null) {
-						cacheManager = (CacheContainer) new InitialContext().lookup("java:jboss/infinispan/aerogear");
+						cacheManager = (CacheContainer) new InitialContext().lookup("java:jboss/infinispan/container/aerogear");
 						if (EmbeddedCacheManager.class.isAssignableFrom(cacheManager.getClass())) {
 							initContainerManaged(cacheManager);
 						}
@@ -88,7 +88,7 @@ public class VerificationServiceImpl implements VerificationService {
 	protected void initContainerManaged(CacheContainer cacheContainer) {
 		try {
 			EmbeddedCacheManager cacheManager = (EmbeddedCacheManager) cacheContainer;
-			deviceToToken = cacheManager.getCache("otpCodes", true);
+			deviceToToken = cacheManager.getCache("otpcodes", true);
 
 			Transport transport = cacheManager.getTransport();
 			if (transport != null) {
