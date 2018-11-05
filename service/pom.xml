@@ -91,12 +91,6 @@
 			<artifactId>keycloak-admin-client</artifactId>
 			<version>${keycloak.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.keycloak</groupId>
-			<artifactId>keycloak-services</artifactId>
-			<version>${keycloak.version}</version>
-		</dependency>
 		
 		<dependency>
 			<groupId>org.keycloak</groupId>
@@ -122,6 +116,12 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-multipart-provider</artifactId>
+			<scope>provided</scope>
+		</dependency>
+				
 		<dependency>
 			<groupId>org.infinispan</groupId>
 			<artifactId>infinispan-core</artifactId>

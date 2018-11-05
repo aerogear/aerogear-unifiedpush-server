@@ -13,15 +13,12 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration.DomainMatcher;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.keycloak.TokenVerifier;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
-import org.keycloak.authentication.actiontoken.verifyemail.VerifyEmailActionToken;
-import org.keycloak.common.VerificationException;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
@@ -384,10 +381,5 @@ public class KeycloakServiceImpl implements IKeycloakService {
 		}
 
 		return StringUtils.EMPTY;
-	}
-	
-	public VerifyEmailActionToken validateEmailActionToken(String token) throws VerificationException {
-		return TokenVerifier.create(token, VerifyEmailActionToken.class).verify().getToken();
-		
 	}
 }
