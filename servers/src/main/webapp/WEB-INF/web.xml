@@ -19,10 +19,6 @@
 	</listener>
 
 	<resource-ref>
-		<res-ref-name>infinispan/aerogear</res-ref-name>
-		<lookup-name>java:jboss/infinispan/container/aerogear</lookup-name>
-	</resource-ref>
-	<resource-ref>
 		<res-ref-name>infinispan/config/otpcodes</res-ref-name>
 		<lookup-name>java:jboss/infinispan/configuration/aerogear/otpcodes</lookup-name>
 	</resource-ref>
