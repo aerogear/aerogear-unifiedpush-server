@@ -22,6 +22,11 @@
 		<res-ref-name>infinispan/config/otpcodes</res-ref-name>
 		<lookup-name>java:jboss/infinispan/configuration/aerogear/otpcodes</lookup-name>
 	</resource-ref>
+	
+	<resource-ref>
+		<res-ref-name>infinispan/config/clusterevents</res-ref-name>
+		<lookup-name>java:jboss/infinispan/configuration/aerogear/clusterevents</lookup-name>
+	</resource-ref>
 
 	<!-- Spring Security -->
 	<filter>

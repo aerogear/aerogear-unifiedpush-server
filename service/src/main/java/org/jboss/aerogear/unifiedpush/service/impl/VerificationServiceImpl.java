@@ -3,19 +3,13 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.infinispan.manager.CacheContainer;
-import org.infinispan.manager.EmbeddedCacheManager;
-import org.infinispan.remoting.transport.Transport;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
@@ -24,6 +18,7 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCode;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCodeKey;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
+import org.jboss.aerogear.unifiedpush.service.InfinispanCacheService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
@@ -40,6 +35,7 @@ public class VerificationServiceImpl implements VerificationService {
 	private final Logger logger = LoggerFactory.getLogger(VerificationServiceImpl.class);
 
 	private ConcurrentMap<OtpCodeKey, Set<Object>> deviceToToken;
+	private ConcurrentMap<String, String> events;
 
 	@Inject
 	private IConfigurationService configuration;
@@ -53,51 +49,13 @@ public class VerificationServiceImpl implements VerificationService {
 	private AliasService aliasService;
 	@Inject
 	private OtpCodeService codeService;
-
-	protected CacheContainer cacheManager;
+	@Inject
+	protected InfinispanCacheService cacheService;
 
 	@PostConstruct
 	private void startup() {
-		try {
-			if (cacheManager == null) {
-				synchronized (this) {
-					if (cacheManager == null) {
-						cacheManager = (CacheContainer) new InitialContext().lookup("java:jboss/infinispan/container/aerogear");
-						if (EmbeddedCacheManager.class.isAssignableFrom(cacheManager.getClass())) {
-							initContainerManaged(cacheManager);
-						}
-					}
-				}
-
-				logger.info("Using container managed Infinispan cache container, lookup={}",
-						"java:jboss/infinispan/aerogear");
-			}
-		} catch (NamingException e) {
-			logger.warn("Unable to lookup infinispan cache java:jboss/infinispan/aerogear");
-		} finally {
-			synchronized (this) {
-				if (deviceToToken == null) {
-					logger.warn(
-							"Unable to locate infinispan cache installationverification, rolling back to ConcurrentHashMap impl!");
-					deviceToToken = new ConcurrentHashMap<>();
-				}
-			}
-		}
-	}
-
-	protected void initContainerManaged(CacheContainer cacheContainer) {
-		try {
-			EmbeddedCacheManager cacheManager = (EmbeddedCacheManager) cacheContainer;
-			deviceToToken = cacheManager.getCache("otpcodes", true);
-
-			Transport transport = cacheManager.getTransport();
-			if (transport != null) {
-				transport.getAddress().toString();
-				cacheManager.getCacheManagerConfiguration().transport().siteId();
-			}
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to retrieve cache container", e);
-		}
+		deviceToToken = cacheService.getCache("otpcodes");
+		events = cacheService.getCache("clusterevents");
 	}
 
 	@Override
@@ -206,6 +164,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 		codes.add(okey.getCode());
 		deviceToToken.putIfAbsent(okey, codes);
+		events.putIfAbsent("eventsTest", RandomStringUtils.random(5));
 	}
 
 	public void clearCache() {

@@ -310,14 +310,14 @@
 			<dependency>
 				<groupId>org.infinispan</groupId>
 				<artifactId>infinispan-core</artifactId>
-				<version>8.2.8.Final</version>
+				<version>${org.infinispan}</version>
 				<scope>provided</scope>
 			</dependency>
 
 			<dependency>
 				<groupId>org.infinispan</groupId>
 				<artifactId>infinispan-cachestore-remote</artifactId>
-				<version>8.2.8.Final</version>
+				<version>${org.infinispan}</version>
 				<scope>provided</scope>
 			</dependency>
 
@@ -548,6 +548,7 @@
 		<postgresql.version>42.1.4</postgresql.version>
 		<fasterxml.version>2.9.5</fasterxml.version>
 		<wildfly.version>13.0.0.Final</wildfly.version>
+		<org.infinispan>9.2.4.Final</org.infinispan>
 		<springframework.version>5.0.2.RELEASE</springframework.version>
 		<springsecurity.version>5.0.0.RELEASE</springsecurity.version>
 		<reactor-core.version>3.1.0.RELEASE</reactor-core.version>
