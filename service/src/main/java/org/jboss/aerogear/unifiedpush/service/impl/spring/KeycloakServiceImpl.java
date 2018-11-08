@@ -161,8 +161,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	 * Create user must be done synchronously and prevent clients from
 	 * authenticating before KC operation is complete.
 	 *
-	 * @param userName
-	 *            unique username
+	 * @param userName unique username
 	 */
 	public void createUserIfAbsent(String userName) {
 		if (!isInitialized()) {
@@ -186,10 +185,8 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	 * Create user must be done synchronously and prevent clients from
 	 * authenticating before KC operation is complete.
 	 *
-	 * @param userName
-	 *            unique userName
-	 * @param password
-	 *            password
+	 * @param userName unique userName
+	 * @param password password
 	 */
 	public void createVerifiedUserIfAbsent(String userName, String password) {
 		if (!isInitialized()) {
@@ -227,7 +224,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 			user.setEmailVerified(true);
 			user.setEmail(userName);
 
-			user.setCredentials(Arrays.asList(getUserCredentials(password)));
+			user.setCredentials(Arrays.asList(getUserCredentials(password, false)));
 		}
 
 		return user;
@@ -292,7 +289,16 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	}
 
 	@Override
+	public void resetUserPassword(String aliasId, String newPassword) {
+		updateUserPassword(aliasId, null, newPassword, true);
+	}
+
+	@Override
 	public void updateUserPassword(String aliasId, String currentPassword, String newPassword) {
+		updateUserPassword(aliasId, currentPassword, newPassword, false);
+	}
+
+	private void updateUserPassword(String aliasId, String currentPassword, String newPassword, boolean temp) {
 		UserRepresentation user = getUser(aliasId);
 		if (user == null) {
 			logger.debug(String.format("Unable to find user %s, in keyclock", aliasId));
@@ -301,11 +307,11 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
 		boolean isCurrentPasswordValid = isCurrentPasswordValid(user, currentPassword);
 
-		if (isCurrentPasswordValid == true) {
+		if (isCurrentPasswordValid == true || temp) {
 			UsersResource users = this.realm.users();
 			UserResource userResource = users.get(user.getId());
 
-			userResource.resetPassword(getUserCredentials(newPassword));
+			userResource.resetPassword(getUserCredentials(newPassword, temp));
 		}
 	}
 
@@ -314,10 +320,11 @@ public class KeycloakServiceImpl implements IKeycloakService {
 		return true;
 	}
 
-	private CredentialRepresentation getUserCredentials(String password) {
+	private CredentialRepresentation getUserCredentials(String password, boolean tmp) {
 		CredentialRepresentation credential = new CredentialRepresentation();
 		credential.setType(CredentialRepresentation.PASSWORD);
 		credential.setValue(password);
+		credential.setTemporary(tmp);
 
 		return credential;
 	}

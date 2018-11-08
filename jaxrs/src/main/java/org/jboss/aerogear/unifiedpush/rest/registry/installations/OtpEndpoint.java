@@ -3,12 +3,14 @@ package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -71,9 +73,11 @@ public class OtpEndpoint extends AbstractBaseEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult")
-	public Response enable(InstallationVerificationAttempt verificationAttempt, @Context HttpServletRequest request) {
+	public Response enable(InstallationVerificationAttempt verificationAttempt,
+			@DefaultValue("false") @QueryParam("reset") boolean reset, @Context HttpServletRequest request) {
+
 		VerificationResult result = verificationService.verifyDevice(verificationAttempt.getDeviceToken(),
-				NullUUID.NULL.getUuid(), verificationAttempt);
+				NullUUID.NULL.getUuid(), verificationAttempt, reset);
 
 		if (result == null) {
 			return appendAllowOriginHeader(

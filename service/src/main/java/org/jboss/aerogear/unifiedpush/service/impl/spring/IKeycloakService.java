@@ -23,6 +23,8 @@ public interface IKeycloakService {
 
 	void updateUserPassword(String aliasId, String currentPassword, String newPassword);
 
+	void resetUserPassword(String aliasId, String newPassword);
+
 	boolean isInitialized();
 
 	String strip(String fqdn);

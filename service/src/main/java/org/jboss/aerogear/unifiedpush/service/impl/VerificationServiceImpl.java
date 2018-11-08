@@ -130,7 +130,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 	@Override
 	public VerificationResult verifyDevice(String alias, UUID variantId,
-			InstallationVerificationAttempt verificationAttempt) {
+			InstallationVerificationAttempt verificationAttempt, boolean resetOnly) {
 		Alias aliasObj = aliasService.find(null, alias);
 
 		if (aliasObj == null) {
@@ -150,8 +150,13 @@ public class VerificationServiceImpl implements VerificationService {
 			codeService.delete(okey);
 
 			// Enable OAuth2 User
+			
 			if (keycloakService.isInitialized() && verificationAttempt.isOauth2()) {
-				keycloakService.createVerifiedUserIfAbsent(alias, verificationAttempt.getCode());
+				if (resetOnly) {
+					keycloakService.resetUserPassword(alias, verificationAttempt.getCode());
+				}else {
+					keycloakService.createVerifiedUserIfAbsent(alias, verificationAttempt.getCode());
+				}
 			}
 
 			return VerificationResult.SUCCESS;

@@ -49,7 +49,7 @@ public interface VerificationService {
 			InstallationVerificationAttempt verificationAttempt);
 
 	VerificationResult verifyDevice(String alias, UUID variantId,
-			InstallationVerificationAttempt verificationAttempt);
+			InstallationVerificationAttempt verificationAttempt, boolean resetOnly);
 	/**
 	 * Clear runtime cache
 	 */
