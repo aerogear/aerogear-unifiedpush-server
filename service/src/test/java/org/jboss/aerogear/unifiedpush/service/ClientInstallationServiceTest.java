@@ -87,7 +87,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		String deviceToken = TestUtils.generateFakedDeviceTokenString().toUpperCase();
 		device.setDeviceToken(deviceToken);
 
-		clientInstallationService.addInstallation(iOSVariant, device);
+		clientInstallationService.addInstallation(iOSVariant, device, false);
 
 		assertThat(clientInstallationService.findInstallationForVariantByDeviceToken(iOSVariant.getVariantID(),
 				deviceToken)).isNull();
@@ -101,7 +101,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		Installation device = new Installation();
 		String deviceToken = TestUtils.generateFakedDeviceTokenString().toUpperCase();
 		device.setDeviceToken(deviceToken);
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 
 		assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null))
 				.hasSize(1);
@@ -111,13 +111,13 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		otherDevice.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
 		otherDevice.setAlias("username");
 
-		clientInstallationService.addInstallation(androidVariant, otherDevice);
+		clientInstallationService.addInstallation(androidVariant, otherDevice, false);
 		assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null))
 				.hasSize(2);
 
 		// Replace token and re-registered
 		otherDevice.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
-		clientInstallationService.addInstallation(androidVariant, otherDevice);
+		clientInstallationService.addInstallation(androidVariant, otherDevice, false);
 		assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null))
 				.hasSize(2);
 	}
@@ -132,7 +132,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		final Set<Category> categories = new HashSet<Category>(
 				Arrays.asList(new Category("football"), new Category("football")));
 		device.setCategories(categories);
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 
 		assertThat(clientInstallationService
 				.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(), deviceToken).getCategories())
@@ -152,7 +152,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 
 		device.setVariant(androidVariant);
 
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 		assertThat(clientInstallationService
 				.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(), deviceToken).getCategories())
 						.hasSize(2);
@@ -163,7 +163,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		device.setDeviceToken(deviceToken);
 		categories = new HashSet<Category>(Arrays.asList(new Category("lame"), new Category("football")));
 		device.setCategories(categories);
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 		assertThat(clientInstallationService
 				.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(), deviceToken).getCategories())
 						.hasSize(2);
@@ -186,7 +186,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 
 		device.setVariant(androidVariant);
 
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 		assertThat(clientInstallationService
 				.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(), deviceToken).getCategories())
 						.hasSize(2);
@@ -196,7 +196,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		device.setDeviceToken(deviceToken);
 		categories = new HashSet<Category>(Arrays.asList(new Category("football")));
 		device.setCategories(categories);
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 		assertThat(clientInstallationService
 				.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(), deviceToken).getCategories())
 						.hasSize(1);
@@ -212,7 +212,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		Installation device = new Installation();
 		String deviceToken = TestUtils.generateFakedDeviceTokenString().toUpperCase();
 		device.setDeviceToken(deviceToken);
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 
 		assertThat(clientInstallationService
 				.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(), deviceToken).getCategories())
@@ -224,7 +224,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 				Arrays.asList(new Category("football"), new Category("football")));
 		device.setCategories(categories);
 
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 
 		assertThat(clientInstallationService
 				.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(), deviceToken).getCategories())
@@ -237,7 +237,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		Installation device = new Installation();
 		String deviceToken = TestUtils.generateFakedDeviceTokenString();
 		device.setDeviceToken(deviceToken);
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 
 		assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null))
 				.hasSize(1);
@@ -247,7 +247,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		sameDeviceDifferentRegistration.setDeviceToken(deviceToken);
 		sameDeviceDifferentRegistration.setAlias("username");
 
-		clientInstallationService.addInstallation(androidVariant, sameDeviceDifferentRegistration);
+		clientInstallationService.addInstallation(androidVariant, sameDeviceDifferentRegistration, false);
 		assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null))
 				.hasSize(1);
 	}
@@ -299,7 +299,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		Installation device = new Installation();
 		device.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
 
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 		assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, null, null))
 				.hasSize(1);
 
@@ -369,7 +369,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		device.setVariant(androidVariant);
 		clientInstallationService.updateInstallation(device);
 
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 
 		assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(),
 				Arrays.asList("football", "soccer"), null, null)).hasSize(1);
@@ -391,7 +391,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		device.setVariant(androidVariant);
 		clientInstallationService.updateInstallation(device);
 
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 
 		assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(),
 				Arrays.asList("football", "soccer"), Arrays.asList("root"), null)).hasSize(1);
@@ -412,7 +412,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 
 		device.setVariant(androidVariant);
 
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 		assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(),
 				Arrays.asList("football", "soccer"), Arrays.asList("root"), null)).hasSize(1);
 		assertThat(clientInstallationService
@@ -425,7 +425,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		device.setAlias("root");
 
 		// and update
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 		assertThat(clientInstallationService
 				.findInstallationForVariantByDeviceToken(androidVariant.getVariantID(), deviceToken).getCategories())
 						.isEmpty();
@@ -442,7 +442,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		device1.setCategories(categories);
 		device1.setVariant(androidVariant);
 		clientInstallationService.updateInstallation(device1);
-		clientInstallationService.addInstallation(androidVariant, device1);
+		clientInstallationService.addInstallation(androidVariant, device1, false);
 
 		Installation device2 = new Installation();
 		device2.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
@@ -450,7 +450,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		device2.setCategories(categories);
 		device2.setVariant(androidVariant);
 		clientInstallationService.updateInstallation(device2);
-		clientInstallationService.addInstallation(androidVariant, device2);
+		clientInstallationService.addInstallation(androidVariant, device2, false);
 
 		Installation device3 = new Installation();
 		device3.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
@@ -458,7 +458,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		device3.setCategories(categories);
 		device3.setVariant(androidVariant);
 		clientInstallationService.updateInstallation(device3);
-		clientInstallationService.addInstallation(androidVariant, device3);
+		clientInstallationService.addInstallation(androidVariant, device3, false);
 
 		final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(),
 				Arrays.asList("soccer"), null, null);
@@ -478,7 +478,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		device1.setCategories(categories);
 		device1.setVariant(androidVariant);
 		clientInstallationService.updateInstallation(device1);
-		clientInstallationService.addInstallation(androidVariant, device1);
+		clientInstallationService.addInstallation(androidVariant, device1, false);
 
 		Installation device2 = new Installation();
 		device2.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
@@ -486,7 +486,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		device2.setCategories(categories);
 		device2.setVariant(androidVariant);
 		clientInstallationService.updateInstallation(device2);
-		clientInstallationService.addInstallation(androidVariant, device2);
+		clientInstallationService.addInstallation(androidVariant, device2, false);
 
 		Installation device3 = new Installation();
 		device3.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
@@ -495,7 +495,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 
 		device3.setVariant(androidVariant);
 		clientInstallationService.updateInstallation(device3);
-		clientInstallationService.addInstallation(androidVariant, device3);
+		clientInstallationService.addInstallation(androidVariant, device3, false);
 
 		final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(),
 				Arrays.asList("soccer", "football"), null, null);
@@ -514,25 +514,25 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		Set<Category> categories = new HashSet<Category>(
 				Arrays.asList(new Category("football"), new Category("soccer")));
 		device1.setCategories(categories);
-		clientInstallationService.addInstallation(androidVariant, device1);
+		clientInstallationService.addInstallation(androidVariant, device1, false);
 
 		Installation device2 = new Installation();
 		device2.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
 		categories = new HashSet<Category>(Arrays.asList(new Category("soccer")));
 		device2.setCategories(categories);
-		clientInstallationService.addInstallation(androidVariant, device2);
+		clientInstallationService.addInstallation(androidVariant, device2, false);
 
 		Installation device3 = new Installation();
 		device3.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
 		categories = new HashSet<Category>(Arrays.asList(new Category("football")));
 		device3.setCategories(categories);
-		clientInstallationService.addInstallation(androidVariant, device3);
+		clientInstallationService.addInstallation(androidVariant, device3, false);
 
 		Installation device4 = new Installation();
 		device4.setDeviceToken("01234567891:" + TestUtils.generateFakedDeviceTokenString());
 		categories = new HashSet<Category>(Arrays.asList(new Category("football")));
 		device4.setCategories(categories);
-		clientInstallationService.addInstallation(androidVariant, device4);
+		clientInstallationService.addInstallation(androidVariant, device4, false);
 
 		final List<String> queriedTokens = findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null,
 				null, null);
@@ -557,13 +557,13 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		String deviceToken = TestUtils.generateFakedDeviceTokenString();
 		device.setDeviceToken(deviceToken);
 		device.setAlias("root");
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 
 		// apply some update:
 		Installation otherDevice = new Installation();
 		otherDevice.setDeviceToken(TestUtils.generateFakedDeviceTokenString());
 		otherDevice.setAlias("root");
-		clientInstallationService.addInstallation(androidVariant, otherDevice);
+		clientInstallationService.addInstallation(androidVariant, otherDevice, false);
 
 		assertThat(findAllDeviceTokenForVariantIDByCriteria(androidVariant.getVariantID(), null, Arrays.asList("root"),
 				null)).hasSize(2);
@@ -595,7 +595,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		device.setDeviceToken(deviceToken);
 		device.setAlias(installationAlias);
 
-		clientInstallationService.addInstallation(androidVariant, device);
+		clientInstallationService.addInstallation(androidVariant, device, false);
 		aliasService.addAll(application, aliases, false);
 
 		Variant var = clientInstallationService.associateInstallation(device, variant);
@@ -629,7 +629,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		device.setDeviceToken(deviceToken);
 		device.setAlias(installationAlias);
 
-		clientInstallationService.addInstallation(variant, device);
+		clientInstallationService.addInstallation(variant, device, false);
 		aliasService.addAll(application, aliases, false);
 
 		Installation installation = clientInstallationService
@@ -669,7 +669,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		String deviceToken = TestUtils.generateFakedDeviceTokenString();
 		disabled.setDeviceToken(deviceToken);
 		disabled.setEnabled(false);
-		clientInstallationService.addInstallation(variant, disabled);
+		clientInstallationService.addInstallation(variant, disabled, false);
 
 		Installation installation = clientInstallationService
 				.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
@@ -694,7 +694,7 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		String deviceToken = TestUtils.generateFakedDeviceTokenString();
 		disabled.setDeviceToken(deviceToken);
 		disabled.setEnabled(true);
-		clientInstallationService.addInstallation(variant, disabled);
+		clientInstallationService.addInstallation(variant, disabled, false);
 
 		Installation installation = clientInstallationService
 				.findInstallationForVariantByDeviceToken(variant.getVariantID(), deviceToken);
@@ -727,8 +727,8 @@ public class ClientInstallationServiceTest extends AbstractCassandraServiceTest 
 		device2.setDeviceToken(deviceToken2);
 		device2.setAlias(alias);
 
-		clientInstallationService.addInstallation(variant, device1);
-		clientInstallationService.addInstallation(variant, device2);
+		clientInstallationService.addInstallation(variant, device1, false);
+		clientInstallationService.addInstallation(variant, device2, false);
 
 		List<Installation> installations = clientInstallationService.findByAlias(alias);
 		assertTrue(installations.size() == 2);

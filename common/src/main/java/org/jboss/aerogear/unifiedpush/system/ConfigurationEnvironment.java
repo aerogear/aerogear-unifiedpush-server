@@ -22,17 +22,12 @@ public class ConfigurationEnvironment {
 	private final Logger logger = LoggerFactory.getLogger(ConfigurationEnvironment.class);
 
 	public static final String PROPERTIES_DOCUMENTS_QUERY_DAYS = "aerogear.config.documents.query.period.days";
-	public static final String PROP_ENABLE_VERIFICATION = "aerogear.config.verification.enable_verification";
 	public static final String PROP_MASTER_VERIFICATION = "aerogear.config.verification.master_code";
 
 	@Autowired
 	private Environment env;
 
 	private Properties properties;
-
-	public Boolean isVerificationEnabled() {
-		return env.getProperty(PROP_ENABLE_VERIFICATION, Boolean.class, Boolean.FALSE);
-	}
 
 	public String getMasterCode() {
 		return env.getProperty(PROP_MASTER_VERIFICATION, String.class, null);

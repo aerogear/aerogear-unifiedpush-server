@@ -54,7 +54,6 @@ import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
-import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
@@ -84,8 +83,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	private IPushMessageMetricsService metricsService;
 	@Inject
 	private VerificationService verificationService;
-	@Inject
-	private IConfigurationService configuration;
 	@Inject
 	private AuthenticationHelper authenticationHelper;
 
@@ -193,9 +190,8 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	@ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
 	public Response registerInstallation(@DefaultValue("") @HeaderParam("x-ag-old-token") final String oldToken,
 			Installation entity, @DefaultValue("false") @QueryParam("synchronously") boolean synchronously,
+			@DefaultValue("true") @QueryParam("verify") boolean verify,
 			@Context HttpServletRequest request) {
-
-		boolean shouldVerifiy = configuration.isVerificationEnabled();
 
 		// find the matching variation:
 		final Variant variant = ClientAuthHelper.loadVariantWhenAuthorized(genericVariantService, request);
@@ -224,7 +220,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
 		// In some cases (automation & verification a.k.a OTP), we need to
 		// make sure device is synchronously registered.
-		if (synchronously || shouldVerifiy)
+		if (synchronously || verify)
 			clientInstallationService.addInstallation(variant, entity);
 		else
 			clientInstallationAsyncService.addInstallation(variant, entity);

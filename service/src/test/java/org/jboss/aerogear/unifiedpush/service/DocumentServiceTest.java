@@ -24,7 +24,6 @@ import org.jboss.aerogear.unifiedpush.message.Criteria;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
-import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +55,6 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 
 	@Before
 	public void cleanup() {
-		System.clearProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION);
 	}
 
 	@Override
@@ -67,8 +65,6 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 	@Test
 	@Transactional
 	public void saveDocumentTest() {
-		System.setProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION, "true");
-
 		// Prepare installation
 		Installation iosInstallation = new Installation();
 		iosInstallation.setDeviceType("iPhone7,2");
@@ -81,7 +77,7 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 			Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 			Assert.assertTrue(variant.getVariantID().equals(DEFAULT_VARIENT_ID));
 
-			installationService.addInstallation(variant, iosInstallation);
+			installationService.addInstallation(variant, iosInstallation, true);
 
 			Installation inst = installationService.findById(iosInstallation.getId());
 			Assert.assertTrue(inst != null && inst.isEnabled() == true);
@@ -165,7 +161,7 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 		Assert.assertTrue(variant.getVariantID().equals(DEFAULT_VARIENT_ID));
 
-		installationService.addInstallation(variant, iosInstallation);
+		installationService.addInstallation(variant, iosInstallation, true);
 
 		Installation inst = installationService.findById(iosInstallation.getId());
 		Assert.assertTrue(inst != null && inst.isEnabled() == true);
@@ -201,7 +197,7 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 		Variant variant = genericVariantService.findByVariantID(DEFAULT_VARIENT_ID);
 		Assert.assertTrue(variant.getVariantID().equals(DEFAULT_VARIENT_ID));
 
-		installationService.addInstallation(variant, iosInstallation);
+		installationService.addInstallation(variant, iosInstallation, true);
 
 		Installation inst = installationService.findById(iosInstallation.getId());
 		Assert.assertTrue(inst != null && inst.isEnabled());

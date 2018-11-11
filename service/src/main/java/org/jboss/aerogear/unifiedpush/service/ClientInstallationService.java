@@ -36,6 +36,8 @@ public interface ClientInstallationService {
      * @param installation the installation
      */
     void addInstallation(Variant variant, Installation installation);
+    
+    void addInstallation(Variant variant, Installation installation, boolean shouldVerifiy);
 
     /**
      * Add new Installations objects, for importing devices on the database.

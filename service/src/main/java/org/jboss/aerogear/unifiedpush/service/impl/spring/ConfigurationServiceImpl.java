@@ -20,10 +20,6 @@ public class ConfigurationServiceImpl implements IConfigurationService {
 	private IOAuth2Configuration oAuth2Configuration;
 
 
-	public Boolean isVerificationEnabled() {
-		return environment.isVerificationEnabled();
-	}
-
 	public String getVerificationClassImpl() {
 		return environment.getProperty(VERIFICATION_IMPL_KEY, ClickatellSMSSender.class.getName());
 	}

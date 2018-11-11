@@ -37,7 +37,6 @@ import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
-import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.util.FCMTopicManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,10 +66,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
 	@Inject
 	private VerificationService verificationService;
-
-	@Inject
-	private IConfigurationService configuration;
-
+	
 	@Override
 	public Variant associateInstallation(Installation installation, Variant currentVariant) {
 		if (installation.getAlias() == null) {
@@ -114,7 +110,14 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
 	@Override
 	public void addInstallation(Variant variant, Installation entity) {
-    	boolean shouldVerifiy = configuration.isVerificationEnabled();
+		addInstallation(variant, entity, true);
+	}
+
+	/**
+	 * TODO - Once only KC based registration are publised (android/ios) we can
+	 * remove shouldVerifiy condition.
+	 */
+	public void addInstallation(Variant variant, Installation entity, boolean shouldVerifiy) {
 
 		// does it already exist ?
 		Installation installation = this.findInstallationForVariantByDeviceToken(variant.getVariantID(),
@@ -142,8 +145,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 			}
 		}
 
-		// A better implementation would initiate a new REST call when
-		// registration is done.
+		// TODO - Remove according to top comment
 		if (shouldVerifiy)
 			verificationService.initiateDeviceVerification(entity, variant);
 	}
@@ -195,8 +197,8 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
 	@Override
 	public void removeInstallations(List<Installation> installations) {
-        // uh..., fancy method reference :)
-        installations.forEach(this::removeInstallation);
+		// uh..., fancy method reference :)
+		installations.forEach(this::removeInstallation);
 	}
 
 	@Override
@@ -297,19 +299,17 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 	/**
 	 * A simple validation util that checks if a token is present
 	 */
-    private boolean hasTokenValue(Installation installation) {
+	private boolean hasTokenValue(Installation installation) {
 		return installation.getDeviceToken() != null && !installation.getDeviceToken().isEmpty();
 	}
 
 	/**
-	 * When an installation is created or updated, the categories are passed
-	 * without IDs. This method solve this issue by checking for existing
-	 * categories and updating them (otherwise it would persist a new object).
+	 * When an installation is created or updated, the categories are passed without
+	 * IDs. This method solve this issue by checking for existing categories and
+	 * updating them (otherwise it would persist a new object).
 	 *
-	 * @param entity
-	 *            to merge the categories for
-	 * @param categoriesToMerge
-	 *            are the categories to merge with the existing one
+	 * @param entity            to merge the categories for
+	 * @param categoriesToMerge are the categories to merge with the existing one
 	 */
 	private void mergeCategories(Installation entity, Set<Category> categoriesToMerge) {
 		if (entity.getCategories() != null) {
@@ -328,9 +328,9 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		}
 	}
 
-    private static List<String> convertToNames(Set<Category> categories) {
-        return categories.stream().map(Category::getName).collect(Collectors.toList());
-    }
+	private static List<String> convertToNames(Set<Category> categories) {
+		return categories.stream().map(Category::getName).collect(Collectors.toList());
+	}
 
 	/*
 	 * Helper to set references and perform the actual storage
@@ -357,11 +357,11 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 		}
 	}
 
-	public List<Installation> findByAlias(String alias){
+	public List<Installation> findByAlias(String alias) {
 		return installationDao.findInstallationsByAlias(alias);
 	}
 
-	public long getNumberOfDevicesForVariantID(String variantId){
+	public long getNumberOfDevicesForVariantID(String variantId) {
 		return installationDao.getNumberOfDevicesForVariantID(variantId);
 	}
 }

@@ -20,13 +20,13 @@ public class ConfigurationTest {
 
 	@Test
 	public void testDefaultConfigurationLoader() {
-		Assert.assertFalse(configuration.isVerificationEnabled());
+		Assert.assertEquals(configuration.getMasterCode(), null);
 	}
 
 	@Test
 	public void testSystemPropertiesOverride() {
-		System.setProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION, Boolean.TRUE.toString());
+		System.setProperty(ConfigurationEnvironment.PROP_MASTER_VERIFICATION, "12345");
 
-		Assert.assertTrue(configuration.isVerificationEnabled());
+		Assert.assertEquals(configuration.getMasterCode(), "12345");
 	}
 }

@@ -5,8 +5,6 @@ import java.util.Properties;
 public interface IConfigurationService {
 	Properties getProperties();
 
-	Boolean isVerificationEnabled();
-
 	String getVerificationClassImpl();
 
 	String getMasterCode();

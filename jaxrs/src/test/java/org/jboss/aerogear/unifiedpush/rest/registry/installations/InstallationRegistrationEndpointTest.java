@@ -26,7 +26,6 @@ import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
-import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
@@ -85,8 +84,6 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
 	@Test
 	@Transactional
 	public void enableDeviceTest() {
-		System.setProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION, "true");
-
 		// Prepare installation
 		Installation iosInstallation = getIosDefaultInstallation();
 		// Also check case sensitive aliases
@@ -97,7 +94,7 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
 			Variant variant = genericVariantService.findByVariantID(DEFAULT_IOS_VARIENT_ID);
 			assertEquals(variant.getVariantID(), DEFAULT_IOS_VARIENT_ID);
 
-			installationService.addInstallation(variant, iosInstallation);
+			installationService.addInstallation(variant, iosInstallation, true);
 
 			Installation inst = installationService.findById(iosInstallation.getId());
 			assertTrue("Installation is null", inst != null);
@@ -121,8 +118,6 @@ public class InstallationRegistrationEndpointTest extends RestEndpointTest {
 			assertTrue("Variant is null", var != null);
 		} catch (Throwable e) {
 			Assert.fail(e.getMessage());
-		} finally {
-			System.clearProperty(ConfigurationEnvironment.PROP_ENABLE_VERIFICATION);
 		}
 	}
 }
