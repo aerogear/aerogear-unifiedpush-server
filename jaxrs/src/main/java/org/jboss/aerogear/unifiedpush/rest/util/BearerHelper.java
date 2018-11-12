@@ -25,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.KeycloakServiceImpl;
-import org.keycloak.adapters.spi.HttpFacade.Request;
 import org.keycloak.jose.jws.JWSInput;
 import org.keycloak.jose.jws.JWSInputException;
 import org.keycloak.representations.AccessToken;
@@ -38,8 +37,6 @@ public final class BearerHelper {
 	private static final Logger logger = LoggerFactory.getLogger(KeycloakServiceImpl.class);
 
 	private static final String BEARER_SCHEME = "Bearer";
-	private static final String REFERER_HEADER = "referer";
-	private static final String CAP_REFERER_HEADER = "Referer";
 
 	private BearerHelper() {
 	}
@@ -121,10 +118,5 @@ public final class BearerHelper {
 	// Barear authentication request
 	public static boolean isBearerExists(HttpServletRequest request) {
 		return BearerHelper.getBarearToken(request).isPresent();
-	}
-
-	public static String getRefererHeader(Request request) {
-		String referer = request.getHeader(REFERER_HEADER);
-		return StringUtils.isEmpty(referer) ? request.getHeader(CAP_REFERER_HEADER) : referer;
 	}
 }

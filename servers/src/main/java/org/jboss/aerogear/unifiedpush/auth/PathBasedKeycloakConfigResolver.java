@@ -64,11 +64,12 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 			}
 		}
 
+		URI uri = URI.create(request.getURI());
+
 		if (logger.isTraceEnabled())
-			logger.trace("Identified Bearer request, using keycloak realm! URI: {}, realm: {}", request.getURI(),
-					realm);
-		String host = getHost(request); 
-		
+			logger.trace("Identified Bearer request, using keycloak realm! URI: {}, realm: {}", uri.toString(), realm);
+
+		String host = uri.getHost();
 		CustomKeycloakDeployment deployment = cache.get(getCacheKey(realm, host));
 		if (null == deployment) {
 			InputStream is = null;
@@ -98,26 +99,25 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 	protected KeycloakUriBuilder getBaseBuilder(CustomKeycloakDeployment deployment, Request requestFacade,
 			String base) {
 		KeycloakUriBuilder builder = KeycloakUriBuilder.fromUri(base);
-		URI request = URI.create(requestFacade.getURI());
-		String scheme = request.getScheme();
+		URI uri = URI.create(requestFacade.getURI());
+		String scheme = uri.getScheme();
 		if (deployment.getSslRequired().isRequired(requestFacade.getRemoteAddr())) {
 			scheme = "https";
-			if (!request.getScheme().equals(scheme) && request.getPort() != -1) {
-				logger.error("request scheme: " + request.getScheme() + " ssl required");
+			if (!uri.getScheme().equals(scheme) && uri.getPort() != -1) {
+				logger.error("request scheme: " + uri.getScheme() + " ssl required");
 				throw new RuntimeException("Can't resolve relative url from adapter config.");
 			}
 		}
 		builder.scheme(scheme);
-		builder.host(request.getHost());
-		if (request.getPort() != -1) {
-			builder.port(request.getPort());
+		builder.host(uri.getHost());
+		if (uri.getPort() != -1) {
+			builder.port(uri.getPort());
 		}
 		return builder;
 	}
 
 	/**
-	 * @param authUrlBuilder
-	 *            absolute URI
+	 * @param authUrlBuilder absolute URI
 	 */
 	protected void resolveUrls(CustomKeycloakDeployment deployment, KeycloakUriBuilder authUrlBuilder) {
 		if (logger.isDebugEnabled()) {
@@ -143,16 +143,7 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 				authUrlBuilder.clone().path(ServiceUrlConstants.CLIENTS_MANAGEMENT_UNREGISTER_NODE_PATH)
 						.build(deployment.getRealm()).toString());
 	}
-	
-	private String getHost(Request request) {
-		String host = request.getHeader("Host");
-		if (StringUtils.isEmpty(host)) {
-			host = request.getHeader("host");
-		}
-		
-		return StringUtils.isEmpty(host)? StringUtils.EMPTY : host;
-	}
-	
+
 	private String getCacheKey(String realm, String host) {
 		return new StringBuffer(realm).append("-").append(host).toString();
 	}
