@@ -17,6 +17,7 @@ import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.KeycloakServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -81,6 +82,12 @@ public class AuthenticationHelper {
 		}
 
 		return pushApplication;
+	}
+	
+	public PushApplication loadApplicationWhenAuthorized(HttpServletRequest request) {
+		String applicationName = KeycloakServiceImpl.stripClientPrefix(BearerHelper.extractClientId(request));
+		
+		return pushApplicationService.findByName(applicationName);
 	}
 
 	/**

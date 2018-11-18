@@ -42,18 +42,16 @@ import javax.ws.rs.core.Response.Status;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
-import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
-import org.jboss.aerogear.unifiedpush.rest.authentication.AuthenticationHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationAsyncService;
-import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
+import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
@@ -67,39 +65,31 @@ import com.qmino.miredot.annotations.ReturnType;
 
 @Controller
 @Path("/registry/device")
-public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
+public class InstallationRegistrationEndpoint extends AbstractBaseRegistrationEndpoint {
 
 	// at some point we should move the mapper to a util class.?
 	public static final ObjectMapper mapper = new ObjectMapper();
 
 	private final Logger logger = LoggerFactory.getLogger(InstallationRegistrationEndpoint.class);
-	@Inject
-	private ClientInstallationService clientInstallationService;
-	@Inject
-	private ClientInstallationAsyncService clientInstallationAsyncService;
+
 	@Inject
 	private GenericVariantService genericVariantService;
 	@Inject
 	private IPushMessageMetricsService metricsService;
 	@Inject
 	private VerificationService verificationService;
-	@Inject
-	private AuthenticationHelper authenticationHelper;
 
 	/**
 	 * Cross Origin for Installations
 	 *
-	 * @param headers
-	 *            "Origin" header
-	 * @param token
-	 *            Will match any pattern not matched by a more specific path.
+	 * @param headers "Origin" header
+	 * @param token   Will match any pattern not matched by a more specific path.
 	 * @return "Access-Control-Allow-Origin" header for your response
 	 *
-	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
-	 *                 header
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
 	 * @responseheader Access-Control-Allow-Methods POST, DELETE
-	 * @responseheader Access-Control-Allow-Headers accept, origin,
-	 *                 content-type, authorization
+	 * @responseheader Access-Control-Allow-Headers accept, origin, content-type,
+	 *                 authorization
 	 * @responseheader Access-Control-Allow-Credentials true
 	 * @responseheader Access-Control-Max-Age 604800
 	 *
@@ -116,15 +106,13 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	/**
 	 * Cross Origin for Installations
 	 *
-	 * @param headers
-	 *            "Origin" header
+	 * @param headers "Origin" header
 	 * @return "Access-Control-Allow-Origin" header for your response
 	 *
-	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
-	 *                 header
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
 	 * @responseheader Access-Control-Allow-Methods POST, DELETE
-	 * @responseheader Access-Control-Allow-Headers accept, origin,
-	 *                 content-type, authorization
+	 * @responseheader Access-Control-Allow-Headers accept, origin, content-type,
+	 *                 authorization
 	 * @responseheader Access-Control-Allow-Credentials true
 	 * @responseheader Access-Control-Max-Age 604800
 	 *
@@ -134,6 +122,28 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	@ReturnType("java.lang.Void")
 	public Response crossOriginForInstallations(@Context HttpHeaders headers) {
 		return appendPreflightResponseHeaders(headers, Response.ok()).build();
+	}
+
+	@POST
+	@Path("/oidc/type/{type}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
+	public Response registerSecured(@DefaultValue("") @HeaderParam("x-ag-old-token") final String oldToken,
+			Installation entity, @DefaultValue("false") @QueryParam("synchronously") boolean synchronously,
+			@PathParam("type") VariantType type, @Context HttpServletRequest request) {
+
+		PushApplication app = authenticationHelper.loadApplicationWhenAuthorized(request);
+		if (app == null) {
+			return create401Response(request);
+		}
+
+		Variant var = PushApplicationServiceImpl.getByVariantType(app, type).orElse(null);
+		if (var == null) {
+			return create401Response(request);
+		}
+
+		return register(var, oldToken, entity, synchronously, request);
 	}
 
 	/**
@@ -157,31 +167,25 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 *
 	 * Details about JSON format can be found HERE!
 	 *
-	 * @param oldToken
-	 *            The previously registered deviceToken or an empty String.
-	 *            Provided by the header x-ag-old-token.
-	 * @param entity
-	 *            {@link Installation} for Device registration
-	 * @param synchronously
-	 *            force synchronous registration
-	 * @param request
-	 *            The request object
+	 * @param oldToken      The previously registered deviceToken or an empty
+	 *                      String. Provided by the header x-ag-old-token.
+	 * @param entity        {@link Installation} for Device registration
+	 * @param synchronously force synchronous registration
+	 * @param request       The request object
 	 * @return Registered {@link Installation}
 	 *
 	 * @requestheader x-ag-old-token the old push service dependant token (ie
-	 *                InstanceID in FCM). If present these tokens will be
-	 *                forcefully unregistered before the new token is
-	 *                registered.
+	 *                InstanceID in FCM). If present these tokens will be forcefully
+	 *                unregistered before the new token is registered.
 	 *
-	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
-	 *                 header
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush
-	 *                 Server" (only for 401 response)
+	 * @responseheader WWW-Authenticate Basic realm="AeroBase UnifiedPush Server"
+	 *                 (only for 401 response)
 	 *
 	 * @statuscode 200 Successful storage of the device metadata
-	 * @statuscode 400 The format of the client request was incorrect (e.g.
-	 *             missing required values)
+	 * @statuscode 400 The format of the client request was incorrect (e.g. missing
+	 *             required values)
 	 * @statuscode 401 The request requires authentication
 	 */
 	@POST
@@ -190,7 +194,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	@ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
 	public Response registerInstallation(@DefaultValue("") @HeaderParam("x-ag-old-token") final String oldToken,
 			Installation entity, @DefaultValue("false") @QueryParam("synchronously") boolean synchronously,
-			@DefaultValue("true") @QueryParam("verify") boolean verify,
 			@Context HttpServletRequest request) {
 
 		// find the matching variation:
@@ -199,55 +202,30 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 			return create401Response(request);
 		}
 
-		// Poor up-front validation for required token
-		final String deviceToken = entity.getDeviceToken();
-		if (deviceToken == null || !DeviceTokenValidator.isValidDeviceTokenForVariant(deviceToken, variant.getType())) {
-			logger.trace(String.format("Invalid device token was delivered: %s for variant type: %s", deviceToken,
-					variant.getType()));
-			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST), request);
-		}
-
-		// The 'mobile application' on the device/client was launched.
-		// If the installation is already in the DB, let's update the metadata,
-		// otherwise we register a new installation:
-		logger.trace("Mobile Application on device was launched");
-
-		// The token has changed, remove the old one
-		if (!oldToken.isEmpty() && !oldToken.equals(entity.getDeviceToken())) {
-			logger.info(String.format("Deleting old device token %s", oldToken));
-			clientInstallationAsyncService.removeInstallationForVariantByDeviceToken(variant.getVariantID(), oldToken);
-		}
-
-		// In some cases (automation & verification a.k.a OTP), we need to
-		// make sure device is synchronously registered.
-		if (synchronously || verify)
-			clientInstallationService.addInstallation(variant, entity);
-		else
-			clientInstallationAsyncService.addInstallation(variant, entity);
-
-		return appendAllowOriginHeader(Response.ok(entity), request);
+		return register(variant, oldToken, entity, synchronously, request);
 	}
 
-    /**
-     * RESTful API for updating device token.
-     * The Endpoint is protected using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
-     *
-     * <pre>
-     * curl -u "variantID:secret"
-     *   -v -H "Accept: application/json" -H "Content-type: application/json" -H "device-token: some device token"
-     *   -X PUT
-     *   https://SERVER:PORT/context/rest/registry/device/token/{token: .*}
-     * </pre>
-     *
-     * @param pushMessageId push message identifier
-     * @param request the request
-     * @return              empty JSON body
-     *
-     * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server" (only for 401 response)
-     *
-     * @statuscode 200 Successful storage of the device metadata
-     * @statuscode 401 The request requires authentication
-     */
+	/**
+	 * RESTful API for updating device token. The Endpoint is protected using
+	 * <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
+	 *
+	 * <pre>
+	 * curl -u "variantID:secret"
+	 *   -v -H "Accept: application/json" -H "Content-type: application/json" -H "device-token: some device token"
+	 *   -X PUT
+	 *   https://SERVER:PORT/context/rest/registry/device/token/{token: .*}
+	 * </pre>
+	 *
+	 * @param pushMessageId push message identifier
+	 * @param request       the request
+	 * @return empty JSON body
+	 *
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server"
+	 *                 (only for 401 response)
+	 *
+	 * @statuscode 200 Successful storage of the device metadata
+	 * @statuscode 401 The request requires authentication
+	 */
 	@PUT
 	@Path("/token/{token: .*}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -287,14 +265,12 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 *   https://SERVER:PORT/context/rest/registry/device/pushMessage/{pushMessageId}
 	 * </pre>
 	 *
-	 * @param pushMessageId
-	 *            push message identifier
-	 * @param request
-	 *            the request
+	 * @param pushMessageId push message identifier
+	 * @param request       the request
 	 * @return empty JSON body
 	 *
-	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush
-	 *                 Server" (only for 401 response)
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server"
+	 *                 (only for 401 response)
 	 *
 	 * @statuscode 200 Successful storage of the device metadata
 	 * @statuscode 401 The request requires authentication
@@ -315,7 +291,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
 		// let's do update the analytics
 		if (pushMessageId != null) {
-            metricsService.updateAnalytics(pushMessageId);
+			metricsService.updateAnalytics(pushMessageId);
 		}
 
 		return Response.ok(EmptyJSON.STRING).build();
@@ -332,17 +308,14 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 *   https://SERVER:PORT/context/rest/registry/device/{token}
 	 * </pre>
 	 *
-	 * @param token
-	 *            device token
-	 * @param request
-	 *            the request
+	 * @param token   device token
+	 * @param request the request
 	 * @return empty json
 	 *
-	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
-	 *                 header
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush
-	 *                 Server" (only for 401 response)
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server"
+	 *                 (only for 401 response)
 	 *
 	 * @statuscode 204 Successful unregistration
 	 * @statuscode 401 The request requires authentication
@@ -377,8 +350,8 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
 	/**
 	 * API for uploading JSON file to allow massive device registration (aka
-	 * import). The Endpoint is protected using <code>HTTP Basic</code>
-	 * (credentials <code>VariantID:secret</code>).
+	 * import). The Endpoint is protected using <code>HTTP Basic</code> (credentials
+	 * <code>VariantID:secret</code>).
 	 *
 	 * <pre>
 	 * curl -u "variantID:secret"
@@ -412,14 +385,12 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 * ]
 	 * </pre>
 	 *
-	 * @param form
-	 *            JSON file to import
-	 * @param request
-	 *            the request
+	 * @param form    JSON file to import
+	 * @param request the request
 	 * @return empty JSON body
 	 *
-	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush
-	 *                 Server" (only for 401 response)
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server"
+	 *                 (only for 401 response)
 	 *
 	 * @statuscode 200 Successful submission of import job
 	 * @statuscode 400 The format of the client request was incorrect
@@ -458,9 +429,8 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	}
 
 	/**
-	 * RESTful API for enabling a device (verifying it). The Endpoint is
-	 * protected using <code>HTTP Basic</code> (credentials
-	 * <code>VariantID:secret</code>).
+	 * RESTful API for enabling a device (verifying it). The Endpoint is protected
+	 * using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
 	 *
 	 * <pre>
 	 * curl -u "variantID:secret"
@@ -481,21 +451,18 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 * @HTTP 200 (OK) for any verification result
 	 * @HTTP 401 (Unauthorized) The request requires authentication.
 	 *
-	 * @param entity
-	 *            {@link Installation} the device verifying
-	 * @param verificationCode
-	 *            the verification code
+	 * @param entity           {@link Installation} the device verifying
+	 * @param verificationCode the verification code
 	 * @return verification outcome {@link VerificationResult}
 	 *
-	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
-	 *                 header
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush
-	 *                 Server" (only for 401 response)
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server"
+	 *                 (only for 401 response)
 	 *
 	 * @statuscode 200 Successful storage of the device metadata
-	 * @statuscode 400 The format of the client request was incorrect (e.g.
-	 *             missing required values)
+	 * @statuscode 400 The format of the client request was incorrect (e.g. missing
+	 *             required values)
 	 * @statuscode 401 The request requires authentication
 	 */
 	@POST
@@ -526,8 +493,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
 	/**
 	 * RESTful API for resending a verification code. The Endpoint is protected
-	 * using <code>HTTP Basic</code> (credentials
-	 * <code>VariantID:secret</code>).
+	 * using <code>HTTP Basic</code> (credentials <code>VariantID:secret</code>).
 	 *
 	 * <pre>
 	 * curl -u "variantID:secret" -H "deviceToken:<client device token>"
@@ -541,11 +507,10 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 	 * @HTTP 400 (Bad Request) deviceToken header not sent.
 	 * @HTTP 401 (Unauthorized) The request requires authentication.
 	 *
-	 * @responseheader Access-Control-Allow-Origin With host in your "Origin"
-	 *                 header
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
 	 * @responseheader Access-Control-Allow-Credentials true
-	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush
-	 *                 Server" (only for 401 response)
+	 * @responseheader WWW-Authenticate Basic realm="AeroGear UnifiedPush Server"
+	 *                 (only for 401 response)
 	 *
 	 * @statuscode 200 resend went through
 	 * @statuscode 400 deviceToken header required.

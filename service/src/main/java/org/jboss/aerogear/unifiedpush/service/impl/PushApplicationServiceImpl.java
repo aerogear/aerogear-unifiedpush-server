@@ -17,11 +17,13 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
@@ -49,7 +51,7 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 	private CacheManager cacheManager;
 	@Inject
 	private IKeycloakService keycloakService;
-	
+
 	public PushApplicationServiceImpl() {
 	}
 
@@ -63,7 +65,7 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 
 		pushApp.setDeveloper(user.get());
 		pushApplicationDao.create(pushApp);
-		
+
 		// Create keycloak client.
 		keycloakService.createClientIfAbsent(pushApp);
 	}
@@ -77,7 +79,7 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 	public void addVariant(PushApplication pushApp, Variant variant) {
 		pushApp.getVariants().add(variant);
 		pushApplicationDao.update(pushApp);
-		
+
 		// Create keycloak client if absent.
 		keycloakService.createClientIfAbsent(pushApp);
 	}
@@ -138,5 +140,13 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 	private void evictByName(String name) {
 		Cache cache = cacheManager.getCache(PushApplicationService.APPLICATION_CACHE_BY_NAME);
 		cache.evict(name);
+	}
+
+	public static Optional<Variant> getByVariantType(PushApplication pushApplication, VariantType type) {
+		if (pushApplication.getVariants() == null || pushApplication.getVariants().size() == 0) {
+			return null;
+		}
+
+		return pushApplication.getVariants().stream().filter(var -> var.getType() == type).findFirst();
 	}
 }

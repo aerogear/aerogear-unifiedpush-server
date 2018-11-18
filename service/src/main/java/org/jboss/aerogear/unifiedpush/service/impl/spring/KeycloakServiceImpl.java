@@ -346,6 +346,12 @@ public class KeycloakServiceImpl implements IKeycloakService {
 		return CLIENT_PREFIX + pushApp.getName().toLowerCase();
 	}
 
+	public static String stripClientPrefix(String clientId) {
+		if (StringUtils.isEmpty(clientId))
+			return null;
+		return clientId.replace(CLIENT_PREFIX, "");
+	}
+
 	private ClientRepresentation isClientExists(String clientId) {
 		List<ClientRepresentation> clients = this.realm.clients().findByClientId(clientId);
 
