@@ -29,5 +29,5 @@ public interface IKeycloakService {
 
 	String strip(String fqdn);
 	
-	String seperator(String fqdn);
+	String seperator();
 }

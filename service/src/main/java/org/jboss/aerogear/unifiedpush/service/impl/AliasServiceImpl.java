@@ -150,11 +150,10 @@ public class AliasServiceImpl implements AliasService {
 			pushApplication = pushApplicationService.findByName(applicationName);
 		}
 
-		String subDomainSeperator = keycloakService.strip(fqdn);
 		Alias aliasObj = find(pushApplication == null ? null : pushApplication.getPushApplicationID(), alias);
 
 		if (aliasObj != null)
-			return new Associated(true, getClientId(aliasObj.getPushApplicationId()), subDomainSeperator);
+			return new Associated(true, getClientId(aliasObj.getPushApplicationId()), keycloakService.seperator());
 
 		return new Associated(false);
 	}
