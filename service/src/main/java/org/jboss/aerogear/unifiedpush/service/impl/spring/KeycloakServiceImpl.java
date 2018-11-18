@@ -395,4 +395,8 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
 		return StringUtils.EMPTY;
 	}
+	
+	public String seperator(String fqdn) {
+		return conf.getRooturlMatcher().seperator();
+	}
 }

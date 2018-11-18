@@ -94,8 +94,8 @@ public class AliasServiceImpl implements AliasService {
 		if (alias == null) {
 			return Collections.emptyList();
 		}
-		return this.remove(pushApplicationId, StringUtils.isNotEmpty(alias.getEmail()) ? alias.getEmail() : alias.getOther(),
-				destructive);
+		return this.remove(pushApplicationId,
+				StringUtils.isNotEmpty(alias.getEmail()) ? alias.getEmail() : alias.getOther(), destructive);
 	}
 
 	private List<UserKey> remove(UUID pushApplicationId, String alias, boolean destructive) {
@@ -128,8 +128,7 @@ public class AliasServiceImpl implements AliasService {
 	/**
 	 * Test if user exists / registered to KC.
 	 *
-	 * @param alias
-	 *            alias name
+	 * @param alias alias name
 	 */
 	@Override
 	public boolean registered(String alias) {
@@ -139,10 +138,8 @@ public class AliasServiceImpl implements AliasService {
 	/**
 	 * Validate rather an alias is associated to a team/application.
 	 *
-	 * @param alias
-	 *            alias name
-	 * @param fqdn
-	 *            domain / team name.
+	 * @param alias alias name
+	 * @param fqdn  domain / team name.
 	 */
 	public Associated associated(String alias, String fqdn) {
 		PushApplication pushApplication = null;
@@ -153,10 +150,11 @@ public class AliasServiceImpl implements AliasService {
 			pushApplication = pushApplicationService.findByName(applicationName);
 		}
 
+		String subDomainSeperator = keycloakService.strip(fqdn);
 		Alias aliasObj = find(pushApplication == null ? null : pushApplication.getPushApplicationID(), alias);
 
 		if (aliasObj != null)
-			return new Associated(true, getClientId(aliasObj.getPushApplicationId()));
+			return new Associated(true, getClientId(aliasObj.getPushApplicationId()), subDomainSeperator);
 
 		return new Associated(false);
 	}
@@ -191,8 +189,8 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	/*
-	 * Remove all aliases by application id and invalidates alias cache.
-	 * destructive - when true also remove KC entities and related documents
+	 * Remove all aliases by application id and invalidates alias cache. destructive
+	 * - when true also remove KC entities and related documents
 	 */
 	@Override
 	@Async
@@ -256,11 +254,20 @@ public class AliasServiceImpl implements AliasService {
 	public class Associated {
 		private boolean associated;
 		private String client;
+		private String seperator;
+		private String subdomain;
 
 		public Associated(boolean associated, String client) {
 			super();
 			this.associated = associated;
 			this.client = client;
+		}
+
+		public Associated(boolean associated, String client, String seperator) {
+			super();
+			this.associated = associated;
+			this.client = client;
+			this.seperator = seperator;
 		}
 
 		public Associated(boolean associated) {
@@ -274,6 +281,18 @@ public class AliasServiceImpl implements AliasService {
 
 		public String getClient() {
 			return client;
+		}
+
+		public String getSeperator() {
+			return seperator;
+		}
+
+		public String getSubdomain() {
+			return subdomain;
+		}
+
+		public void setSubdomain(String subdomain) {
+			this.subdomain = subdomain;
 		}
 	}
 }

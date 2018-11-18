@@ -52,6 +52,7 @@ import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.impl.AliasServiceImpl.Associated;
 import org.jboss.aerogear.unifiedpush.service.impl.ServiceConstraintViolationException;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.KeycloakServiceImpl;
 import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,10 +75,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	/**
 	 * Cross Origin for Alias
 	 *
-	 * @param headers
-	 *            "Origin" header
-	 * @param token
-	 *            Will match any pattern not matched by a more specific path.
+	 * @param headers "Origin" header
+	 * @param token   Will match any pattern not matched by a more specific path.
 	 * @return "Access-Control-Allow-Origin" header for your response
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
@@ -100,8 +99,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 * RESTful API for validating alias is already registered (Keycloak). The
 	 * Endpoint has public access.
 	 *
-	 * @param alias
-	 *            The alias name.
+	 * @param alias The alias name.
 	 * @return {@link Boolean}
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
@@ -136,10 +134,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 *   -X GET https://SERVER:PORT/context/rest/alias/associated/{alias}?fqdn=test.aerogear.org
 	 * </pre>
 	 *
-	 * @param alias
-	 *            The associated domain / team.
-	 * @param fqdn
-	 *            The alias domain.
+	 * @param alias The associated domain / team.
+	 * @param fqdn  The alias domain.
 	 *
 	 * @return {@link Boolean}
 	 *
@@ -174,6 +170,13 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	public Response isAssociated(@PathParam("alias") String alias, @QueryParam("fqdn") String fqdn,
 			@Context HttpServletRequest request) {
 		Associated associated = aliasService.associated(alias, fqdn);
+
+		if (associated.isAssociated()) {
+			StringBuffer domain = new StringBuffer(KeycloakServiceImpl.stripClientPrefix(associated.getClient()));
+			domain.append(associated.getSeperator());
+			domain.append(request.getServerName());
+			associated.setSubdomain(domain.toString());
+		}
 		return appendAllowOriginHeader(Response.ok().entity(associated), request);
 	}
 
@@ -181,10 +184,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 * RESTful API for updating alias password. The Endpoint is protected using
 	 * Bearer token.
 	 *
-	 * @param alias
-	 *            The alias name.
-	 * @param passwordContainer
-	 *            {@link PasswordContainer}
+	 * @param alias             The alias name.
+	 * @param passwordContainer {@link PasswordContainer}
 	 * @return {@link EmptyJSON}
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
@@ -251,14 +252,10 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 *
 	 * Details about JSON format can be found HERE!
 	 *
-	 * @param alias
-	 *            {@link Alias} for registration
-	 * @param oauth2
-	 *            Also create identity provider (keycloak) user.
-	 * @param synchronously
-	 *            Synchronously request - Default true.
-	 * @param request
-	 *            the request object
+	 * @param alias         {@link Alias} for registration
+	 * @param oauth2        Also create identity provider (keycloak) user.
+	 * @param synchronously Synchronously request - Default true.
+	 * @param request       the request object
 	 *
 	 * @return Registered {@link Alias}
 	 *
@@ -335,10 +332,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 *
 	 * Details about JSON format can be found HERE!
 	 *
-	 * @param aliases
-	 *            List of {@link Alias} related to push application
-	 * @param oauth2
-	 *            Also create identity provider (keycloak) user.
+	 * @param aliases List of {@link Alias} related to push application
+	 * @param oauth2  Also create identity provider (keycloak) user.
 	 * @return {@link java.util.List<Alias>}
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
@@ -385,8 +380,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 * <code>HTTP Basic</code> (credentials
 	 * <code>ApplicationID:Master Secret</code>).
 	 *
-	 * @param alias
-	 *            The alias name.
+	 * @param alias The alias name.
 	 * @return {@link Alias} registered with application
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
@@ -426,8 +420,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 * <code>HTTP Basic</code> (credentials
 	 * <code>ApplicationID:Master Secret</code>).
 	 *
-	 * @param id
-	 *            The alias UUID
+	 * @param id The alias UUID
 	 * @return {@link Alias} registered with application
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
@@ -468,8 +461,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 * <code>HTTP Basic</code> (credentials
 	 * <code>ApplicationID:Master Secret</code>).
 	 *
-	 * @param id
-	 *            The alias UUID.
+	 * @param id The alias UUID.
 	 * @return {@link EmptyJSON}
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
@@ -486,8 +478,10 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-	public Response delete(@PathParam("id") String id, @QueryParam("mustExist") @DefaultValue("true") boolean mustExist, @Context HttpServletRequest request) {
-		return deleteBy(id, mustExist, request, pushAppId -> aliasService.remove(UUID.fromString(pushAppId), UUID.fromString(id)));
+	public Response delete(@PathParam("id") String id, @QueryParam("mustExist") @DefaultValue("true") boolean mustExist,
+			@Context HttpServletRequest request) {
+		return deleteBy(id, mustExist, request,
+				pushAppId -> aliasService.remove(UUID.fromString(pushAppId), UUID.fromString(id)));
 	}
 
 	/**
@@ -495,8 +489,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 * <code>HTTP Basic</code> (credentials
 	 * <code>ApplicationID:Master Secret</code>).
 	 *
-	 * @param alias
-	 *            The alias name.
+	 * @param alias The alias name.
 	 * @return {@link EmptyJSON}
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
@@ -513,11 +506,13 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	@Path("/name/{alias}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("org.jboss.aerogear.unifiedpush.rest.EmptyJSON")
-	public Response deleteByName(@PathParam("alias") String alias, @QueryParam("mustExist") @DefaultValue("true") boolean mustExist, @Context HttpServletRequest request) {
+	public Response deleteByName(@PathParam("alias") String alias,
+			@QueryParam("mustExist") @DefaultValue("true") boolean mustExist, @Context HttpServletRequest request) {
 		return deleteBy(alias, mustExist, request, pushAppId -> aliasService.remove(UUID.fromString(pushAppId), alias));
 	}
 
-	private Response deleteBy(Object key, boolean mustExist, HttpServletRequest request, Function<? super String, ? extends List<UserKey>> remover) {
+	private Response deleteBy(Object key, boolean mustExist, HttpServletRequest request,
+			Function<? super String, ? extends List<UserKey>> remover) {
 		try {
 			final PushApplication pushApplication = PushAppAuthHelper.loadPushApplicationWhenAuthorized(request,
 					pushAppService);
@@ -526,7 +521,6 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 						.header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
 						.entity("Unauthorized Request").build();
 			}
-
 
 			List<UserKey> removed = remover.apply(pushApplication.getPushApplicationID());
 
@@ -550,8 +544,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 * user. The Endpoint is protected using <code>HTTP Basic</code> (credentials
 	 * <code>ApplicationID:Master Secret</code>).
 	 *
-	 * @param id
-	 *            The alias UUID
+	 * @param id The alias UUID
 	 * @return {@link EmptyJSON}
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header

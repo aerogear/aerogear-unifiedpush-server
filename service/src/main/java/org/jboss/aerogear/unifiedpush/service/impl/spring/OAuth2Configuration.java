@@ -149,7 +149,8 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 		NONE("*", "(.*)") {
 			@Override
 			public String rootUrl(String protocol, String domain, String application) {
-				return protocol + "://" + application;			}
+				return protocol + "://" + application;
+			}
 		};
 
 		private final Pattern pattern;

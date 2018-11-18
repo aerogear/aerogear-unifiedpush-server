@@ -28,4 +28,6 @@ public interface IKeycloakService {
 	boolean isInitialized();
 
 	String strip(String fqdn);
+	
+	String seperator(String fqdn);
 }
