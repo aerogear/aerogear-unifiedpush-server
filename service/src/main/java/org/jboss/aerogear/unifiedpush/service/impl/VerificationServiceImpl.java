@@ -19,11 +19,11 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCode;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCodeKey;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
-import org.jboss.aerogear.unifiedpush.service.InfinispanCacheService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IVerificationGatewayService;
+import org.jboss.aerogear.unifiedpush.spring.ServiceCacheConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,6 @@ public class VerificationServiceImpl implements VerificationService {
 	private final Logger logger = LoggerFactory.getLogger(VerificationServiceImpl.class);
 
 	private ConcurrentMap<OtpCodeKey, Set<Object>> deviceToToken;
-	private ConcurrentMap<String, String> events;
 
 	@Inject
 	private IConfigurationService configuration;
@@ -51,12 +50,11 @@ public class VerificationServiceImpl implements VerificationService {
 	@Inject
 	private OtpCodeService codeService;
 	@Inject
-	protected InfinispanCacheService cacheService;
+	protected ServiceCacheConfig cacheService;
 
 	@PostConstruct
 	private void startup() {
-		deviceToToken = cacheService.getCache("otpcodes");
-		events = cacheService.getCache("clusterevents");
+		deviceToToken = cacheService.getOtpCache();
 	}
 
 	@Override
@@ -244,7 +242,6 @@ public class VerificationServiceImpl implements VerificationService {
 
 		codes.add(okey.getCode());
 		deviceToToken.putIfAbsent(okey, codes);
-		events.putIfAbsent("eventsTest", RandomStringUtils.random(5));
 	}
 
 	public void clearCache() {

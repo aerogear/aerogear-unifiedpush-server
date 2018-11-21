@@ -321,6 +321,13 @@
 				<scope>provided</scope>
 			</dependency>
 
+			<dependency>
+				<groupId>org.infinispan</groupId>
+				<artifactId>infinispan-spring4-embedded</artifactId>
+				<version>${org.infinispan}</version>
+                                <scope>provided</scope>
+			</dependency>
+
 			<!-- Spring -->
 			<dependency>
 				<groupId>org.springframework</groupId>

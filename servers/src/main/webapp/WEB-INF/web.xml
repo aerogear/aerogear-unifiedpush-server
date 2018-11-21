@@ -25,7 +25,7 @@
 	
 	<resource-ref>
 		<res-ref-name>infinispan/config/clusterevents</res-ref-name>
-		<lookup-name>java:jboss/infinispan/configuration/aerogear/clusterevents</lookup-name>
+		<lookup-name>java:jboss/infinispan/configuration/aerogear/aliases</lookup-name>
 	</resource-ref>
 
 	<!-- Spring Security -->

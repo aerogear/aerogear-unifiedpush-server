@@ -102,6 +102,7 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 
 			Assert.assertTrue(document != null && document.getContent().equals("{TEST JSON}"));
 		} catch (Throwable e) {
+			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
 	}
@@ -394,6 +395,7 @@ public class DocumentServiceTest extends AbstractCassandraServiceTest {
 							.collect(Collectors.toList()).size() == 3);
 
 		} catch (Throwable e) {
+			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
 	}

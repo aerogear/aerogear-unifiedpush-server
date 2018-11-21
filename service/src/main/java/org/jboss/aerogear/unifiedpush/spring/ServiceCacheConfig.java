@@ -1,12 +1,24 @@
 package org.jboss.aerogear.unifiedpush.spring;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
+import javax.naming.InitialContext;
+
+import org.infinispan.manager.EmbeddedCacheManager;
+import org.infinispan.spring.provider.SpringEmbeddedCacheManager;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.DatabaseDao;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCodeKey;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
@@ -19,16 +31,96 @@ import com.github.benmanes.caffeine.cache.CaffeineSpec;
 @Configuration
 @EnableCaching
 public class ServiceCacheConfig {
+	private final Logger logger = LoggerFactory.getLogger(ServiceCacheConfig.class);
+	private final static String OTP_CACHE = "otpcodes";
+
+	private static final List<String> cacheNames = Arrays.asList(//
+			DatabaseDao.CACHE_NAME, //
+			AliasDao.CACHE_NAME, // 
+			IKeycloakService.CACHE_NAME, //
+			GenericVariantService.CACHE_NAME, ///
+			PushApplicationService.APPLICATION_CACHE_BY_ID, //
+			PushApplicationService.APPLICATION_CACHE_BY_VAR_ID, //
+			PushApplicationService.APPLICATION_CACHE_BY_NAME, // 
+			ServiceCacheConfig.OTP_CACHE);
+
+	private CacheManager cacheManager = null;
+
 	@Bean
 	@Primary
-	public CacheManager cacheManager() {
-		CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
-		caffeineCacheManager.setCaffeineSpec(CaffeineSpec.parse("maximumSize=100000,expireAfterAccess=600s"));
-		caffeineCacheManager.setCacheNames(Arrays.asList(DatabaseDao.CACHE_NAME, AliasDao.CACHE_NAME,
-				IKeycloakService.CACHE_NAME, GenericVariantService.CACHE_NAME,
-				PushApplicationService.APPLICATION_CACHE_BY_ID, PushApplicationService.APPLICATION_CACHE_BY_VAR_ID,
-				PushApplicationService.APPLICATION_CACHE_BY_NAME));
+	public CacheManager CacheManager() {
+		cacheManager = infinispanCacheManager();
 
-		return caffeineCacheManager;
+		if (cacheManager == null) {
+			localCacheManager();
+		}
+
+		return cacheManager;
+	}
+
+	private CacheManager infinispanCacheManager() {
+		try {
+			if (cacheManager == null) {
+				synchronized (this) {
+					if (cacheManager == null) {
+						cacheManager = new SpringEmbeddedCacheManager((EmbeddedCacheManager) new InitialContext()
+								.lookup("java:jboss/infinispan/container/aerogear"));
+						if (EmbeddedCacheManager.class.isAssignableFrom(cacheManager.getClass())) {
+							cacheNames.forEach(cache -> initContainerManaged(cacheManager, cache));
+						}
+					}
+				}
+
+				logger.info("Using container managed Infinispan cache container, lookup={}",
+						"java:jboss/infinispan/container/aerogear");
+			}
+		} catch (Throwable e) {
+			logger.warn("Unable to lookup infinispan cache container java:jboss/infinispan/container/aerogear");
+		}
+
+		return cacheManager;
+	}
+
+	protected void initContainerManaged(CacheManager cacheContainer, String cachename) {
+		try {
+			cacheContainer.getCache(cachename);
+		} catch (Exception e) {
+			logger.warn("Unable to init infinispan cache " + cachename);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private <K, V> ConcurrentMap<K, V> getCache(String cachename) {
+		try {
+			Cache cache = cacheManager.getCache(cachename);
+			if (cache == null) {
+				return new ConcurrentHashMap<>();
+			}
+
+			return (ConcurrentMap<K, V>) cache;
+		} catch (Exception e) {
+			logger.warn("Unable to locate infinispan cache " + cachename + ", rolling back to ConcurrentHashMap impl!");
+			return new ConcurrentHashMap<>();
+		}
+	}
+
+	public ConcurrentMap<OtpCodeKey, Set<Object>> getOtpCache() {
+		return getCache(OTP_CACHE);
+	}
+
+	public CacheManager localCacheManager() {
+		if (cacheManager == null) {
+			synchronized (this) {
+				if (cacheManager == null) {
+					CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
+					caffeineCacheManager
+							.setCaffeineSpec(CaffeineSpec.parse("maximumSize=100000,expireAfterAccess=600s"));
+					caffeineCacheManager.setCacheNames(cacheNames);
+					cacheManager = caffeineCacheManager;
+				}
+			}
+		}
+
+		return cacheManager;
 	}
 }

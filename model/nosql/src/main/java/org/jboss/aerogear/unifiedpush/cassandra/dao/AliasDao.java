@@ -29,13 +29,11 @@ public interface AliasDao {
 	Alias findByAlias(UUID pushApplicationId, String alias);
 
 	/**
-	 * Remove all aliases according to given parameters. All aliases are
-	 * manually evicted from cache.
+	 * Remove all aliases according to given parameters. All aliases are manually
+	 * evicted from cache.
 	 *
-	 * @param pushApplicationId
-	 *            selected push application
-	 * @param userId
-	 *            User in UUID v1 format
+	 * @param pushApplicationId selected push application
+	 * @param userId            User in UUID v1 format
 	 */
 	void remove(UUID pushApplicationId, UUID userId);
 
