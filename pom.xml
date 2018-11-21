@@ -80,8 +80,16 @@
 				the JBoss stack of the Java EE 7 APIs) -->
 			<dependency>
 				<groupId>org.wildfly.bom</groupId>
-				<artifactId>wildfly-javaee7</artifactId>
+				<artifactId>wildfly-javaee8</artifactId>
 				<version>${wildfly.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.jboss.spec</groupId>
+				<artifactId>jboss-javaee-8.0</artifactId>
+				<version>1.0.1.Final</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -97,8 +105,8 @@
 
 			<dependency>
 				<groupId>org.jboss.spec.javax.servlet</groupId>
-				<artifactId>jboss-servlet-api_3.0_spec</artifactId>
-				<version>1.0.2.Final</version>
+				<artifactId>jboss-servlet-api_4.0_spec</artifactId>
+				<version>1.0.0.Final</version>
 				<scope>provided</scope>
 			</dependency>
 
@@ -520,7 +528,7 @@
 		<java.version>1.8</java.version>
 
 		<!-- Override Areogear BOM -->
-		<resteasy.version>3.5.1.Final</resteasy.version>
+		<resteasy.version>3.6.1.Final</resteasy.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -536,9 +544,9 @@
 
 		<!-- Override versions of AeroGear BOMs -->
 		<junit.version>4.12</junit.version>
-		<keycloak.version>4.5.0.Final</keycloak.version>
+		<keycloak.version>4.6.0.Final</keycloak.version>
 		<hibernate.version>5.3.1.Final</hibernate.version>
-		<hibernate-validator.version>6.0.10.Final</hibernate-validator.version>
+		<hibernate-validator.version>6.0.13.Final</hibernate-validator.version>
 		<version.javax.validation>2.0.1.Final</version.javax.validation>
 
 		<gcm-server.version>1.0.0</gcm-server.version>
@@ -553,8 +561,8 @@
 
 		<postgresql.version>42.1.4</postgresql.version>
 		<fasterxml.version>2.9.5</fasterxml.version>
-		<wildfly.version>13.0.0.Final</wildfly.version>
-		<org.infinispan>9.2.4.Final</org.infinispan>
+		<wildfly.version>14.0.1.Final</wildfly.version>
+		<org.infinispan>9.3.1.Final</org.infinispan>
 		<springframework.version>5.0.2.RELEASE</springframework.version>
 		<springsecurity.version>5.0.0.RELEASE</springsecurity.version>
 		<reactor-core.version>3.1.0.RELEASE</reactor-core.version>
