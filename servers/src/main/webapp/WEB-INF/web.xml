@@ -19,14 +19,45 @@
 	</listener>
 
 	<resource-ref>
+		<res-ref-name>infinispan/config/databases</res-ref-name>
+		<lookup-name>java:jboss/infinispan/configuration/aerogear/databases</lookup-name>
+	</resource-ref>
+
+	<resource-ref>
+		<res-ref-name>infinispan/config/aliases</res-ref-name>
+		<lookup-name>java:jboss/infinispan/configuration/aerogear/aliases</lookup-name>
+	</resource-ref>
+
+	<resource-ref>
+		<res-ref-name>infinispan/config/variant-ids-per-clientid</res-ref-name>
+		<lookup-name>java:jboss/infinispan/configuration/aerogear/variant-ids-per-clientid</lookup-name>
+	</resource-ref>
+
+	<resource-ref>
+		<res-ref-name>infinispan/config/variant-by-id</res-ref-name>
+		<lookup-name>java:jboss/infinispan/configuration/aerogear/variant-by-id</lookup-name>
+	</resource-ref>
+
+	<resource-ref>
+		<res-ref-name>infinispan/config/application-by-id</res-ref-name>
+		<lookup-name>java:jboss/infinispan/configuration/aerogear/application-by-id</lookup-name>
+	</resource-ref>
+
+	<resource-ref>
+		<res-ref-name>infinispan/config/application-by-variant-id</res-ref-name>
+		<lookup-name>java:jboss/infinispan/configuration/aerogear/application-by-variant-id</lookup-name>
+	</resource-ref>
+
+	<resource-ref>
+		<res-ref-name>infinispan/config/application-by-name</res-ref-name>
+		<lookup-name>java:jboss/infinispan/configuration/aerogear/application-by-name</lookup-name>
+	</resource-ref>
+
+	<resource-ref>
 		<res-ref-name>infinispan/config/otpcodes</res-ref-name>
 		<lookup-name>java:jboss/infinispan/configuration/aerogear/otpcodes</lookup-name>
 	</resource-ref>
-	
-	<resource-ref>
-		<res-ref-name>infinispan/config/clusterevents</res-ref-name>
-		<lookup-name>java:jboss/infinispan/configuration/aerogear/aliases</lookup-name>
-	</resource-ref>
+
 
 	<!-- Spring Security -->
 	<filter>

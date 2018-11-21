@@ -65,7 +65,8 @@ public class ServiceCacheConfig {
 					if (cacheManager == null) {
 						cacheManager = new SpringEmbeddedCacheManager((EmbeddedCacheManager) new InitialContext()
 								.lookup("java:jboss/infinispan/container/aerogear"));
-						if (EmbeddedCacheManager.class.isAssignableFrom(cacheManager.getClass())) {
+						
+						if (cacheManager != null) {
 							cacheNames.forEach(cache -> initContainerManaged(cacheManager, cache));
 						}
 					}
