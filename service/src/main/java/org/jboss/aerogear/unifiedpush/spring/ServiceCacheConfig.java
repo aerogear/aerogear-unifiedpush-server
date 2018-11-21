@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentMap;
 import javax.naming.InitialContext;
 
 import org.infinispan.manager.EmbeddedCacheManager;
+import org.infinispan.spring.provider.SpringCache;
 import org.infinispan.spring.provider.SpringEmbeddedCacheManager;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.DatabaseDao;
@@ -36,12 +37,12 @@ public class ServiceCacheConfig {
 
 	private static final List<String> cacheNames = Arrays.asList(//
 			DatabaseDao.CACHE_NAME, //
-			AliasDao.CACHE_NAME, // 
+			AliasDao.CACHE_NAME, //
 			IKeycloakService.CACHE_NAME, //
 			GenericVariantService.CACHE_NAME, ///
 			PushApplicationService.APPLICATION_CACHE_BY_ID, //
 			PushApplicationService.APPLICATION_CACHE_BY_VAR_ID, //
-			PushApplicationService.APPLICATION_CACHE_BY_NAME, // 
+			PushApplicationService.APPLICATION_CACHE_BY_NAME, //
 			ServiceCacheConfig.OTP_CACHE);
 
 	private CacheManager cacheManager = null;
@@ -65,7 +66,7 @@ public class ServiceCacheConfig {
 					if (cacheManager == null) {
 						cacheManager = new SpringEmbeddedCacheManager((EmbeddedCacheManager) new InitialContext()
 								.lookup("java:jboss/infinispan/container/aerogear"));
-						
+
 						if (cacheManager != null) {
 							cacheNames.forEach(cache -> initContainerManaged(cacheManager, cache));
 						}
@@ -94,8 +95,13 @@ public class ServiceCacheConfig {
 	private <K, V> ConcurrentMap<K, V> getCache(String cachename) {
 		try {
 			Cache cache = cacheManager.getCache(cachename);
+
 			if (cache == null) {
 				return new ConcurrentHashMap<>();
+			}
+
+			if (SpringCache.class.isAssignableFrom(cache.getClass())) {
+				return (ConcurrentMap<K, V>) ((SpringCache) cache).getNativeCache();
 			}
 
 			return (ConcurrentMap<K, V>) cache;
