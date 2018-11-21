@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
@@ -69,5 +70,23 @@ public enum VariantType {
     public String getTypeName() {
         return typeName;
     }
+    
+	@JsonIgnore
+	public static VariantType getType(String type) {
+
+		if (VariantType.ANDROID.name().equalsIgnoreCase(type)) {
+			return ANDROID;
+		} else if (VariantType.IOS.name().equalsIgnoreCase(type)) {
+			return IOS;
+		} else if (VariantType.SIMPLE_PUSH.name().equalsIgnoreCase(type)) {
+			return SIMPLE_PUSH;
+		} else if (VariantType.WINDOWS_WNS.name().equalsIgnoreCase(type)) {
+			return WINDOWS_WNS;
+		} else if (VariantType.ADM.name().equalsIgnoreCase(type)) {
+			return ADM;
+		}
+
+		return SIMPLE_PUSH;
+	}
 
 }

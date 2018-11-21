@@ -42,16 +42,13 @@ import javax.ws.rs.core.Response.Status;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
-import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.util.ClientAuthHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
-import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.metrics.IPushMessageMetricsService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
@@ -122,28 +119,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseRegistrationEn
 	@ReturnType("java.lang.Void")
 	public Response crossOriginForInstallations(@Context HttpHeaders headers) {
 		return appendPreflightResponseHeaders(headers, Response.ok()).build();
-	}
-
-	@POST
-	@Path("/oidc/type/{type}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
-	public Response registerSecured(@DefaultValue("") @HeaderParam("x-ag-old-token") final String oldToken,
-			Installation entity, @DefaultValue("false") @QueryParam("synchronously") boolean synchronously,
-			@PathParam("type") VariantType type, @Context HttpServletRequest request) {
-
-		PushApplication app = authenticationHelper.loadApplicationWhenAuthorized(request);
-		if (app == null) {
-			return create401Response(request);
-		}
-
-		Variant var = PushApplicationServiceImpl.getByVariantType(app, type).orElse(null);
-		if (var == null) {
-			return create401Response(request);
-		}
-
-		return register(var, oldToken, entity, synchronously, request);
 	}
 
 	/**

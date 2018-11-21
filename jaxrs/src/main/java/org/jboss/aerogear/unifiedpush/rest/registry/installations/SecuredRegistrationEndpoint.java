@@ -18,6 +18,8 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import com.qmino.miredot.annotations.ReturnType;
@@ -25,23 +27,27 @@ import com.qmino.miredot.annotations.ReturnType;
 @Controller
 @Path("/registry/type")
 public class SecuredRegistrationEndpoint extends AbstractBaseRegistrationEndpoint {
+	private final Logger logger = LoggerFactory.getLogger(SecuredRegistrationEndpoint.class);
 
 	@POST
-	@Path("{type}")
+	@Path("/{type: .*}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
 	public Response registerSecured(@DefaultValue("") @HeaderParam("x-ag-old-token") final String oldToken,
 			Installation entity, @DefaultValue("false") @QueryParam("synchronously") boolean synchronously,
-			@PathParam("type") VariantType type, @Context HttpServletRequest request) {
+			@PathParam("type") String type, @Context HttpServletRequest request) {
 
 		PushApplication app = authenticationHelper.loadApplicationWhenAuthorized(request);
+
 		if (app == null) {
+			logger.debug("Unable to find application by jwt ticket");
 			return create401Response(request);
 		}
 
-		Variant var = PushApplicationServiceImpl.getByVariantType(app, type).orElse(null);
+		Variant var = PushApplicationServiceImpl.getByVariantType(app, VariantType.getType(type)).orElse(null);
 		if (var == null) {
+			logger.debug("Unable to find variant " + type + " for application " + app.getName());
 			return create401Response(request);
 		}
 
