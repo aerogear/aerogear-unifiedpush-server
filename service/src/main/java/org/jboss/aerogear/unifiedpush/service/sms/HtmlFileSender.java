@@ -17,13 +17,14 @@ public class HtmlFileSender extends AbstractSender implements VerificationPublis
 	private final Logger logger = LoggerFactory.getLogger(HtmlFileSender.class);
 
 	@Override
-	public void send(String alias, String code, Properties properties) {
+	public void send(String alias, String code, MessageType type, Properties properties) {
 		final String filepath = getProperty(properties, HTMLFILE_KEY);
 
 		template = getProperty(properties, MESSAGE_TMPL);
 
 		try {
-			FileUtils.writeLines(new File(filepath), "UTF-8",  Arrays.asList(getVerificationMessage(code, alias)), true);
+			FileUtils.writeLines(new File(filepath), "UTF-8", Arrays.asList(getVerificationMessage(code, type, alias)),
+					true);
 		} catch (IOException e) {
 			logger.error("Unable to append OTP to file: " + filepath, e);
 		}

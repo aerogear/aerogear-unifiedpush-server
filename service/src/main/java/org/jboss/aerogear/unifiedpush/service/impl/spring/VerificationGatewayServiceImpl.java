@@ -9,6 +9,7 @@ import javax.validation.ConstraintValidator;
 
 import org.jboss.aerogear.unifiedpush.api.validation.AlwaysTrueValidator;
 import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher;
+import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.service.sms.MockLogSender;
 import org.jboss.aerogear.unifiedpush.service.validation.ConstraintValidatorContextImpl;
 import org.slf4j.Logger;
@@ -37,9 +38,9 @@ public class VerificationGatewayServiceImpl implements IVerificationGatewayServi
 	private List<VerificationPart> chain;
 
 	/**
-	 * Initializes the SMS sender. We cache the sender since an implementation
-	 * might set up its own (being, currently, outside of JBoss's resource
-	 * management scope) resource upkeep.
+	 * Initializes the SMS sender. We cache the sender since an implementation might
+	 * set up its own (being, currently, outside of JBoss's resource management
+	 * scope) resource upkeep.
 	 */
 	@PostConstruct
 	public void initializeSender() {
@@ -104,7 +105,7 @@ public class VerificationGatewayServiceImpl implements IVerificationGatewayServi
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void sendVerificationMessage(String pushApplicationId, String alias, String code) {
+	public void sendVerificationMessage(String pushApplicationId, String alias, MessageType type, String code) {
 		VerificationPublisher publisher;
 
 		if (chain == null) {
@@ -121,7 +122,7 @@ public class VerificationGatewayServiceImpl implements IVerificationGatewayServi
 					new ConstraintValidatorContextImpl(pushApplicationId, configurationService.getProperties()))) {
 				logger.info(String.format("Sending '%s' message to alias '%s' using '%s' publisher", code, alias,
 						publisher.getClass().getName()));
-				publisher.send(alias, code, configurationService.getProperties());
+				publisher.send(alias, code, type, configurationService.getProperties());
 
 				if (!publisher.chain()) {
 					break;

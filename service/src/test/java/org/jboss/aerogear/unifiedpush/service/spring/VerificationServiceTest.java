@@ -8,6 +8,7 @@ import javax.validation.ConstraintValidator;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.aerogear.unifiedpush.api.validation.AlwaysTrueValidator;
+import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.service.AbstractNoCassandraServiceTest;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IVerificationGatewayService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.VerificationGatewayServiceImpl;
@@ -114,7 +115,7 @@ public class VerificationServiceTest extends AbstractNoCassandraServiceTest {
 
 		Assert.assertTrue(vService.getChain().size() == 3);
 
-		vService.sendVerificationMessage("231231231", "test@ups.com", "12345");
+		vService.sendVerificationMessage("231231231", "test@ups.com", MessageType.REGISTER, "12345");
 
 		List<String> lines;
 		try {

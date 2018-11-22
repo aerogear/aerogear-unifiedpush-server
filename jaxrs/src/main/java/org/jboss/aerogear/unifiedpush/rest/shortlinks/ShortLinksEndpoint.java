@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
+import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
@@ -174,7 +175,7 @@ public class ShortLinksEndpoint extends AbstractEndpoint {
 				return create401Response(request);
 			}
 
-			sender.send(number, shortlink, configurationService.getProperties());
+			sender.send(number, shortlink, MessageType.REGISTER, configurationService.getProperties());
 			return Response.ok().build();
 		} catch (Exception e) {
 			logger.error("Unable to send SMS request", e);

@@ -14,6 +14,7 @@ import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCode;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCodeKey;
@@ -65,7 +66,7 @@ public class VerificationServiceImpl implements VerificationService {
 		return initiateDeviceVerification(installation, variant);
 	}
 
-	public String initiateDeviceVerification(String alias) {
+	public String initiateDeviceVerification(String alias, MessageType type) {
 		// create a random string made up of numbers
 		String verificationCode = RandomStringUtils.random(VERIFICATION_CODE_LENGTH, false, true);
 
@@ -77,7 +78,7 @@ public class VerificationServiceImpl implements VerificationService {
 		}
 
 		// Send Message
-		verificationService.sendVerificationMessage(aliasObj.getPushApplicationId().toString(), alias,
+		verificationService.sendVerificationMessage(aliasObj.getPushApplicationId().toString(), alias, type,
 				verificationCode);
 
 		OtpCodeKey okey = new OtpCodeKey(NullUUID.NULL.getUuid(), alias, verificationCode);
@@ -111,7 +112,7 @@ public class VerificationServiceImpl implements VerificationService {
 		// DEVNULL_NOTIFICATIONS_VARIANT
 		if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
 			verificationService.sendVerificationMessage(alias == null ? null : alias.getPushApplicationId().toString(),
-					installation.getAlias(), verificationCode);
+					installation.getAlias(), MessageType.REGISTER, verificationCode);
 		}
 
 		OtpCodeKey okey = new OtpCodeKey(UUID.fromString(variant.getVariantID()), installation.getDeviceToken(),
@@ -135,7 +136,7 @@ public class VerificationServiceImpl implements VerificationService {
 			logger.warn("Missing alias, unable to send verification code!");
 			return null;
 		}
-		
+
 		OtpCodeKey okey = new OtpCodeKey(variantId, alias, verificationAttempt.getCode());
 
 		Set<Object> codes = getCodes(okey);
@@ -148,11 +149,11 @@ public class VerificationServiceImpl implements VerificationService {
 			codeService.delete(okey);
 
 			// Enable OAuth2 User
-			
+
 			if (keycloakService.isInitialized() && verificationAttempt.isOauth2()) {
 				if (resetOnly) {
 					keycloakService.resetUserPassword(alias, verificationAttempt.getCode());
-				}else {
+				} else {
 					keycloakService.createVerifiedUserIfAbsent(alias, verificationAttempt.getCode());
 				}
 			}

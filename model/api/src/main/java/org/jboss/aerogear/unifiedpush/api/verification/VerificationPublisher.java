@@ -11,19 +11,23 @@ public interface VerificationPublisher {
 
 	/**
 	 * Sends the message to number.
+	 * 
 	 * @param phoneNumber number to send to
-	 * @param code OTP verification code.
-	 * @param properties any additional properties required to configure this sms sender
+	 * @param code        OTP verification code.
+	 * @param properties  any additional properties required to configure this sms
+	 *                    sender
 	 */
-	void send(String phoneNumber, String code, Properties properties);
+	void send(String phoneNumber, String code, MessageType type, Properties properties);
 
 	/**
 	 * Indicates rather next validation in chain should be validated.
 	 */
-	default boolean chain() {return true;};
+	default boolean chain() {
+		return true;
+	};
 
-	static void logError(Logger logger, String type, String hostname, String portnumb, String username, String password, String fromaddr,
-			String toaddres, String subjectt, Exception e) {
+	static void logError(Logger logger, String type, String hostname, String portnumb, String username, String password,
+			String fromaddr, String toaddres, String subjectt, Exception e) {
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("Cannot send " + type + " message using");
@@ -35,5 +39,9 @@ public interface VerificationPublisher {
 		builder.append(", toaddres: ").append(toaddres);
 
 		logger.error(builder.toString(), e);
+	}
+
+	public enum MessageType {
+		REGISTER, RESET
 	}
 }

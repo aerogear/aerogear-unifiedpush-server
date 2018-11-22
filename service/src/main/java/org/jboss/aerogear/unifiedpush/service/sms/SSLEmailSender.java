@@ -20,16 +20,19 @@ public class SSLEmailSender extends AbstractEmailSender implements VerificationP
 	 * Sends off an email message to the alias address.
 	 */
 	@Override
-	public void send(String alias, String code, Properties properties) {
+	public void send(String alias, String code, MessageType type, Properties properties) {
 		final String hostname = getProperty(properties, HOSTNAME_KEY);
 		final String portnumb = getProperty(properties, PORTNUMB_KEY);
 		final String username = getProperty(properties, USERNAME_KEY);
 		final String password = getProperty(properties, PASSWORD_KEY);
 		final String fromaddr = getProperty(properties, FROMADDR_KEY);
-		final String subjectt = getProperty(properties, SUBJECTT_KEY);
+		final String subject = type == MessageType.REGISTER ? getProperty(properties, SUBJECT_KEY)
+				: getProperty(properties, SUBJECT_RESET_KEY, getProperty(properties, SUBJECT_KEY));
+
 		final Boolean port25UseTls = Boolean.valueOf(getProperty(properties, PORT25_USE_TLS));
 
 		template = getProperty(properties, MESSAGE_TMPL);
+		templateReset = getProperty(properties, MESSAGE_RESET_TMPL);
 
 		try {
 			if (hostname == null || portnumb == null || username == null || password == null || fromaddr == null
@@ -47,29 +50,27 @@ public class SSLEmailSender extends AbstractEmailSender implements VerificationP
 				setPropertiesForPort(email, Integer.parseInt(portnumb), port25UseTls);
 
 				email.setFrom(fromaddr);
-				email.setSubject(subjectt);
-				email.setMsg(getVerificationMessage(code));
+				email.setSubject(subject);
+				email.setMsg(getVerificationMessage(code, type));
 				email.addTo(alias);
 
 				email.send();
 			} catch (EmailException e) {
 				VerificationPublisher.logError(logger, "Email", hostname, portnumb, username, password, fromaddr, alias,
-						subjectt, e);
+						subject, e);
 			}
 		} catch (Exception e) {
 			VerificationPublisher.logError(logger, "Email", hostname, portnumb, username, password, fromaddr, alias,
-					subjectt, e);
+					subject, e);
 		}
 	}
 
 	/**
-	 * Sets properties to the given HtmlEmail object based on the port from
-	 * which it will be sent.
+	 * Sets properties to the given HtmlEmail object based on the port from which it
+	 * will be sent.
 	 *
-	 * @param email
-	 *            the email object to configure
-	 * @param port
-	 *            the configured outgoing port
+	 * @param email the email object to configure
+	 * @param port  the configured outgoing port
 	 */
 	private void setPropertiesForPort(Email email, int port, boolean port25UseTls) throws EmailException {
 		switch (port) {

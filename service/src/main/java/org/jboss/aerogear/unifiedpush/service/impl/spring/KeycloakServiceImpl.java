@@ -124,7 +124,8 @@ public class KeycloakServiceImpl implements IKeycloakService {
 			String domain = conf.getRooturlDomain();
 			String protocol = conf.getRooturlProtocol();
 			clientRepresentation.setRootUrl(conf.getRooturlMatcher().rootUrl(protocol, domain, applicationName));
-			clientRepresentation.setRedirectUris(Arrays.asList("/*"));
+			// localhost is required for cordova redirect
+			clientRepresentation.setRedirectUris(Arrays.asList("/*", "http://localhost"));
 			clientRepresentation.setBaseUrl("/");
 
 			clientRepresentation.setStandardFlowEnabled(true);

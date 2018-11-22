@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
+import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
@@ -56,9 +57,12 @@ public class OtpEndpoint extends AbstractBaseEndpoint {
 	@GET
 	@Path("/{alias}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response resendVerificationCode(@PathParam("alias") String alias, @Context HttpServletRequest request) {
+	public Response resendVerificationCode(@PathParam("alias") String alias,
+			@DefaultValue("false") @QueryParam("reset") boolean reset, @Context HttpServletRequest request) {
 
-		String code = verificationService.initiateDeviceVerification(alias);
+		String code = verificationService.initiateDeviceVerification(alias,
+				reset ? MessageType.RESET : MessageType.REGISTER);
+
 		if (code == null) {
 			return appendAllowOriginHeader(
 					Response.status(Status.BAD_REQUEST).entity(quote("Unable to send alias OTP code, missing alias")),
