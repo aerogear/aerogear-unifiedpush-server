@@ -1,9 +1,11 @@
 package org.jboss.aerogear.unifiedpush.cassandra.dao.model;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class DatabaseQueryKey {
-
+public class DatabaseQueryKey implements Serializable {
+	private static final long serialVersionUID = 3613590444329269400L;
+	
 	private UUID pushApplicationId;
 	private String database;
 
