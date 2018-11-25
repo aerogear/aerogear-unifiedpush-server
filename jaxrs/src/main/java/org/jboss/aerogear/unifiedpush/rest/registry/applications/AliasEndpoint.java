@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -39,6 +41,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.AliasAlreadyExists;
@@ -173,9 +176,21 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 
 		if (associated.isAssociated()) {
 			StringBuffer domain = new StringBuffer(KeycloakServiceImpl.stripClientPrefix(associated.getClient()));
-			domain.append(associated.getSeperator());
-			domain.append(request.getServerName());
-			associated.setSubdomain(domain.toString());
+			try {
+				URI uri = new URI(request.getRequestURI());
+					
+				if (StringUtils.startsWithIgnoreCase(uri.getHost(), domain.toString())) {
+					// Already subdomain access, use host as subdomain
+					associated.setSubdomain(uri.getHost());
+				} else {
+					domain.append(associated.getSeperator());
+					domain.append(request.getServerName());
+					associated.setSubdomain(domain.toString());
+				}
+			} catch (URISyntaxException e) {
+				logger.error("Unable to create URI from URL:" + request.getRequestURI(), e);
+			}
+			
 		}
 		return appendAllowOriginHeader(Response.ok().entity(associated), request);
 	}
