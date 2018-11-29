@@ -24,6 +24,11 @@ public class ClientInstallationAsyncServiceImpl implements ClientInstallationAsy
 	private ClientInstallationService clientInstallationService;
 
 	@Async
+	public void addInstallation(Variant variant, Installation installation, boolean shouldVerifiy) {
+		clientInstallationService.addInstallation(variant, installation, shouldVerifiy);
+	}
+
+	@Async
 	public void addInstallation(Variant variant, Installation installation) {
 		clientInstallationService.addInstallation(variant, installation);
 	}

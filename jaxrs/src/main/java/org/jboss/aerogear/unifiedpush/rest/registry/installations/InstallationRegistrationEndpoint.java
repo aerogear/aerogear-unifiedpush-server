@@ -177,7 +177,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseRegistrationEn
 			return create401Response(request);
 		}
 
-		return register(variant, oldToken, entity, synchronously, request);
+		return register(variant, oldToken, entity, synchronously, true, request);
 	}
 
 	/**

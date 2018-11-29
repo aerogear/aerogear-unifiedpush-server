@@ -29,6 +29,8 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 public interface ClientInstallationAsyncService {
 
 	public void addInstallation(Variant variant, Installation entity);
+	
+	void addInstallation(Variant variant, Installation installation, boolean shouldVerifiy);
 
 	public void addInstallations(Variant variant, List<Installation> installations);
 

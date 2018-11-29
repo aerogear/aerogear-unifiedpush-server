@@ -110,7 +110,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
 	@Override
 	public void addInstallation(Variant variant, Installation entity) {
-		addInstallation(variant, entity, true);
+		addInstallation(variant, entity, false);
 	}
 
 	/**

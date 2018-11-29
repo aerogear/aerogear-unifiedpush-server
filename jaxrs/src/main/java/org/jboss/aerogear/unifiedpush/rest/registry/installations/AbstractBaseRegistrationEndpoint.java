@@ -20,9 +20,9 @@ public abstract class AbstractBaseRegistrationEndpoint extends AbstractBaseEndpo
 	protected ClientInstallationAsyncService clientInstallationAsyncService;
 	@Inject
 	protected AuthenticationHelper authenticationHelper;
-	
+
 	protected Response register(Variant variant, final String oldToken, Installation entity, boolean synchronously,
-			HttpServletRequest request) {
+			boolean verify, HttpServletRequest request) {
 		// Poor up-front validation for required token
 		final String deviceToken = entity.getDeviceToken();
 		if (deviceToken == null || !DeviceTokenValidator.isValidDeviceTokenForVariant(deviceToken, variant.getType())) {
@@ -45,11 +45,16 @@ public abstract class AbstractBaseRegistrationEndpoint extends AbstractBaseEndpo
 		// In some cases (automation ), we need to
 		// make sure device is synchronously registered.
 		if (synchronously)
-			clientInstallationService.addInstallation(variant, entity);
+			clientInstallationService.addInstallation(variant, entity, verify);
 		else
-			clientInstallationAsyncService.addInstallation(variant, entity);
+			clientInstallationAsyncService.addInstallation(variant, entity, verify);
 
 		return appendAllowOriginHeader(Response.ok(entity), request);
+	}
+
+	protected Response register(Variant variant, final String oldToken, Installation entity, boolean synchronously,
+			HttpServletRequest request) {
+		return register(variant, oldToken, entity, synchronously, false, request);
 	}
 
 }
