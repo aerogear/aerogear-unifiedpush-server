@@ -139,9 +139,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 		OtpCodeKey okey = new OtpCodeKey(variantId, alias, verificationAttempt.getCode());
 
-		Set<Object> codes = getCodes(okey);
-
-		if ((codes != null && codes.contains(verificationAttempt.getCode())) || isMasterCode(okey)) {
+		if (isValid(okey, verificationAttempt.getCode())) {
 			// Remove from local cache
 			deviceToToken.remove(okey);
 
@@ -176,9 +174,7 @@ public class VerificationServiceImpl implements VerificationService {
 		OtpCodeKey okey = new OtpCodeKey(UUID.fromString(variant.getVariantID()), installation.getDeviceToken(),
 				verificationAttempt.getCode());
 
-		Set<Object> codes = getCodes(okey);
-
-		if ((codes != null && codes.contains(verificationAttempt.getCode())) || isMasterCode(okey)) {
+		if (isValid(okey, verificationAttempt.getCode())) {
 			installation.setEnabled(true);
 
 			// Enable device
@@ -203,26 +199,49 @@ public class VerificationServiceImpl implements VerificationService {
 		}
 	}
 
+	private boolean isValid(OtpCodeKey okey, String code) {
+		Set<Object> codes = getCodes(okey);
+
+		if (codes != null) {
+			if (codes.contains(code) || isMasterCode(okey)) {
+				return true;
+			} else {
+				loadBehind(okey);
+				codes = deviceToToken.get(okey);
+				if (codes.contains(code)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	private Set<Object> getCodes(OtpCodeKey okey) {
 		// Get code from local cache
 		Set<Object> codes = deviceToToken.get(okey);
 
 		// Reload from cassandra
 		if (codes == null) {
-			logger.debug("Missing code form local cache, trying to use cassandra backing cache");
-			OtpCode code = codeService.findOne(okey);
-			if (code != null) {
-				logger.debug("Otp code fetched form cassandra backing cache");
-				// Initialize local cache from backing cache
-				addToCache(code.getKey());
-				codes = deviceToToken.get(code.getKey());
-			} else {
-				logger.debug("Unable to locate verification code for tokenId: {}, VariantId: {}, code: {}",
-						okey.getTokenId(), okey.getVariantId(), okey.getCode());
-			}
+			loadBehind(okey);
+			codes = deviceToToken.get(okey);
 		}
 
 		return codes;
+	}
+
+	private void loadBehind(OtpCodeKey okey) {
+		logger.debug("Missing code form local cache, trying to use cassandra backing cache");
+
+		OtpCode code = codeService.findOne(okey);
+		if (code != null) {
+			logger.debug("Otp code fetched form cassandra backing cache");
+			// Initialize local cache from backing cache
+			addToCache(code.getKey());
+		} else {
+			logger.debug("Unable to locate verification code for tokenId: {}, VariantId: {}, code: {}",
+					okey.getTokenId(), okey.getVariantId(), okey.getCode());
+		}
 	}
 
 	private boolean isMasterCode(OtpCodeKey okey) {
