@@ -544,7 +544,7 @@
 
 		<!-- Override versions of AeroGear BOMs -->
 		<junit.version>4.12</junit.version>
-		<keycloak.version>4.6.0.Final</keycloak.version>
+		<keycloak.version>4.7.0.Final</keycloak.version>
 		<hibernate.version>5.3.1.Final</hibernate.version>
 		<hibernate-validator.version>6.0.13.Final</hibernate-validator.version>
 		<version.javax.validation>2.0.1.Final</version.javax.validation>
