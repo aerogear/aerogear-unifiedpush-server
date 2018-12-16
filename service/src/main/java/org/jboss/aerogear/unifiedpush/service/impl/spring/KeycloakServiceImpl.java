@@ -127,6 +127,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 			// localhost is required for cordova redirect
 			clientRepresentation.setRedirectUris(Arrays.asList("/*", "http://localhost"));
 			clientRepresentation.setBaseUrl("/");
+			clientRepresentation.setAdminUrl("/");
 
 			clientRepresentation.setStandardFlowEnabled(true);
 			clientRepresentation.setPublicClient(true);
