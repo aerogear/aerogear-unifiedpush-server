@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and
-	individual contributors Licensed under the Apache License, Version 2.0 (the
-	"License"); you may not use this file except in compliance with the License.
-	You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-	Unless required by applicable law or agreed to in writing, software distributed
-	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
-	OR CONDITIONS OF ANY KIND, either express or implied. See the License for
+<!-- JBoss, Home of Professional Open Source Copyright Red Hat, Inc., and 
+	individual contributors Licensed under the Apache License, Version 2.0 (the 
+	"License"); you may not use this file except in compliance with the License. 
+	You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.jboss.aerogear</groupId>
 		<artifactId>aerogear-parent</artifactId>
-		<!-- NOTE: if updated for version of UPS dependencies, please update the
+		<!-- NOTE: if updated for version of UPS dependencies, please update the 
 			'aerogear.bom.version' as well -->
 		<version>1.1.2</version>
 	</parent>
@@ -63,7 +64,7 @@
 				<version>${aerogear.crypto.version}</version>
 			</dependency>
 
-			<!-- We need to redefine few testing dependencies until JDF updates -with-tools
+			<!-- We need to redefine few testing dependencies until JDF updates -with-tools 
 				BOM -->
 			<!-- https://issues.jboss.org/browse/JDF-417 -->
 			<dependency>
@@ -73,10 +74,10 @@
 				<scope>test</scope>
 			</dependency>
 
-			<!-- JBoss distributes a complete set of Java EE 7 APIs including a Bill
-				of Materials (BOM). A BOM specifies the versions of a "stack" (or a collection)
-				of artifacts. We use this here so that we always get the correct versions
-				of artifacts. Here we use the jboss-javaee-7.0 stack (you can read this as
+			<!-- JBoss distributes a complete set of Java EE 7 APIs including a Bill 
+				of Materials (BOM). A BOM specifies the versions of a "stack" (or a collection) 
+				of artifacts. We use this here so that we always get the correct versions 
+				of artifacts. Here we use the jboss-javaee-7.0 stack (you can read this as 
 				the JBoss stack of the Java EE 7 APIs) -->
 			<dependency>
 				<groupId>org.wildfly.bom</groupId>
@@ -85,7 +86,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.jboss.spec</groupId>
 				<artifactId>jboss-javaee-8.0</artifactId>
@@ -282,6 +283,19 @@
 				<scope>test</scope>
 			</dependency>
 
+			<dependency>
+				<groupId>com.turo</groupId>
+				<artifactId>pushy</artifactId>
+				<version>${pushy.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>io.netty</groupId>
+			    <artifactId>netty-tcnative-boringssl-static</artifactId>
+			    <version>2.0.8.Final</version>
+			    <scope>runtime</scope>
+			</dependency>
+
 			<!-- keycloak verison policy -->
 			<dependency>
 				<groupId>org.keycloak</groupId>
@@ -430,14 +444,14 @@
 			</dependency>
 
 			<dependency>
-                                <groupId>io.netty</groupId>
-                                <artifactId>netty-handler-proxy</artifactId>
-                                <version>${io.netty}</version>
-                        </dependency>
-                        <dependency>
-                                <groupId>io.netty</groupId>
-                                <artifactId>netty-codec-http2</artifactId>
-                                <version>${io.netty}</version>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-handler-proxy</artifactId>
+				<version>${io.netty}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-codec-http2</artifactId>
+				<version>${io.netty}</version>
 			</dependency>
 
 			<dependency>
@@ -450,7 +464,7 @@
 
 	<build>
 		<plugins>
-			<!-- we really do not need javadocs for the server, there are no Java
+			<!-- we really do not need javadocs for the server, there are no Java 
 				APIs exposed -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -532,8 +546,8 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<!-- Options to override the compiler arguments directly on the compiler
-			arument line to separate between what the IDE understands as the source level
+		<!-- Options to override the compiler arguments directly on the compiler 
+			arument line to separate between what the IDE understands as the source level 
 			and what the Maven compiler actually use. -->
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -550,6 +564,8 @@
 		<version.javax.validation>2.0.1.Final</version.javax.validation>
 
 		<gcm-server.version>1.0.0</gcm-server.version>
+		<pushy.version>0.10.2</pushy.version>
+		
 		<slfj4.version>1.7.21</slfj4.version>
 
 		<!-- Code coverage -->
@@ -566,7 +582,7 @@
 		<springframework.version>5.0.2.RELEASE</springframework.version>
 		<springsecurity.version>5.0.0.RELEASE</springsecurity.version>
 		<reactor-core.version>3.1.0.RELEASE</reactor-core.version>
-		<io.netty>4.1.22.Final</io.netty>
+		<io.netty>4.1.25.Final</io.netty>
 		<!-- Cassandra related properties -->
 		<failsafe.version>2.19.1</failsafe.version>
 		<cassandra.version>3.11.1</cassandra.version>
@@ -602,7 +618,7 @@
 						<scope>test</scope>
 					</dependency>
 
-					<!-- Hibernate Validator also requires an implementation of the Unified
+					<!-- Hibernate Validator also requires an implementation of the Unified 
 						Expression Language (JSR 341). http://hibernate.org/validator/documentation/getting-started/ -->
 					<dependency>
 						<groupId>javax.el</groupId>
@@ -677,7 +693,7 @@
 			</dependencies>
 		</profile>
 
-		<!-- Builds the distribution. Usage: - mvn clean install -Pdist,test Preparing/Performing
+		<!-- Builds the distribution. Usage: - mvn clean install -Pdist,test Preparing/Performing 
 			release, include as well: - mvn release:GOAL -Pdist,test -->
 		<profile>
 			<id>dist</id>
@@ -743,13 +759,15 @@
 								</goals>
 								<configuration>
 									<target>
-										<taskdef name="jacoco-report" classname="org.jacoco.ant.ReportTask"
+										<taskdef name="jacoco-report"
+											classname="org.jacoco.ant.ReportTask"
 											classpathref="maven.plugin.classpath" />
 										<taskdef classpathref="maven.runtime.classpath"
 											resource="net/sf/antcontrib/antcontrib.properties" />
 										<available file="${project.build.sourceDirectory}"
 											type="dir" property="source.dir.exists" />
-										<available file="${jacoco.report.file}" property="exec.file.exists" />
+										<available file="${jacoco.report.file}"
+											property="exec.file.exists" />
 										<if>
 											<equals arg1="${source.dir.exists}" arg2="true" />
 											<then>
@@ -768,11 +786,13 @@
 																	<executiondata>
 																		<file file="${jacoco.report.file}" />
 																	</executiondata>
-																	<structure name="AeroGear UnifiedPush Server Unit Tests">
+																	<structure
+																		name="AeroGear UnifiedPush Server Unit Tests">
 																		<classfiles>
 																			<fileset dir="${jacoco.prep.classes}" />
 																		</classfiles>
-																		<sourcefiles encoding="${project.build.sourceEncoding}">
+																		<sourcefiles
+																			encoding="${project.build.sourceEncoding}">
 																			<fileset dir="${jacoco.prep.sources}" />
 																		</sourcefiles>
 																	</structure>
@@ -780,7 +800,8 @@
 																</jacoco-report>
 															</try>
 															<catch>
-																<property name="exception" refid="report_exception" />
+																<property name="exception"
+																	refid="report_exception" />
 																<property name="message"
 																	value="Error while generating jacoco report: ${exception}" />
 																<echo message="${message}" />

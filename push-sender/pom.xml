@@ -61,7 +61,6 @@
 		<dependency>
 			<groupId>com.turo</groupId>
 			<artifactId>pushy</artifactId>
-			<version>0.10.2</version>
 		</dependency>
 
 		<dependency>
