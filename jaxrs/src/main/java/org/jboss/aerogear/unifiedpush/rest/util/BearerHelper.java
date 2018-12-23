@@ -41,9 +41,19 @@ public final class BearerHelper {
 	private BearerHelper() {
 	}
 
-	public static Variant extractVariantFromBearerHeader(GenericVariantService genericVariantService,
+	public static Variant extractVariantFromBearerHeader(GenericVariantService genericVariantService, String alias,
 			HttpServletRequest request) {
-		String clientId = extractClientId(request);
+
+		AccessToken token = getTokenDataFromBearer(request).orNull();
+		String clientId = extractClientId(token);
+
+		// Validate alias uri match jwt user
+		if (StringUtils.isNotEmpty(alias)) {
+			if (!StringUtils.equalsIgnoreCase(alias, extractUserName(token))) {
+				return null;
+			}
+		}
+
 		if (StringUtils.isNotBlank(clientId)) {
 			return genericVariantService.findVariantByKeycloakClientID(clientId);
 		}
@@ -52,9 +62,14 @@ public final class BearerHelper {
 	}
 
 	public static String extractClientId(HttpServletRequest request) {
+		AccessToken token = getTokenDataFromBearer(request).orNull();
+
+		return extractClientId(token);
+	}
+
+	public static String extractClientId(AccessToken token) {
 		String clientId = null;
 
-		AccessToken token = getTokenDataFromBearer(request).orNull();
 		if (token != null) {
 			clientId = token.getIssuedFor();
 		}
@@ -62,14 +77,24 @@ public final class BearerHelper {
 		return clientId;
 	}
 
+	public static String extractUserName(AccessToken token) {
+		String user = null;
+
+		if (token != null) {
+			user = token.getPreferredUsername();
+		}
+
+		return user;
+	}
+
 	public static Optional<AccessToken> getTokenDataFromBearer(org.keycloak.adapters.spi.HttpFacade.Request request) {
 		return getTokenDataFromBearer(getBarearToken(request).orNull());
 	}
-	
+
 	public static Optional<AccessToken> getTokenDataFromBearer(HttpServletRequest request) {
 		return getTokenDataFromBearer(getBarearToken(request).orNull());
 	}
-	
+
 	private static Optional<AccessToken> getTokenDataFromBearer(String tokenString) {
 		if (tokenString != null) {
 			try {
@@ -87,12 +112,12 @@ public final class BearerHelper {
 	public static Optional<String> getBarearToken(org.keycloak.adapters.spi.HttpFacade.Request request) {
 		return getBarearToken(new Vector<String>(request.getHeaders("Authorization")).elements());
 	}
-	
+
 	// Barear authentication allowed only using keycloack context
 	public static Optional<String> getBarearToken(HttpServletRequest request) {
 		return getBarearToken(request.getHeaders("Authorization"));
 	}
-	
+
 	// Barear authentication allowed only using keycloack context
 	private static Optional<String> getBarearToken(Enumeration<String> authHeaders) {
 		if (authHeaders == null || !authHeaders.hasMoreElements()) {

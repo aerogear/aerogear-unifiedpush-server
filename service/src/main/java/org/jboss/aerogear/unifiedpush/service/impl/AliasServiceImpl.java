@@ -101,7 +101,8 @@ public class AliasServiceImpl implements AliasService {
 	private List<UserKey> remove(UUID pushApplicationId, String alias, boolean destructive) {
 		// Remove any aliases belong to user_id
 		List<UserKey> removed = aliasDao.remove(pushApplicationId, alias);
-
+		// TODO - Remove from cluster cache 
+		
 		if (destructive) {
 			// Remove user from keyCloak
 			keycloakService.delete(alias);

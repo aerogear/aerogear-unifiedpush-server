@@ -36,14 +36,12 @@ public class AuthenticationHelper {
 	private AliasService aliasService;
 
 	/**
-	 * Returns the {@link PushApplication}. First try variant based
-	 * authentication, then try application based authentication.
+	 * Returns the {@link PushApplication}. First try variant based authentication,
+	 * then try application based authentication.
 	 *
-	 * @param request
-	 *            {@link HttpServletRequest}
-	 * @param alias
-	 *            For application level authentication, make sure alias is
-	 *            associated.
+	 * @param request {@link HttpServletRequest}
+	 * @param alias   For application level authentication, make sure alias is
+	 *                associated.
 	 */
 	public PushApplication loadApplicationWhenAuthorized(HttpServletRequest request, String alias) {
 
@@ -52,7 +50,7 @@ public class AuthenticationHelper {
 
 		// Try device based authentication
 		if (StringUtils.isNotEmpty(deviceToken)) {
-			final Variant variant = loadVariantWhenAuthorized(deviceToken, request);
+			final Variant variant = loadVariantWhenAuthorized(deviceToken, alias, request);
 
 			if (variant == null) {
 				return null;
@@ -83,26 +81,25 @@ public class AuthenticationHelper {
 
 		return pushApplication;
 	}
-	
+
 	public PushApplication loadApplicationWhenAuthorized(HttpServletRequest request) {
 		String applicationName = KeycloakServiceImpl.stripClientPrefix(BearerHelper.extractClientId(request));
-		
+
 		return pushApplicationService.findByName(applicationName);
 	}
 
 	/**
 	 * Returns the {@link Installation} if device token exists and request is
-	 * authenticated (Basic/Bearer).
+	 * authenticated (Basic Or Bearer).
 	 *
-	 * @param request
-	 *            {@link HttpServletRequest}
+	 * @param request {@link HttpServletRequest}
 	 *
 	 */
 	public Optional<Installation> loadInstallationWhenAuthorized(HttpServletRequest request) {
 		// Extract device token
 		String deviceToken = ClientAuthHelper.getDeviceToken(request);
 
-		Variant variant = loadVariantWhenAuthorized(deviceToken, request);
+		Variant variant = loadVariantWhenAuthorized(deviceToken, null, request);
 
 		if (variant != null) {
 			return Optional.ofNullable(clientInstallationService
@@ -113,18 +110,14 @@ public class AuthenticationHelper {
 	}
 
 	/**
-	 * Returns the {@link Variant} if device token is present and device is
-	 * enabled (forceExistingInstallation). first fetch credentials from basic
-	 * authentication, if missing try bearer credentials.
+	 * Returns the {@link Variant} if device token is present. first fetch
+	 * credentials from basic authentication then try OAuth2.
 	 *
-	 * @param deviceToken
-	 *            Base64 decoded device token
-	 * @param forceExistingInstallation
-	 *            verify installation exists and enabled.
-	 * @param request
-	 *            {@link HttpServletRequest}
+	 * @param deviceToken Base64 decoded device token.
+	 * @param alias       optional, validate alias to jwt.
+	 * @param request     {@link HttpServletRequest}
 	 */
-	private Variant loadVariantWhenAuthorized(String deviceToken, HttpServletRequest request) {
+	private Variant loadVariantWhenAuthorized(String deviceToken, String alias, HttpServletRequest request) {
 
 		if (StringUtils.isEmpty(deviceToken)) {
 			logger.warn("API request missing device-token header ({}), URI - > {}", deviceToken,
@@ -138,7 +131,7 @@ public class AuthenticationHelper {
 		if (variant == null) {
 			// Variant is missing, try to extract variant using Bearer
 			if (BearerHelper.isBearerExists(request)) {
-				variant = loadVariantFromBearerWhenAuthorized(genericVariantService, request);
+				variant = BearerHelper.extractVariantFromBearerHeader(genericVariantService, alias, request);
 
 				if (variant == null) {
 					logger.info("UnAuthorized bearer authentication missing variant. device token ({}), URI {}",
@@ -156,19 +149,5 @@ public class AuthenticationHelper {
 		}
 
 		return variant;
-	}
-
-	/**
-	 * returns variant from the bearer token if it is valid for the request.
-	 *
-	 * @param genericVariantService
-	 *            {@link GenericVariantService}
-	 * @param request
-	 *            {@link HttpServletRequest}
-	 */
-	private static Variant loadVariantFromBearerWhenAuthorized(GenericVariantService genericVariantService,
-			HttpServletRequest request) {
-		// extract the Variant from the Authorization header:
-		return BearerHelper.extractVariantFromBearerHeader(genericVariantService, request);
 	}
 }
