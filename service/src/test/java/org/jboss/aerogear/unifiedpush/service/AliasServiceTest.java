@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
 import org.jboss.aerogear.unifiedpush.service.impl.AliasServiceImpl.Associated;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration;
@@ -40,6 +41,8 @@ public class AliasServiceTest extends AbstractCassandraServiceTest {
 
 	@Inject
 	private AliasService aliasService;
+	@Inject
+	private DocumentService documentService;
 
 	@Test
 	@Transactional
@@ -104,7 +107,8 @@ public class AliasServiceTest extends AbstractCassandraServiceTest {
 		PushApplication pushApplication = new PushApplication();
 		UUID pushAppId = UUID.fromString(pushApplication.getPushApplicationID());
 
-		Alias[] legacyAliases = new Alias[] { new Alias(pushAppId, UUIDs.timeBased(), "Supprot@AeroGear.org"),
+		UUID firstGuid = UUIDs.timeBased();
+		Alias[] legacyAliases = new Alias[] { new Alias(pushAppId, firstGuid, "Supprot@AeroGear.org"),
 				new Alias(pushAppId, UUIDs.timeBased(), "Test@AeroGear.org"),
 				new Alias(pushAppId, UUIDs.timeBased(), "Help@AeroGear.org") };
 		List<Alias> aliasList = Arrays.asList(legacyAliases);
@@ -117,11 +121,14 @@ public class AliasServiceTest extends AbstractCassandraServiceTest {
 			assertThat(aliasService.find(alias.getPushApplicationId(), alias.getId())).isNotNull();
 		});
 
+		documentService.save(new DocumentMetadata(pushAppId, getClass().getSimpleName(), firstGuid),
+				"doc1", "test_id");
+
 		// Delete alias
-		aliasService.remove(pushAppId, legacyAliases[0].getEmail());
+		aliasService.remove(pushAppId, firstGuid, true);
 
 		// Validate Alias is missing
-		assertThat(aliasService.find(legacyAliases[0].getPushApplicationId(), legacyAliases[0].getId())).isNull();
+		assertThat(aliasService.find(pushAppId, firstGuid)).isNull();
 
 	}
 

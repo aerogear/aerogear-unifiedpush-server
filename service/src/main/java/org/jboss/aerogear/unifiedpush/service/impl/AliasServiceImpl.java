@@ -56,6 +56,7 @@ public class AliasServiceImpl implements AliasService {
 	@Inject
 	private DocumentService documentService;
 
+	@Override
 	public List<Alias> addAll(PushApplication pushApplication, List<Alias> aliases, boolean oauth2) {
 		logger.debug("OAuth2 flag is: " + oauth2);
 		List<Alias> aliasList = new ArrayList<>();
@@ -99,17 +100,15 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	private List<UserKey> remove(UUID pushApplicationId, String alias, boolean destructive) {
-		// Remove any aliases belong to user_id
-		List<UserKey> removed = aliasDao.remove(pushApplicationId, alias);
-		// TODO - Remove from cluster cache 
-		
+		// TODO - Remove from cluster cache
 		if (destructive) {
 			// Remove user from keyCloak
 			keycloakService.delete(alias);
 
 			documentService.delete(pushApplicationId, find(pushApplicationId.toString(), alias));
 		}
-		return removed;
+		// Remove any aliases belong to user_id
+		return aliasDao.remove(pushApplicationId, alias);
 	}
 
 	@Override
@@ -142,6 +141,7 @@ public class AliasServiceImpl implements AliasService {
 	 * @param alias alias name
 	 * @param fqdn  domain / team name.
 	 */
+	@Override
 	public Associated associated(String alias, String fqdn) {
 		PushApplication pushApplication = null;
 
