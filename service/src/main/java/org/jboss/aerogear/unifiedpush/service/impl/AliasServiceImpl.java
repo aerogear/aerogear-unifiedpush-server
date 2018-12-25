@@ -36,6 +36,8 @@ import org.jboss.aerogear.unifiedpush.service.PostDelete;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.KeycloakServiceImpl;
+import org.jboss.aerogear.unifiedpush.spring.ServiceCacheConfig;
+import org.jboss.aerogear.unifiedpush.spring.ServiceCacheConfig.ClusterEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -55,6 +57,8 @@ public class AliasServiceImpl implements AliasService {
 	private PushApplicationService pushApplicationService;
 	@Inject
 	private DocumentService documentService;
+	@Inject
+	protected ServiceCacheConfig cacheService;
 
 	@Override
 	public List<Alias> addAll(PushApplication pushApplication, List<Alias> aliases, boolean oauth2) {
@@ -100,13 +104,15 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	private List<UserKey> remove(UUID pushApplicationId, String alias, boolean destructive) {
-		// TODO - Remove from cluster cache
 		if (destructive) {
 			// Remove user from keyCloak
 			keycloakService.delete(alias);
 
 			documentService.delete(pushApplicationId, find(pushApplicationId.toString(), alias));
 		}
+
+		cacheService.getClusterEventsCache().put(UUID.randomUUID(), ClusterEvent.forAlias(pushApplicationId, alias));
+
 		// Remove any aliases belong to user_id
 		return aliasDao.remove(pushApplicationId, alias);
 	}

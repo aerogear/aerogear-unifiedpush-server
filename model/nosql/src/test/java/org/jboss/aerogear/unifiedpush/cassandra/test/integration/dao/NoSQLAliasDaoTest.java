@@ -73,10 +73,10 @@ public class NoSQLAliasDaoTest extends FixedKeyspaceCreatingIntegrationTest {
 	public void testUsersCache() {
 		Alias alias = new Alias(UUID.randomUUID(), UUIDs.timeBased(), TEST_CACHE);
 		aliasDao.create(alias);
-		aliasDao.findByAlias(alias.getPushApplicationId(), TEST_CACHE);
+		alias = aliasDao.findByAlias(alias.getPushApplicationId(), TEST_CACHE);
 
 		Cache cache = cacheManager.getCache(AliasDao.CACHE_NAME);
-		assertTrue(cache.get(new SimpleKey(alias.getPushApplicationId(), TEST_CACHE)) != null);
+		assertTrue(cache.get(new SimpleKey(alias.getPushApplicationId(), TEST_CACHE)).get().equals(alias));
 	}
 
 	@Test

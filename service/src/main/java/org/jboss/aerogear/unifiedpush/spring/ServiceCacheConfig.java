@@ -1,8 +1,10 @@
 package org.jboss.aerogear.unifiedpush.spring;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -34,6 +36,7 @@ import com.github.benmanes.caffeine.cache.CaffeineSpec;
 public class ServiceCacheConfig {
 	private final Logger logger = LoggerFactory.getLogger(ServiceCacheConfig.class);
 	private final static String OTP_CACHE = "otpcodes";
+	private final static String EVENTS_CACHE = "cluster-events-cache";
 
 	private static final List<String> cacheNames = Arrays.asList(//
 			DatabaseDao.CACHE_NAME, //
@@ -64,11 +67,13 @@ public class ServiceCacheConfig {
 			if (cacheManager == null) {
 				synchronized (this) {
 					if (cacheManager == null) {
-						cacheManager = new SpringEmbeddedCacheManager((EmbeddedCacheManager) new InitialContext()
-								.lookup("java:jboss/infinispan/container/aerogear"));
+						EmbeddedCacheManager infiCache = (EmbeddedCacheManager) new InitialContext()
+								.lookup("java:jboss/infinispan/container/aerogear");
+						if (infiCache != null) {
+							cacheManager = new SpringEmbeddedCacheManager((EmbeddedCacheManager) infiCache);
+							cacheNames.forEach(cache -> initContainerManaged(infiCache, cache, null));
 
-						if (cacheManager != null) {
-							cacheNames.forEach(cache -> initContainerManaged(cacheManager, cache));
+							initContainerManaged(infiCache, EVENTS_CACHE, new ClusterEvents(cacheManager));
 						}
 					}
 				}
@@ -83,9 +88,15 @@ public class ServiceCacheConfig {
 		return cacheManager;
 	}
 
-	protected void initContainerManaged(CacheManager cacheContainer, String cachename) {
+	protected void initContainerManaged(EmbeddedCacheManager cacheContainer, String cachename, Object listener) {
 		try {
-			cacheContainer.getCache(cachename);
+			org.infinispan.Cache<Object, Object> cache = cacheContainer.getCache(cachename);
+
+			if (cache != null && listener != null) {
+				logger.debug("Adding cache listener to cache " + cachename);
+
+				cache.addListener(listener);
+			}
 		} catch (Exception e) {
 			logger.warn("Unable to init infinispan cache " + cachename);
 		}
@@ -115,6 +126,10 @@ public class ServiceCacheConfig {
 		return getCache(OTP_CACHE);
 	}
 
+	public ConcurrentMap<UUID, ClusterEvent> getClusterEventsCache() {
+		return getCache(EVENTS_CACHE);
+	}
+
 	public CacheManager localCacheManager() {
 		if (cacheManager == null) {
 			synchronized (this) {
@@ -129,5 +144,35 @@ public class ServiceCacheConfig {
 		}
 
 		return cacheManager;
+	}
+
+	public static class ClusterEvent implements Serializable {
+		private static final long serialVersionUID = -2628808862845692788L;
+
+		private String cacheName;
+		private Object[] keys;
+
+		public static ClusterEvent forAlias(Object... keys) {
+			return new ClusterEvent(AliasDao.CACHE_NAME, keys);
+		}
+
+		private ClusterEvent(String cacheName, Object... keys) {
+			super();
+			this.cacheName = cacheName;
+			this.keys = keys;
+		}
+
+		public String getCacheName() {
+			return cacheName;
+		}
+
+		public Object[] getKeys() {
+			return keys;
+		}
+
+		@Override
+		public String toString() {
+			return "ClusterEvent [keys=" + Arrays.toString(keys) + "]";
+		}
 	}
 }
