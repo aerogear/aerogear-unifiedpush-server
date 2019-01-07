@@ -131,7 +131,7 @@ public class AuthenticationHelper {
 		if (variant == null) {
 			// Variant is missing, try to extract variant using Bearer
 			if (BearerHelper.isBearerExists(request)) {
-				variant = BearerHelper.extractVariantFromBearerHeader(genericVariantService, alias, request);
+				variant = BearerHelper.extractVariantFromBearerHeader(pushApplicationService, alias, request);
 
 				if (variant == null) {
 					logger.info("UnAuthorized bearer authentication missing variant. device token ({}), URI {}",

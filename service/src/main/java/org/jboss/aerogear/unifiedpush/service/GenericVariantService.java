@@ -51,14 +51,6 @@ public interface GenericVariantService {
     Variant findByVariantID(String variantID);
 
     /**
-     * Returns the Variant from the matching client in keycloak
-     *
-     * @param clientId keycloak client id
-     * @return the variant
-     */
-    Variant findVariantByKeycloakClientID(String clientId);
-
-    /**
      * Removes the given variant entity.
      *
      * @param variant the variant
