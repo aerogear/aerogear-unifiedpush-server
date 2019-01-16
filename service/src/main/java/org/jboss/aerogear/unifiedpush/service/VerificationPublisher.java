@@ -1,8 +1,9 @@
-package org.jboss.aerogear.unifiedpush.api.verification;
+package org.jboss.aerogear.unifiedpush.service;
 
 import java.util.Properties;
 
 import org.slf4j.Logger;
+import org.springframework.context.MessageSource;
 
 /**
  * Implementation of this class are responsible for sending SMS messages.
@@ -17,7 +18,7 @@ public interface VerificationPublisher {
 	 * @param properties  any additional properties required to configure this sms
 	 *                    sender
 	 */
-	void send(String phoneNumber, String code, MessageType type, Properties properties);
+	void send(String phoneNumber, String code, MessageType type, Properties properties, MessageSource messageSource, String locale);
 
 	/**
 	 * Indicates rather next validation in chain should be validated.

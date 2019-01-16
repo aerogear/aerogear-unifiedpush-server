@@ -8,13 +8,14 @@ import javax.annotation.PostConstruct;
 import javax.validation.ConstraintValidator;
 
 import org.jboss.aerogear.unifiedpush.api.validation.AlwaysTrueValidator;
-import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher;
-import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher.MessageType;
+import org.jboss.aerogear.unifiedpush.service.VerificationPublisher;
+import org.jboss.aerogear.unifiedpush.service.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.service.sms.MockLogSender;
 import org.jboss.aerogear.unifiedpush.service.validation.ConstraintValidatorContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,7 +35,9 @@ public class VerificationGatewayServiceImpl implements IVerificationGatewayServi
 
 	@Autowired
 	private IConfigurationService configurationService;
-
+	@Autowired
+	private MessageSource messageSource;
+	
 	private List<VerificationPart> chain;
 
 	/**
@@ -105,7 +108,7 @@ public class VerificationGatewayServiceImpl implements IVerificationGatewayServi
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void sendVerificationMessage(String pushApplicationId, String alias, MessageType type, String code) {
+	public void sendVerificationMessage(String pushApplicationId, String alias, MessageType type, String code, String locale) {
 		VerificationPublisher publisher;
 
 		if (chain == null) {
@@ -122,7 +125,7 @@ public class VerificationGatewayServiceImpl implements IVerificationGatewayServi
 					new ConstraintValidatorContextImpl(pushApplicationId, configurationService.getProperties()))) {
 				logger.info(String.format("Sending '%s' message to alias '%s' using '%s' publisher", code, alias,
 						publisher.getClass().getName()));
-				publisher.send(alias, code, type, configurationService.getProperties());
+				publisher.send(alias, code, type, configurationService.getProperties(), messageSource, locale);
 
 				if (!publisher.chain()) {
 					break;

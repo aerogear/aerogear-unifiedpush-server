@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ public class JPAConfigTest {
 			e.printStackTrace();
 		}
 
-		System.setProperty("aerogear.config.dir", dirPath);
+		System.setProperty(ConfigurationEnvironment.CONF_DIR, dirPath);
 	}
 
 	@Test

@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher.MessageType;
+import org.jboss.aerogear.unifiedpush.service.VerificationPublisher.MessageType;
 
 /**
  * Service used to manage installation verification cycle.
@@ -26,7 +26,7 @@ public interface VerificationService {
 	 */
 	String initiateDeviceVerification(Installation installation, Variant variant);
 
-	String initiateDeviceVerification(String alias, MessageType type);
+	String initiateDeviceVerification(String alias, MessageType type, String locale);
 
 	String retryDeviceVerification(String deviceToken, Variant variant);
 

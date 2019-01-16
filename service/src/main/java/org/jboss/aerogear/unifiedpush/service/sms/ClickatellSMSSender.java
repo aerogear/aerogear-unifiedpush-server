@@ -10,9 +10,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher;
+import org.jboss.aerogear.unifiedpush.service.VerificationPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 
 /**
  * Sends SMS over Clickatell's HTTP API.
@@ -29,7 +30,8 @@ public class ClickatellSMSSender extends AbstractSender implements VerificationP
 	private final static String USERNAME_KEY = "aerogear.config.sms.sender.clickatell.username";
 	private final static String PASSWORD_KEY = "aerogear.config.sms.sender.clickatell.password";
 	private final static String ENCODING_KEY = "aerogear.config.sms.sender.clickatell.encoding";
-	private final static String MESSAGE_TMPL = "aerogear.config.sms.sender.clickatell.template";
+
+	public final static String MESSAGE_TMPL = "aerogear.config.sms.sender.clickatell.template";
 
 	private final static String API_URL = "https://api.clickatell.com/http/sendmsg";
 
@@ -44,13 +46,12 @@ public class ClickatellSMSSender extends AbstractSender implements VerificationP
 	 * @param properties list of implementation properties.
 	 */
 	@Override
-	public void send(String alias, String code, MessageType type, Properties properties) {
+	public void send(String alias, String code, MessageType type, Properties properties, MessageSource messageSource,
+			String locale) {
 		final String apiId = getProperty(properties, API_ID_KEY);
 		final String username = getProperty(properties, USERNAME_KEY);
 		final String password = getProperty(properties, PASSWORD_KEY);
 		final String encoding = getProperty(properties, ENCODING_KEY);
-
-		template = getProperty(properties, MESSAGE_TMPL);
 
 		try {
 			if (apiId == null || username == null || password == null || encoding == null) {
@@ -65,7 +66,7 @@ public class ClickatellSMSSender extends AbstractSender implements VerificationP
 			StringBuilder apiCall = new StringBuilder(API_URL).append("?user=").append(username).append("&password=")
 					.append(password).append("&api_id=").append(apiId).append("&to=")
 					.append(URLEncoder.encode(formattedNumber, encoding)).append("&text=")
-					.append(URLEncoder.encode(getVerificationMessage(code, type), encoding));
+					.append(URLEncoder.encode(getMessage(messageSource, MESSAGE_TMPL, locale, code), encoding));
 
 			if (fromNumber != null) {
 				apiCall.append("&from=").append(fromNumber);

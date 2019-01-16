@@ -62,7 +62,7 @@ public class ConfigurationUtilsTest {
 			e.printStackTrace();
 		}
 
-		System.setProperty("aerogear.config.dir", dirPath);
+		System.setProperty(ConfigurationEnvironment.CONF_DIR, dirPath);
 	}
 
 	@Test

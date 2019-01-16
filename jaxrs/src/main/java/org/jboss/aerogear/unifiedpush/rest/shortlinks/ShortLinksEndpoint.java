@@ -3,6 +3,7 @@ package org.jboss.aerogear.unifiedpush.rest.shortlinks;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,18 +26,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
 import org.jboss.aerogear.unifiedpush.api.document.QueryOptions;
-import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.impl.DocumentKey;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.DocumentContent;
 import org.jboss.aerogear.unifiedpush.rest.AbstractEndpoint;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
+import org.jboss.aerogear.unifiedpush.service.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 
 import com.qmino.miredot.annotations.ReturnType;
@@ -48,21 +50,22 @@ public class ShortLinksEndpoint extends AbstractEndpoint {
 	private final static int VERIFICATION_CODE_LENGTH = 5;
 	private final static int VERIFICATION_LINK_LENGTH = 10;
 	private final static String LINK_PREFIX = "/sl/";
-	
+
 	@Inject
 	private DocumentService documentService;
 	@Inject
 	private AliasService aliasService;
 	@Autowired
 	private IConfigurationService configurationService;
+	@Autowired
+	private MessageSource messageSource;
 
 	private final static ClickatellSMSSender sender = new ClickatellSMSSender();
 
 	/**
 	 * Cross Origin for shortlinks requests.
 	 *
-	 * @param headers
-	 *            "Origin" header
+	 * @param headers "Origin" header
 	 * @return "Access-Control-Allow-Origin" header for your response
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
@@ -83,8 +86,7 @@ public class ShortLinksEndpoint extends AbstractEndpoint {
 	/**
 	 * Cross Origin for shortlink new request.
 	 *
-	 * @param headers
-	 *            "Origin" header
+	 * @param headers "Origin" header
 	 * @return "Access-Control-Allow-Origin" header for your response
 	 *
 	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
@@ -175,7 +177,8 @@ public class ShortLinksEndpoint extends AbstractEndpoint {
 				return create401Response(request);
 			}
 
-			sender.send(number, shortlink, MessageType.REGISTER, configurationService.getProperties());
+			sender.send(number, shortlink, MessageType.REGISTER, configurationService.getProperties(), messageSource,
+					Locale.ENGLISH.toString());
 			return Response.ok().build();
 		} catch (Exception e) {
 			logger.error("Unable to send SMS request", e);
@@ -195,7 +198,7 @@ public class ShortLinksEndpoint extends AbstractEndpoint {
 		// https://xxx.com/unifiedpus-server/rest/shortlinks/code
 		return request.getScheme() + "://" + request.getServerName() + LINK_PREFIX + code;
 	}
-	
+
 	public static String getCodeFromLink(String link) {
 		return StringUtils.substringAfterLast(link, LINK_PREFIX);
 	}

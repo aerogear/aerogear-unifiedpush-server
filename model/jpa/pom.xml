@@ -25,7 +25,12 @@
 			<groupId>org.jboss.aerogear.unifiedpush</groupId>
 			<artifactId>unifiedpush-model-api</artifactId>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>org.jboss.aerogear.unifiedpush</groupId>
+			<artifactId>unifiedpush-common</artifactId>
+		</dependency>
+		
         <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>

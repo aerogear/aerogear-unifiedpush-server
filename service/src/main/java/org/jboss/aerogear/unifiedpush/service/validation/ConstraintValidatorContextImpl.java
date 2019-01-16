@@ -14,7 +14,7 @@ public class ConstraintValidatorContextImpl implements ConstraintValidatorContex
 	private final Logger logger = LoggerFactory.getLogger(ConstraintValidatorContextImpl.class);
 	private final String pushApplicationId;
 	private final Properties properties;
-
+    
 	public ConstraintValidatorContextImpl(String pushApplicationId, Properties properties) {
 		this.pushApplicationId = pushApplicationId;
 		this.properties = properties;

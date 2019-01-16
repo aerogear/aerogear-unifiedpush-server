@@ -3,13 +3,14 @@ package org.jboss.aerogear.unifiedpush.service.spring;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import javax.validation.ConstraintValidator;
 
 import org.apache.commons.io.FileUtils;
 import org.jboss.aerogear.unifiedpush.api.validation.AlwaysTrueValidator;
-import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.service.AbstractNoCassandraServiceTest;
+import org.jboss.aerogear.unifiedpush.service.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IVerificationGatewayService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.VerificationGatewayServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.VerificationGatewayServiceImpl.VerificationPart;
@@ -22,11 +23,14 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DelegatingMessageSource;
+import org.springframework.context.support.StaticMessageSource;
 
 public class VerificationServiceTest extends AbstractNoCassandraServiceTest {
-
 	@Autowired
 	private IVerificationGatewayService vService;
+	@Autowired
+	private DelegatingMessageSource messageSource;
 
 	@After
 	public void after() {
@@ -109,13 +113,14 @@ public class VerificationServiceTest extends AbstractNoCassandraServiceTest {
 						+ "org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator::org.jboss.aerogear.unifiedpush.service.sms.SendGridEmailSender");
 		System.setProperty(ApplicationValidator.APP_VALIDATION_KEY, "231231231");
 		System.setProperty(HtmlFileSender.HTMLFILE_KEY, "/tmp/otp.html");
-		System.setProperty(HtmlFileSender.MESSAGE_TMPL, "{1} - Your CB4 verification code is: {0}");
-
+		StaticMessageSource messages = new StaticMessageSource();
+		messages.addMessage(HtmlFileSender.MESSAGE_TMPL, Locale.ENGLISH, "{1} - Your CB4 verification code is: {0}");
+		messageSource.setParentMessageSource(messages);
 		vService.initializeSender();
 
 		Assert.assertTrue(vService.getChain().size() == 3);
 
-		vService.sendVerificationMessage("231231231", "test@ups.com", MessageType.REGISTER, "12345");
+		vService.sendVerificationMessage("231231231", "test@ups.com", MessageType.REGISTER, "12345", "en");
 
 		List<String> lines;
 		try {

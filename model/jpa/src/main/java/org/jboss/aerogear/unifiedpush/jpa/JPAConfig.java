@@ -8,6 +8,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPABaseDao;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -36,9 +37,9 @@ import com.zaxxer.hikari.HikariDataSource;
 @EnableJpaRepositories(basePackageClasses = JPABaseDao.class)
 @ComponentScan(basePackageClasses = { JPABaseDao.class })
 @PropertySource(name = "database", value = { "classpath:META-INF/db.properties",
-		"file://${aerogear.config.dir}/db.properties" }, ignoreResourceNotFound = true)
+		"file://" + ConfigurationEnvironment.CONF_DIR_EL + "/db.properties" }, ignoreResourceNotFound = true)
 @PropertySource(name = "hibernate", value = { "classpath:META-INF/hibernate.properties",
-		"file://${aerogear.config.dir}/hibernate.properties" }, ignoreResourceNotFound = true)
+		"file://" + ConfigurationEnvironment.CONF_DIR_EL + "/hibernate.properties" }, ignoreResourceNotFound = true)
 public class JPAConfig {
 	private static String[] RESOURCES = new String[] { "META-INF/orm.xml",
 			"org/jboss/aerogear/unifiedpush/api/Installation.hbm.xml",

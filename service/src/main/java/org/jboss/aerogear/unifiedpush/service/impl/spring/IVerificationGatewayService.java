@@ -2,7 +2,7 @@ package org.jboss.aerogear.unifiedpush.service.impl.spring;
 
 import java.util.List;
 
-import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher.MessageType;
+import org.jboss.aerogear.unifiedpush.service.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.VerificationGatewayServiceImpl.VerificationPart;
 
 /**
@@ -17,7 +17,7 @@ public interface IVerificationGatewayService {
 	 * @param alias             phone number / email to send to.
 	 * @param message           text message to be sent
 	 */
-	void sendVerificationMessage(String pushApplicationId, String alias, MessageType reset, String message);
+	void sendVerificationMessage(String pushApplicationId, String alias, MessageType reset, String code, String locale);
 
 	List<VerificationPart> getChain();
 

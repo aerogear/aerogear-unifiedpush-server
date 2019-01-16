@@ -1,6 +1,7 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
@@ -14,13 +15,13 @@ import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCode;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCodeKey;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
+import org.jboss.aerogear.unifiedpush.service.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IVerificationGatewayService;
@@ -66,7 +67,7 @@ public class VerificationServiceImpl implements VerificationService {
 		return initiateDeviceVerification(installation, variant);
 	}
 
-	public String initiateDeviceVerification(String alias, MessageType type) {
+	public String initiateDeviceVerification(String alias, MessageType type, String locale) {
 		// create a random string made up of numbers
 		String verificationCode = RandomStringUtils.random(VERIFICATION_CODE_LENGTH, false, true);
 
@@ -79,7 +80,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 		// Send Message
 		verificationService.sendVerificationMessage(aliasObj.getPushApplicationId().toString(), alias, type,
-				verificationCode);
+				verificationCode, locale);
 
 		OtpCodeKey okey = new OtpCodeKey(NullUUID.NULL.getUuid(), alias, verificationCode);
 
@@ -112,7 +113,7 @@ public class VerificationServiceImpl implements VerificationService {
 		// DEVNULL_NOTIFICATIONS_VARIANT
 		if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
 			verificationService.sendVerificationMessage(alias == null ? null : alias.getPushApplicationId().toString(),
-					installation.getAlias(), MessageType.REGISTER, verificationCode);
+					installation.getAlias(), MessageType.REGISTER, verificationCode, Locale.ENGLISH.toString());
 		}
 
 		OtpCodeKey okey = new OtpCodeKey(UUID.fromString(variant.getVariantID()), installation.getDeviceToken(),

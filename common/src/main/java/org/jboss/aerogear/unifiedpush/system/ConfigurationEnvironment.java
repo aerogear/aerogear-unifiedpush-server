@@ -17,13 +17,15 @@ import org.springframework.core.env.Environment;
 
 @Configuration
 @PropertySource(name = "environment", value = { "classpath:default.properties",
-		"file://${aerogear.config.dir}/environment.properties" }, ignoreResourceNotFound = true)
+		"file://" + ConfigurationEnvironment.CONF_DIR_EL + "/environment.properties" }, ignoreResourceNotFound = true)
 public class ConfigurationEnvironment {
 	private final Logger logger = LoggerFactory.getLogger(ConfigurationEnvironment.class);
-
+	public static final String CONF_DIR = "aerogear.config.dir";
+	public static final String CONF_DIR_EL = "${" + CONF_DIR + ":#{null}}"; 
+	
 	public static final String PROPERTIES_DOCUMENTS_QUERY_DAYS = "aerogear.config.documents.query.period.days";
 	public static final String PROP_MASTER_VERIFICATION = "aerogear.config.verification.master_code";
-
+	
 	@Autowired
 	private Environment env;
 

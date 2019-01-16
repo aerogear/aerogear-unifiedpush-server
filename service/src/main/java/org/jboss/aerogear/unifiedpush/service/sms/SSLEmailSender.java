@@ -6,9 +6,10 @@ import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
-import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher;
+import org.jboss.aerogear.unifiedpush.service.VerificationPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 
 /**
  * Sends Email over SMTP API.
@@ -20,19 +21,17 @@ public class SSLEmailSender extends AbstractEmailSender implements VerificationP
 	 * Sends off an email message to the alias address.
 	 */
 	@Override
-	public void send(String alias, String code, MessageType type, Properties properties) {
+	public void send(String alias, String code, MessageType type, Properties properties, MessageSource messageSource,
+			String locale) {
 		final String hostname = getProperty(properties, HOSTNAME_KEY);
 		final String portnumb = getProperty(properties, PORTNUMB_KEY);
 		final String username = getProperty(properties, USERNAME_KEY);
 		final String password = getProperty(properties, PASSWORD_KEY);
 		final String fromaddr = getProperty(properties, FROMADDR_KEY);
-		final String subject = type == MessageType.REGISTER ? getProperty(properties, SUBJECT_KEY)
-				: getProperty(properties, SUBJECT_RESET_KEY, getProperty(properties, SUBJECT_KEY));
+
+		final String subject = getMessage(messageSource, getSubjectMessageKey(type), locale);
 
 		final Boolean port25UseTls = Boolean.valueOf(getProperty(properties, PORT25_USE_TLS));
-
-		template = getProperty(properties, MESSAGE_TMPL);
-		templateReset = getProperty(properties, MESSAGE_RESET_TMPL);
 
 		try {
 			if (hostname == null || portnumb == null || username == null || password == null || fromaddr == null
@@ -51,7 +50,7 @@ public class SSLEmailSender extends AbstractEmailSender implements VerificationP
 
 				email.setFrom(fromaddr);
 				email.setSubject(subject);
-				email.setMsg(getVerificationMessage(code, type));
+				email.setMsg(getMessage(messageSource, getEmailMessageKey(type), locale));
 				email.addTo(alias);
 
 				email.send();

@@ -6,9 +6,10 @@ import java.util.Arrays;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
-import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher;
+import org.jboss.aerogear.unifiedpush.service.VerificationPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 
 public class HtmlFileSender extends AbstractSender implements VerificationPublisher {
 	public static final String HTMLFILE_KEY = "aerogear.config.html.file.path";
@@ -17,14 +18,13 @@ public class HtmlFileSender extends AbstractSender implements VerificationPublis
 	private final Logger logger = LoggerFactory.getLogger(HtmlFileSender.class);
 
 	@Override
-	public void send(String alias, String code, MessageType type, Properties properties) {
+	public void send(String alias, String code, MessageType type, Properties properties, MessageSource messageSource,
+			String locale) {
 		final String filepath = getProperty(properties, HTMLFILE_KEY);
 
-		template = getProperty(properties, MESSAGE_TMPL);
-
 		try {
-			FileUtils.writeLines(new File(filepath), "UTF-8", Arrays.asList(getVerificationMessage(code, type, alias)),
-					true);
+			FileUtils.writeLines(new File(filepath), "UTF-8",
+					Arrays.asList(getMessage(messageSource, MESSAGE_TMPL, locale, code, alias)), true);
 		} catch (IOException e) {
 			logger.error("Unable to append OTP to file: " + filepath, e);
 		}

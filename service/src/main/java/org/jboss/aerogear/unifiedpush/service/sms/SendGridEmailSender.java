@@ -1,10 +1,12 @@
 package org.jboss.aerogear.unifiedpush.service.sms;
 
+import java.util.Locale;
 import java.util.Properties;
 
-import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher;
+import org.jboss.aerogear.unifiedpush.service.VerificationPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 
 import com.sendgrid.Content;
 import com.sendgrid.Email;
@@ -25,18 +27,15 @@ public class SendGridEmailSender extends AbstractEmailSender implements Verifica
 	 * Sends off an email message to the alias address.
 	 */
 	@Override
-	public void send(String alias, String code, MessageType type, Properties properties) {
+	public void send(String alias, String code, MessageType type, Properties properties, MessageSource messageSource,
+			String locale) {
 		final String hostname = getProperty(properties, HOSTNAME_KEY);
 		final String portnumb = getProperty(properties, PORTNUMB_KEY);
 		final String username = getProperty(properties, USERNAME_KEY);
 		final String password = getProperty(properties, PASSWORD_KEY);
 		final String fromaddr = getProperty(properties, FROMADDR_KEY);
 
-		final String subject = type == MessageType.REGISTER ? getProperty(properties, SUBJECT_KEY)
-				: getProperty(properties, SUBJECT_RESET_KEY, getProperty(properties, SUBJECT_KEY));
-
-		template = getProperty(properties, MESSAGE_TMPL);
-		templateReset = getProperty(properties, MESSAGE_RESET_TMPL);
+		final String subject = getMessage(messageSource, getSubjectMessageKey(type), locale);
 
 		try {
 			if (hostname == null || portnumb == null || username == null || password == null || fromaddr == null
@@ -58,7 +57,7 @@ public class SendGridEmailSender extends AbstractEmailSender implements Verifica
 
 				Content content = new Content();
 				content.setType("text/html");
-				content.setValue(getVerificationMessage(code, type));
+				content.setValue(getMessage(messageSource, getEmailMessageKey(type), locale));
 				mail.addContent(content);
 
 				Personalization personalization = new Personalization();
@@ -104,7 +103,7 @@ public class SendGridEmailSender extends AbstractEmailSender implements Verifica
 				"Your verification code for the XXX mobile application is: <b>{0}</b>. Please use this code to verify your device.</br></br>Thank you for using CB4.</br>Sincerely,</br>The XXX Team");
 
 		SendGridEmailSender sender = new SendGridEmailSender();
-		sender.send("test@example.com", "123456", MessageType.REGISTER, props);
+		sender.send("test@example.com", "123456", MessageType.REGISTER, props, null, Locale.ENGLISH.toString());
 	}
 
 	@Override

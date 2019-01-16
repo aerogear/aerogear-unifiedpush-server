@@ -18,10 +18,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
-import org.jboss.aerogear.unifiedpush.api.verification.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
+import org.jboss.aerogear.unifiedpush.service.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
 import org.springframework.stereotype.Controller;
 
@@ -58,10 +58,10 @@ public class OtpEndpoint extends AbstractBaseEndpoint {
 	@Path("/{alias}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response resendVerificationCode(@PathParam("alias") String alias,
-			@DefaultValue("false") @QueryParam("reset") boolean reset, @Context HttpServletRequest request) {
+			@DefaultValue("false") @QueryParam("reset") boolean reset, @DefaultValue("en") @QueryParam("locale") String locale, @Context HttpServletRequest request) {
 
 		String code = verificationService.initiateDeviceVerification(alias,
-				reset ? MessageType.RESET : MessageType.REGISTER);
+				reset ? MessageType.RESET : MessageType.REGISTER, locale);
 
 		if (code == null) {
 			return appendAllowOriginHeader(
