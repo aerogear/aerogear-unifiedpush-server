@@ -1,5 +1,6 @@
 package org.jboss.aerogear.unifiedpush.service.sms;
 
+import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.mail.DefaultAuthenticator;
@@ -22,7 +23,7 @@ public class SSLEmailSender extends AbstractEmailSender implements VerificationP
 	 */
 	@Override
 	public void send(String alias, String code, MessageType type, Properties properties, MessageSource messageSource,
-			String locale) {
+			Locale locale) {
 		final String hostname = getProperty(properties, HOSTNAME_KEY);
 		final String portnumb = getProperty(properties, PORTNUMB_KEY);
 		final String username = getProperty(properties, USERNAME_KEY);
@@ -50,7 +51,7 @@ public class SSLEmailSender extends AbstractEmailSender implements VerificationP
 
 				email.setFrom(fromaddr);
 				email.setSubject(subject);
-				email.setMsg(getMessage(messageSource, getEmailMessageKey(type), locale));
+				email.setMsg(getMessage(messageSource, getEmailMessageKey(type), locale, code));
 				email.addTo(alias);
 
 				email.send();

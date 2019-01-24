@@ -1,5 +1,6 @@
 package org.jboss.aerogear.unifiedpush.service;
 
+import java.util.Locale;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ public interface VerificationPublisher {
 	 * @param properties  any additional properties required to configure this sms
 	 *                    sender
 	 */
-	void send(String phoneNumber, String code, MessageType type, Properties properties, MessageSource messageSource, String locale);
+	void send(String phoneNumber, String code, MessageType type, Properties properties, MessageSource messageSource, Locale locale);
 
 	/**
 	 * Indicates rather next validation in chain should be validated.

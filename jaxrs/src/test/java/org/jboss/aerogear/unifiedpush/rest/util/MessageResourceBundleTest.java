@@ -7,6 +7,7 @@ import java.util.Locale;
 import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
 import org.jboss.aerogear.unifiedpush.rest.WebConfigTest;
 import org.jboss.aerogear.unifiedpush.service.sms.ClickatellSMSSender;
+import org.jboss.aerogear.unifiedpush.service.sms.SendGridEmailSender;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,6 +34,11 @@ public class MessageResourceBundleTest extends RestEndpointTest {
 		assertEquals(
 				messageSource.getMessage(ClickatellSMSSender.MESSAGE_TMPL, new Object[] { "12345" }, new Locale("es", "ES")),
 				"Su código de verificación para CB4 es: 12345");
+		
+		String test = messageSource.getMessage(SendGridEmailSender.MESSAGE_TMPL, new Object[] { "12345" }, Locale.ENGLISH);
+		assertEquals(
+				test,
+				"Your verification code for the CB4 account is: <b>12345</b>. Please use this code to verify your device.<br/><br/>Thank you for using CB4.<br/>Sincerely,<br/>The CB4 Team");
 	}
 	
 

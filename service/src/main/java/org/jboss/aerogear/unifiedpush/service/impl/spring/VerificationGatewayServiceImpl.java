@@ -3,6 +3,7 @@ package org.jboss.aerogear.unifiedpush.service.impl.spring;
 import java.lang.annotation.Annotation;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.validation.ConstraintValidator;
@@ -108,7 +109,7 @@ public class VerificationGatewayServiceImpl implements IVerificationGatewayServi
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void sendVerificationMessage(String pushApplicationId, String alias, MessageType type, String code, String locale) {
+	public void sendVerificationMessage(String pushApplicationId, String alias, MessageType type, String code, Locale locale) {
 		VerificationPublisher publisher;
 
 		if (chain == null) {

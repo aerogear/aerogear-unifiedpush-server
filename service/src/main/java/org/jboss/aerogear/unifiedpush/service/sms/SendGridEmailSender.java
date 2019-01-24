@@ -28,7 +28,7 @@ public class SendGridEmailSender extends AbstractEmailSender implements Verifica
 	 */
 	@Override
 	public void send(String alias, String code, MessageType type, Properties properties, MessageSource messageSource,
-			String locale) {
+			Locale locale) {
 		final String hostname = getProperty(properties, HOSTNAME_KEY);
 		final String portnumb = getProperty(properties, PORTNUMB_KEY);
 		final String username = getProperty(properties, USERNAME_KEY);
@@ -57,7 +57,7 @@ public class SendGridEmailSender extends AbstractEmailSender implements Verifica
 
 				Content content = new Content();
 				content.setType("text/html");
-				content.setValue(getMessage(messageSource, getEmailMessageKey(type), locale));
+				content.setValue(getMessage(messageSource, getEmailMessageKey(type), locale, code));
 				mail.addContent(content);
 
 				Personalization personalization = new Personalization();
@@ -103,7 +103,7 @@ public class SendGridEmailSender extends AbstractEmailSender implements Verifica
 				"Your verification code for the XXX mobile application is: <b>{0}</b>. Please use this code to verify your device.</br></br>Thank you for using CB4.</br>Sincerely,</br>The XXX Team");
 
 		SendGridEmailSender sender = new SendGridEmailSender();
-		sender.send("test@example.com", "123456", MessageType.REGISTER, props, null, Locale.ENGLISH.toString());
+		sender.send("test@example.com", "123456", MessageType.REGISTER, props, null, Locale.ENGLISH);
 	}
 
 	@Override

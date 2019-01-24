@@ -2,6 +2,7 @@ package org.jboss.aerogear.unifiedpush.service.sms;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.http.HttpEntity;
@@ -47,7 +48,7 @@ public class ClickatellSMSSender extends AbstractSender implements VerificationP
 	 */
 	@Override
 	public void send(String alias, String code, MessageType type, Properties properties, MessageSource messageSource,
-			String locale) {
+			Locale locale) {
 		final String apiId = getProperty(properties, API_ID_KEY);
 		final String username = getProperty(properties, USERNAME_KEY);
 		final String password = getProperty(properties, PASSWORD_KEY);

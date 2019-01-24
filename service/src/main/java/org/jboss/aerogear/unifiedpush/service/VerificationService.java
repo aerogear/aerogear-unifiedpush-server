@@ -1,5 +1,6 @@
 package org.jboss.aerogear.unifiedpush.service;
 
+import java.util.Locale;
 import java.util.UUID;
 
 import org.jboss.aerogear.unifiedpush.api.Installation;
@@ -26,7 +27,7 @@ public interface VerificationService {
 	 */
 	String initiateDeviceVerification(Installation installation, Variant variant);
 
-	String initiateDeviceVerification(String alias, MessageType type, String locale);
+	String initiateDeviceVerification(String alias, MessageType type, Locale locale);
 
 	String retryDeviceVerification(String deviceToken, Variant variant);
 

@@ -3,6 +3,7 @@ package org.jboss.aerogear.unifiedpush.service.sms;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -19,7 +20,7 @@ public class HtmlFileSender extends AbstractSender implements VerificationPublis
 
 	@Override
 	public void send(String alias, String code, MessageType type, Properties properties, MessageSource messageSource,
-			String locale) {
+			Locale locale) {
 		final String filepath = getProperty(properties, HTMLFILE_KEY);
 
 		try {

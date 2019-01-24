@@ -20,8 +20,8 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCode;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCodeKey;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
-import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationPublisher.MessageType;
+import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IVerificationGatewayService;
@@ -67,7 +67,7 @@ public class VerificationServiceImpl implements VerificationService {
 		return initiateDeviceVerification(installation, variant);
 	}
 
-	public String initiateDeviceVerification(String alias, MessageType type, String locale) {
+	public String initiateDeviceVerification(String alias, MessageType type, Locale locale) {
 		// create a random string made up of numbers
 		String verificationCode = RandomStringUtils.random(VERIFICATION_CODE_LENGTH, false, true);
 
@@ -113,7 +113,7 @@ public class VerificationServiceImpl implements VerificationService {
 		// DEVNULL_NOTIFICATIONS_VARIANT
 		if (!DEVNULL_NOTIFICATIONS_VARIANT.equalsIgnoreCase(variant.getName())) {
 			verificationService.sendVerificationMessage(alias == null ? null : alias.getPushApplicationId().toString(),
-					installation.getAlias(), MessageType.REGISTER, verificationCode, Locale.ENGLISH.toString());
+					installation.getAlias(), MessageType.REGISTER, verificationCode, Locale.ENGLISH);
 		}
 
 		OtpCodeKey okey = new OtpCodeKey(UUID.fromString(variant.getVariantID()), installation.getDeviceToken(),

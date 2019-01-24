@@ -1,5 +1,6 @@
 package org.jboss.aerogear.unifiedpush.service.sms;
 
+import java.util.Locale;
 import java.util.Properties;
 
 import org.jboss.aerogear.unifiedpush.service.VerificationPublisher;
@@ -15,7 +16,7 @@ public class MockLogSender implements VerificationPublisher {
 
 	@Override
 	public void send(String alias, String code, MessageType type, Properties properties, MessageSource messageSource,
-			String locale) {
+			Locale locale) {
 		logger.info("Logging validation message: \"" + code + "\" for alias: " + alias);
 	}
 

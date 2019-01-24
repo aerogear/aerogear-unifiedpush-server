@@ -1,5 +1,7 @@
 package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
+import java.util.Locale;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -20,8 +22,8 @@ import javax.ws.rs.core.Response.Status;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationPublisher.MessageType;
+import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationService.VerificationResult;
 import org.springframework.stereotype.Controller;
 
@@ -61,7 +63,7 @@ public class OtpEndpoint extends AbstractBaseEndpoint {
 			@DefaultValue("false") @QueryParam("reset") boolean reset, @DefaultValue("en") @QueryParam("locale") String locale, @Context HttpServletRequest request) {
 
 		String code = verificationService.initiateDeviceVerification(alias,
-				reset ? MessageType.RESET : MessageType.REGISTER, locale);
+				reset ? MessageType.RESET : MessageType.REGISTER, Locale.forLanguageTag(locale));
 
 		if (code == null) {
 			return appendAllowOriginHeader(

@@ -13,11 +13,11 @@ public abstract class AbstractSender {
 		return getProperty(properties, key, null);
 	}
 
-	protected String getMessage(MessageSource messageSource, String key, String locale, Object... attributes) {
-		return messageSource.getMessage(key, attributes, Locale.forLanguageTag(locale));
+	protected String getMessage(MessageSource messageSource, String key, Locale locale, Object... attributes) {
+		return messageSource.getMessage(key, attributes, locale);
 	}
 
-	protected String getMessage(MessageSource messageSource, String key, String locale) {
+	protected String getMessage(MessageSource messageSource, String key, Locale locale) {
 		return getMessage(messageSource, key, locale, new Object[] {});
 	}
 

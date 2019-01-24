@@ -178,7 +178,7 @@ public class ShortLinksEndpoint extends AbstractEndpoint {
 			}
 
 			sender.send(number, shortlink, MessageType.REGISTER, configurationService.getProperties(), messageSource,
-					Locale.ENGLISH.toString());
+					Locale.ENGLISH);
 			return Response.ok().build();
 		} catch (Exception e) {
 			logger.error("Unable to send SMS request", e);

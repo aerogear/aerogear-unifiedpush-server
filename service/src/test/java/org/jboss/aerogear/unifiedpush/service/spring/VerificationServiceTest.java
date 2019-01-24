@@ -120,7 +120,7 @@ public class VerificationServiceTest extends AbstractNoCassandraServiceTest {
 
 		Assert.assertTrue(vService.getChain().size() == 3);
 
-		vService.sendVerificationMessage("231231231", "test@ups.com", MessageType.REGISTER, "12345", "en");
+		vService.sendVerificationMessage("231231231", "test@ups.com", MessageType.REGISTER, "12345", Locale.ENGLISH);
 
 		List<String> lines;
 		try {
