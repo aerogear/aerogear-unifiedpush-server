@@ -191,7 +191,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseRegistrationEn
 	 *   https://SERVER:PORT/context/rest/registry/device/token/{token: .*}
 	 * </pre>
 	 *
-	 * @param pushMessageId push message identifier
+	 * @param token token to update
 	 * @param request       the request
 	 * @return empty JSON body
 	 *
