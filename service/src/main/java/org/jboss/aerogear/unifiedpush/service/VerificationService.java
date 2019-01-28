@@ -12,9 +12,9 @@ import org.jboss.aerogear.unifiedpush.service.VerificationPublisher.MessageType;
  * Service used to manage installation verification cycle.
  */
 public interface VerificationService {
-	public static final String DEVNULL_NOTIFICATIONS_VARIANT = "NULL-NOTIFICATIONS-VARIANT";
+	String DEVNULL_NOTIFICATIONS_VARIANT = "NULL-NOTIFICATIONS-VARIANT";
 
-	public static boolean isDevNullVariant(String variantName) {
+	static boolean isDevNullVariant(String variantName) {
 		return VerificationService.DEVNULL_NOTIFICATIONS_VARIANT.equals(variantName);
 	}
 
@@ -52,7 +52,7 @@ public interface VerificationService {
 	 */
 	void clearCache();
 
-	public enum VerificationResult {
+	enum VerificationResult {
 		/**
 		 * Verification succeeded
 		 */
