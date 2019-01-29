@@ -37,7 +37,6 @@ public class WebConfig {
 		// will override internal locales.
 		source.setBasenames("file://" + confDir + "/messages", "classpath:i18n/messages");
 		source.setAlwaysUseMessageFormat(true);
-		source.setUseCodeAsDefaultMessage(true);
 
 		return source;
 	}
