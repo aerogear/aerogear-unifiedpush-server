@@ -158,30 +158,6 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	}
 
 	/**
-	 * Create user by username (If Absent).
-	 *
-	 * Create user must be done synchronously and prevent clients from
-	 * authenticating before KC operation is complete.
-	 *
-	 * @param userName unique username
-	 */
-	public void createUserIfAbsent(String userName) {
-		if (!isInitialized()) {
-			return;
-		}
-
-		UserRepresentation user = getUser(userName);
-
-		if (user == null) {
-			user = create(userName, null, false);
-
-			this.realm.users().create(user);
-		} else {
-			logger.debug("KC Username {}, already exist", userName);
-		}
-	}
-
-	/**
 	 * Create verified user by username (If Absent).
 	 *
 	 * Create user must be done synchronously and prevent clients from
