@@ -30,7 +30,7 @@ public class MessageResourceBundleExternalTest extends RestEndpointTest {
 		String dirPath = System.getProperty("java.io.tmpdir");
 
 		List<String> lines = new ArrayList<>();
-		lines.add("aerogear.config.sms.sender.clickatell.template=Votre code de vérification CB4 est: {0}");
+		lines.add("aerogear.config.sms.sender.clickatell.template=XXX Votre code de vérification CB4 est: {0}");
 
 		try {
 			Files.deleteIfExists(Paths.get(dirPath + File.separator + "messages_fr.properties"));
@@ -56,7 +56,7 @@ public class MessageResourceBundleExternalTest extends RestEndpointTest {
 		// External prop
 		assertEquals(
 				messageSource.getMessage(ClickatellSMSSender.MESSAGE_TMPL, new Object[] { "123" }, Locale.FRANCE),
-				"Votre code de vérification CB4 est: 123");
+				"XXX Votre code de vérification CB4 est: 123");
 	}
 
 }

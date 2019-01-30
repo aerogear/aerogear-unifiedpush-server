@@ -1,5 +1,12 @@
 package org.jboss.aerogear.unifiedpush.rest;
 
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.Validator;
 
 import org.jboss.aerogear.unifiedpush.message.SenderConfig;
@@ -35,10 +42,27 @@ public class WebConfig {
 		// Limitation - When overriding default local ('basepath' | basepath_en)
 		// all locals must be provided, else external 'basepath' locale
 		// will override internal locales.
-		source.setBasenames("file://" + confDir + "/messages", "classpath:i18n/messages");
+
+		if (!listSourceFiles().isEmpty()) {
+			source.setBasenames("file://" + confDir + "/messages", "classpath:i18n/messages");
+		} else {
+			source.setBasenames("classpath:i18n/messages");
+		}
 		source.setAlwaysUseMessageFormat(true);
 
 		return source;
+	}
+
+	public List<Path> listSourceFiles() {
+		List<Path> result = new ArrayList<>();
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(confDir), "messages*.{properties}")) {
+			for (Path entry : stream) {
+				result.add(entry);
+			}
+		} catch (Exception ex) {
+			// Do nothing
+		}
+		return result;
 	}
 
 }
