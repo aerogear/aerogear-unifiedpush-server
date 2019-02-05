@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -178,10 +179,11 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 			StringBuffer domain = new StringBuffer(KeycloakServiceImpl.stripClientPrefix(associated.getClient()));
 			try {
 				URI uri = new URI(request.getRequestURI());
-					
-				if (StringUtils.startsWithIgnoreCase(uri.getHost(), domain.toString())) {
+
+				String host = uri.getHost();
+				if (StringUtils.startsWithIgnoreCase(host, domain.toString())) {
 					// Already subdomain access, use host as subdomain
-					associated.setSubdomain(uri.getHost());
+					associated.setSubdomain(host);
 				} else {
 					domain.append(associated.getSeperator());
 					domain.append(request.getServerName());
@@ -190,7 +192,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 			} catch (URISyntaxException e) {
 				logger.error("Unable to create URI from URL:" + request.getRequestURI(), e);
 			}
-			
+
 		}
 		return appendAllowOriginHeader(Response.ok().entity(associated), request);
 	}
@@ -591,6 +593,20 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 			return Response.ok().build();
 		} catch (Exception e) {
 			logger.error(String.format("Cannot destructively delete alias by alias id %s", id), e);
+			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
+		}
+	}
+
+	@POST
+	@Path("/kc/updateGuids")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("org.jboss.aerogear.unifiedpush.api.Alias")
+	public Response updateKcGuids(@Context HttpServletRequest request) {
+		try {
+			int updated = aliasService.updateKCUsersGuids();
+			return appendAllowOriginHeader(Response.ok(Collections.singletonMap("count", updated)), request);
+		} catch (Exception e) {
+			logger.error("Cannot update guids", e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
 		}
 	}

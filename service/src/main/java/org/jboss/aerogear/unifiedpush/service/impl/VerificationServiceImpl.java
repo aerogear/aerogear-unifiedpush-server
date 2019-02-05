@@ -1,5 +1,6 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -20,6 +21,7 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCode;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCodeKey;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
+import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.VerificationPublisher.MessageType;
 import org.jboss.aerogear.unifiedpush.service.VerificationService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IConfigurationService;
@@ -53,6 +55,8 @@ public class VerificationServiceImpl implements VerificationService {
 	private OtpCodeService codeService;
 	@Inject
 	protected ServiceCacheConfig cacheService;
+	@Inject
+	private PushApplicationService pushApplicationService;
 
 	@PostConstruct
 	private void startup() {
@@ -153,7 +157,8 @@ public class VerificationServiceImpl implements VerificationService {
 				if (resetOnly) {
 					keycloakService.resetUserPassword(alias, verificationAttempt.getCode());
 				} else {
-					keycloakService.createVerifiedUserIfAbsent(alias, verificationAttempt.getCode());
+					Collection<UserTenantInfo> tenantRelations = aliasService.getTenantRelations(alias);
+					keycloakService.createVerifiedUserIfAbsent(alias, verificationAttempt.getCode(), tenantRelations);
 				}
 			}
 
@@ -189,7 +194,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 			// Enable OAuth2 User
 			if (keycloakService.isInitialized() && verificationAttempt.isOauth2()) {
-				keycloakService.createVerifiedUserIfAbsent(installation.getAlias(), verificationAttempt.getCode());
+				keycloakService.createVerifiedUserIfAbsent(installation.getAlias(), verificationAttempt.getCode(), null);
 			}
 
 			return VerificationResult.SUCCESS;

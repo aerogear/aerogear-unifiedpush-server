@@ -1,8 +1,11 @@
 package org.jboss.aerogear.unifiedpush.service.impl.spring;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.service.impl.UserTenantInfo;
 import org.springframework.cache.annotation.Cacheable;
 
 public interface IKeycloakService {
@@ -12,7 +15,7 @@ public interface IKeycloakService {
 
 	void removeClient(PushApplication pushApplicaiton);
 
-	void createVerifiedUserIfAbsent(String userName, String password);
+	void createVerifiedUserIfAbsent(String userName, String password, Collection<UserTenantInfo> userTenantInfos);
 
 	boolean exists(String userName);
 
@@ -28,6 +31,10 @@ public interface IKeycloakService {
 	boolean isInitialized();
 
 	String strip(String fqdn);
-	
+
 	String seperator();
+
+	int updateUserAttribute(Map<String, ? extends Collection<UserTenantInfo>> aliasToIdentifiers);
+
+	void updateTenantsExistingUser(String representativeAlias, Collection<UserTenantInfo> tenantRelations);
 }

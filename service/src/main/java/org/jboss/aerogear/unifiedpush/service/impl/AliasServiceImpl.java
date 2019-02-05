@@ -19,8 +19,12 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -29,6 +33,7 @@ import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.AliasDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullAlias;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.User;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.UserKey;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.DocumentService;
@@ -248,13 +253,47 @@ public class AliasServiceImpl implements AliasService {
 			}
 		}
 
-		aliasDao.create(alias);
+		List<User> users = aliasDao.create(alias);
+		User representative = users.get(0);
+		String representativeAlias = representative.getAlias();
+
+		if (registered(representativeAlias)) {
+			Set<UserTenantInfo> tenantRelations = getTenantRelations(representativeAlias);
+			keycloakService.updateTenantsExistingUser(representativeAlias, tenantRelations);
+		}
+
 	}
 
 	@Override
 	@Async
 	public void createAsynchronous(Alias alias) {
 		create(alias);
+	}
+
+	@Override
+	public int updateKCUsersGuids() {
+		Map<String, Set<UserTenantInfo>> aliasToIdentifiers = aliasDao.findAllUserTenantRelations()
+				.collect(Collectors.groupingBy(row -> {
+							String alias = row.getAlias();
+							return alias.toLowerCase(); // alias is case insensitive
+						},
+						Collectors.mapping(userKeyToTenantInfo(), Collectors.toSet())));
+
+		return keycloakService.updateUserAttribute(aliasToIdentifiers);
+	}
+
+	private Function<UserKey, UserTenantInfo> userKeyToTenantInfo() {
+		return key -> {
+			UUID userGuid = key.getId();
+			UUID pushId = key.getPushApplicationId();
+			String clientId = getClientId(pushId);
+			return new UserTenantInfo(userGuid, pushId, clientId);
+		};
+	}
+
+	@Override
+	public Set<UserTenantInfo> getTenantRelations(String alias) {
+		return aliasDao.findUserTenantRelations(alias).map(userKeyToTenantInfo()).collect(Collectors.toSet());
 	}
 
 	public class Associated {

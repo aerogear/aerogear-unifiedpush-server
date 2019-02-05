@@ -2,6 +2,7 @@ package org.jboss.aerogear.unifiedpush.service.impl.spring;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.service.impl.UserTenantInfo;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration.DomainMatcher;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.admin.client.Keycloak;
@@ -31,9 +33,13 @@ import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
 @Service
 public class KeycloakServiceImpl implements IKeycloakService {
-	private static final Logger logger = LoggerFactory.getLogger(KeycloakServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(KeycloakServiceImpl.class);
 
 	private static final String CLIENT_PREFIX = "ups-installation-";
 	private static final String KEYCLOAK_ROLE_USER = "installation";
@@ -41,8 +47,9 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
 	private static final String ATTRIBUTE_VARIANT_SUFFIX = "_variantid";
 	private static final String ATTRIBUTE_SECRET_SUFFIX = "_secret";
+	public static final String USER_TENANT_RELATIONS = "userTenantRelations";
 
-	private volatile Boolean oauth2Enabled;
+    private volatile Boolean oauth2Enabled;
 	private Keycloak kc;
 	private RealmResource realm;
 
@@ -52,7 +59,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	@Autowired
 	private IOAuth2Configuration conf;
 
-	public boolean isInitialized() {
+    public boolean isInitialized() {
 		if (!conf.isOAuth2Enabled()) {
 			return false;
 		}
@@ -162,11 +169,11 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	 *
 	 * Create user must be done synchronously and prevent clients from
 	 * authenticating before KC operation is complete.
-	 *
-	 * @param userName unique userName
+	 *  @param userName unique userName
 	 * @param password password
+	 * @param userTenantInfos tenant infos of the user, to be added as keycloak attribute
 	 */
-	public void createVerifiedUserIfAbsent(String userName, String password) {
+	public void createVerifiedUserIfAbsent(String userName, String password, Collection<UserTenantInfo> userTenantInfos) {
 		if (!isInitialized()) {
 			return;
 		}
@@ -174,7 +181,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 		UserRepresentation user = getUser(userName);
 
 		if (user == null) {
-			user = create(userName, password, true);
+			user = create(userName, password, true, userTenantInfos);
 
 			this.realm.users().create(user);
 
@@ -189,7 +196,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 		}
 	}
 
-	private UserRepresentation create(String userName, String password, boolean enabled) {
+	private UserRepresentation create(String userName, String password, boolean enabled, Collection<UserTenantInfo> userTenantInfos) {
 		UserRepresentation user = new UserRepresentation();
 		user.setUsername(userName);
 
@@ -203,6 +210,18 @@ public class KeycloakServiceImpl implements IKeycloakService {
 			user.setEmail(userName);
 
 			user.setCredentials(Arrays.asList(getUserCredentials(password, false)));
+		}
+		if (userTenantInfos == null) {
+			logger.error("create(username={}) no userTenantInfos received", userName);
+			throw new IllegalStateException("Missing userTenantInfos for username " + userName);
+		} else {
+			try {
+				setTenantRelationsAsAttribute(userTenantInfos, user);
+			} catch (JsonProcessingException e) {
+				logger.error("create(username={}) Failed ({}) to write identifier={} : {}", userName,
+						e.getClass().getSimpleName(), userTenantInfos, e.getMessage());
+				throw new RuntimeException("Failed to write identifier=" + userTenantInfos + " username=" + userName, e);
+			}
 		}
 
 		return user;
@@ -373,8 +392,102 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
 		return StringUtils.EMPTY;
 	}
-	
+
 	public String seperator() {
 		return conf.getRooturlMatcher().seperator();
+	}
+
+	public static final int BULK_SIZE = 100;
+
+	private static final ObjectMapper MAPPER = new ObjectMapper();
+
+	private static final ObjectWriter WRITER = MAPPER.writer();
+
+	@Override
+	public int updateUserAttribute(Map<String, ? extends Collection<UserTenantInfo>> aliasToIdentifiers) {
+		if (!isInitialized()) {
+			throw new RuntimeException("keycloak not initialized");
+		}
+
+		int updated = 0;
+		UsersResource users = this.realm.users();
+		Integer count = users.count();
+		int iterations = count / BULK_SIZE;
+		for (int i = 0; i < iterations; i++) {
+			updated = updateUsersAttributeChunk(aliasToIdentifiers, updated, users, i, BULK_SIZE);
+		}
+		int remainder = count % BULK_SIZE;
+		if (remainder == 0) {
+			return updated;
+		}
+
+		updated = updateUsersAttributeChunk(aliasToIdentifiers, updated, users, iterations, remainder);
+
+		return updated;
+	}
+
+	@Override
+	public void updateTenantsExistingUser(String representativeAlias, Collection<UserTenantInfo> tenantRelations) {
+		UserRepresentation user = getUser(representativeAlias);
+		UsersResource users = this.realm.users();
+		UserResource userResource = users.get(user.getId());
+		try {
+			setTenantRelationsAsAttribute(tenantRelations, user);
+		} catch (JsonProcessingException e) {
+			logger.error("updateTenantsExistingUser(representativeAlias={}) Failed ({}) to write identifiers={} : {}", representativeAlias,
+					e.getClass().getSimpleName(), tenantRelations, e.getMessage());
+			throw new RuntimeException("Failed to write identifier=" + tenantRelations + " representativeAlias=" + representativeAlias, e);
+		}
+		userResource.update(user);
+	}
+
+	private void setTenantRelationsAsAttribute(Collection<UserTenantInfo> tenantRelations, UserRepresentation user) throws JsonProcessingException {
+		user.setAttributes(Collections.singletonMap(USER_TENANT_RELATIONS, toTenantInfosString(tenantRelations)));
+	}
+
+	private int updateUsersAttributeChunk(Map<String, ? extends Collection<UserTenantInfo>> aliasToIdentifiers, int updated,
+										  UsersResource users, int iterations, int remainder) {
+		List<UserRepresentation> remainderUsers = users.list(iterations * BULK_SIZE, remainder);
+		updated += updateUsers(aliasToIdentifiers, users, remainderUsers);
+		return updated;
+	}
+
+	private int updateUsers(Map<String, ? extends Collection<UserTenantInfo>> aliasToIdentifiers, UsersResource users,
+							List<UserRepresentation> bulkUsers) {
+		int total = 0;
+		for (UserRepresentation userRepresentation : bulkUsers) {
+			String username = userRepresentation.getUsername();
+			Collection<UserTenantInfo> userTenantInfos = aliasToIdentifiers.get(username);
+			if (userTenantInfos == null) {
+				logger.warn("updateUsers() Found KC user={} without record in cassandra", username);
+				continue;
+			}
+			UserResource userResource = users.get(userRepresentation.getId());
+			try {
+				setTenantRelationsAsAttribute(userTenantInfos, userRepresentation);
+			} catch (JsonProcessingException e) {
+				logger.warn("updateUsers() failed ({}) to write user identifiers for user={}: {}",
+						e.getClass().getSimpleName(), username, e.getMessage());
+				continue;
+			}
+			try {
+				userResource.update(userRepresentation);
+			} catch (Exception e) {
+				logger.warn("updateUsers() failed ({}) to write user identifiers for user={}, userRepresentation={}: {}",
+						e.getClass().getSimpleName(), username, userRepresentation, e.getMessage());
+				continue;
+			}
+			total++;
+		}
+		return total;
+	}
+
+	private static List<String> toTenantInfosString(Collection<UserTenantInfo> userTenantInfos) throws JsonProcessingException {
+		List<String> jsons = new ArrayList<>();
+		for (UserTenantInfo info : userTenantInfos) {
+			String asJson = WRITER.writeValueAsString(info);
+			jsons.add(asJson);
+		}
+		return jsons;
 	}
 }

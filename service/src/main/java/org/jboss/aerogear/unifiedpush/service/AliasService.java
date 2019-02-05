@@ -17,12 +17,14 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.UserKey;
 import org.jboss.aerogear.unifiedpush.service.impl.AliasServiceImpl.Associated;
+import org.jboss.aerogear.unifiedpush.service.impl.UserTenantInfo;
 
 public interface AliasService {
 	/**
@@ -94,4 +96,7 @@ public interface AliasService {
 
 	void createAsynchronous(Alias alias);
 
+	int updateKCUsersGuids();
+
+	Set<UserTenantInfo> getTenantRelations(String alias);
 }

@@ -208,6 +208,25 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 	}
 
 	@Override
+	public Stream<UserKey> findAllUserTenantRelations() {
+		StringBuilder cql = new StringBuilder("SELECT ")
+				.append(UserKey.FIELD_USER_ID).append(", ").append(UserKey.FIELD_ALIAS)
+				.append(", ").append(UserKey.FIELD_PUSH_APPLICATION_ID)
+				.append(" FROM ").append(MV_BY_ALIAS);
+
+		return StreamSupport.stream(
+				operations.getCqlOperations().queryForResultSet(new SimpleStatement(cql.toString())).spliterator(),
+				false)
+				.map(NoSQLUserDaoImpl::getKey);
+	}
+
+	@Override
+	public Stream<UserKey> findUserTenantRelations(String alias) {
+		Stream<Row> findUserIds = findUserIds(alias, null);
+		return findUserIds.map(NoSQLUserDaoImpl::getKey);
+	}
+
+	@Override
 	public List<UserKey> remove(UUID pushApplicationId, String alias) {
 		Stream<Row> findUserIds = findUserIds(alias, pushApplicationId);
 		List<UserKey> userKeys = findUserIds.map(NoSQLUserDaoImpl::getKey).collect(Collectors.toList());

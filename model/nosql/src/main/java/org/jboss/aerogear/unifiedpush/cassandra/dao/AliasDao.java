@@ -22,6 +22,8 @@ public interface AliasDao {
 	@CacheEvict(value = CACHE_NAME, allEntries = true)
 	void removeAll(UUID pushApplicationId);
 
+	Stream<UserKey> findUserTenantRelations(String alias);
+
 	@CacheEvict(value = CACHE_NAME)
 	List<UserKey> remove(UUID pushApplicationId, String alias);
 
@@ -40,4 +42,6 @@ public interface AliasDao {
 	Stream<Row> findUserIds(UUID pushApplicationId);
 
 	Alias findOne(UUID pushApplicationId, UUID userId);
+
+	Stream<UserKey> findAllUserTenantRelations();
 }
