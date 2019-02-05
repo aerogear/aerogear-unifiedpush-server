@@ -317,10 +317,10 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	}
 
 	private ClientRepresentation isClientExists(PushApplication pushApp) {
-		return isClientExists(getClientd(pushApp));
+		return isClientExists(getClientId(pushApp));
 	}
 
-	public static String getClientd(PushApplication pushApp) {
+	public static String getClientId(PushApplication pushApp) {
 		return CLIENT_PREFIX + pushApp.getName().toLowerCase();
 	}
 

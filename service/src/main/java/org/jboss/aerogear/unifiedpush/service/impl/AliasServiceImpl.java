@@ -191,7 +191,7 @@ public class AliasServiceImpl implements AliasService {
 
 	private String getClientId(UUID pushApplicationUUID) {
 		PushApplication pushApp = pushApplicationService.findByPushApplicationID(pushApplicationUUID.toString());
-		return KeycloakServiceImpl.getClientd(pushApp);
+		return KeycloakServiceImpl.getClientId(pushApp);
 	}
 
 	/*
