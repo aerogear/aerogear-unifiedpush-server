@@ -99,4 +99,6 @@ public interface AliasService {
 	int updateKCUsersGuids();
 
 	Set<UserTenantInfo> getTenantRelations(String alias);
+
+	int addClientScope(String clientScope);
 }

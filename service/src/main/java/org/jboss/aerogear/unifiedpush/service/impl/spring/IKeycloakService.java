@@ -34,6 +34,8 @@ public interface IKeycloakService {
 
 	String seperator();
 
+	int addClientScope(String clientScope);
+
 	int updateUserAttribute(Map<String, ? extends Collection<UserTenantInfo>> aliasToIdentifiers);
 
 	void updateTenantsExistingUser(String representativeAlias, Collection<UserTenantInfo> tenantRelations);

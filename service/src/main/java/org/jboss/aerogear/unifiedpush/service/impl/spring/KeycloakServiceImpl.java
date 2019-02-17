@@ -7,7 +7,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -18,10 +20,12 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.ClientResource;
+import org.keycloak.admin.client.resource.ClientsResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.ClientRepresentation;
+import org.keycloak.representations.idm.ClientScopeRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -402,6 +406,44 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 
 	private static final ObjectWriter WRITER = MAPPER.writer();
+
+	@Override
+	public int addClientScope(String clientScope) {
+		if (!isInitialized()) {
+			throw new RuntimeException("addClientScope(clientScope=" + clientScope + ") keycloak not initialized");
+		}
+
+		int updated = 0;
+		List<ClientScopeRepresentation> defaultClientScopes = realm.getDefaultDefaultClientScopes();
+		ClientScopeRepresentation clientScopeRepresentation = defaultClientScopes.stream().filter(s -> s.getName().equals(clientScope)).findAny().orElseThrow(() ->
+				new RuntimeException("client scope=" + clientScope + " doesn't exist"));
+		ClientsResource clients = realm.clients();
+		Collection<ClientRepresentation> clientsAll = clients.findAll(true);
+		Set<ClientRepresentation> clientIds = getRelevantClientIds(clientsAll);
+		for (ClientRepresentation clientRepresentation : clientIds) {
+			List<String> clientScopes = clientRepresentation.getDefaultClientScopes();
+			if (clientScopes.contains(clientScope)) {
+				continue;
+			} else {
+				String id = clientRepresentation.getId();
+				ClientResource clientResource = clients.get(id);
+				try {
+					clientResource.addDefaultClientScope(clientScopeRepresentation.getId());
+				} catch (Exception e) {
+					logger.error("addClientScope(clientScope={}) Failed ({}) to add client scope to client={} : {}"
+					, clientScope, e.getClass().getSimpleName(), clientRepresentation, e.getMessage());
+					continue;
+				}
+				updated++;
+			}
+		}
+
+		return updated;
+	}
+
+	private Set<ClientRepresentation> getRelevantClientIds(Collection<ClientRepresentation> clientsAll) {
+		return clientsAll.stream().filter(c -> c.getClientId().startsWith(CLIENT_PREFIX)).collect(Collectors.toSet());
+	}
 
 	@Override
 	public int updateUserAttribute(Map<String, ? extends Collection<UserTenantInfo>> aliasToIdentifiers) {

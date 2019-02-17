@@ -296,6 +296,11 @@ public class AliasServiceImpl implements AliasService {
 		return aliasDao.findUserTenantRelations(alias).map(userKeyToTenantInfo()).collect(Collectors.toSet());
 	}
 
+	@Override
+	public int addClientScope(String clientScope) {
+		return keycloakService.addClientScope(clientScope);
+	}
+
 	public class Associated {
 		private boolean associated;
 		private String client;

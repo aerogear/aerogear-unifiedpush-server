@@ -68,6 +68,7 @@ import com.qmino.miredot.annotations.ReturnType;
 @Controller
 @Path("/alias")
 public class AliasEndpoint extends AbstractBaseEndpoint {
+	public static final String USER_TENANT_SCOPE = "userTenantScope";
 	private final Logger logger = LoggerFactory.getLogger(AliasEndpoint.class);
 
 	@Autowired
@@ -607,6 +608,21 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 			return appendAllowOriginHeader(Response.ok(Collections.singletonMap("count", updated)), request);
 		} catch (Exception e) {
 			logger.error("Cannot update guids", e);
+			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
+		}
+	}
+
+	@POST
+	@Path("/kc/addClientScope")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("org.jboss.aerogear.unifiedpush.api.Alias")
+	public Response addClientScope(@Context HttpServletRequest request
+			, @QueryParam("clientScope") @DefaultValue(USER_TENANT_SCOPE) String clientScope) {
+		try {
+			int updated = aliasService.addClientScope(clientScope);
+			return appendAllowOriginHeader(Response.ok(Collections.singletonMap("count", updated)), request);
+		} catch (Exception e) {
+			logger.error("Cannot add client scope", e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
 		}
 	}
