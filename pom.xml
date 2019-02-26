@@ -15,369 +15,379 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jboss.aerogear</groupId>
+    <artifactId>aerogear-parent</artifactId>
+    <!-- NOTE: if updated for version of UPS dependencies, please update the 'aerogear.bom.version' as well -->
+    <version>1.1.13-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.jboss.aerogear.unifiedpush</groupId>
+  <artifactId>unifiedpush-parent</artifactId>
+  <version>2.1.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>AeroGear UnifiedPush Server</name>
+  <url>http://aerogear.org/push</url>
+
+  <scm>
+    <connection>scm:git:git://github.com/aerogear/aerogear-unifiedpush-server.git</connection>
+    <developerConnection>scm:git:git@github.com:aerogear/aerogear-unifiedpush-server.git
+    </developerConnection>
+    <url>https://github.com/aerogear/aerogear-unifiedpush-server</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.jboss.org/browse/AGPUSH</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>travis-ci</system>
+    <url>https://travis-ci.org/aerogear/aerogear-unifiedpush-server</url>
+  </ciManagement>
+
+  <modules>
+    <module>common</module>
+    <module>model</module>
+    <module>migrator</module>
+    <module>push-sender</module>
+    <module>service</module>
+    <module>jaxrs</module>
+    <module>dependencies</module>
+    <module>servers</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
         <groupId>org.jboss.aerogear</groupId>
-        <artifactId>aerogear-parent</artifactId>
-        <!-- NOTE: if updated for version of UPS dependencies, please update the 'aerogear.bom.version' as well -->
-        <version>1.1.7</version>
-    </parent>
+        <artifactId>aerogear-crypto</artifactId>
+        <version>${aerogear.crypto.version}</version>
+      </dependency>
 
-    <groupId>org.jboss.aerogear.unifiedpush</groupId>
-    <artifactId>unifiedpush-parent</artifactId>
-    <version>2.1.1-SNAPSHOT</version>
-    <packaging>pom</packaging>
+      <!-- We need to redefine few testing dependencies until JDF updates -with-tools BOM -->
+      <!-- https://issues.jboss.org/browse/JDF-417 -->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
 
-    <name>AeroGear UnifiedPush Server</name>
-    <url>http://aerogear.org/push</url>
+      <!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill of Materials (BOM). A BOM specifies the versions
+          of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts.
+          Here we use
+          the jboss-javaee-6.0 stack (you can read this as the JBoss stack of the Java EE 6 APIs) -->
+      <dependency>
+        <groupId>org.jboss.bom</groupId>
+        <artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
+        <version>${jboss-javaee-6.0.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>4.2.15.Final</version>
+      </dependency>
 
-    <scm>
-        <connection>scm:git:git://github.com/aerogear/aerogear-unifiedpush-server.git</connection>
-        <developerConnection>scm:git:git@github.com:aerogear/aerogear-unifiedpush-server.git</developerConnection>
-        <url>https://github.com/aerogear/aerogear-unifiedpush-server</url>
-        <tag>HEAD</tag>
-    </scm>
+      <!-- AeroGear Dependencies BOM Imports -->
+      <dependency>
+        <groupId>org.jboss.aerogear</groupId>
+        <artifactId>aerogear-unifiedpush-bom</artifactId>
+        <version>${aerogear.bom.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
 
-    <issueManagement>
-        <system>jira</system>
-        <url>https://issues.jboss.org/browse/AGPUSH</url>
-    </issueManagement>
+      <!-- using latest of OpenEJB -->
+      <dependency>
+        <groupId>org.apache.openejb</groupId>
+        <artifactId>openejb-core-hibernate</artifactId>
+        <version>4.7.0</version>
+        <type>pom</type>
+      </dependency>
 
-    <ciManagement>
-        <system>travis-ci</system>
-        <url>https://travis-ci.org/aerogear/aerogear-unifiedpush-server</url>
-    </ciManagement>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slfj4.version}</version>
+      </dependency>
 
-    <modules>
-        <module>common</module>
-        <module>model</module>
-        <module>migrator</module>
-        <module>push-sender</module>
-        <module>service</module>
-        <module>jaxrs</module>
-        <module>dependencies</module>
-        <module>servers</module>
-    </modules>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slfj4.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-    <dependencyManagement>
+  <build>
+    <plugins>
+      <!-- we really do not need javadocs for the server, there are no Java APIs exposed -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.wildfly.plugins</groupId>
+        <artifactId>wildfly-maven-plugin</artifactId>
+        <version>${wildfly-maven-plugin.version}</version>
+        <configuration>
+          <skip>false</skip>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <configuration>
+              <resourceBundles>
+                <resourceBundle>org.aerogear:aerogear-jar-resource-bundle:1.0.0</resourceBundle>
+              </resourceBundles>
+              <properties>
+                <addLicense>true</addLicense>
+              </properties>
+              <excludeScope>provided</excludeScope>
+              <excludeGroupIds>org.aerogear.unifiedpush,org.jboss.aerogear.unifiedpush
+              </excludeGroupIds>
+              <excludeArtifactIds>servlet-api,jstl</excludeArtifactIds>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>3.3.0.603</version>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <!-- Override the actual checkstyle version to support Java 1.8 -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${version.checkstyle.plugin}</version>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>6.18</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- Define the version of JBoss' Java EE 6 APIs we want to import. Any dependencies from org.jboss.spec will have their
+        version defined by this BOM -->
+    <jboss-javaee-6.0.version>1.0.7.Final</jboss-javaee-6.0.version>
+
+    <!--
+        Options to override the compiler arguments directly on the compiler arument line to separate between what
+        the IDE understands as the source level and what the Maven compiler actually use.
+    -->
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <wildfly-maven-plugin.version>1.2.0.Final</wildfly-maven-plugin.version>
+
+    <aerogear.bom.version>1.1.13-SNAPSHOT</aerogear.bom.version>
+    <admin-ui.version>2.0.1</admin-ui.version>
+
+    <!-- Override versions of AeroGear BOMs-->
+    <junit.version>4.12</junit.version>
+    <slfj4.version>1.7.26</slfj4.version>
+
+    <!-- Code coverage -->
+    <org.jacoco.ant.version>0.7.9</org.jacoco.ant.version>
+    <org.jacoco.agent.version>0.7.9</org.jacoco.agent.version>
+    <org.jacoco.jacoco-maven-plugin.version>0.7.9</org.jacoco.jacoco-maven-plugin.version>
+    <ant.contrib.version>20020829</ant.contrib.version>
+    <aerogear.crypto.version>0.1.5</aerogear.crypto.version>
+    <prometheus.simpleclient.version>0.3.0</prometheus.simpleclient.version>
+    <ups.ddl_value>update</ups.ddl_value>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>test</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+
+      <dependencyManagement>
         <dependencies>
+          <!-- AeroGear Test Dependencies BOM Imports -->
+          <dependency>
+            <groupId>org.jboss.aerogear</groupId>
+            <artifactId>aerogear-test-bom</artifactId>
+            <version>${aerogear.bom.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+    </profile>
+    <!--
+        Builds the distribution.
 
-            <dependency>
-                <groupId>org.jboss.aerogear</groupId>
-                <artifactId>aerogear-crypto</artifactId>
-                <version>${aerogear.crypto.version}</version>
-            </dependency>
+        Usage:
+            - mvn clean install -Pdist,test
 
-            <!-- We need to redefine few testing dependencies until JDF updates -with-tools BOM -->
-            <!-- https://issues.jboss.org/browse/JDF-417 -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill of Materials (BOM). A BOM specifies the versions
-                of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts.
-                Here we use
-                the jboss-javaee-6.0 stack (you can read this as the JBoss stack of the Java EE 6 APIs) -->
-            <dependency>
-                <groupId>org.jboss.bom</groupId>
-                <artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
-                <version>${jboss-javaee-6.0.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>4.2.15.Final</version>
-            </dependency>
-
-            <!-- AeroGear Dependencies BOM Imports -->
-            <dependency>
-                <groupId>org.jboss.aerogear</groupId>
-                <artifactId>aerogear-unifiedpush-bom</artifactId>
-                <version>${aerogear.bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- using latest of OpenEJB -->
-            <dependency>
-                <groupId>org.apache.openejb</groupId>
-                <artifactId>openejb-core-hibernate</artifactId>
-                <version>4.7.0</version>
-                <type>pom</type>
-            </dependency>
-
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slfj4.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>${slfj4.version}</version>
-                <scope>test</scope>
-            </dependency>
-         </dependencies>
-    </dependencyManagement>
-
-    <build>
-        <plugins>
-            <!-- we really do not need javadocs for the server, there are no Java APIs exposed -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
-                <version>${wildfly-maven-plugin.version}</version>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-remote-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                        <configuration>
-                            <resourceBundles>
-                                <resourceBundle>org.aerogear:aerogear-jar-resource-bundle:1.0.0</resourceBundle>
-                            </resourceBundles>
-                            <properties>
-                                <addLicense>true</addLicense>
-                            </properties>
-                            <excludeScope>provided</excludeScope>
-                            <excludeGroupIds>org.aerogear.unifiedpush,org.jboss.aerogear.unifiedpush</excludeGroupIds>
-                            <excludeArtifactIds>servlet-api,jstl</excludeArtifactIds>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.3.0.603</version>
-             </plugin>
-        </plugins>
-        <pluginManagement>
-            <plugins>
-                <!-- Override the actual checkstyle version to support Java 1.8 -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>${version.checkstyle.plugin}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>6.18</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <!-- Define the version of JBoss' Java EE 6 APIs we want to import. Any dependencies from org.jboss.spec will have their
-            version defined by this BOM -->
-        <jboss-javaee-6.0.version>1.0.7.Final</jboss-javaee-6.0.version>
-
-        <!--
-            Options to override the compiler arguments directly on the compiler arument line to separate between what
-            the IDE understands as the source level and what the Maven compiler actually use.
-        -->
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <wildfly-maven-plugin.version>1.2.0.Final</wildfly-maven-plugin.version>
-
-        <aerogear.bom.version>1.1.7</aerogear.bom.version>
-        <admin-ui.version>2.0.1</admin-ui.version>
-
-        <!-- Override versions of AeroGear BOMs-->
-        <junit.version>4.11</junit.version>
-        <slfj4.version>1.7.21</slfj4.version>
-
-        <!-- Code coverage -->
-        <org.jacoco.ant.version>0.7.9</org.jacoco.ant.version>
-        <org.jacoco.agent.version>0.7.9</org.jacoco.agent.version>
-        <org.jacoco.jacoco-maven-plugin.version>0.7.9</org.jacoco.jacoco-maven-plugin.version>
-        <ant.contrib.version>20020829</ant.contrib.version>
-        <aerogear.crypto.version>0.1.5</aerogear.crypto.version>
-        <prometheus.simpleclient.version>0.3.0</prometheus.simpleclient.version>
+        Preparing/Performing release, include as well:
+            - mvn release:GOAL -Pdist,test
+    -->
+    <profile>
+      <id>dist</id>
+      <modules>
+        <module>dist</module>
+      </modules>
+      <properties>
         <ups.ddl_value>update</ups.ddl_value>
-    </properties>
+      </properties>
+    </profile>
 
-    <profiles>
-        <profile>
-            <id>test</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+    <profile>
+      <id>code-coverage</id>
+      <properties>
+        <unifiedpush-parent.build>${user.dir}/target</unifiedpush-parent.build>
+        <jacoco.prep>${unifiedpush-parent.build}/jacoco/prep</jacoco.prep>
+        <jacoco.prep.classes>${jacoco.prep}/classes</jacoco.prep.classes>
+        <jacoco.prep.sources>${jacoco.prep}/sources</jacoco.prep.sources>
+        <jacoco.report.file>${jacoco.prep}/jacoco.exec</jacoco.report.file>
+        <jacoco.report.output>${unifiedpush-parent.build}/jacoco/report</jacoco.report.output>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${org.jacoco.jacoco-maven-plugin.version}</version>
+            <configuration>
+              <destFile>${jacoco.report.file}</destFile>
+              <append>true</append>
+            </configuration>
+            <executions>
+              <execution>
+                <id>default-prepare-agent</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
+            <dependencies>
+              <dependency>
+                <groupId>org.jacoco</groupId>
+                <artifactId>org.jacoco.ant</artifactId>
+                <version>${org.jacoco.ant.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>ant-contrib</groupId>
+                <artifactId>ant-contrib</artifactId>
+                <version>${ant.contrib.version}</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>jacoco-report</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <taskdef name="jacoco-report" classname="org.jacoco.ant.ReportTask"
+                      classpathref="maven.plugin.classpath"/>
+                    <taskdef classpathref="maven.runtime.classpath"
+                      resource="net/sf/antcontrib/antcontrib.properties"/>
+                    <available file="${project.build.sourceDirectory}" type="dir"
+                      property="source.dir.exists"/>
+                    <available file="${jacoco.report.file}" property="exec.file.exists"/>
+                    <if>
+                      <equals arg1="${source.dir.exists}" arg2="true"/>
+                      <then>
+                        <copy todir="${jacoco.prep.sources}">
+                          <fileset dir="${project.build.sourceDirectory}"/>
+                        </copy>
+                        <copy todir="${jacoco.prep.classes}">
+                          <fileset dir="${project.build.directory}/classes"/>
+                        </copy>
+                        <if>
+                          <equals arg1="${exec.file.exists}" arg2="true"/>
+                          <then>
+                            <trycatch reference="report_exception">
+                              <try>
+                                <jacoco-report>
+                                  <executiondata>
+                                    <file file="${jacoco.report.file}"/>
+                                  </executiondata>
+                                  <structure name="AeroGear UnifiedPush Server Unit Tests">
+                                    <classfiles>
+                                      <fileset dir="${jacoco.prep.classes}"/>
+                                    </classfiles>
+                                    <sourcefiles encoding="${project.build.sourceEncoding}">
+                                      <fileset dir="${jacoco.prep.sources}"/>
+                                    </sourcefiles>
+                                  </structure>
+                                  <html destdir="${jacoco.report.output}"/>
+                                </jacoco-report>
+                              </try>
+                              <catch>
+                                <property name="exception" refid="report_exception"/>
+                                <property name="message"
+                                  value="Error while generating jacoco report: ${exception}"/>
+                                <echo message="${message}"/>
+                              </catch>
+                            </trycatch>
+                          </then>
+                          <else>
+                            <echo
+                              message=".exec file is missing! Expected at: ${jacoco.report.file}!"/>
+                          </else>
+                        </if>
+                      </then>
+                      <else>
+                        <echo
+                          message="Source directory ${project.build.sourceDirectory} doesn't exist!"/>
+                      </else>
+                    </if>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
 
-            <dependencyManagement>
-                <dependencies>
-                    <!-- AeroGear Test Dependencies BOM Imports -->
-                    <dependency>
-                        <groupId>org.jboss.aerogear</groupId>
-                        <artifactId>aerogear-test-bom</artifactId>
-                        <version>${aerogear.bom.version}</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
-        </profile>
-        <!--
-            Builds the distribution.
-
-            Usage:
-                - mvn clean install -Pdist,test
-
-            Preparing/Performing release, include as well:
-                - mvn release:GOAL -Pdist,test
-        -->
-        <profile>
-            <id>dist</id>
-            <modules>
-                <module>dist</module>
-            </modules>
-            <properties>
-                <ups.ddl_value>update</ups.ddl_value>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>code-coverage</id>
-            <properties>
-                <unifiedpush-parent.build>${user.dir}/target</unifiedpush-parent.build>
-                <jacoco.prep>${unifiedpush-parent.build}/jacoco/prep</jacoco.prep>
-                <jacoco.prep.classes>${jacoco.prep}/classes</jacoco.prep.classes>
-                <jacoco.prep.sources>${jacoco.prep}/sources</jacoco.prep.sources>
-                <jacoco.report.file>${jacoco.prep}/jacoco.exec</jacoco.report.file>
-                <jacoco.report.output>${unifiedpush-parent.build}/jacoco/report</jacoco.report.output>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>${org.jacoco.jacoco-maven-plugin.version}</version>
-                        <configuration>
-                            <destFile>${jacoco.report.file}</destFile>
-                            <append>true</append>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>default-prepare-agent</id>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.7</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.jacoco</groupId>
-                                <artifactId>org.jacoco.ant</artifactId>
-                                <version>${org.jacoco.ant.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>ant-contrib</groupId>
-                                <artifactId>ant-contrib</artifactId>
-                                <version>${ant.contrib.version}</version>
-                            </dependency>
-                        </dependencies>
-                        <executions>
-                            <execution>
-                                <id>jacoco-report</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <target>
-                                        <taskdef name="jacoco-report" classname="org.jacoco.ant.ReportTask" classpathref="maven.plugin.classpath" />
-                                        <taskdef classpathref="maven.runtime.classpath" resource="net/sf/antcontrib/antcontrib.properties" />
-                                        <available file="${project.build.sourceDirectory}" type="dir" property="source.dir.exists" />
-                                        <available file="${jacoco.report.file}" property="exec.file.exists" />
-                                        <if>
-                                            <equals arg1="${source.dir.exists}" arg2="true" />
-                                            <then>
-                                                <copy todir="${jacoco.prep.sources}">
-                                                    <fileset dir="${project.build.sourceDirectory}" />
-                                                </copy>
-                                                <copy todir="${jacoco.prep.classes}">
-                                                    <fileset dir="${project.build.directory}/classes" />
-                                                </copy>
-                                                <if>
-                                                    <equals arg1="${exec.file.exists}" arg2="true" />
-                                                    <then>
-                                                        <trycatch reference="report_exception">
-                                                            <try>
-                                                                <jacoco-report>
-                                                                    <executiondata>
-                                                                        <file file="${jacoco.report.file}" />
-                                                                    </executiondata>
-                                                                    <structure name="AeroGear UnifiedPush Server Unit Tests">
-                                                                        <classfiles>
-                                                                            <fileset dir="${jacoco.prep.classes}" />
-                                                                        </classfiles>
-                                                                        <sourcefiles encoding="${project.build.sourceEncoding}">
-                                                                            <fileset dir="${jacoco.prep.sources}" />
-                                                                        </sourcefiles>
-                                                                    </structure>
-                                                                    <html destdir="${jacoco.report.output}" />
-                                                                </jacoco-report>
-                                                            </try>
-                                                            <catch>
-                                                                <property name="exception" refid="report_exception" />
-                                                                <property name="message" value="Error while generating jacoco report: ${exception}" />
-                                                                <echo message="${message}" />
-                                                            </catch>
-                                                        </trycatch>
-                                                    </then>
-                                                    <else>
-                                                        <echo message=".exec file is missing! Expected at: ${jacoco.report.file}!" />
-                                                    </else>
-                                                </if>
-                                            </then>
-                                            <else>
-                                                <echo message="Source directory ${project.build.sourceDirectory} doesn't exist!" />
-                                            </else>
-                                        </if>
-                                    </target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-
-        </profile>
-    </profiles>
+    </profile>
+  </profiles>
 
 </project>
