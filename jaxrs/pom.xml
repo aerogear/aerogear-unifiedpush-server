@@ -86,9 +86,20 @@
         <dependency>
             <groupId>com.github.fge</groupId>
             <artifactId>json-patch</artifactId>
-            <version>1.7</version>
+            <version>1.9</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>27.0.1-jre</version>
+        </dependency>
+    
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient_common</artifactId>
@@ -161,7 +172,8 @@
                 <dependency>
                     <groupId>org.hibernate</groupId>
                     <artifactId>hibernate-validator</artifactId>
-                    <version>4.2.0.Final</version>
+                    <version>4.3.2.Final</version>
+                    <scope>test</scope>
                 </dependency>
             </dependencies>
         </profile>

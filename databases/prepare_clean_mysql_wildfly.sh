@@ -8,7 +8,7 @@ else
     printf "😂 Awesome, WildFly 11 is configured!\n"
     printf "   >>> Preparing the MySQL DB module\n"
     cp -r ./src/main/resources/modules/com $WILDFLY_HOME/modules
-    mvn dependency:copy -Dartifact=mysql:mysql-connector-java:5.1.44 -DoutputDirectory=$WILDFLY_HOME/modules/com/mysql/jdbc/main/  
+    mvn dependency:copy -Dartifact=mysql:mysql-connector-java:8.0.15 -DoutputDirectory=$WILDFLY_HOME/modules/com/mysql/jdbc/main/  
     printf "WildFly 11 DB configuration is about to start\n"
     printf "   >>> Running the jboss-cli tool!\n"
     $WILDFLY_HOME/bin/jboss-cli.sh --file=./mysql-database-config-wildfly.cli
