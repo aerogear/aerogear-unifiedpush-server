@@ -15,9 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jboss.aerogear</groupId>
@@ -28,7 +26,7 @@
 
   <groupId>org.jboss.aerogear.unifiedpush</groupId>
   <artifactId>unifiedpush-parent</artifactId>
-  <version>2.1.1-SNAPSHOT</version>
+  <version>2.1.1.Final</version>
   <packaging>pom</packaging>
 
   <name>AeroGear UnifiedPush Server</name>
@@ -39,7 +37,7 @@
     <developerConnection>scm:git:git@github.com:aerogear/aerogear-unifiedpush-server.git
     </developerConnection>
     <url>https://github.com/aerogear/aerogear-unifiedpush-server</url>
-    <tag>HEAD</tag>
+    <tag>2.1.1.Final</tag>
   </scm>
 
   <issueManagement>
@@ -324,59 +322,53 @@
                 </goals>
                 <configuration>
                   <target>
-                    <taskdef name="jacoco-report" classname="org.jacoco.ant.ReportTask"
-                      classpathref="maven.plugin.classpath"/>
-                    <taskdef classpathref="maven.runtime.classpath"
-                      resource="net/sf/antcontrib/antcontrib.properties"/>
-                    <available file="${project.build.sourceDirectory}" type="dir"
-                      property="source.dir.exists"/>
-                    <available file="${jacoco.report.file}" property="exec.file.exists"/>
+                    <taskdef name="jacoco-report" classname="org.jacoco.ant.ReportTask" classpathref="maven.plugin.classpath" />
+                    <taskdef classpathref="maven.runtime.classpath" resource="net/sf/antcontrib/antcontrib.properties" />
+                    <available file="${project.build.sourceDirectory}" type="dir" property="source.dir.exists" />
+                    <available file="${jacoco.report.file}" property="exec.file.exists" />
                     <if>
-                      <equals arg1="${source.dir.exists}" arg2="true"/>
+                      <equals arg1="${source.dir.exists}" arg2="true" />
                       <then>
                         <copy todir="${jacoco.prep.sources}">
-                          <fileset dir="${project.build.sourceDirectory}"/>
+                          <fileset dir="${project.build.sourceDirectory}" />
                         </copy>
                         <copy todir="${jacoco.prep.classes}">
-                          <fileset dir="${project.build.directory}/classes"/>
+                          <fileset dir="${project.build.directory}/classes" />
                         </copy>
                         <if>
-                          <equals arg1="${exec.file.exists}" arg2="true"/>
+                          <equals arg1="${exec.file.exists}" arg2="true" />
                           <then>
                             <trycatch reference="report_exception">
                               <try>
                                 <jacoco-report>
                                   <executiondata>
-                                    <file file="${jacoco.report.file}"/>
+                                    <file file="${jacoco.report.file}" />
                                   </executiondata>
                                   <structure name="AeroGear UnifiedPush Server Unit Tests">
                                     <classfiles>
-                                      <fileset dir="${jacoco.prep.classes}"/>
+                                      <fileset dir="${jacoco.prep.classes}" />
                                     </classfiles>
                                     <sourcefiles encoding="${project.build.sourceEncoding}">
-                                      <fileset dir="${jacoco.prep.sources}"/>
+                                      <fileset dir="${jacoco.prep.sources}" />
                                     </sourcefiles>
                                   </structure>
-                                  <html destdir="${jacoco.report.output}"/>
+                                  <html destdir="${jacoco.report.output}" />
                                 </jacoco-report>
                               </try>
                               <catch>
-                                <property name="exception" refid="report_exception"/>
-                                <property name="message"
-                                  value="Error while generating jacoco report: ${exception}"/>
-                                <echo message="${message}"/>
+                                <property name="exception" refid="report_exception" />
+                                <property name="message" value="Error while generating jacoco report: ${exception}" />
+                                <echo message="${message}" />
                               </catch>
                             </trycatch>
                           </then>
                           <else>
-                            <echo
-                              message=".exec file is missing! Expected at: ${jacoco.report.file}!"/>
+                            <echo message=".exec file is missing! Expected at: ${jacoco.report.file}!" />
                           </else>
                         </if>
                       </then>
                       <else>
-                        <echo
-                          message="Source directory ${project.build.sourceDirectory} doesn't exist!"/>
+                        <echo message="Source directory ${project.build.sourceDirectory} doesn't exist!" />
                       </else>
                     </if>
                   </target>
