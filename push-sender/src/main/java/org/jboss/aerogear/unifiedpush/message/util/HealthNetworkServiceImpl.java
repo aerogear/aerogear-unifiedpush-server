@@ -16,7 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.message.util;
 
-import com.turo.pushy.apns.ApnsClient;
+import com.turo.pushy.apns.ApnsClientBuilder;
+
 import org.jboss.aerogear.unifiedpush.message.HealthNetworkService;
 import org.jboss.aerogear.unifiedpush.message.sender.fcm.ConfigurableFCMSender;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
@@ -50,15 +51,15 @@ public class HealthNetworkServiceImpl implements HealthNetworkService {
     private static final List<PushNetwork> PUSH_NETWORKS = new ArrayList<>(Arrays.asList(
             new PushNetwork[]{
                     new PushNetwork("Firebase Cloud Messaging", FCM_SEND_ENDPOINT, 443),
-                    new PushNetwork("Apple Push Network Sandbox", ApnsClient.DEVELOPMENT_APNS_HOST, ApnsClient.DEFAULT_APNS_PORT),
-                    new PushNetwork("Apple Push Network Production", ApnsClient.PRODUCTION_APNS_HOST, ApnsClient.DEFAULT_APNS_PORT),
+                    new PushNetwork("Apple Push Network Sandbox", ApnsClientBuilder.DEVELOPMENT_APNS_HOST, ApnsClientBuilder.DEFAULT_APNS_PORT),
+                    new PushNetwork("Apple Push Network Production", ApnsClientBuilder.PRODUCTION_APNS_HOST, ApnsClientBuilder.DEFAULT_APNS_PORT),
                     new PushNetwork("Windows Push Network", WNS_SEND_ENDPOINT, 443)
             }
     ));
 
     static {
         if (customAerogearApnsPushHost != null) {
-            final int port = customAerogearApnsPushPort != null ? customAerogearApnsPushPort : ApnsClient.DEFAULT_APNS_PORT;
+            final int port = customAerogearApnsPushPort != null ? customAerogearApnsPushPort : ApnsClientBuilder.DEFAULT_APNS_PORT;
             PUSH_NETWORKS.add(new PushNetwork("APNs Proxy host", customAerogearApnsPushHost, port));
         }
     }
