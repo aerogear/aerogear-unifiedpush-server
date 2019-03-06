@@ -1,6 +1,6 @@
 # Use latest jboss/wildfly image as the base
 FROM ${base}
-MAINTAINER Matthias Wessendorf <matzew@apache.org>
+MAINTAINER AeroGear <aerogear@googlegroups.com>
 
 # Run everything below as root user
 USER root
