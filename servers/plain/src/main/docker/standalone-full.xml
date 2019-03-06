@@ -160,18 +160,28 @@
                         <password>sa</password>
                     </security>
                 </datasource>
-                <datasource jndi-name="java:jboss/datasources/UnifiedPushDS" pool-name="UnifiedPushDS" enabled="true" use-java-context="true">
-                    <connection-url>jdbc:h2:mem:UnifiedPushDS;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</connection-url>
-                    <driver>h2</driver>
+                <datasource jndi-name="java:jboss/datasources/UnifiedPushDS" enabled="true" use-java-context="true" pool-name="UnifiedPushDS">
+                    <connection-url>jdbc:postgresql://${env.POSTGRES_SERVICE_HOST}:${env.POSTGRES_SERVICE_PORT}/${env.POSTGRES_DATABASE}</connection-url>
+                    <driver>postgresql</driver>
                     <security>
-                        <user-name>sa</user-name>
-                        <password>sa</password>
+                      <user-name>${env.POSTGRES_USER}</user-name>
+                      <password>${env.POSTGRES_PASSWORD}</password>
                     </security>
+                    <validation>
+                        <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
+                        <background-validation>true</background-validation>
+                    </validation>
+                    <pool>
+                        <flush-strategy>IdleConnections</flush-strategy>
+                    </pool>
                 </datasource>
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
-                    </driver>
+                     </driver>
+                     <driver name="postgresql" module="org.postgresql">
+                        <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+	                </driver>
                 </drivers>
             </datasources>
         </subsystem>
@@ -463,13 +473,6 @@
                 <jms-queue name="GCMTokenBatchQueue" entries="queue/GCMTokenBatchQueue"/>
                 <jms-queue name="WNSPushMessageQueue" entries="queue/WNSPushMessageQueue"/>
                 <jms-queue name="WNSTokenBatchQueue" entries="queue/WNSTokenBatchQueue"/>
-                <jms-queue name="MetricsQueue" entries="queue/MetricsQueue"/>
-                <jms-queue name="TriggerMetricCollectionQueue" entries="queue/TriggerMetricCollectionQueue"/>
-                <jms-queue name="TriggerVariantMetricCollectionQueue" entries="queue/TriggerVariantMetricCollectionQueue"/>
-                <jms-queue name="BatchLoadedQueue" entries="queue/BatchLoadedQueue"/>
-                <jms-queue name="AllBatchesLoadedQueue" entries="queue/AllBatchesLoadedQueue"/>
-                <jms-queue name="FreeServiceSlotQueue" entries="queue/FreeServiceSlotQueue"/>
-                <jms-topic name="MetricsProcessingStartedTopic" entries="topic/MetricsProcessingStartedTopic"/>
                 <connection-factory name="InVmConnectionFactory" entries="java:/ConnectionFactory" connectors="in-vm"/>
                 <connection-factory name="RemoteConnectionFactory" entries="java:jboss/exported/jms/RemoteConnectionFactory" connectors="http-connector"/>
                 <pooled-connection-factory name="activemq-ra" entries="java:/JmsXA java:jboss/DefaultJMSConnectionFactory" connectors="in-vm" transaction="xa"/>
