@@ -19,7 +19,7 @@ ADD ${configFile} $JBOSS_HOME/standalone/configuration/standalone.xml
 
 USER jboss
 
-WORKDIR /opt/jboss/wildfly/standalone/deployments
+WORKDIR $JBOSS_HOME/standalone/deployments
 
 COPY maven/ $JBOSS_HOME/standalone/deployments
 
