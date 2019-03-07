@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class VariantDaoTest {
-
+    
     @Inject
     private EntityManager entityManager;
     @Inject

@@ -34,7 +34,7 @@ public class MigratorTest {
     private Database database;
     private ResourceAccessor resourceAccessor;
     private EmbeddedMysqlDatabase embeddedMysqlDatabase;
-
+    
     @Before
     public void init() throws Exception {
         initResourceAccessor();
