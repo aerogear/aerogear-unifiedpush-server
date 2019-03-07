@@ -242,11 +242,10 @@ public class PushyApnsSender implements PushNotificationSender {
                 }
             } catch (Exception e) {
                 logger.error("Error reading certificate", e);
-                // will be thrown below
+                // indicating an incomplete service
+                throw new IllegalArgumentException("Not able to construct APNS client");
             }
         }
-        // indicating an incomplete service
-        throw new IllegalArgumentException("Not able to construct APNS client");
     }
 
     private void connectToDestinations(final iOSVariant iOSVariant, final ApnsClientBuilder builder) {
