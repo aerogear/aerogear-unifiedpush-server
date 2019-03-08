@@ -1,29 +1,27 @@
-# Use latest jboss/wildfly image as the base
 FROM ${base}
-MAINTAINER Matthias Wessendorf <matzew@apache.org>
+MAINTAINER AeroGear <aerogear@googlegroups.com>
 
-# Run everything below as root user
 USER root
 
-# Clean the metadata
 RUN yum install -y unzip wget && yum -q clean all
 
 ARG CACHEBUST=1
 
-# WildFly configuration file ready for JMS and HSQL
+ENV psql_module_dir=$JBOSS_HOME/modules/org/postgresql/main/
+ENV psql_connector_jar=postgresql-jdbc.jar
+RUN mkdir -p ${psql_module_dir}
+RUN wget -O ${psql_connector_jar} http://search.maven.org/remotecontent\?filepath\=org/postgresql/postgresql/42.2.2/postgresql-42.2.2.jar
+RUN mv ${psql_connector_jar} ${psql_module_dir}
+
+ADD ${postgresConfigFile} ${psql_module_dir}/module.xml
+
 ADD ${configFile} $JBOSS_HOME/standalone/configuration/standalone.xml
 
-# Switch to the working dir /opt/jboss/wildfly
-WORKDIR /opt/jboss/wildfly
-
-# Run everything below as aerogear user
 USER jboss
 
-# Switch to the working dir $JBOSS_HOME/standalone/deployments
-WORKDIR /opt/jboss/wildfly/standalone/deployments
+WORKDIR $JBOSS_HOME/standalone/deployments
 
-# add war files
 COPY maven/ $JBOSS_HOME/standalone/deployments
 
-# Expose default port
-EXPOSE 8080
+COPY entrypoint.sh /opt/
+ENTRYPOINT ["/opt/entrypoint.sh"]
