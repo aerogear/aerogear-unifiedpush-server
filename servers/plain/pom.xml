@@ -31,6 +31,7 @@
     <properties>
         <base>jboss/wildfly:13.0.0.Final</base>
         <configFile>standalone-full.xml</configFile>
+        <postgresConfigFile>psql-module.xml</postgresConfigFile>    
         <project.artifactId>${project.artifactId}</project.artifactId>
     </properties>
 
@@ -149,6 +150,13 @@
                                         </assembly>
                                     </build>
                                     <run>
+                                        <env>
+                                            <POSTGRES_SERVICE_HOST>${env.POSTGRES_SERVICE_HOST}</POSTGRES_SERVICE_HOST>
+                                            <POSTGRES_SERVICE_PORT>${env.POSTGRES_SERVICE_PORT}</POSTGRES_SERVICE_PORT>
+                                            <POSTGRES_DATABASE>${env.POSTGRES_DATABASE}</POSTGRES_DATABASE>
+                                            <POSTGRES_USER>${env.POSTGRES_USER}</POSTGRES_USER>
+                                            <POSTGRES_PASSWORD>${env.POSTGRES_PASSWORD}</POSTGRES_PASSWORD>
+                                        </env>
                                         <ports>
                                             <port>8080:8080</port>
                                         </ports>
