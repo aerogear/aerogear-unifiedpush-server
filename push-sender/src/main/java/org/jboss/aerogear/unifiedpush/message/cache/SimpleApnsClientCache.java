@@ -48,10 +48,10 @@ public class SimpleApnsClientCache {
                 .expirationPolicy(ExpirationPolicy.ACCESSED)
                 .asyncExpirationListener((ExpirationListener<String, ApnsClient>) (variantID, apnsClient) -> {
 
-                    if (apnsClient.isConnected()) {
+                    if (apnsClient != null) {
                         logger.info("APNs connection for iOS Variant ({}) was inactive last 12 hours, disconnecting...", variantID);
 
-                        final Future<Void> disconnectFuture = apnsClient.disconnect();
+                        final Future<Void> disconnectFuture = apnsClient.close();
 
                         disconnectFuture.addListener(future -> {
 
@@ -75,7 +75,7 @@ public class SimpleApnsClientCache {
             synchronized (apnsClientExpiringMap) {
                 client = constructor.construct();
 
-                if (client != null && client.isConnected()) {
+                if (client != null) {
                     putApnsClientForVariantID(connectionKey, client);
                 }
 
@@ -130,9 +130,9 @@ public class SimpleApnsClientCache {
     }
 
     private void tearDownApnsHttp2Connection(final ApnsClient client) {
-        if (client.isConnected()) {
+        if (client != null) {
             logger.trace("Tearing down connection to APNs for the given client");
-            client.disconnect().addListener(new ApnsDisconnectFutureListener());
+            client.close().addListener(new ApnsDisconnectFutureListener());
         }
     }
 

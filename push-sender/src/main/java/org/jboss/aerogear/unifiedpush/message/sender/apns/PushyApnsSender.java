@@ -45,6 +45,8 @@ import org.slf4j.LoggerFactory;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.net.ssl.SSLException;
+
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.Map;
@@ -64,10 +66,8 @@ public class PushyApnsSender implements PushNotificationSender {
     private static final String customAerogearApnsPushHost = tryGetGlobalProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
     private static final Integer customAerogearApnsPushPort = tryGetGlobalIntegerProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
 
-    private static final Counter promPrushRequestsIOS = Counter.build()
-            .name("aerogear_ups_push_requests_ios")
-            .help("Total number of iOS push batch requests.")
-            .register();
+    private static final Counter promPrushRequestsIOS = Counter.build().name("aerogear_ups_push_requests_ios")
+            .help("Total number of iOS push batch requests.").register();
 
     private final ConcurrentSkipListSet<String> invalidTokens = new ConcurrentSkipListSet();
 
@@ -79,7 +79,8 @@ public class PushyApnsSender implements PushNotificationSender {
     private Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
 
     @Override
-    public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final String pushMessageInformationId, final NotificationSenderCallback senderCallback) {
+    public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage,
+            final String pushMessageInformationId, final NotificationSenderCallback senderCallback) {
         // no need to send empty list
         if (tokens.isEmpty()) {
             return;
@@ -89,8 +90,7 @@ public class PushyApnsSender implements PushNotificationSender {
 
         // Check the certificate first
         if (!ApnsUtil.checkValidity(iOSVariant.getCertificate(), iOSVariant.getPassphrase().toCharArray())) {
-            senderCallback.onError("The provided certificate is invalid or expired for variant "
-              + iOSVariant.getId());
+            senderCallback.onError("The provided certificate is invalid or expired for variant " + iOSVariant.getId());
             return;
         }
 
@@ -116,7 +116,7 @@ public class PushyApnsSender implements PushNotificationSender {
             }
         }
 
-        if (apnsClient != null && apnsClient.isConnected()) {
+        if (apnsClient != null) {
 
             // we are connected and are about to send
             // notifications to all tokens of the batch
@@ -125,13 +125,15 @@ public class PushyApnsSender implements PushNotificationSender {
             // we have managed to connect and will send tokens ;-)
             senderCallback.onSuccess();
 
-            final String defaultApnsTopic = ApnsUtil.readDefaultTopic(iOSVariant.getCertificate(), iOSVariant.getPassphrase().toCharArray());
+            final String defaultApnsTopic = ApnsUtil.readDefaultTopic(iOSVariant.getCertificate(),
+                    iOSVariant.getPassphrase().toCharArray());
             logger.debug("sending payload for all tokens for {} to APNs ({})", iOSVariant.getVariantID(), defaultApnsTopic);
 
-
             tokens.forEach(token -> {
-                final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token, defaultApnsTopic, payload);
-                final Future<PushNotificationResponse<SimpleApnsPushNotification>> notificationSendFuture = apnsClient.sendNotification(pushNotification);
+                final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token, defaultApnsTopic,
+                        payload);
+                final Future<PushNotificationResponse<SimpleApnsPushNotification>> notificationSendFuture = apnsClient
+                        .sendNotification(pushNotification);
 
                 notificationSendFuture.addListener(future -> {
 
@@ -148,12 +150,14 @@ public class PushyApnsSender implements PushNotificationSender {
         }
     }
 
-    private void handlePushNotificationResponsePerToken(final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse ) {
+    private void handlePushNotificationResponsePerToken(
+            final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse) {
 
         final String deviceToken = pushNotificationResponse.getPushNotification().getToken();
 
         if (pushNotificationResponse.isAccepted()) {
-            logger.trace("Push notification for '{}' (payload={})", deviceToken, pushNotificationResponse.getPushNotification().getPayload());
+            logger.trace("Push notification for '{}' (payload={})", deviceToken,
+                    pushNotificationResponse.getPushNotification().getPayload());
         } else {
             final String rejectReason = pushNotificationResponse.getRejectionReason();
             logger.trace("Push Message has been rejected with reason: {}", rejectReason);
@@ -171,21 +175,15 @@ public class PushyApnsSender implements PushNotificationSender {
         final ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
         final APNs apns = message.getApns();
 
-
         // only set badge if needed/included in user's payload
         if (message.getBadge() >= 0) {
             payloadBuilder.setBadgeNumber(message.getBadge());
         }
 
-        payloadBuilder
-                .addCustomProperty(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId)
-                .setAlertBody(message.getAlert())
-                .setSoundFileName(message.getSound())
-                .setAlertTitle(apns.getTitle())
-                .setActionButtonLabel(apns.getAction())
-                .setUrlArguments(apns.getUrlArgs())
-                .setCategoryName(apns.getActionCategory())
-                .setContentAvailable(apns.isContentAvailable())
+        payloadBuilder.addCustomProperty(InternalUnifiedPushMessage.PUSH_MESSAGE_ID, pushMessageInformationId)
+                .setAlertBody(message.getAlert()).setSoundFileName(message.getSound()).setAlertTitle(apns.getTitle())
+                .setActionButtonLabel(apns.getAction()).setUrlArguments(apns.getUrlArgs())
+                .setCategoryName(apns.getActionCategory()).setContentAvailable(apns.isContentAvailable())
                 .setMutableContent(apns.hasMutableContent());
 
         // custom fields
@@ -197,39 +195,44 @@ public class PushyApnsSender implements PushNotificationSender {
         return payloadBuilder.buildWithDefaultMaximumLength();
     }
 
-    private ApnsClient receiveApnsConnection(final iOSVariant iOSVariant) {
+    private synchronized ApnsClient receiveApnsConnection(final iOSVariant iOSVariant) {
         return simpleApnsClientCache.getApnsClientForVariant(iOSVariant, () -> {
-            final ApnsClient apnsClient = buildApnsClient(iOSVariant);
+            final ApnsClientBuilder builder = new ApnsClientBuilder();
 
-            if (apnsClient != null) {
+            assambleApnsClientBuilder(iOSVariant, builder);
+            connectToDestinations(iOSVariant, builder);
 
-                // connect and wait, ONLY when we have a valid client
-                logger.debug("establishing the connection for {}", iOSVariant.getVariantID());
-                connectToDestinations(iOSVariant, apnsClient);
-
-                // APNS client has auto-reconnect, but let's log when that happens
-                apnsClient.getReconnectionFuture().addListener(future -> logger.trace("Reconnecting to APNs"));
+            // connect and wait, ONLY when we have a valid client
+            logger.debug("establishing the connection for {}", iOSVariant.getVariantID());
+            ApnsClient apnsClient;
+            try {
+                logger.debug("connecting to APNs");
+                apnsClient = builder.build();
                 return apnsClient;
+            } catch (SSLException e) {
+                logger.error("Error connecting to APNs", e);
             }
             return null;
+
         });
     }
 
-    private ApnsClient buildApnsClient(final iOSVariant iOSVariant) {
+    private void assambleApnsClientBuilder(final iOSVariant iOSVariant, final ApnsClientBuilder builder) {
 
         // this check should not be needed, but you never know:
         if (iOSVariant.getCertificate() != null && iOSVariant.getPassphrase() != null) {
 
-        // add the certificate:
-        try(final ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate())) {
-                final ApnsClientBuilder builder = new ApnsClientBuilder();
+            // add the certificate:
+            try (final ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate())) {
+
                 builder.setClientCredentials(stream, iOSVariant.getPassphrase());
 
                 if (ProxyConfiguration.hasHttpProxyConfig()) {
                     if (ProxyConfiguration.hasBasicAuth()) {
                         String user = ProxyConfiguration.getProxyUser();
                         String pass = ProxyConfiguration.getProxyPass();
-                        builder.setProxyHandlerFactory(new HttpProxyHandlerFactory(ProxyConfiguration.proxyAddress(), user, pass));
+                        builder.setProxyHandlerFactory(
+                                new HttpProxyHandlerFactory(ProxyConfiguration.proxyAddress(), user, pass));
                     } else {
                         builder.setProxyHandlerFactory(new HttpProxyHandlerFactory(ProxyConfiguration.proxyAddress()));
                     }
@@ -237,53 +240,35 @@ public class PushyApnsSender implements PushNotificationSender {
                 } else if (ProxyConfiguration.hasSocksProxyConfig()) {
                     builder.setProxyHandlerFactory(new Socks5ProxyHandlerFactory(ProxyConfiguration.socks()));
                 }
-
-                final ApnsClient apnsClient = builder.build();
-                return apnsClient;
+                return;
             } catch (Exception e) {
                 logger.error("Error reading certificate", e);
-                // will be thrown below
             }
         }
         // indicating an incomplete service
         throw new IllegalArgumentException("Not able to construct APNS client");
     }
 
-
-
-    private synchronized void connectToDestinations(final iOSVariant iOSVariant, final ApnsClient apnsClient) {
+    private void connectToDestinations(final iOSVariant iOSVariant, final ApnsClientBuilder builder) {
 
         String apnsHost;
-        int apnsPort = ApnsClient.DEFAULT_APNS_PORT;
+        int apnsPort = ApnsClientBuilder.DEFAULT_APNS_PORT;
 
         // are we production or development ?
         if (iOSVariant.isProduction()) {
-            apnsHost = ApnsClient.PRODUCTION_APNS_HOST;
+            apnsHost = ApnsClientBuilder.PRODUCTION_APNS_HOST;
         } else {
-            apnsHost = ApnsClient.DEVELOPMENT_APNS_HOST;
+            apnsHost = ApnsClientBuilder.DEVELOPMENT_APNS_HOST;
         }
 
-        //Or is there even a custom ost&port provided by a system property, for tests ?
-        if(customAerogearApnsPushHost != null){
+        // Or is there even a custom ost&port provided by a system property, for tests ?
+        if (customAerogearApnsPushHost != null) {
             apnsHost = customAerogearApnsPushHost;
 
-            if(customAerogearApnsPushPort != null) {
+            if (customAerogearApnsPushPort != null) {
                 apnsPort = customAerogearApnsPushPort;
             }
         }
-
-        // Once we've created a client, we can connect it to the APNs gateway.
-        // Note that this process is asynchronous; we'll get a Future right
-        // away, but we'll need to wait for it to complete before we can send
-        // any notifications. Note that this is a Netty Future, which is an
-        // extension of the Java Future interface that allows callers to add
-        // listeners and adds methods for checking the status of the Future.
-        logger.debug("connecting to APNs");
-        final Future<Void> connectFuture = apnsClient.connect(apnsHost, apnsPort);
-        try {
-            connectFuture.await();
-        } catch (InterruptedException e) {
-            logger.error("Error connecting to APNs", e);
-        }
+        builder.setApnsServer(apnsHost, apnsPort);
     }
 }
