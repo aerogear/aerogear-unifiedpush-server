@@ -240,12 +240,13 @@ public class PushyApnsSender implements PushNotificationSender {
                 } else if (ProxyConfiguration.hasSocksProxyConfig()) {
                     builder.setProxyHandlerFactory(new Socks5ProxyHandlerFactory(ProxyConfiguration.socks()));
                 }
+                return;
             } catch (Exception e) {
                 logger.error("Error reading certificate", e);
-                // indicating an incomplete service
-                throw new IllegalArgumentException("Not able to construct APNS client");
             }
         }
+        // indicating an incomplete service
+        throw new IllegalArgumentException("Not able to construct APNS client");
     }
 
     private void connectToDestinations(final iOSVariant iOSVariant, final ApnsClientBuilder builder) {
