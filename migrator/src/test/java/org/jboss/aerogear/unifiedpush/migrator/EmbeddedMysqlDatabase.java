@@ -44,7 +44,7 @@ public class EmbeddedMysqlDatabase {
         mysqldResource = new MysqldResource(baseDir);
         mysqldResource.start("mysql", databaseOptions);
 
-        url = "jdbc:mysql://localhost:" + port + "/" + databaseName + "?" + "createDatabaseIfNotExist=true";
+        url = "jdbc:mysql://localhost:" + port + "/" + databaseName + "?" + "createDatabaseIfNotExist=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     }
 
     public void close() {
