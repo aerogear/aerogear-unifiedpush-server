@@ -12,36 +12,40 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
     <parent>
         <groupId>org.jboss.aerogear.unifiedpush</groupId>
         <artifactId>unifiedpush-parent</artifactId>
         <version>2.2.2-SNAPSHOT</version>
     </parent>
 
-    <name>UnifiedPush Servers Parent</name>
-    <description />
     <modelVersion>4.0.0</modelVersion>
+
     <artifactId>unifiedpush-servers</artifactId>
+    <name>UnifiedPush Servers Parent</name>
     <packaging>pom</packaging>
+
     <build>
         <pluginManagement>
             <plugins>
-              <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.26.0</version>
-              </plugin>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${docker.maven.plugin.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
 
         <plugins>
             <plugin>
-              <groupId>org.wildfly.plugins</groupId>
-              <artifactId>wildfly-maven-plugin</artifactId>
-              <configuration>
-                <skip>true</skip>
-              </configuration>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
         </plugins>
     </build>

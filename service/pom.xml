@@ -15,8 +15,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.jboss.aerogear.unifiedpush</groupId>
         <artifactId>unifiedpush-parent</artifactId>
@@ -26,12 +30,12 @@
     <artifactId>unifiedpush-service</artifactId>
     <name>UnifiedPush Service Layer</name>
 
-
     <dependencies>
 
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
+            <version>${cdi.api.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -40,6 +44,7 @@
         <dependency>
             <groupId>org.jboss.spec.javax.ejb</groupId>
             <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+            <version>${jboss.ejb.api.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -49,16 +54,18 @@
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>org.jboss.aerogear.unifiedpush</groupId>
             <artifactId>unifiedpush-model-jpa</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
+            <version>${json-simple.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -66,7 +73,9 @@
 
     <profiles>
         <profile>
+
             <id>test</id>
+
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
@@ -75,6 +84,7 @@
                 <dependency>
                     <groupId>org.apache.openejb</groupId>
                     <artifactId>openejb-core-hibernate</artifactId>
+                    <version>${openejb.version}</version>
                     <type>pom</type>
                     <scope>test</scope>
                 </dependency>
@@ -82,43 +92,49 @@
                 <dependency>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
+                    <version>${junit.version}</version>
                     <scope>test</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.hibernate</groupId>
                     <artifactId>hibernate-entitymanager</artifactId>
+                    <version>${hibernate.version}</version>
                     <scope>test</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.hibernate</groupId>
                     <artifactId>hibernate-validator</artifactId>
+                    <version>${hibernate.validator.version}</version>
                     <scope>test</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.assertj</groupId>
                     <artifactId>assertj-core</artifactId>
+                    <version>${assertj.core.version}</version>
                     <scope>test</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.apache.openejb</groupId>
                     <artifactId>openejb-mockito</artifactId>
-                    <version>4.7.1</version>
+                    <version>${openejb.mockito.version}</version>
                     <scope>test</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>com.h2database</groupId>
                     <artifactId>h2</artifactId>
+                    <version>${h2.version}</version>
                     <scope>test</scope>
                 </dependency>
+
                 <dependency>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-log4j12</artifactId>
-                    <version>1.6.1</version>
+                    <version>${slf4j.version}</version>
                     <scope>test</scope>
                 </dependency>
 
@@ -126,18 +142,21 @@
                 <dependency>
                     <groupId>org.jboss.spec.javax.servlet</groupId>
                     <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+                    <version>${jboss.servlet.api.version}</version>
                     <scope>provided</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.jboss.spec.javax.ws.rs</groupId>
                     <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
+                    <version>${jboss.jaxrs.version}</version>
                     <scope>provided</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.keycloak</groupId>
                     <artifactId>keycloak-core</artifactId>
+                    <version>${keycloak.version}</version>
                     <scope>provided</scope>
                 </dependency>
 

@@ -1,9 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.jboss.aerogear.unifiedpush</groupId>
         <artifactId>unifiedpush-parent</artifactId>
-				<version>2.2.2-SNAPSHOT</version>
+        <version>2.2.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>unifiedpush-migrator</artifactId>
@@ -13,7 +17,7 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
-            <version>3.6.2</version>
+            <version>${liquibase.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>logback-classic</artifactId>
@@ -21,20 +25,23 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.15</version>
+            <version>${mysql.connector.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.2-1004-jdbc41</version>
+            <version>${postgresql.version}</version>
         </dependency>
+
         <dependency>
-             <groupId>ch.qos.logback</groupId> 
+            <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.2</version>
+            <version>${logback.classic.version}</version>
         </dependency>
     </dependencies>
 
@@ -44,7 +51,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
+                <version>${maven.jar.plugin.version}</version>
                 <configuration>
                     <outputDirectory>${project.build.directory}</outputDirectory>
                     <finalName>ups-migrator</finalName>
@@ -87,18 +94,21 @@
                 <dependency>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
+                    <version>${junit.version}</version>
                     <scope>test</scope>
                 </dependency>
+
                 <dependency>
                     <groupId>mysql</groupId>
                     <artifactId>mysql-connector-mxj</artifactId>
-                    <version>5.0.12</version>
+                    <version>${mysql.connector.mxj.version}</version>
                     <scope>test</scope>
                 </dependency>
+
                 <dependency>
                     <groupId>commons-io</groupId>
                     <artifactId>commons-io</artifactId>
-                    <version>2.4</version>
+                    <version>${commons.io.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>

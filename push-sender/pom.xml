@@ -15,8 +15,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.jboss.aerogear.unifiedpush</groupId>
         <artifactId>unifiedpush-parent</artifactId>
@@ -30,24 +33,28 @@
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
+            <version>${cdi.api.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
+            <version>${validation.api.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.spec.javax.ws.rs</groupId>
             <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
+            <version>${jboss.jaxrs.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
             <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+            <version>${jboss.servlet.api.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -56,12 +63,14 @@
         <dependency>
             <groupId>org.jboss.spec.javax.ejb</groupId>
             <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+            <version>${jboss.ejb.api.version}</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jboss.spec.javax.jms</groupId>
             <artifactId>jboss-jms-api_1.1_spec</artifactId>
+            <version>${jboss.jms.api.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -95,13 +104,13 @@
         <dependency>
             <groupId>net.jodah</groupId>
             <artifactId>expiringmap</artifactId>
-            <version>0.5.8</version>
+            <version>${expiringmap.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.turo</groupId>
             <artifactId>pushy</artifactId>
-            <version>0.13.2</version>
+            <version>${pushy.version}</version>
         </dependency>
 
         <dependency>
@@ -113,16 +122,19 @@
         <dependency>
             <groupId>com.google.gcm</groupId>
             <artifactId>gcm-server</artifactId>
+            <version>${gcm-server.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.0.2</version>
+            <version>${httpclient.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.github.fernandospr</groupId>
             <artifactId>java-wns</artifactId>
-            <version>1.3</version>
+            <version>${java.wns.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.jackson</groupId>
@@ -149,7 +161,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.19.1</version>
+                        <version>${maven.surefire.plugin.version}</version>
                         <configuration>
                             <excludes>
                                 <exclude>**/TestAbstractServiceHolderClustered.java</exclude>
@@ -164,39 +176,49 @@
                 <dependency>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
+                    <version>${junit.version}</version>
                     <scope>test</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.assertj</groupId>
                     <artifactId>assertj-core</artifactId>
+                    <version>${assertj.core.version}</version>
                     <scope>test</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.mockito</groupId>
                     <artifactId>mockito-core</artifactId>
+                    <version>${mockito.core.version}</version>
                     <scope>test</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.jboss.arquillian.junit</groupId>
                     <artifactId>arquillian-junit-container</artifactId>
+                    <version>${arquillian.version}</version>
                     <scope>test</scope>
                 </dependency>
+
                 <dependency>
                     <groupId>org.arquillian.container</groupId>
                     <artifactId>arquillian-container-chameleon</artifactId>
-                    <version>1.0.0.Beta1</version>
+                    <version>${arquillian.container.chameleon.version}</version>
                     <scope>test</scope>
                 </dependency>
 
-
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                    <version>${jackson.version}</version>
+                    <scope>test</scope>
+                </dependency>
 
                 <dependency>
                     <groupId>org.wildfly.extras.creaper</groupId>
                     <artifactId>creaper-core</artifactId>
-                    <version>1.6.1</version>
+                    <version>${creaper.version}</version>
                     <exclusions>
                         <exclusion>
                             <groupId>org.jboss.as</groupId>
@@ -209,10 +231,11 @@
                     </exclusions>
                     <scope>test</scope>
                 </dependency>
+
                 <dependency>
                     <groupId>org.wildfly.extras.creaper</groupId>
                     <artifactId>creaper-commands</artifactId>
-                    <version>1.6.1</version>
+                    <version>${creaper.version}</version>
                     <exclusions>
                         <exclusion>
                             <groupId>org.wildfly</groupId>
@@ -225,19 +248,21 @@
                 <dependency>
                     <groupId>org.wildfly.core</groupId>
                     <artifactId>wildfly-controller-client</artifactId>
-                    <version>3.0.0.Beta11</version>
+                    <version>${wildfly.version}</version>
                     <scope>test</scope>
                 </dependency>
+
                 <dependency>
                     <groupId>org.wildfly.core</groupId>
                     <artifactId>wildfly-cli</artifactId>
-                    <version>3.0.0.Beta11</version>
+                    <version>${wildfly.version}</version>
                     <scope>test</scope>
                 </dependency>
+
                 <dependency>
                     <groupId>org.wildfly.core</groupId>
                     <artifactId>wildfly-patching</artifactId>
-                    <version>3.0.0.Beta11</version>
+                    <version>${wildfly.version}</version>
                     <scope>test</scope>
                 </dependency>
 

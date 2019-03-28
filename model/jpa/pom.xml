@@ -15,8 +15,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.jboss.aerogear.unifiedpush</groupId>
         <artifactId>unifiedpush-model-parent</artifactId>
@@ -27,7 +31,7 @@
     <name>UnifiedPush Server Model JPA implementation</name>
 
     <dependencies>
-        
+
         <dependency>
             <groupId>org.jboss.aerogear.unifiedpush</groupId>
             <artifactId>unifiedpush-model-api</artifactId>
@@ -37,18 +41,21 @@
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <version>${hibernate.jpa.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
+            <version>${cdi.api.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -69,83 +76,99 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            
+
             <dependencies>
                 <dependency>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
+                    <version>${junit.version}</version>
                     <scope>test</scope>
                 </dependency>
-        
+
                 <dependency>
                     <groupId>org.hibernate</groupId>
                     <artifactId>hibernate-entitymanager</artifactId>
+                    <version>${hibernate.version}</version>
                     <scope>test</scope>
                 </dependency>
-        
+
                 <dependency>
                     <groupId>org.hibernate</groupId>
                     <artifactId>hibernate-validator</artifactId>
+                    <version>${hibernate.validator.version}</version>
                     <scope>test</scope>
                 </dependency>
-        
+
                 <dependency>
                     <groupId>org.assertj</groupId>
                     <artifactId>assertj-core</artifactId>
+                    <version>${assertj.core.version}</version>
                     <scope>test</scope>
                 </dependency>
-        
+
                 <dependency>
                     <groupId>org.jboss.spec.javax.ejb</groupId>
                     <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+                    <version>${jboss.ejb.api.version}</version>
                     <scope>provided</scope>
                 </dependency>
+
                 <dependency>
                     <groupId>org.jboss.spec.javax.el</groupId>
                     <artifactId>jboss-el-api_2.2_spec</artifactId>
+                    <version>${jboss.el.api.version}</version>
                     <scope>provided</scope>
                 </dependency>
+
                 <dependency>
                     <groupId>javax.inject</groupId>
                     <artifactId>javax.inject</artifactId>
+                    <version>${javax.inject.version}</version>
                     <scope>provided</scope>
                 </dependency>
+
                 <dependency>
                     <groupId>org.jboss.arquillian.junit</groupId>
                     <artifactId>arquillian-junit-container</artifactId>
+                    <version>${arquillian.version}</version>
                     <scope>test</scope>
                 </dependency>
+
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
                     <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
-                    <version>1.0.0.Final</version>
+                    <version>${arquillian.weld.ee.embedded.version}</version>
                     <scope>test</scope>
                 </dependency>
+
                 <dependency>
                     <groupId>org.jboss.weld</groupId>
                     <artifactId>weld-core</artifactId>
-                    <version>1.1.34.Final</version>
+                    <version>${weld.core.version}</version>
                     <scope>test</scope>
                 </dependency>
+
                 <dependency>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-nop</artifactId>
-                    <version>1.7.26</version>
+                    <version>${slf4j.version}</version>
                 </dependency>
+
                 <dependency>
                     <groupId>net.jakubholy.testing</groupId>
                     <artifactId>dbunit-express</artifactId>
-                    <version>1.3.0</version>
+                    <version>${dbunit.express.version}</version>
                     <scope>test</scope>
-                </dependency>                
+                </dependency>
+
                 <dependency>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-log4j12</artifactId>
-                    <version>1.7.26</version>
+                    <version>${slf4j.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
         </profile>
     </profiles>
-    
+
 </project>
