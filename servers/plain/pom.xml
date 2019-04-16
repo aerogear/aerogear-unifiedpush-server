@@ -97,8 +97,8 @@
                             <Build-Branch>${scmBranch}</Build-Branch>
                             <Implementation-Build>${buildNumber}</Implementation-Build>
                             <Implementation-Build-Time>${maven.build.timestamp}</Implementation-Build-Time>
-                            <SCM-URL>${scm.url}</SCM-URL>
-                            <SCM-Tag>${scm.tag}</SCM-Tag>
+                            <SCM-URL>${project.scm.url}</SCM-URL>
+                            <SCM-Tag>${project.scm.tag}</SCM-Tag>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -147,7 +147,7 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>aerogear/unifiedpush-wildfly-plain:${version}</name>
+                                    <name>aerogear/unifiedpush-wildfly-plain:${project.version}</name>
                                     <alias>server</alias>
                                     <build>
                                         <!-- filter>@</filter-->
