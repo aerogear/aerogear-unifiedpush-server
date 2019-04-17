@@ -18,8 +18,11 @@ package org.jboss.aerogear.unifiedpush.jpa;
 
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.MySQLDialect;
-import org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo;
-import org.hibernate.engine.jdbc.dialect.spi.DialectResolver;
+import org.hibernate.exception.JDBCConnectionException;
+import org.hibernate.service.jdbc.dialect.spi.DialectResolver;
+
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 
 /**
  * A Hibernate dialect resolver to allow for a custom Mysql5 dialect
@@ -31,9 +34,14 @@ public class MysqlDialectResolver implements DialectResolver {
     private static final long serialVersionUID = 7892182989480846213L;
 
     @Override
-    public Dialect resolveDialect(DialectResolutionInfo dialectResolutionInfo) {
-        if ("MySQL".equals(dialectResolutionInfo.getDatabaseName())) {
-            return dialectResolutionInfo.getDatabaseMajorVersion() >= 5 ? new Mysql5BitBooleanDialect() : new MySQLDialect();
+    public Dialect resolveDialect(DatabaseMetaData databaseMetaData) throws JDBCConnectionException {
+        try {
+            if ("MySQL".equals(databaseMetaData.getDriverName())) {
+                return databaseMetaData.getDriverMajorVersion() >= 5 ?
+                        new Mysql5BitBooleanDialect() : new MySQLDialect();
+            }
+        } catch (SQLException e) {
+            return null;
         }
         return null;
     }
