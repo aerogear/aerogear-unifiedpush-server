@@ -61,4 +61,12 @@ public class UserKey implements Serializable {
 		this.pushApplicationId = pushApplicationId;
 	}
 
+	@Override
+	public String toString() {
+        return getClass().getSimpleName()
+            + "[alias=" + getAlias()
+            + ", id=" + getId()
+            + ", pushApplicationId=" + getPushApplicationId()
+            + "]";
+	}
 }

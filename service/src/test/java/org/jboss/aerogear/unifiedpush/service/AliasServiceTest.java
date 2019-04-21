@@ -17,11 +17,16 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -29,7 +34,9 @@ import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.document.DocumentMetadata;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.UserKey;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
+import org.jboss.aerogear.unifiedpush.service.impl.AliasServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.AliasServiceImpl.Associated;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration;
 import org.junit.Test;
@@ -167,4 +174,41 @@ public class AliasServiceTest extends AbstractCassandraServiceTest {
 
 	}
 
+	@Test
+	public void testReducingUserKeysByTheirUUIDTimeStamp() throws InterruptedException {
+		Collection<UserKey> users = new ArrayList<>();
+		UUID app1 = UUIDs.random();
+		UserKey u1 = createUser("alias1", app1);
+		UserKey u2 = createUser("alias1", app1);
+
+		users.add(u1);
+		users.add(u2);
+
+		UUID app2 = UUIDs.random();
+		UserKey u3 = createUser("alias2", app2);
+		UserKey u4 = createUser("alias3", app2);
+		users.add(u3);
+		users.add(u4);
+
+		Map<String, UserKey> expectedResult = new HashMap<>();
+		expectedResult.put("alias1", u2); // latest user UUID timestamp
+		expectedResult.put("alias2", u3);
+		expectedResult.put("alias3", u4);
+
+		Collection<UserKey> result = AliasServiceImpl.reduceUserKeysByUserUUIDTimeStamp(users.stream());
+		assertEquals("Mismatched amount of reduced users", 3, result.size());
+		for (UserKey resultUserKey : result) {
+			String alias = resultUserKey.getAlias();
+			UserKey expected = expectedResult.get(alias);
+			assertSame(expected, resultUserKey);
+		}
+	}
+
+	private UserKey createUser(String alias, UUID application) throws InterruptedException {
+		UserKey user = new UserKey();
+		user.setId(UUIDs.timeBased());
+		user.setAlias(alias);
+		user.setPushApplicationId(application);
+		return user;
+	}
 }
