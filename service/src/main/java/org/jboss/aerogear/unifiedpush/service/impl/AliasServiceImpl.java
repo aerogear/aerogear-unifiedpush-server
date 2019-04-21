@@ -17,14 +17,20 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -293,7 +299,29 @@ public class AliasServiceImpl implements AliasService {
 
 	@Override
 	public Set<UserTenantInfo> getTenantRelations(String alias) {
-		return aliasDao.findUserTenantRelations(alias).map(userKeyToTenantInfo()).collect(Collectors.toSet());
+		Stream<UserKey> usersTenantRelationsStream = aliasDao.findUserTenantRelations(alias);
+		Collection<UserKey> reducedUserKeys = reduceUserKeysByUserUUIDTimeStamp(usersTenantRelationsStream);
+		return reducedUserKeys.stream()
+				.map(userKeyToTenantInfo())
+				.collect(Collectors.toSet());
+	}
+
+	public static Set<UserKey> reduceUserKeysByUserUUIDTimeStamp(Stream<UserKey> usersTenantRelationsStream) {
+		Map<UUID, Map<String, Optional<UserKey>>> userKeyByAppIdAndAlias = usersTenantRelationsStream
+				.collect(Collectors
+						.groupingBy(UserKey::getPushApplicationId,
+								Collectors.groupingBy(UserKey::getAlias,
+										Collectors.reducing(BinaryOperator.maxBy(Comparator.comparingLong(uk1 -> uk1.getId().timestamp()))))));
+
+		Set<UserKey> result = new HashSet<>();
+		for (Map.Entry<UUID, Map<String, Optional<UserKey>>> entry : userKeyByAppIdAndAlias.entrySet()) {
+			Map<String, Optional<UserKey>> aliases = entry.getValue();
+			for (Map.Entry<String, Optional<UserKey>> ae : aliases.entrySet()) {
+				Optional<UserKey> value = ae.getValue();
+				value.ifPresent(result::add);
+			}
+		}
+		return result;
 	}
 
 	@Override
