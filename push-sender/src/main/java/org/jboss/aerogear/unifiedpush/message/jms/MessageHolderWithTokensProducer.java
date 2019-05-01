@@ -16,10 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import javax.annotation.Resource;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
@@ -39,14 +37,11 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
     @Inject
     private JmsClient jmsClient;
 
-    @Resource(mappedName = "java:/queue/APNsTokenBatchQueue")
-    private Queue apnsTokenBatchQueue;
+    private String apnsTokenBatchQueue = "APNsTokenBatchQueue";
 
-    @Resource(mappedName = "java:/queue/GCMTokenBatchQueue")
-    private Queue gcmTokenBatchQueue;
+    private String gcmTokenBatchQueue = "GCMTokenBatchQueue";
 
-    @Resource(mappedName = "java:/queue/WNSTokenBatchQueue")
-    private Queue wnsTokenBatchQueue;
+    private String wnsTokenBatchQueue = "WNSTokenBatchQueue";
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithTokens msg) {
         final VariantType variantType = msg.getVariant().getType();
@@ -55,7 +50,7 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
         jmsClient.send(msg).withDuplicateDetectionId(deduplicationId).to(selectQueue(variantType));
     }
 
-    private Queue selectQueue(VariantType variantType) {
+    private String selectQueue(VariantType variantType) {
         switch (variantType) {
             case ANDROID:
                 return gcmTokenBatchQueue;

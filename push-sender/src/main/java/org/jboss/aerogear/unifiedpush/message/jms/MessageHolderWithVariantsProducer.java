@@ -16,10 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
-import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
@@ -36,21 +34,21 @@ public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProduce
 
     private static final Logger logger = LoggerFactory.getLogger(MessageHolderWithVariantsProducer.class);
 
-    @Resource(mappedName = "java:/queue/APNsPushMessageQueue")
-    private Queue apnsPushMessageQueue;
+    
+    private  final String apnsPushMessageQueue = "APNsPushMessageQueue";
 
-    @Resource(mappedName = "java:/queue/GCMPushMessageQueue")
-    private Queue gcmPushMessageQueue;
+    
+    private final String gcmPushMessageQueue = "GCMPushMessageQueue";
 
-    @Resource(mappedName = "java:/queue/WNSPushMessageQueue")
-    private Queue wnsPushMessageQueue;
+    
+    private final String wnsPushMessageQueue = "WNSPushMessageQueue";
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithVariants msg) {
-        logger.trace("dispatching for processing variants and trigger token querying/batching");
+        logger.debug("dispatching for processing variants and trigger token querying/batching");
         sendTransacted(selectQueue(msg.getVariantType()), msg);
     }
 
-    private Queue selectQueue(VariantType variantType) {
+    private String selectQueue(VariantType variantType) {
         switch (variantType) {
             case ANDROID:
                 return gcmPushMessageQueue;

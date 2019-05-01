@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   unifiedpushserver:
-    image: docker.io/aerogear/unifiedpush-wildfly:2.1.0
+    image: aerogear/unifiedpush-wildfly-plain:2.2.2-SNAPSHOT
     volumes:
        - ./helper:/ups-helper:z
     entrypoint: "/ups-helper/exportKeycloakHost.sh"
@@ -19,6 +19,7 @@ services:
         KEYCLOAK_SERVICE_PORT: ${KEYCLOAK_SERVICE_PORT}
     links:
       - unifiedpushDB:unifiedpush
+      - artemis:artemis
       - keycloakServer:keycloak
     ports:
       - 9999:8080
@@ -40,3 +41,12 @@ services:
     environment:
       KEYCLOAK_USER: ${KEYCLOAK_USER}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+  artemis:
+    image: vromero/activemq-artemis
+    volumes:
+      - ./artemis-overrides:/var/lib/artemis/etc-override:z
+    ports:
+      - 8161:8161
+      - 61616:61616
+      - 61617:61617
+ 

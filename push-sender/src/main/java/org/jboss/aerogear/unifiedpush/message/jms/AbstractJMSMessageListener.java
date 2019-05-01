@@ -16,8 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import javax.annotation.Resource;
-import javax.jms.ConnectionFactory;
+import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionAttribute;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -35,16 +35,15 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractJMSMessageListener<T> implements MessageListener {
 
-    @Resource(mappedName = "java:/ConnectionFactory")
-    private ConnectionFactory connectionFactory;
-
     private static final Logger logger = LoggerFactory.getLogger(AbstractJMSMessageListener.class);
 
     public abstract void onMessage(T message);
 
     @SuppressWarnings("unchecked")
     @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void onMessage(Message jmsMessage) {
+        logger.debug("message get " + jmsMessage.toString());
         try {
             if (jmsMessage instanceof ObjectMessage) {
                 Object messageObject = ((ObjectMessage) jmsMessage).getObject();

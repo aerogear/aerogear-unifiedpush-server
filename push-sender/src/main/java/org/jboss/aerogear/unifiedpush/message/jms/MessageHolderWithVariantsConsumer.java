@@ -41,7 +41,7 @@ public class MessageHolderWithVariantsConsumer extends AbstractJMSMessageListene
 
     @Override
     public void onMessage(MessageHolderWithVariants message) {
-        logger.trace("receiving variant container from queue, triggering the TokenLoader class");
+        logger.info("receiving variant container from queue, triggering the TokenLoader class");
         dequeueEvent.fire(message);
     }
 }

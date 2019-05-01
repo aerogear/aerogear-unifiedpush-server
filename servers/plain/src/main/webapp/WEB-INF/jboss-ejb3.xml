@@ -21,6 +21,7 @@
                xmlns="http://java.sun.com/xml/ns/javaee"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xmlns:s="urn:security:1.1"
+               xmlns:r="urn:resource-adapter-binding"
                xsi:schemaLocation="http://www.jboss.com/xml/ns/javaee http://www.jboss.org/j2ee/schema/jboss-ejb3-2_0.xsd http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
                version="3.1"
                impl-version="2.0">
@@ -33,7 +34,7 @@
             <activation-config>
                 <activation-config-property>
                     <activation-config-property-name>destination</activation-config-property-name>
-                    <activation-config-property-value>queue/APNsPushMessageQueue</activation-config-property-value>
+                    <activation-config-property-value>APNsPushMessageQueue</activation-config-property-value>
                 </activation-config-property>
                 <activation-config-property>
                     <activation-config-property-name>destinationType</activation-config-property-name>
@@ -52,7 +53,7 @@
             <activation-config>
                 <activation-config-property>
                     <activation-config-property-name>destination</activation-config-property-name>
-                    <activation-config-property-value>queue/GCMPushMessageQueue</activation-config-property-value>
+                    <activation-config-property-value>GCMPushMessageQueue</activation-config-property-value>
                 </activation-config-property>
                 <activation-config-property>
                     <activation-config-property-name>destinationType</activation-config-property-name>
@@ -71,7 +72,7 @@
             <activation-config>
                 <activation-config-property>
                     <activation-config-property-name>destination</activation-config-property-name>
-                    <activation-config-property-value>queue/WNSPushMessageQueue</activation-config-property-value>
+                    <activation-config-property-value>WNSPushMessageQueue</activation-config-property-value>
                 </activation-config-property>
                 <activation-config-property>
                     <activation-config-property-name>destinationType</activation-config-property-name>
@@ -154,6 +155,32 @@
                 </activation-config-property>
             </activation-config>
         </message-driven>
-        
     </enterprise-beans>
+     <assembly-descriptor>        
+        <r:resource-adapter-binding>
+            <ejb-name>GCMPushMessageConsumer</ejb-name>
+            <r:resource-adapter-name>remote-artemis-xa</r:resource-adapter-name>
+        </r:resource-adapter-binding>
+        <r:resource-adapter-binding>
+            <ejb-name>WNSPushMessageConsumer</ejb-name>
+            <r:resource-adapter-name>remote-artemis-xa</r:resource-adapter-name>
+        </r:resource-adapter-binding>
+        <r:resource-adapter-binding>
+            <ejb-name>APNsPushMessageConsumer</ejb-name>
+            <r:resource-adapter-name>remote-artemis-xa</r:resource-adapter-name>
+        </r:resource-adapter-binding>
+                <r:resource-adapter-binding>
+            <ejb-name>GCMTokenBatchConsumer</ejb-name>
+            <r:resource-adapter-name>remote-artemis-xa</r:resource-adapter-name>
+        </r:resource-adapter-binding>
+        <r:resource-adapter-binding>
+            <ejb-name>WNSTokenBatchConsumer</ejb-name>
+            <r:resource-adapter-name>remote-artemis-xa</r:resource-adapter-name>
+        </r:resource-adapter-binding>
+        <r:resource-adapter-binding>
+            <ejb-name>APNsTokenBatchConsumer</ejb-name>
+            <r:resource-adapter-name>remote-artemis-xa</r:resource-adapter-name>
+        </r:resource-adapter-binding>
+    </assembly-descriptor>
+    
 </jboss:ejb-jar>
