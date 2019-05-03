@@ -33,6 +33,7 @@ import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceI
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.keycloak.KeycloakPrincipal;
@@ -42,9 +43,11 @@ import org.mockito.Mock;
 
 import javax.annotation.PreDestroy;
 import javax.ejb.Stateful;
+import javax.ejb.embeddable.EJBContainer;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -55,6 +58,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(ApplicationComposer.class)
 public abstract class AbstractBaseServiceTest {
+
+    private  EJBContainer container;
 
     @Mock
     protected HttpServletRequest httpServletRequest;
@@ -75,6 +80,20 @@ public abstract class AbstractBaseServiceTest {
     protected PushSearchByDeveloperServiceImpl searchApplicationService;
 
     // ===================== JUnit hooks =====================
+    @Before
+    public  void start() {
+        container = EJBContainer.createEJBContainer();
+    }
+     
+    @Before
+    public void inject() throws NamingException {
+        container.getContext().bind("inject", this);
+    }
+     
+    @After
+    public  void stop() {
+        container.close();
+    }
 
     /**
      * Basic setup stuff, needed for all the UPS related service classes

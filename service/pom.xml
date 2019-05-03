@@ -81,6 +81,7 @@
                     <groupId>org.apache.openejb</groupId>
                     <artifactId>openejb-core-hibernate</artifactId>
                     <type>pom</type>
+                      <version>4.7.5</version>
                     <scope>test</scope>
                 </dependency>
 
@@ -89,6 +90,13 @@
                     <artifactId>junit</artifactId>
                     <scope>test</scope>
                 </dependency>
+<!-- https://mvnrepository.com/artifact/com.sun.corba/orb -->
+<dependency>
+  <groupId>org.glassfish.corba</groupId>
+  <artifactId>glassfish-corba-orb</artifactId>
+  <version>4.2.1</version>
+  <scope>test</scope>
+</dependency>
 
                 <dependency>
                     <groupId>org.hibernate</groupId>
@@ -111,7 +119,13 @@
                 <dependency>
                     <groupId>org.apache.openejb</groupId>
                     <artifactId>openejb-mockito</artifactId>
-                    <version>4.7.1</version>
+                    <version>4.7.5</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.openejb</groupId>
+                    <artifactId>openejb-core</artifactId>
+                    <version>4.7.5</version>
                     <scope>test</scope>
                 </dependency>
 
