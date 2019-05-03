@@ -300,6 +300,13 @@
                     <artifactId>hibernate-jpa-2.0-api</artifactId>
                     <scope>provided</scope>
                 </dependency>
+<!-- https://mvnrepository.com/artifact/com.sun.corba/orb -->
+<dependency>
+  <groupId>org.glassfish.corba</groupId>
+  <artifactId>glassfish-corba-orb</artifactId>
+  <version>4.2.1</version>
+  <scope>test</scope>
+</dependency>
 
                 <dependency>
                     <groupId>org.jboss.arquillian.test</groupId>
