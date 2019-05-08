@@ -16,11 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.test.archive;
 
-import java.util.logging.Logger;
-
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ArchivePaths;
+
+import java.util.logging.Logger;
 
 public abstract class UnifiedPushArchiveBase extends UnifiedPushArchive {
 

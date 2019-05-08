@@ -41,7 +41,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 
 /**
- * An archive for specifying Arquillian micro-deployments with selected parts of UPS
+ * An org.jboss.aerogear.unifiedpush.test.archive for specifying Arquillian micro-deployments with selected parts of UPS
  */
 public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
 

@@ -151,6 +151,8 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
         pa2.setName("EJB Container 2");
         pa2.setPushApplicationID(uuid);
 
+        System.err.println("Test");
+
         // When
         pushApplicationService.addPushApplication(pa);
         assertThat(pushApplicationService.findByPushApplicationID(pa.getPushApplicationID()))

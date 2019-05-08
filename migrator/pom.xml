@@ -48,13 +48,13 @@
                 <configuration>
                     <outputDirectory>${project.build.directory}</outputDirectory>
                     <finalName>ups-migrator</finalName>
-                    <archive>
+                    <org.jboss.aerogear.unifiedpush.test.archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                             <useUniqueVersions>false</useUniqueVersions>
                         </manifest>
-                    </archive>
+                    </org.jboss.aerogear.unifiedpush.test.archive>
                 </configuration>
             </plugin>
             <plugin>

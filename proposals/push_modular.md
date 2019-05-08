@@ -11,7 +11,7 @@ This document outlines a modularization approach of the UPS, for better scalabli
 
  - Kafka: [distributed and partioned commit log, with message system semantics](https://speakerdeck.com/matzew/eclipse-microprofile-and-apache-kafka?slide=9)
  - Pod: Group of containers deployed on the same host
- - JavaEE: framework for writing managed servers with build-in features for persistence, transaction and dependency injection. Applications are typically deployed in an archive (`WAR`).
+ - JavaEE: framework for writing managed servers with build-in features for persistence, transaction and dependency injection. Applications are typically deployed in an org.jboss.aerogear.unifiedpush.test.archive (`WAR`).
  - WildFly Swarm: Java EE microservice tool
  - nginx: https server and proxy 
  - System Resources: CPU or memory

@@ -31,14 +31,14 @@ Micro-deployments for tests
 The deployment that will be deployed to application server is defined alongside the test source:
 
     @Deployment
-    public static WebArchive archive() { ... }
+    public static WebArchive org.jboss.aerogear.unifiedpush.test.archive() { ... }
 
 We use so called micro-deployment strategy that allows you to define only subset of all the required resources to test certain part of UnifiedPush Server. That speeds up test development and execution and makes it clear what is being tested.
 
-Test development is simplified with custom ShrinkWrap archive called `UnifiedPushArchive` and its implementation `UnifiedPushArchiveImpl`. This archive allows you to quickly build WAR micro-deployment that is customized for given test, while staying DRY:
+Test development is simplified with custom ShrinkWrap org.jboss.aerogear.unifiedpush.test.archive called `UnifiedPushArchive` and its implementation `UnifiedPushArchiveImpl`. This org.jboss.aerogear.unifiedpush.test.archive allows you to quickly build WAR micro-deployment that is customized for given test, while staying DRY:
 
     @Deployment
-    public static WebArchive archive() {
+    public static WebArchive org.jboss.aerogear.unifiedpush.test.archive() {
         return UnifiedPushArchive.forTestClass(TestMetricsCollector.class)
                 .withMessaging()
                     .addClasses(MetricsCollector.class)

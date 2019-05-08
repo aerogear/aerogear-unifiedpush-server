@@ -21,12 +21,6 @@
   <persistence-unit name="UnifiedPush" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
-    <mapping-file>META-INF/orm.xml</mapping-file>
-    <mapping-file>org/jboss/aerogear/unifiedpush/api/Installation.hbm.xml</mapping-file>
-    <mapping-file>org/jboss/aerogear/unifiedpush/api/Category.hbm.xml</mapping-file>
-    <mapping-file>org/jboss/aerogear/unifiedpush/api/FlatPushMessageInformation.hbm.xml</mapping-file>
-    <mapping-file>org/jboss/aerogear/unifiedpush/api/VariantErrorStatus.hbm.xml</mapping-file>
-
     <properties>
       <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
       <property name="hibernate.connection.url"    value="jdbc:h2:mem:unifiedPush" />

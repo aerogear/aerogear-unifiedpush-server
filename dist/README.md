@@ -1,6 +1,6 @@
 # AeroGear UnifiedPush Server - Release Bundle
 
-The content of this archive contains:
+The content of this org.jboss.aerogear.unifiedpush.test.archive contains:
 * Keycloak development setup, via docker-compose
 * database configuration files and modules for WildFly11+
 * WAR file for UnifiedPush Server (for WildFly) with and without Keycloak
