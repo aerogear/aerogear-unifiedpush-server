@@ -45,7 +45,7 @@ public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProduce
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithVariants msg) {
         logger.debug("dispatching for processing variants and trigger token querying/batching");
-        sendTransacted(selectQueue(msg.getVariantType()), msg);
+        sendTransacted(selectQueue(msg.getVariantType()), msg, false);
     }
 
     private String selectQueue(VariantType variantType) {

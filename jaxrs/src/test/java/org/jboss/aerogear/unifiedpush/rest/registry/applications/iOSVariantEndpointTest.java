@@ -53,7 +53,7 @@ public class iOSVariantEndpointTest {
 
         this.endpoint.pushAppService = pushAppService;
         this.endpoint.variantService = variantService;
-        this.endpoint.variantUpdateEventEvent = variantUpdateEventEvent;
+//        this.endpoint.variantUpdateEventEvent = variantUpdateEventEvent;
 
         when(searchManager.getSearchService()).thenReturn(searchService);
     }
