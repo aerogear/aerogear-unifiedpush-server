@@ -50,8 +50,8 @@ public abstract class AbstractJMSMessageProducer {
      *
      * Since non-transacted session is used, the message is send immediately without requiring to commit enclosing transaction.
      */
-    protected void sendNonTransacted(String destination, Serializable message) {
-        send(destination, message, null, null, false);
+    protected void sendNonTransacted(String destination, Serializable message, boolean useTopic) {
+        send(destination, message, null, null, false, useTopic);
     }
 
     /**
@@ -62,8 +62,8 @@ public abstract class AbstractJMSMessageProducer {
      *
      * Since transacted session is used, the message won't be committed until whole enclosing transaction ends
      */
-    protected void sendTransacted(String destination, Serializable message) {
-        send(destination, message, null, null, true);
+    protected void sendTransacted(String destination, Serializable message, boolean useTopic) {
+        send(destination, message, null, null, true, useTopic);
     }
 
     /**
@@ -76,8 +76,8 @@ public abstract class AbstractJMSMessageProducer {
      *
      * Since non-transacted session is used, the message is send immediately without requiring to commit enclosing transaction.
      */
-    protected void sendNonTransacted(String destination, Serializable message, String propertyName, String propertValue) {
-        send(destination, message, propertyName, propertValue, false);
+    protected void sendNonTransacted(String destination, Serializable message, String propertyName, String propertValue, boolean useTopic) {
+        send(destination, message, propertyName, propertValue, false, useTopic);
     }
 
     /**
@@ -90,11 +90,11 @@ public abstract class AbstractJMSMessageProducer {
      *
      * Since transacted session is used, the message won't be committed until whole enclosing transaction ends.
      */
-    protected void sendTransacted(String destination, Serializable message, String propertyName, String propertValue) {
-        send(destination, message, propertyName, propertValue, true);
+    protected void sendTransacted(String destination, Serializable message, String propertyName, String propertValue, boolean useTopic) {
+        send(destination, message, propertyName, propertValue, true, useTopic);
     }
 
-    private void send(String destination, Serializable message, String propertyName, String propertValue, boolean transacted) {
+    private void send(String destination, Serializable message, String propertyName, String propertValue, boolean transacted, boolean useTopic) {
         Connection connection = null;
         try {
             if (transacted) {
@@ -103,7 +103,12 @@ public abstract class AbstractJMSMessageProducer {
                 connection = connectionFactory.createConnection();
             }
             Session session = connection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
-            MessageProducer messageProducer = session.createProducer(session.createQueue(destination));
+            MessageProducer messageProducer;
+            if (useTopic) {
+                messageProducer = session.createProducer(session.createTopic(destination));
+            } else {
+                messageProducer = session.createProducer(session.createQueue(destination));
+            }
             logger.debug("Destination is " + destination.toString());
             connection.start();
             ObjectMessage objectMessage = session.createObjectMessage(message);
