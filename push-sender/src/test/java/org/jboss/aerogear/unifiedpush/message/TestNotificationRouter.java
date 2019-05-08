@@ -49,9 +49,11 @@ import static org.mockito.Mockito.when;
 @RunWith(Arquillian.class)
 public class TestNotificationRouter {
 
+
     @Deployment
     public static WebArchive archive() {
         return UnifiedPushArchive.forTestClass(TestNotificationRouter.class)
+                .addClass(TestNotificationRouter.class)
                 .withMessaging()
                     .addClasses(NotificationRouter.class, PushNotificationSender.class)
                     .addClasses(PushMessageMetricsService.class)

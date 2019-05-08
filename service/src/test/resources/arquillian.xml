@@ -29,6 +29,7 @@
         <configuration>
             <property name="chameleonTarget">wildfly:16.0.0.Final:managed</property>
             <property name="serverConfig">standalone-full.xml</property>
+<!--            <property name="javaVmArguments">-Xdebug -Xrunjdwp:transport=dt_socket,address=8086,server=y,suspend=y</property>-->
         </configuration>
     </container>
 </arquillian>
