@@ -17,17 +17,38 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(Arquillian.class)
 public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
     @Override
     protected void specificSetup() {
         // noop
+    }
+
+
+    @Deployment
+    public static WebArchive archive() {
+        return UnifiedPushArchive.forTestClass(PushApplicationServiceTest.class)
+                .withUtils()
+                .withMessageModel()
+                .withMockito()
+                .withDAOs()
+                .withServices()
+                .withApi()
+                .withUtils()
+                .addClass(AbstractBaseServiceTest.class)
+                .as(WebArchive.class);
     }
 
     @Test
@@ -47,7 +68,7 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
     }
 
     @Test
-    public void updatePushApplication() {
+    public void testUpdatePushApplication() {
         PushApplication pa = new PushApplication();
         pa.setName("EJB Container");
         final String uuid = UUID.randomUUID().toString();

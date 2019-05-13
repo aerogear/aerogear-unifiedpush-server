@@ -27,9 +27,19 @@
 
     <container qualifier="chameleon" default="true">
         <configuration>
+            <!-- reconfigure to alternative servers (WildFly, JBoss AS, JBoss EAP) or modes (Managed, Remote, Embedded) using arquillian-container-chameleon -->>
+
+            <!-- (if running against different containers, be sure to check the port offset settings bellow) -->
             <property name="chameleonTarget">wildfly:16.0.0.Final:managed</property>
-            <property name="serverConfig">standalone-full.xml</property>
-<!--            <property name="javaVmArguments">-Xdebug -Xrunjdwp:transport=dt_socket,address=8086,server=y,suspend=y</property>-->
+
+            <!-- use Full EE profile for a JMS support -->
+            <property name="serverConfig">../../../../../test-classes/standalone-full.xml</property>
+
+            <!-- configure port offset for ports bound by application server so that they don't conflict with an another instance running parallely -->
+            <!-- both http and management ports are offset  -->
+            <property name="javaVmArguments">-Djboss.socket.binding.port-offset=4322 -Xms128m -Xmx512m -XX:MaxPermSize=1024m</property>
+            <!--  tell Arquillian where he will find the running container -->
+            <property name="managementPort">14312</property>
         </configuration>
     </container>
 </arquillian>

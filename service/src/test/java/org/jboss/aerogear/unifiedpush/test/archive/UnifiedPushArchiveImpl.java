@@ -16,11 +16,20 @@
  */
 package org.jboss.aerogear.unifiedpush.test.archive;
 
+import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPACategoryDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
+import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
+import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
 import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
+import org.keycloak.KeycloakSecurityContext;
 
 /**
  * An org.jboss.aerogear.unifiedpush.test.archive for specifying Arquillian micro-deployments with selected parts of UPS
@@ -28,7 +37,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
 
     private PomEquippedResolveStage resolver;
-    private static final String WEB_RESOURCE_PATH = "../servers/plain/src/main/webapp/WEB-INF/";
 
     public UnifiedPushArchiveImpl(Archive<?> delegate) {
         super(delegate);
@@ -42,18 +50,10 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
         return addAsLibraries(resolver.resolve(deps).withTransitivity().asFile());
     }
 
-    @Override
-    public UnifiedPushArchive withMessaging() {
-        return withApi()
-            .withUtils()
-            .withMessageModel()
-            .withDAOs()
-            .withServices();
-    }
 
     @Override
-    public UnifiedPushArchive withMessageDrivenBeans() {
-        return this;
+    public UnifiedPushArchive withApi() {
+        return addPackage(org.jboss.aerogear.unifiedpush.api.PushApplication.class.getPackage());
     }
 
     @Override
@@ -63,24 +63,30 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
 
     @Override
     public UnifiedPushArchive withMessageModel() {
-        return this;
+        return addMavenDependencies("com.fasterxml.jackson.core:jackson-databind");
     }
-
-    @Override
-    public UnifiedPushArchive withApi() {
-        return addPackage(org.jboss.aerogear.unifiedpush.api.PushApplication.class.getPackage());
-    }
-
 
     @Override
     public UnifiedPushArchive withDAOs() {
         return addPackage(org.jboss.aerogear.unifiedpush.dao.PushApplicationDao.class.getPackage())
+                .addPackage("org.jboss.aerogear.unifiedpush.jpa.dao.impl")
+                .addPackage("org.jboss.aerogear.unifiedpush.api")
+                .addPackage("org.jboss.aerogear.unifiedpush.api.dao")
+                .addClass(EntityFactory.class)
+                .addClass(JPAVariantDao.class)
+                .addClass(JPAPushApplicationDao.class)
+                .addClass(JPACategoryDao.class)
+                .addAsManifestResource("META-INF/persistence.xml")
                 .addPackage(org.jboss.aerogear.unifiedpush.dto.Count.class.getPackage());
     }
 
     @Override
     public UnifiedPushArchive withServices() {
-        return addPackage(org.jboss.aerogear.unifiedpush.service.PushApplicationService.class.getPackage());
+        return addPackage(org.jboss.aerogear.unifiedpush.service.PushApplicationService.class.getPackage())
+                .addPackage(SearchManager.class.getPackage())
+                .addPackage(HealthDetails.class.getPackage())
+                .addPackage(DashboardData.class.getPackage())
+                .addMavenDependencies("org.keycloak:keycloak-core");
     }
 
     @Override

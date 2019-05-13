@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.test.archive;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.container.LibraryContainer;
 import org.jboss.shrinkwrap.api.container.ResourceContainer;
 import org.jboss.shrinkwrap.api.container.ServiceProviderContainer;
@@ -35,7 +36,8 @@ public abstract class UnifiedPushArchive extends WebContainerBase<UnifiedPushArc
     }
 
     public static UnifiedPushArchive forTestClass(Class<?> clazz) {
-        return ShrinkWrap.create(UnifiedPushArchive.class, String.format("%s.war", clazz.getSimpleName()));
+        return ShrinkWrap.create(UnifiedPushArchive.class, String.format("%s.war", clazz.getSimpleName()))
+                .addAsManifestResource(new StringAsset("Dependencies: jdk.unsupported\n" /* required by Java 11 */), "MANIFEST.MF");
     }
 
     public abstract UnifiedPushArchive addMavenDependencies(String... deps);
@@ -52,7 +54,4 @@ public abstract class UnifiedPushArchive extends WebContainerBase<UnifiedPushArc
 
     public abstract UnifiedPushArchive withApi();
 
-    public abstract UnifiedPushArchive withMessaging();
-
-    public abstract UnifiedPushArchive withMessageDrivenBeans();
 }

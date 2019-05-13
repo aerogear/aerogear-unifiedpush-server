@@ -16,15 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
-import org.jboss.aerogear.unifiedpush.jpa.dao.impl.*;
-import org.jboss.aerogear.unifiedpush.service.impl.*;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
-import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.representations.AccessToken;
@@ -36,7 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import static org.mockito.Mockito.when;
 
-@RunWith(Arquillian.class)
 public abstract class AbstractBaseServiceTest {
 
     @Mock
@@ -62,7 +55,7 @@ public abstract class AbstractBaseServiceTest {
     /**
      * Basic setup stuff, needed for all the UPS related service classes
      */
-    @Before
+    //@Before
     public void setUp() {
         // Keycloak test environment
         AccessToken token = new AccessToken();
@@ -85,26 +78,5 @@ public abstract class AbstractBaseServiceTest {
      * setup is done inside here!
      */
     protected abstract void specificSetup();
-
-    @Deployment
-    public static WebArchive archive() {
-        return UnifiedPushArchive.forTestClass(AbstractBaseServiceTest.class)
-                .withMessaging()
-                .addClasses(SearchManager.class, PushApplicationService.class)
-                .addClasses(PushSearchByDeveloperServiceImpl.class)
-                .addClasses(ClientInstallationServiceImpl.class)
-                .addClasses(JPAFlatPushMessageInformationDao.class)
-                .addClasses(JPAInstallationDao.class)
-                .addClasses(GenericVariantServiceImpl.class)
-                .addClasses(JPAVariantDao.class)
-                .addClasses(JPACategoryDao.class)
-                .addClasses(PushSearchByDeveloperServiceImpl.class)
-                .addClasses(PushApplicationServiceImpl.class)
-                .addClasses(JPAPushApplicationDao.class)
-                .addClasses(PushSearchServiceImpl.class)
-                .addClasses(SearchManager.class)
-                .addClasses(PushMessageMetricsService.class)
-                .as(WebArchive.class);
-    }
 
 }
