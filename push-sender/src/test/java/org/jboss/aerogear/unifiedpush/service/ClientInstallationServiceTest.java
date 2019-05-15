@@ -24,16 +24,19 @@ import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
 import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.impl.ClientInstallationServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.util.FCMTopicManager;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.OverProtocol;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
+import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.json.simple.parser.ParseException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +49,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
 
 
     @Deployment
-    @OverProtocol("Servlet 3.0")
     public static WebArchive archive() {
         return UnifiedPushArchive.forTestClass(ClientInstallationServiceTest.class)
                 .withUtils()
@@ -59,6 +61,9 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
                 .withUtils()
                 .addClass(AbstractBaseServiceTest.class)
                 .addClass(EntityManagerProducer.class)
+                .addPackage(FCMTopicManager.class.getPackage())
+                .addPackage(ParseException.class.getPackage())
+                .addPackage(ClientInstallationServiceImpl.class.getPackage())
                 //I think arquillian is drunk
                 .addMavenDependencies("org.assertj:assertj-core")
                 .forServiceTests()
@@ -365,7 +370,7 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
     }
 
     @Test
-    @Transactional
+    @Transactional(TransactionMode.COMMIT)
     public void updateDeviceByRemovingCategory() {
 
         Installation device = new Installation();

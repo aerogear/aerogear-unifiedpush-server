@@ -47,27 +47,8 @@ import static org.mockito.Mockito.when;
 public abstract class AbstractBaseServiceTest {
 
     @Inject
-    private PushApplicationDao pushApplicationDao;
-
-    @Inject
-    @LoggedIn
-    private Instance<String> loginName;
-
-    @Inject
     protected EntityManager entityManager;
 
-
-    @Inject
-    private JPACategoryDao categoryDao;
-
-    @Inject
-    private InstallationDao installationDao;
-
-    @Inject
-    private JPAInstallationDao jpaInstallationDao;
-
-    @Inject
-    private JPAVariantDao variantDao;
 
     @Mock
     protected HttpServletRequest httpServletRequest;
