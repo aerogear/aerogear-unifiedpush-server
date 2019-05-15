@@ -123,6 +123,7 @@
             <scope>provided</scope>
         </dependency>
 
+
     </dependencies>
 
     <profiles>
@@ -148,6 +149,7 @@
             </build>
 
             <dependencies>
+
                 <dependency>
                     <groupId>org.jboss.shrinkwrap</groupId>
                     <artifactId>shrinkwrap-api</artifactId>

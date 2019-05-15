@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation" table="flat_push_message_info">
+        <id name="id" type="java.lang.String">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <property name="pushApplicationId" type="java.lang.String" index="push_application_id_idx">
+            <column name="push_application_id" />
+        </property>
+        <property name="rawJsonMessage" type="java.lang.String">
+            <column name="raw_json_message" length="4500"/>
+        </property>
+        <property name="ipAddress" type="java.lang.String">
+            <column name="ip_address" />
+        </property>
+        <property name="clientIdentifier" type="java.lang.String">
+            <column name="client_identifier" />
+        </property>
+        <property name="submitDate" type="java.util.Date" index="submit_date_idx">
+            <column name="submit_date" />
+        </property>
+        <property name="appOpenCounter" type="long" index="app_open_counter_idx">
+            <column name="app_open_counter" />
+        </property>
+        <property name="firstOpenDate" type="java.util.Date">
+            <column name="first_open_date" />
+        </property>
+        <property name="lastOpenDate" type="java.util.Date">
+            <column name="last_open_date" />
+        </property>
+        <set name="errors" table="variant_error_status" inverse="true" lazy="false" cascade="all">
+            <key>
+                <column name="push_job_id" not-null="true" />
+            </key>
+            <one-to-many class="org.jboss.aerogear.unifiedpush.api.VariantErrorStatus" />
+        </set>
+    </class>
+</hibernate-mapping>

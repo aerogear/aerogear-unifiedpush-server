@@ -16,21 +16,58 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
-import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
+import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
+import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPACategoryDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
+import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
+import org.junit.Before;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.representations.AccessToken;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.NotSupportedException;
+import javax.transaction.SystemException;
 
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractBaseServiceTest {
+
+    @Inject
+    private PushApplicationDao pushApplicationDao;
+
+    @Inject
+    @LoggedIn
+    private Instance<String> loginName;
+
+    @Inject
+    protected EntityManager entityManager;
+
+
+    @Inject
+    private JPACategoryDao categoryDao;
+
+    @Inject
+    private InstallationDao installationDao;
+
+    @Inject
+    private JPAInstallationDao jpaInstallationDao;
+
+    @Inject
+    private JPAVariantDao variantDao;
 
     @Mock
     protected HttpServletRequest httpServletRequest;
@@ -45,7 +82,8 @@ public abstract class AbstractBaseServiceTest {
     protected SearchManager searchManager;
 
     @Inject
-    protected PushApplicationServiceImpl pushApplicationService;
+    protected PushApplicationService pushApplicationService;
+
 
     @Inject
     protected PushSearchByDeveloperServiceImpl searchApplicationService;
@@ -55,8 +93,8 @@ public abstract class AbstractBaseServiceTest {
     /**
      * Basic setup stuff, needed for all the UPS related service classes
      */
-    //@Before
-    public void setUp() {
+    @Before
+    public void setUp() throws SystemException, NotSupportedException {
         // Keycloak test environment
         AccessToken token = new AccessToken();
         MockitoAnnotations.initMocks(this);
@@ -68,15 +106,27 @@ public abstract class AbstractBaseServiceTest {
 
         // glue it to serach mgr
         searchManager.setHttpServletRequest(httpServletRequest);
+        entityManager.getTransaction().begin();
 
         // more to setup ?
         specificSetup();
     }
+
+    @After
+    public void tearDown() {
+
+        entityManager.getTransaction().commit();
+    }
+
+
 
     /**
      * Enforced to override to make sure test-case specific
      * setup is done inside here!
      */
     protected abstract void specificSetup();
+
+
+
 
 }
