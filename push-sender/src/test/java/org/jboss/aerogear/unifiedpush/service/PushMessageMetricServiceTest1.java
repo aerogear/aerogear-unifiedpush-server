@@ -27,10 +27,12 @@ import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -38,7 +40,8 @@ import static org.assertj.core.api.Assertions.tuple;
 @RunWith(Arquillian.class)
 public class PushMessageMetricServiceTest1 extends AbstractBaseServiceTest {
 
-
+    @Inject
+    protected EntityManager entityManager;
 
     @Deployment
     public static WebArchive archive() {
@@ -85,10 +88,14 @@ public class PushMessageMetricServiceTest1 extends AbstractBaseServiceTest {
          v.setName("Android test variant");
          v.setType(VariantType.ANDROID);
          v.setGoogleKey("12345678");
+         entityManager.getTransaction().begin();
          variantDao.create(v);
-
     }
 
+    @After
+    public void rollback() {
+        entityManager.getTransaction().rollback();
+    }
 
     @Test
     public void errorCounter() {

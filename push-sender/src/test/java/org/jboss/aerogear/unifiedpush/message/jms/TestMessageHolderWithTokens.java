@@ -57,7 +57,7 @@ public class TestMessageHolderWithTokens {
     private FlatPushMessageInformation information;
     private Variant variant;
     private Collection<String> deviceTokens;
-    private static CountDownLatch delivered;
+    private static CountDownLatch delivered = new CountDownLatch(5);;
 
     @Inject @DispatchToQueue
     private Event<MessageHolderWithTokens> event;
@@ -67,7 +67,7 @@ public class TestMessageHolderWithTokens {
         information = new FlatPushMessageInformation();
         message = new UnifiedPushMessage();
         deviceTokens = new ArrayList<>();
-        delivered = new CountDownLatch(5);
+
     }
 
     @Test

@@ -1,0 +1,9 @@
+<jboss-deployment-structure>
+    <deployment>
+        <dependencies>
+            <module name="org.jboss.resteasy.resteasy-jackson2-provider"  services="import" />
+            <module name="org.jboss.xnio"/>
+        </dependencies>
+    </deployment>
+</jboss-deployment-structure>
+

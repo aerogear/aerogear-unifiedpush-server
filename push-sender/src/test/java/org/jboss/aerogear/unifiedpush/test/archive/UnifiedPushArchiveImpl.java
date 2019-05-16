@@ -39,7 +39,7 @@ import java.io.File;
 public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
 
     private PomEquippedResolveStage resolver;
-    private static final String WEB_RESOURCE_PATH = "../servers/keycloak/src/main/webapp/WEB-INF/";
+    private static final String WEB_RESOURCE_PATH = "src/test/resources/WEB-INF/";
 
     public UnifiedPushArchiveImpl(Archive<?> delegate) {
         super(delegate);
@@ -55,6 +55,7 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
 
     @Override
     public UnifiedPushArchive withMessaging() {
+
         return withApi()
                 .withUtils()
                 .withMessageModel()
@@ -63,6 +64,10 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
                 .addPackage(org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent.class.getPackage())
                 .addPackage(org.jboss.aerogear.unifiedpush.message.holder.AbstractMessageHolder.class.getPackage())
                 .addPackage(org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException.class.getPackage())
+//                .addPackage(APNSClientConsumer.class.getPackage())
+//                .addPackage(SimpleApnsClientCache.class.getPackage())
+//                .addPackage(GenericFutureListener.class.getPackage())
+//                .addMavenDependencies("com.turo:pushy")
                 .addClasses(AbstractJMSMessageProducer.class, AbstractJMSMessageListener.class)
                 .addClasses(AbstractJMSTest.class, JmsClient.class)
                 .addClasses(DispatchToQueue.class, Dequeue.class);

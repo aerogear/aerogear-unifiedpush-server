@@ -45,5 +45,7 @@ batch
 
 
 /subsystem=messaging-activemq/server=default/jms-topic=MetricsProcessingStartedTopic:remove()
+/subsystem=messaging-activemq/server=default/jms-topic=APNSClient:remove()
+
 
 run-batch

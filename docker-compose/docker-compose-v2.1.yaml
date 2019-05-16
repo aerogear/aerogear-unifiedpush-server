@@ -1,6 +1,28 @@
 version: '2.1'
 
 services:
+  unifiedpushserver_2:
+   image: aerogear/unifiedpush-wildfly-plain:2.2.2-SNAPSHOT
+   volumes:
+      - ./helper:/ups-helper:z
+   entrypoint: "/ups-helper/exportKeycloakHost.sh"
+   depends_on:
+      unifiedpushDB:
+        condition: service_healthy
+   environment:
+       POSTGRES_SERVICE_HOST: ${POSTGRES_SERVICE_HOST}
+       POSTGRES_USER: ${POSTGRES_USER}
+       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+       POSTGRES_SERVICE_PORT: ${POSTGRES_SERVICE_PORT}
+       POSTGRES_DATABASE: ${POSTGRES_DATABASE}
+       KEYCLOAK_SERVICE_HOST: ${KEYCLOAK_SERVICE_HOST}
+       KEYCLOAK_SERVICE_PORT: ${KEYCLOAK_SERVICE_PORT}
+   links:
+     - unifiedpushDB:unifiedpush
+     - artemis:artemis
+     - keycloakServer:keycloak
+   ports:
+     - 9998:8080      
   unifiedpushserver:
     image: aerogear/unifiedpush-wildfly-plain:2.2.2-SNAPSHOT
     volumes:

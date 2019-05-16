@@ -223,8 +223,9 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
 
             // update performed, we now need to invalidate existing connection w/ APNs:
             logger.trace("Updating iOS Variant '{}'", iOSVariant.getVariantID());
-            producer.changeAPNClient(iOSVariant);
             variantService.updateVariant(iOSVariant);
+            producer.changeAPNClient(iOSVariant);
+
             return Response.ok(iOSVariant).build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();

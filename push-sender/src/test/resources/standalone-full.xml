@@ -470,6 +470,7 @@
                 <jms-queue name="AllBatchesLoadedQueue" entries="queue/AllBatchesLoadedQueue"/>
                 <jms-queue name="FreeServiceSlotQueue" entries="queue/FreeServiceSlotQueue"/>
                 <jms-topic name="MetricsProcessingStartedTopic" entries="topic/MetricsProcessingStartedTopic"/>
+                <jms-topic name="APNSClient" entries="topic/APNSClient"/>
                 <connection-factory name="InVmConnectionFactory" entries="java:/ConnectionFactory" connectors="in-vm"/>
                 <connection-factory name="RemoteConnectionFactory" entries="java:jboss/exported/jms/RemoteConnectionFactory" connectors="http-connector"/>
                 <pooled-connection-factory name="activemq-ra" entries="java:/jms/remoteXA java:/JmsXA java:jboss/DefaultJMSConnectionFactory" connectors="in-vm" transaction="xa"/>
