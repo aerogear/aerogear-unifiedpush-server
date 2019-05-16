@@ -33,7 +33,6 @@ import org.junit.runner.RunWith;
 import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(Arquillian.class)
 public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {

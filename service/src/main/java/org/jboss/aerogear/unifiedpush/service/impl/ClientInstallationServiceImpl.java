@@ -30,12 +30,14 @@ import org.jboss.aerogear.unifiedpush.service.util.FCMTopicManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
@@ -59,7 +61,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
     @Override
     @Asynchronous
-    public void addInstallation(Variant variant, Installation entity) {
+    public Future<Void> addInstallation(Variant variant, Installation entity) {
 
         // does it already exist ?
         Installation installation = this.findInstallationForVariantByDeviceToken(variant.getVariantID(), entity.getDeviceToken());
@@ -85,15 +87,16 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
                 this.updateInstallation(installation, entity);
             }
         }
+        return new AsyncResult<>(null);
     }
 
     @Override
     @Asynchronous
-    public void addInstallations(Variant variant, List<Installation> installations) {
+    public Future<Void>  addInstallations(Variant variant, List<Installation> installations) {
 
         // don't bother
         if (installations == null || installations.isEmpty()) {
-            return;
+            return new AsyncResult<>(null);
         }
 
         Set<String> existingTokens = installationDao.findAllDeviceTokenForVariantID(variant.getVariantID());
@@ -128,14 +131,16 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         }
         // clear out:
         installationDao.flushAndClear();
+        return new AsyncResult<>(null);
     }
 
     @Override
-    public void removeInstallations(
+    public void  removeInstallations(
             List<Installation> installations) {
 
         // uh..., fancy method reference :)
         installations.forEach(this::removeInstallation);
+
     }
 
     @Override
@@ -173,23 +178,25 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
     }
 
     @Override
-    public void removeInstallation(Installation installation) {
+    public void  removeInstallation(Installation installation) {
         installationDao.delete(installation);
     }
 
     @Override
     @Asynchronous
-    public void removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens) {
+    public Future<Void>  removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens) {
         // collect inactive installations for the given variant:
         List<Installation> inactiveInstallations = installationDao.findInstallationsForVariantByDeviceTokens(variantID, deviceTokens);
         // get rid of them
         this.removeInstallations(inactiveInstallations);
+        return new AsyncResult<>(null);
     }
 
     @Override
     @Asynchronous
-    public void removeInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
+    public Future<Void>  removeInstallationForVariantByDeviceToken(String variantID, String deviceToken) {
         removeInstallation(findInstallationForVariantByDeviceToken(variantID, deviceToken));
+        return new AsyncResult<>(null);
     }
 
     @Override
@@ -199,7 +206,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
 
     @Override
     @Asynchronous
-    public void unsubscribeOldTopics(Installation installation) {
+    public Future<Void>  unsubscribeOldTopics(Installation installation) {
         FCMTopicManager topicManager = new FCMTopicManager((AndroidVariant) installation.getVariant());
         Set<String> oldCategories = topicManager.getSubscribedCategories(installation);
         // Remove current categories from the set of old ones
@@ -211,6 +218,7 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         for (String categoryName : oldCategories) {
             topicManager.unsubscribe(installation, categoryName);
         }
+        return new AsyncResult<>(null);
     }
 
     // =====================================================================

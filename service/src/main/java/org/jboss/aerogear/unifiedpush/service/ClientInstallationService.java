@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.dao.ResultsStream;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 /**
  * Service class used by the Server to work with Installations
@@ -35,7 +36,7 @@ public interface ClientInstallationService {
      * @param variant the variant to store on
      * @param installation the installation
      */
-    void addInstallation(Variant variant, Installation installation);
+    Future<Void> addInstallation(Variant variant, Installation installation);
 
     /**
      * Add new Installations objects, for importing devices on the database.
@@ -43,7 +44,7 @@ public interface ClientInstallationService {
      * @param variant the variant to store on
      * @param installations list of installations
      */
-    void addInstallations(Variant variant, List<Installation> installations);
+    Future<Void> addInstallations(Variant variant, List<Installation> installations);
 
     /**
      * Performs an update/merge on the given entity.
@@ -89,7 +90,7 @@ public interface ClientInstallationService {
      * @param variantID id of the variant
      * @param deviceTokens list of tokens
      */
-    void removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens);
+    Future<Void>  removeInstallationsForVariantByDeviceTokens(String variantID, Set<String> deviceTokens);
 
     /**
      * Used to remove single device token from UPS. Used for error handling of specific tokens
@@ -97,7 +98,7 @@ public interface ClientInstallationService {
      * @param variantID id of the variant
      * @param deviceToken one tokens
      */
-    void removeInstallationForVariantByDeviceToken(String variantID, String deviceToken);
+    Future<Void>  removeInstallationForVariantByDeviceToken(String variantID, String deviceToken);
 
     /**
      * Used for "Device Registration":
@@ -117,7 +118,7 @@ public interface ClientInstallationService {
      *
      * @param installation Installation object containing correct variant property of AndroidVariant class
      */
-    void unsubscribeOldTopics(Installation installation);
+    Future<Void>  unsubscribeOldTopics(Installation installation);
 
     // ===================   SENDER API   ===================
 

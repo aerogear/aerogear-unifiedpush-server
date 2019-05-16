@@ -1,8 +1,7 @@
 package org.jboss.aerogear.unifiedpush.service;
 
-import javax.annotation.PreDestroy;
 import javax.ejb.Stateful;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -12,7 +11,7 @@ import java.io.Serializable;
 /**
  * Static class to have OpenEJB produce/lookup a test EntityManager.
  */
-@SessionScoped
+@ApplicationScoped
 @Stateful
 public class EntityManagerProducer implements Serializable {
 
@@ -25,14 +24,12 @@ public class EntityManagerProducer implements Serializable {
 
     @Produces
     public EntityManager produceEm() {
-
         return entityManager;
     }
 
-    @PreDestroy
-    public void closeEntityManager() {
-        if (entityManager.isOpen()) {
-            entityManager.close();
-        }
+    public static void rollback() {
+        entityManager.getTransaction().rollback();
+
+        entityManager.getTransaction().begin();
     }
 }

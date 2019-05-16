@@ -20,7 +20,7 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              version="2.0"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-    <persistence-unit name="UnifiedPush" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="UnifiedPush" transaction-type="JTA">
         <jta-data-source>java:jboss/datasources/UnifiedPushDS</jta-data-source>
 
         <mapping-file>META-INF/orm.xml</mapping-file>
@@ -35,8 +35,8 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect" />
             <property name="hibernate.connection.username" value="sa"/>
             <property name="hibernate.hbm2ddl.auto" value="create"/>
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.format_sql" value="false"/>
         </properties>
     </persistence-unit>
 </persistence>
