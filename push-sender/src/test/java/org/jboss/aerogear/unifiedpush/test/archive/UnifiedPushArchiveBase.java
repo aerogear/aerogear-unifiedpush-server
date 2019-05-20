@@ -62,7 +62,7 @@ public abstract class UnifiedPushArchiveBase extends UnifiedPushArchive {
     private static final ArchivePath PATH_MANIFEST = ArchivePaths.create("META-INF");
 
     /**
-     * Path to web org.jboss.aerogear.unifiedpush.test.archive service providers.
+     * Path to web org.archive service providers.
      */
     private static final ArchivePath PATH_SERVICE_PROVIDERS = ArchivePaths.create(PATH_CLASSES, "META-INF/services");
 

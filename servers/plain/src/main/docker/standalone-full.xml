@@ -485,7 +485,8 @@
                 <connection-factory name="RemoteConnectionFactory" entries="java:jboss/exported/jms/RemoteConnectionFactory" connectors="http-connector"/>
                 <pooled-connection-factory name="activemq-ra" entries="java:/JmsXA" connectors="in-vm" transaction="xa"/>
                 <remote-connector name="remote-artemis" socket-binding="remote-artemis"/>
-                <pooled-connection-factory name="remote-artemis-xa" entries="java:/jms/remoteXA java:jboss/DefaultJMSConnectionFactory" connectors="remote-artemis" transaction="xa" user="artemis" password="simetraehcapa"/>
+                <pooled-connection-factory name="remote-artemis-xa" entries="java:/jms/remoteXA java:jboss/DefaultJMSConnectionFactory"
+                                           connectors="remote-artemis" transaction="xa" user="artemis" password="simetraehcapa"/>
                 <pooled-connection-factory name="remote-artemis" entries="java:/ConnectionFactory" connectors="remote-artemis" user="artemis" password="simetraehcapa"/>
             </server>
         </subsystem>

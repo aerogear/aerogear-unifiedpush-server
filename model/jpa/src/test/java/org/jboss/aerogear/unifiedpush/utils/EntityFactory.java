@@ -28,7 +28,7 @@ public class EntityFactory {
 
     @Produces
     @ApplicationScoped
-    private EntityManager entityManage() {
+    private EntityManager entityManager() {
         return Persistence.createEntityManagerFactory("UnifiedPush").createEntityManager();
     }
 }

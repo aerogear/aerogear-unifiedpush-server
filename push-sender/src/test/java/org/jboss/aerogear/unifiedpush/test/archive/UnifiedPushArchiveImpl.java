@@ -34,7 +34,7 @@ import org.keycloak.KeycloakSecurityContext;
 import java.io.File;
 
 /**
- * An org.jboss.aerogear.unifiedpush.test.archive for specifying Arquillian micro-deployments with selected parts of UPS
+ * An archive for specifying Arquillian micro-deployments with selected parts of UPS
  */
 public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
 
@@ -64,10 +64,6 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
                 .addPackage(org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent.class.getPackage())
                 .addPackage(org.jboss.aerogear.unifiedpush.message.holder.AbstractMessageHolder.class.getPackage())
                 .addPackage(org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException.class.getPackage())
-//                .addPackage(APNSClientConsumer.class.getPackage())
-//                .addPackage(SimpleApnsClientCache.class.getPackage())
-//                .addPackage(GenericFutureListener.class.getPackage())
-//                .addMavenDependencies("com.turo:pushy")
                 .addClasses(AbstractJMSMessageProducer.class, AbstractJMSMessageListener.class)
                 .addClasses(AbstractJMSTest.class, JmsClient.class)
                 .addClasses(DispatchToQueue.class, Dequeue.class);

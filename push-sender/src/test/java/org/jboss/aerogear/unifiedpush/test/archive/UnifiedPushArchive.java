@@ -26,7 +26,7 @@ import org.jboss.shrinkwrap.api.container.WebContainer;
 import org.jboss.shrinkwrap.impl.base.container.WebContainerBase;
 
 /**
- * An org.jboss.aerogear.unifiedpush.test.archive for specifying Arquillian micro-deployments with selected parts of UPS
+ * An archive for specifying Arquillian micro-deployments with selected parts of UPS
  */
 public abstract class UnifiedPushArchive extends WebContainerBase<UnifiedPushArchive> implements Archive<UnifiedPushArchive>, LibraryContainer<UnifiedPushArchive>,
         WebContainer<UnifiedPushArchive>, ResourceContainer<UnifiedPushArchive>, ServiceProviderContainer<UnifiedPushArchive> {
