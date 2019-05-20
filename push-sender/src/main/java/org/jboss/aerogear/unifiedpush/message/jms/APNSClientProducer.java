@@ -9,7 +9,7 @@ public class APNSClientProducer extends AbstractJMSMessageProducer {
 
     private String apnsClient = "topic/APNSClient";
 
-    public void changeAPNClient(iOSVariant iOSVariant) {
+    public void changeAPNClient(final iOSVariant iOSVariant) {
         super.sendTransacted(apnsClient, iOSVariant, true);
     }
 

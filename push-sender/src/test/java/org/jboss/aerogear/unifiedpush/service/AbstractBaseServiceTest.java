@@ -33,10 +33,6 @@ import javax.transaction.SystemException;
 import static org.mockito.Mockito.when;
 public abstract class AbstractBaseServiceTest {
 
-//    @Inject
-//    protected EntityManager entityManager;
-
-
     @Mock
     protected HttpServletRequest httpServletRequest;
 
@@ -74,7 +70,6 @@ public abstract class AbstractBaseServiceTest {
 
         // glue it to serach mgr
         searchManager.setHttpServletRequest(httpServletRequest);
-        //entityManager.getTransaction().begin();
 
         // more to setup ?
         specificSetup();

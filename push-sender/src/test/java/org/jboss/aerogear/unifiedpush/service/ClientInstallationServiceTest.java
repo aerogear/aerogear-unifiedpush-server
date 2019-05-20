@@ -63,7 +63,6 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
                 .addPackage(ParseException.class.getPackage())
                 .addPackage(ClientInstallationServiceImpl.class.getPackage())
                 .addAsResource("cert/certificate.p12","cert/certificate.p12")
-                //I think arquillian is drunk
                 .addMavenDependencies("org.assertj:assertj-core")
                 .forServiceTests()
                 .as(WebArchive.class);

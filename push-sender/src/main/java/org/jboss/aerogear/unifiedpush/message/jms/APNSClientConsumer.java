@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
+/**
+ * This class consumes events relating to changes to APNS Variants.
+ */
 public class APNSClientConsumer extends AbstractJMSMessageListener<iOSVariant> {
 
     @Inject
@@ -16,7 +19,7 @@ public class APNSClientConsumer extends AbstractJMSMessageListener<iOSVariant> {
     private static final Logger logger = LoggerFactory.getLogger(APNSClientConsumer.class);
 
     @Override
-    public void onMessage(iOSVariant iOSVariant) {
+    public void onMessage(final iOSVariant iOSVariant) {
         logger.info("Resetting iOS with new cert");
         apnsClientCache.disconnectOnChange(iOSVariant);
     }

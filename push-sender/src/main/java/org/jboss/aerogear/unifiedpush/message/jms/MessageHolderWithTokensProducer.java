@@ -34,14 +34,14 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
 
     private static final Logger logger = LoggerFactory.getLogger(MessageHolderWithTokensProducer.class);
 
+    private static final String apnsTokenBatchQueue = "APNsTokenBatchQueue";
+
+    private static final String gcmTokenBatchQueue = "GCMTokenBatchQueue";
+
+    private static final String wnsTokenBatchQueue = "WNSTokenBatchQueue";
+
     @Inject
     private JmsClient jmsClient;
-
-    private String apnsTokenBatchQueue = "APNsTokenBatchQueue";
-
-    private String gcmTokenBatchQueue = "GCMTokenBatchQueue";
-
-    private String wnsTokenBatchQueue = "WNSTokenBatchQueue";
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithTokens msg) {
         final VariantType variantType = msg.getVariant().getType();

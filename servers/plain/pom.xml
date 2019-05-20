@@ -84,7 +84,7 @@
                 <extensions>false</extensions>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <org.jboss.aerogear.unifiedpush.test.archive>
+                    <archive>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
@@ -95,7 +95,7 @@
                             <SCM-URL>${scm.url}</SCM-URL>
                             <SCM-Tag>${scm.tag}</SCM-Tag>
                         </manifestEntries>
-                    </org.jboss.aerogear.unifiedpush.test.archive>
+                    </archive>
                 </configuration>
             </plugin>
 

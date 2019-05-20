@@ -27,17 +27,21 @@ import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(Arquillian.class)
 public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
 
-
+    @Inject
+    EntityManager entityManager;
 
     @Deployment
     public static WebArchive archive() {
@@ -67,8 +71,15 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
 
     private FlatPushMessageInformation pushMessageInformation;
 
+    @After
+    public void rollback() {
+        entityManager.getTransaction().rollback();
+    }
+
     @Override
     protected void specificSetup() {
+        entityManager.getTransaction().begin();
+
         pushMessageInformation =
                 pushMessageMetricsService.storeNewRequestFrom(
                         "123",
@@ -99,5 +110,18 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
         assertThat(updatedPushInformation1.getAppOpenCounter()).isEqualTo(2);
     }
 
+    @Test
+    public void errorCounter() {
+        pushMessageMetricsService.appendError(pushMessageInformation, variantDao.findByVariantID("321"), "Really big failure");
+        pushMessageMetricsService.updatePushMessageInformation(pushMessageInformation);
+
+        FlatPushMessageInformation updatedPushInformation = pushMessageMetricsService.getPushMessageInformation(pushMessageInformation.getId());
+        assertThat(updatedPushInformation.getErrors().size()).isEqualTo(1);
+        assertThat(updatedPushInformation.getErrors())
+                .extracting("pushMessageVariantId", "variantID", "errorReason")
+                .contains(
+                        tuple(updatedPushInformation.getId() + ":321", "321", "Really big failure" )
+                );
+    }
 
 }
