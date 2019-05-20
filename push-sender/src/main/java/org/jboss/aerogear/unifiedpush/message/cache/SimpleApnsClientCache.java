@@ -23,11 +23,13 @@ import net.jodah.expiringmap.ExpirationListener;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
+import javax.enterprise.event.Observes;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
@@ -97,6 +99,11 @@ public class SimpleApnsClientCache {
         if (client != null) {
             tearDownApnsHttp2Connection(client);
         }
+    }
+
+    public void disconnectOnChangeEvent(@Observes final iOSVariantUpdateEvent iOSVariantUpdateEvent) {
+        final iOSVariant variant = iOSVariantUpdateEvent.getiOSVariant();
+        disconnectOnChange(variant);
     }
 
     private String extractConnectionKey(final iOSVariant iOSVariant) {
