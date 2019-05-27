@@ -142,6 +142,11 @@ public class AliasServiceImpl implements AliasService {
 		return aliasDao.findOne(pushApplicationId, userId);
 	}
 
+	@Override
+	public Map<String, User.AliasType> findAll(UUID pushApplicationId, UUID userId) {
+		return aliasDao.findAll(pushApplicationId, userId);
+	}
+
 	/**
 	 * Test if user exists / registered to KC.
 	 *

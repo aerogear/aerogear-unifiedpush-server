@@ -1,6 +1,7 @@
 package org.jboss.aerogear.unifiedpush.cassandra.dao;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -42,6 +43,8 @@ public interface AliasDao {
 	Stream<Row> findUserIds(UUID pushApplicationId);
 
 	Alias findOne(UUID pushApplicationId, UUID userId);
+
+	Map<String, User.AliasType> findAll(UUID pushApplicationId, UUID userId);
 
 	Stream<UserKey> findAllUserTenantRelations();
 }

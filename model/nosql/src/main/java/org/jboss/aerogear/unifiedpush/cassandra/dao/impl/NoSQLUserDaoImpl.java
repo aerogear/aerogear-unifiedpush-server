@@ -3,7 +3,11 @@ package org.jboss.aerogear.unifiedpush.cassandra.dao.impl;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -129,6 +133,7 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		return null;
 	}
 
+	@Override
 	public Alias findOne(UUID pushApplicationId, UUID userId) {
 		// Get all possible aliases for a userId
 		List<User> users = getUsers(pushApplicationId, userId);
@@ -149,6 +154,33 @@ class NoSQLUserDaoImpl extends CassandraBaseDao<User, UserKey> implements AliasD
 		});
 
 		return alias;
+	}
+
+	@Override
+	public Map<String, User.AliasType> findAll(UUID pushApplicationId, UUID userId) {
+		// Get all possible aliases for a userId
+		Collection<User> users = getUsers(pushApplicationId, userId);
+		if ((users == null) || (users.size() == 0)) {
+			return Collections.emptyMap();
+		}
+
+		Map<String, User.AliasType> aliases = new HashMap<>(users.size());
+		for (User u : users) {
+			String aliasVal = u.getAlias();
+			if (StringUtils.isBlank(aliasVal)) {
+				continue;
+			}
+
+			int typeVal = u.getType();
+			// We ignore User.AliasType.EMAIL_LOWER on purpose
+			if (typeVal == User.AliasType.EMAIL.ordinal()) {
+				aliases.put(aliasVal, User.AliasType.EMAIL);
+			} else if (typeVal == User.AliasType.OTHER.ordinal()) {
+				aliases.put(aliasVal, User.AliasType.OTHER);
+			}
+		}
+
+		return aliases;
 	}
 
 	private List<User> getUsers(UUID pushApplicationId, UUID userId) {

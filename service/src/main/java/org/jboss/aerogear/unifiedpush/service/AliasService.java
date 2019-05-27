@@ -17,11 +17,13 @@
 package org.jboss.aerogear.unifiedpush.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.cassandra.dao.model.User;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.UserKey;
 import org.jboss.aerogear.unifiedpush.service.impl.AliasServiceImpl.Associated;
 import org.jboss.aerogear.unifiedpush.service.impl.UserTenantInfo;
@@ -63,6 +65,8 @@ public interface AliasService {
 	Alias find(String pushApplicationId, String alias);
 
 	Alias find(UUID pushApplicationId, UUID userId);
+
+	Map<String, User.AliasType> findAll(UUID pushApplicationId, UUID userId);
 
 	/**
 	 * Removes all entries matching provided alias
