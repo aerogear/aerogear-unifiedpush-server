@@ -321,6 +321,28 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 		}
 	}
 
+	@GET
+	@Path("/all")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.Alias>")
+	public Response listAll(@Context HttpServletRequest request) {
+		PushApplication pushApplication =
+			PushAppAuthHelper.loadPushApplicationWhenAuthorized(request, pushAppService);
+		if (pushApplication == null) {
+			return Response.status(Status.UNAUTHORIZED)
+				.header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
+				.entity("Unauthorized Request").build();
+		}
+
+		try {
+			List<Alias> aliasList = aliasService.findAll(UUID.fromString(pushApplication.getPushApplicationID()));
+			return Response.ok((aliasList == null) ? Collections.emptyList() : aliasList).build();
+		} catch (Exception e) {
+			logger.error("Cannot list aliases, {}", e);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
 	/**
 	 * RESTful API for register aliases of the push application. The Endpoint is
 	 * protected using <code>HTTP Basic</code> (credentials
@@ -381,8 +403,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 		}
 
 		try {
-			List<Alias> aliaesList = aliasService.addAll(pushApplication, aliases, oauth2);
-			return Response.ok(aliaesList).build();
+			List<Alias> aliasList = aliasService.addAll(pushApplication, aliases, oauth2);
+			return Response.ok(aliasList).build();
 		} catch (ServiceConstraintViolationException e) {
 			logger.warn("ConstraintViolationException, alias {} already exists in db.", e.getEntityId());
 			return Response.status(Status.INTERNAL_SERVER_ERROR)

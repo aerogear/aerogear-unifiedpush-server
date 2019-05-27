@@ -138,6 +138,11 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	@Override
+	public List<Alias> findAll(UUID pushApplicationId) {
+		return aliasDao.findAll(pushApplicationId);
+	}
+
+	@Override
 	public Alias find(UUID pushApplicationId, UUID userId) {
 		return aliasDao.findOne(pushApplicationId, userId);
 	}

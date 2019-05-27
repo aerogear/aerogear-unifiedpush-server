@@ -62,6 +62,8 @@ public interface AliasService {
 
 	Associated associated(String fqdn, String alias);
 
+	List<Alias> findAll(UUID pushApplicationId);
+
 	Alias find(String pushApplicationId, String alias);
 
 	Alias find(UUID pushApplicationId, UUID userId);
