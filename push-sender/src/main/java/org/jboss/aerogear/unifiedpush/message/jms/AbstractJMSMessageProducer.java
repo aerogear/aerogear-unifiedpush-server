@@ -103,13 +103,13 @@ public abstract class AbstractJMSMessageProducer {
                 connection = connectionFactory.createConnection();
             }
             Session session = connection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
-            MessageProducer messageProducer;
+            final MessageProducer messageProducer;
             if (useTopic) {
                 messageProducer = session.createProducer(session.createTopic(destination));
             } else {
                 messageProducer = session.createProducer(session.createQueue(destination));
             }
-            logger.debug("Destination is " + destination.toString());
+            logger.debug("Destination is {}", destination);
             connection.start();
             ObjectMessage objectMessage = session.createObjectMessage(message);
             if (propertyName != null) {

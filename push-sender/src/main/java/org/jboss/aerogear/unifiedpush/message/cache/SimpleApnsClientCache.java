@@ -107,8 +107,7 @@ public class SimpleApnsClientCache {
     }
 
     private String extractConnectionKey(final iOSVariant iOSVariant) {
-        final StringBuilder sb = new StringBuilder()
-                .append(iOSVariant.getVariantID())
+        final StringBuilder sb = new StringBuilder(iOSVariant.getVariantID())
                 .append(iOSVariant.isProduction() ? "-prod" : "-dev");
 
         return sb.toString();

@@ -35,13 +35,13 @@ public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProduce
     private static final Logger logger = LoggerFactory.getLogger(MessageHolderWithVariantsProducer.class);
 
 
-    private static final String apnsPushMessageQueue = "APNsPushMessageQueue";
+    private static final String APNS_PUSH_MESSAGE_QUEUE = "APNsPushMessageQueue";
 
 
-    private static final String gcmPushMessageQueue = "GCMPushMessageQueue";
+    private static final String GCMPUSH_MESSAGE_QUEUE = "GCMPushMessageQueue";
 
 
-    private static final String wnsPushMessageQueue = "WNSPushMessageQueue";
+    private static final String WNSPUSH_MESSAGE_QUEUE = "WNSPushMessageQueue";
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithVariants msg) {
         logger.trace("dispatching for processing variants and trigger token querying/batching");
@@ -51,11 +51,11 @@ public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProduce
     private String selectQueue(VariantType variantType) {
         switch (variantType) {
             case ANDROID:
-                return gcmPushMessageQueue;
+                return GCMPUSH_MESSAGE_QUEUE;
             case IOS:
-                return apnsPushMessageQueue;
+                return APNS_PUSH_MESSAGE_QUEUE;
             case WINDOWS_WNS:
-                return wnsPushMessageQueue;
+                return WNSPUSH_MESSAGE_QUEUE;
             default:
                 throw new IllegalStateException("Unknown variant type queue");
         }

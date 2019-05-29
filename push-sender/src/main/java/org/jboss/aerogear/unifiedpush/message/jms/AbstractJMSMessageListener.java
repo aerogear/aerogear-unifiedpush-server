@@ -43,7 +43,7 @@ public abstract class AbstractJMSMessageListener<T> implements MessageListener {
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void onMessage(Message jmsMessage) {
-        logger.debug("message get " + jmsMessage.toString());
+        logger.debug("message get {}", jmsMessage.toString());
         try {
             if (jmsMessage instanceof ObjectMessage) {
                 Object messageObject = ((ObjectMessage) jmsMessage).getObject();

@@ -7,10 +7,10 @@ import javax.ejb.Stateless;
 @Stateless
 public class APNSClientProducer extends AbstractJMSMessageProducer {
 
-    private String apnsClient = "topic/APNSClient";
+    private static final String APNS_CLIENT = "topic/APNSClient";
 
     public void changeAPNClient(final iOSVariant iOSVariant) {
-        super.sendTransacted(apnsClient, iOSVariant, true);
+        super.sendTransacted(APNS_CLIENT, iOSVariant, true);
     }
 
 }
