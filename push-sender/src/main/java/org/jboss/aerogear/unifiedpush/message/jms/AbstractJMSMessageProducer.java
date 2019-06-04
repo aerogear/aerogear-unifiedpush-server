@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Resource;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
@@ -40,10 +39,10 @@ public abstract class AbstractJMSMessageProducer {
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    @Resource(mappedName = "java:/JmsXA")
+    @Resource(mappedName = "java:/jms/remoteXA")
     private ConnectionFactory xaConnectionFactory;
 
-    /**
+     /**
      * Sends message to the destination in non-transactional manner.
      *
      * @param destination where to send
@@ -51,8 +50,8 @@ public abstract class AbstractJMSMessageProducer {
      *
      * Since non-transacted session is used, the message is send immediately without requiring to commit enclosing transaction.
      */
-    protected void sendNonTransacted(Destination destination, Serializable message) {
-        send(destination, message, null, null, false);
+    protected void sendNonTransacted(String destination, Serializable message, boolean useTopic) {
+        send(destination, message, null, null, false, useTopic);
     }
 
     /**
@@ -63,8 +62,8 @@ public abstract class AbstractJMSMessageProducer {
      *
      * Since transacted session is used, the message won't be committed until whole enclosing transaction ends
      */
-    protected void sendTransacted(Destination destination, Serializable message) {
-        send(destination, message, null, null, true);
+    protected void sendTransacted(String destination, Serializable message, boolean useTopic) {
+        send(destination, message, null, null, true, useTopic);
     }
 
     /**
@@ -77,8 +76,8 @@ public abstract class AbstractJMSMessageProducer {
      *
      * Since non-transacted session is used, the message is send immediately without requiring to commit enclosing transaction.
      */
-    protected void sendNonTransacted(Destination destination, Serializable message, String propertyName, String propertValue) {
-        send(destination, message, propertyName, propertValue, false);
+    protected void sendNonTransacted(String destination, Serializable message, String propertyName, String propertValue, boolean useTopic) {
+        send(destination, message, propertyName, propertValue, false, useTopic);
     }
 
     /**
@@ -91,11 +90,11 @@ public abstract class AbstractJMSMessageProducer {
      *
      * Since transacted session is used, the message won't be committed until whole enclosing transaction ends.
      */
-    protected void sendTransacted(Destination destination, Serializable message, String propertyName, String propertValue) {
-        send(destination, message, propertyName, propertValue, true);
+    protected void sendTransacted(String destination, Serializable message, String propertyName, String propertValue, boolean useTopic) {
+        send(destination, message, propertyName, propertValue, true, useTopic);
     }
 
-    private void send(Destination destination, Serializable message, String propertyName, String propertValue, boolean transacted) {
+    private void send(String destination, Serializable message, String propertyName, String propertValue, boolean transacted, boolean useTopic) {
         Connection connection = null;
         try {
             if (transacted) {
@@ -104,14 +103,22 @@ public abstract class AbstractJMSMessageProducer {
                 connection = connectionFactory.createConnection();
             }
             Session session = connection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
-            MessageProducer messageProducer = session.createProducer(destination);
+            final MessageProducer messageProducer;
+            if (useTopic) {
+                messageProducer = session.createProducer(session.createTopic(destination));
+            } else {
+                messageProducer = session.createProducer(session.createQueue(destination));
+            }
+            logger.debug("Destination is {}", destination);
             connection.start();
             ObjectMessage objectMessage = session.createObjectMessage(message);
             if (propertyName != null) {
                 objectMessage.setStringProperty(propertyName, propertValue);
             }
             messageProducer.send(objectMessage);
+            logger.debug("Sending complete");
         } catch (JMSException e) {
+            logger.error("Error sending", e.getMessage(), e);
             throw new MessageDeliveryException("Failed to queue push message for further processing", e);
         } finally {
             if (connection != null) {

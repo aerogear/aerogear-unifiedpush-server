@@ -47,6 +47,7 @@ try
 
 
   /subsystem=messaging-activemq/server=default/jms-topic=MetricsProcessingStartedTopic:add(entries=[topic/MetricsProcessingStartedTopic])
+  /subsystem=messaging-activemq/server=default/jms-topic=APNSClient:add(entries=[topic/APNSClient])
 
 catch
   ## Remove all previous config and set up again
@@ -86,6 +87,7 @@ catch
   /subsystem=messaging-activemq/server=default/jms-queue=FreeServiceSlotQueue:remove
 
   /subsystem=messaging-activemq/server=default/jms-topic=MetricsProcessingStartedTopic:remove
+  /subsystem=messaging-activemq/server=default/jms-topic=APNSClient:remove
 
   /subsystem=messaging-activemq/server=default/jms-queue=APNsPushMessageQueue:add(entries=[queue/APNsPushMessageQueue])
   /subsystem=messaging-activemq/server=default/address-setting=jms.queue.APNsPushMessageQueue:add(redelivery-delay=1500, redelivery-multiplier=1.5, max-redelivery-delay=5000, max-delivery-attempts=-1)
@@ -130,5 +132,7 @@ catch
 
 
   /subsystem=messaging-activemq/server=default/jms-topic=MetricsProcessingStartedTopic:add(entries=[topic/MetricsProcessingStartedTopic])
+  /subsystem=messaging-activemq/server=default/jms-topic=APNSClient:add(entries=[topic/APNSClient])
+
 finally
 end-try

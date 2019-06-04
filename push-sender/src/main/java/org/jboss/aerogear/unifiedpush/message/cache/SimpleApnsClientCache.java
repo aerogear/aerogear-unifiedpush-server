@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- * 	http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,6 +40,7 @@ public class SimpleApnsClientCache {
     private static final Logger logger = LoggerFactory.getLogger(SimpleApnsClientCache.class);
 
     final ConcurrentMap<String, ApnsClient> apnsClientExpiringMap;
+
     {
         apnsClientExpiringMap = ExpiringMap.builder()
 
@@ -89,10 +90,9 @@ public class SimpleApnsClientCache {
 
     /**
      * Receives iOS variant change event to remove client from the cache and also tear down the connection.
-     * @param iOSVariantUpdateEvent event fired when updating the variant
+     * @param variant event fired when updating the variant
      */
-    public void disconnectOnChange(@Observes final iOSVariantUpdateEvent iOSVariantUpdateEvent) {
-        final iOSVariant variant = iOSVariantUpdateEvent.getiOSVariant();
+    public void disconnectOnChange(final iOSVariant variant) {
         final String connectionKey = extractConnectionKey(variant);
         final ApnsClient client = apnsClientExpiringMap.remove(connectionKey);
         logger.debug("Removed client from cache for {}", variant.getVariantID());
@@ -101,12 +101,16 @@ public class SimpleApnsClientCache {
         }
     }
 
+    public void disconnectOnChangeEvent(@Observes final iOSVariantUpdateEvent iOSVariantUpdateEvent) {
+        final iOSVariant variant = iOSVariantUpdateEvent.getiOSVariant();
+        disconnectOnChange(variant);
+    }
+
     private String extractConnectionKey(final iOSVariant iOSVariant) {
-        final StringBuilder sb = new StringBuilder()
-                .append(iOSVariant.getVariantID())
+        final StringBuilder sb = new StringBuilder(iOSVariant.getVariantID())
                 .append(iOSVariant.isProduction() ? "-prod" : "-dev");
 
-        return  sb.toString();
+        return sb.toString();
     }
 
     private void putApnsClientForVariantID(final String variantID, final ApnsClient apnsClient) {

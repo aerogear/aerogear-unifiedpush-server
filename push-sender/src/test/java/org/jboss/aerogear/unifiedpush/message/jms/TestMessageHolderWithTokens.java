@@ -16,15 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -38,6 +29,14 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 
 @RunWith(Arquillian.class)
@@ -58,7 +57,7 @@ public class TestMessageHolderWithTokens {
     private FlatPushMessageInformation information;
     private Variant variant;
     private Collection<String> deviceTokens;
-    private static CountDownLatch delivered;
+    private static CountDownLatch delivered = new CountDownLatch(5);;
 
     @Inject @DispatchToQueue
     private Event<MessageHolderWithTokens> event;
@@ -68,7 +67,7 @@ public class TestMessageHolderWithTokens {
         information = new FlatPushMessageInformation();
         message = new UnifiedPushMessage();
         deviceTokens = new ArrayList<>();
-        delivered = new CountDownLatch(5);
+
     }
 
     @Test

@@ -47,7 +47,7 @@ public class JmsClient {
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    @Resource(mappedName = "java:/JmsXA")
+    @Resource(mappedName = "java:/jms/remoteXA")
     private ConnectionFactory xaConnectionFactory;
 
     /**
@@ -301,7 +301,7 @@ public class JmsClient {
          *
          * @param destination where to send
          */
-        public void to(Destination destination) {
+        public void to(String destination) {
             Connection connection = null;
             try {
                 if (transacted) {
@@ -310,7 +310,7 @@ public class JmsClient {
                     connection = connectionFactory.createConnection();
                 }
                 Session session = connection.createSession(transacted, autoAcknowledgeMode);
-                MessageProducer messageProducer = session.createProducer(destination);
+                MessageProducer messageProducer = session.createProducer(session.createQueue(destination));
                 connection.start();
                 ObjectMessage objectMessage = session.createObjectMessage(message);
                 for (Entry<String, Object> property : properties.entrySet()) {

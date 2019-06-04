@@ -2,7 +2,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
+import org.jboss.aerogear.unifiedpush.message.jms.APNSClientProducer;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
@@ -15,13 +15,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.enterprise.event.Event;
 import javax.validation.Validator;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,7 +43,7 @@ public class iOSVariantEndpointTest {
     Validator validator;
 
     @Mock
-    Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
+    APNSClientProducer producer;
 
     @Before
     public void before() {
@@ -53,7 +51,7 @@ public class iOSVariantEndpointTest {
 
         this.endpoint.pushAppService = pushAppService;
         this.endpoint.variantService = variantService;
-        this.endpoint.variantUpdateEventEvent = variantUpdateEventEvent;
+        this.endpoint.producer = producer;
 
         when(searchManager.getSearchService()).thenReturn(searchService);
     }
@@ -101,7 +99,7 @@ public class iOSVariantEndpointTest {
         assertEquals(original.getName(), "variant name");
 
         verify(variantService).updateVariant(original);
-        verify(variantUpdateEventEvent).fire(eq(new iOSVariantUpdateEvent(original)));
+        verify(producer).changeAPNClient(original);
     }
 
     @Test

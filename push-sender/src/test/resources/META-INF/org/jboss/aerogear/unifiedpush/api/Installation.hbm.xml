@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="org.jboss.aerogear.unifiedpush.api.Installation" table="installation">
+        <id name="id" type="java.lang.String">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <property name="alias" type="java.lang.String" index="alias_index">
+            <column name="alias" />
+        </property>
+        <property name="deviceToken" type="java.lang.String">
+            <column name="device_token" length="4096" />
+        </property>
+        <property name="deviceType" type="java.lang.String">
+            <column name="device_type" />
+        </property>
+        <property name="enabled" type="boolean" not-null="true">
+            <column name="enabled" not-null="true" />
+        </property>
+        <property name="operatingSystem" type="java.lang.String">
+            <column name="operating_system" />
+        </property>
+        <property name="osVersion" type="java.lang.String">
+            <column name="os_version" />
+        </property>
+        <property name="platform" type="java.lang.String">
+            <column name="platform" />
+        </property>
+        <many-to-one name="variant" class="org.jboss.aerogear.unifiedpush.api.Variant" fetch="join" lazy="proxy">
+            <column name="variant_id" />
+        </many-to-one>
+        <set name="categories" table="installation_category" inverse="false" lazy="false" cascade="persist, merge">
+            <key>
+                <column name="installation_id" />
+            </key>
+            <many-to-many class="org.jboss.aerogear.unifiedpush.api.Category">
+                <column name="category_id" not-null="true" />
+            </many-to-many>
+        </set>
+    </class>
+</hibernate-mapping>

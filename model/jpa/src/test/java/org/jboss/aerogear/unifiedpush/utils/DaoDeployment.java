@@ -30,8 +30,8 @@ public class DaoDeployment {
                 .addPackage("org.jboss.aerogear.unifiedpush.jpa.dao.impl")
                 .addPackage("org.jboss.aerogear.unifiedpush.api")
                 .addPackage("org.jboss.aerogear.unifiedpush.api.dao")
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addClass(EntityFactory.class)
-                .addAsManifestResource("META-INF/persistence.xml");
+                .addAsManifestResource("META-INF/persistence.xml")
+                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 }

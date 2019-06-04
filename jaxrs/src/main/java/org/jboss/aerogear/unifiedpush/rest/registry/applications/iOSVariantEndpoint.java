@@ -18,13 +18,12 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
+import org.jboss.aerogear.unifiedpush.message.jms.APNSClientProducer;
 import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
@@ -40,7 +39,7 @@ import javax.ws.rs.core.UriInfo;
 public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
 
     @Inject
-    protected Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
+    protected APNSClientProducer producer;
 
     // required for RESTEasy
     public iOSVariantEndpoint() {
@@ -224,8 +223,9 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
 
             // update performed, we now need to invalidate existing connection w/ APNs:
             logger.trace("Updating iOS Variant '{}'", iOSVariant.getVariantID());
-            variantUpdateEventEvent.fire(new iOSVariantUpdateEvent(iOSVariant));
             variantService.updateVariant(iOSVariant);
+            producer.changeAPNClient(iOSVariant);
+
             return Response.ok(iOSVariant).build();
         }
         return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();

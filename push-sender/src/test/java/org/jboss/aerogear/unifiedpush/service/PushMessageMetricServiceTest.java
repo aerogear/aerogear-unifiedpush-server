@@ -23,13 +23,45 @@ import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+@RunWith(Arquillian.class)
 public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
+
+    @Inject
+    EntityManager entityManager;
+
+    @Deployment
+    public static WebArchive archive() {
+        return UnifiedPushArchive.forTestClass(PushMessageMetricServiceTest.class)
+                .withUtils()
+                .withMessageModel()
+                .withMockito()
+                .withMessaging()
+                .withDAOs()
+                .withServices().forServiceTests()
+                .addPackage(PushMessageMetricsService.class.getPackage())
+                .withApi()
+                .withUtils()
+                .addClass(AbstractBaseServiceTest.class)
+                .addClass(EntityManagerProducer.class)
+                //I think arquillian is drunk
+                .addMavenDependencies("org.assertj:assertj-core")
+
+                .as(WebArchive.class);
+    }
 
     @Inject
     private PushMessageMetricsService pushMessageMetricsService;
@@ -39,8 +71,15 @@ public class PushMessageMetricServiceTest extends AbstractBaseServiceTest {
 
     private FlatPushMessageInformation pushMessageInformation;
 
+    @After
+    public void rollback() {
+        entityManager.getTransaction().rollback();
+    }
+
     @Override
     protected void specificSetup() {
+        entityManager.getTransaction().begin();
+
         pushMessageInformation =
                 pushMessageMetricsService.storeNewRequestFrom(
                         "123",

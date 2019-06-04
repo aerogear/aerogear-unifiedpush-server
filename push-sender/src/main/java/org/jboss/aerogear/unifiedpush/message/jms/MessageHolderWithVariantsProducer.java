@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,10 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
-import javax.jms.Queue;
 
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
@@ -36,28 +34,28 @@ public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProduce
 
     private static final Logger logger = LoggerFactory.getLogger(MessageHolderWithVariantsProducer.class);
 
-    @Resource(mappedName = "java:/queue/APNsPushMessageQueue")
-    private Queue apnsPushMessageQueue;
 
-    @Resource(mappedName = "java:/queue/GCMPushMessageQueue")
-    private Queue gcmPushMessageQueue;
+    private static final String APNS_PUSH_MESSAGE_QUEUE = "APNsPushMessageQueue";
 
-    @Resource(mappedName = "java:/queue/WNSPushMessageQueue")
-    private Queue wnsPushMessageQueue;
+
+    private static final String GCMPUSH_MESSAGE_QUEUE = "GCMPushMessageQueue";
+
+
+    private static final String WNSPUSH_MESSAGE_QUEUE = "WNSPushMessageQueue";
 
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithVariants msg) {
         logger.trace("dispatching for processing variants and trigger token querying/batching");
-        sendTransacted(selectQueue(msg.getVariantType()), msg);
+        sendTransacted(selectQueue(msg.getVariantType()), msg, false);
     }
 
-    private Queue selectQueue(VariantType variantType) {
+    private String selectQueue(VariantType variantType) {
         switch (variantType) {
             case ANDROID:
-                return gcmPushMessageQueue;
+                return GCMPUSH_MESSAGE_QUEUE;
             case IOS:
-                return apnsPushMessageQueue;
+                return APNS_PUSH_MESSAGE_QUEUE;
             case WINDOWS_WNS:
-                return wnsPushMessageQueue;
+                return WNSPUSH_MESSAGE_QUEUE;
             default:
                 throw new IllegalStateException("Unknown variant type queue");
         }

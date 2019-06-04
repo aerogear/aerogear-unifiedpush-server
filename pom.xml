@@ -109,7 +109,7 @@
       <dependency>
         <groupId>org.apache.openejb</groupId>
         <artifactId>openejb-core-hibernate</artifactId>
-        <version>4.7.0</version>
+        <version>4.7.5</version>
         <type>pom</type>
       </dependency>
 
@@ -218,6 +218,7 @@
     <!-- Override versions of AeroGear BOMs-->
     <junit.version>4.12</junit.version>
     <slfj4.version>1.7.26</slfj4.version>
+    <arquillian.version>1.4.1.Final</arquillian.version>
 
     <!-- Code coverage -->
     <org.jacoco.ant.version>0.7.9</org.jacoco.ant.version>

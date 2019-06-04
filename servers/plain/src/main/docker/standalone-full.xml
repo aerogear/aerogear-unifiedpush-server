@@ -164,8 +164,8 @@
                     <connection-url>jdbc:postgresql://${env.POSTGRES_SERVICE_HOST}:${env.POSTGRES_SERVICE_PORT}/${env.POSTGRES_DATABASE}</connection-url>
                     <driver>postgresql</driver>
                     <security>
-                      <user-name>${env.POSTGRES_USER}</user-name>
-                      <password>${env.POSTGRES_PASSWORD}</password>
+                        <user-name>${env.POSTGRES_USER}</user-name>
+                        <password>${env.POSTGRES_PASSWORD}</password>
                     </security>
                     <validation>
                         <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
@@ -178,10 +178,10 @@
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
-                     </driver>
-                     <driver name="postgresql" module="org.postgresql">
+                    </driver>
+                    <driver name="postgresql" module="org.postgresql">
                         <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
-	                </driver>
+                    </driver>
                 </drivers>
             </datasources>
         </subsystem>
@@ -440,11 +440,11 @@
                     <role name="guest" send="true" consume="true" create-non-durable-queue="true" delete-non-durable-queue="true"/>
                 </security-setting>
                 <address-setting name="#" dead-letter-address="jms.queue.DLQ" expiry-address="jms.queue.ExpiryQueue" max-size-bytes="10485760" page-size-bytes="2097152" message-counter-history-day-limit="10"/>
-                <address-setting name="jms.queue.APNsPushMessageQueue" redelivery-delay="1500" redelivery-multiplier="1.5" max-delivery-attempts="-1" max-redelivery-delay="5000"/>
+                <!-- <address-setting name="jms.queue.APNsPushMessageQueue" redelivery-delay="1500" redelivery-multiplier="1.5" max-delivery-attempts="-1" max-redelivery-delay="5000"/> -->
                 <address-setting name="jms.queue.APNsTokenBatchQueue" max-size-bytes="40000" address-full-policy="FAIL"/>
-                <address-setting name="jms.queue.GCMPushMessageQueue" redelivery-delay="1500" redelivery-multiplier="1.5" max-delivery-attempts="-1" max-redelivery-delay="5000"/>
+                <!-- <address-setting name="jms.queue.GCMPushMessageQueue" redelivery-delay="1500" redelivery-multiplier="1.5" max-delivery-attempts="-1" max-redelivery-delay="5000"/> -->
                 <address-setting name="jms.queue.GCMTokenBatchQueue" max-size-bytes="40000" address-full-policy="FAIL"/>
-                <address-setting name="jms.queue.WNSPushMessageQueue" redelivery-delay="1500" redelivery-multiplier="1.5" max-delivery-attempts="-1" max-redelivery-delay="5000"/>
+                <!-- <address-setting name="jms.queue.WNSPushMessageQueue" redelivery-delay="1500" redelivery-multiplier="1.5" max-delivery-attempts="-1" max-redelivery-delay="5000"/> -->
                 <address-setting name="jms.queue.WNSTokenBatchQueue" max-size-bytes="40000" address-full-policy="FAIL"/>
                 <address-setting name="jms.queue.MetricsQueue" max-delivery-attempts="-1"/>
                 <address-setting name="jms.queue.TriggerMetricCollectionQueue" redelivery-delay="1000" max-delivery-attempts="-1"/>
@@ -467,25 +467,39 @@
                 </in-vm-acceptor>
                 <jms-queue name="ExpiryQueue" entries="java:/jms/queue/ExpiryQueue"/>
                 <jms-queue name="DLQ" entries="java:/jms/queue/DLQ"/>
-                <jms-queue name="APNsPushMessageQueue" entries="queue/APNsPushMessageQueue"/>
+                <!-- <jms-queue name="APNsPushMessageQueue" entries="queue/APNsPushMessageQueue"/> -->
                 <jms-queue name="APNsTokenBatchQueue" entries="queue/APNsTokenBatchQueue"/>
-                <jms-queue name="GCMPushMessageQueue" entries="queue/GCMPushMessageQueue"/>
+                <!-- <jms-queue name="GCMPushMessageQueue" entries="queue/GCMPushMessageQueue"/> -->
                 <jms-queue name="GCMTokenBatchQueue" entries="queue/GCMTokenBatchQueue"/>
-                <jms-queue name="WNSPushMessageQueue" entries="queue/WNSPushMessageQueue"/>
+                <!-- <jms-queue name="WNSPushMessageQueue" entries="queue/WNSPushMessageQueue"/> -->
                 <jms-queue name="WNSTokenBatchQueue" entries="queue/WNSTokenBatchQueue"/>
-                <jms-queue name="MetricsQueue" entries="queue/MetricsQueue"/>	
-                <jms-queue name="TriggerMetricCollectionQueue" entries="queue/TriggerMetricCollectionQueue"/>	
-                <jms-queue name="TriggerVariantMetricCollectionQueue" entries="queue/TriggerVariantMetricCollectionQueue"/>	
-                <jms-queue name="BatchLoadedQueue" entries="queue/BatchLoadedQueue"/>	
-                <jms-queue name="AllBatchesLoadedQueue" entries="queue/AllBatchesLoadedQueue"/>	
-                <jms-queue name="FreeServiceSlotQueue" entries="queue/FreeServiceSlotQueue"/>	
+                <jms-queue name="MetricsQueue" entries="queue/MetricsQueue"/>
+                <jms-queue name="TriggerMetricCollectionQueue" entries="queue/TriggerMetricCollectionQueue"/>
+                <jms-queue name="TriggerVariantMetricCollectionQueue" entries="queue/TriggerVariantMetricCollectionQueue"/>
+                <jms-queue name="BatchLoadedQueue" entries="queue/BatchLoadedQueue"/>
+                <jms-queue name="AllBatchesLoadedQueue" entries="queue/AllBatchesLoadedQueue"/>
+                <jms-queue name="FreeServiceSlotQueue" entries="queue/FreeServiceSlotQueue"/>
                 <jms-topic name="MetricsProcessingStartedTopic" entries="topic/MetricsProcessingStartedTopic"/>
-                <connection-factory name="InVmConnectionFactory" entries="java:/ConnectionFactory" connectors="in-vm"/>
+                <jms-topic name="topic/APNSClient" entries="java:/topic/APNSClient"/>
+                <connection-factory name="InVmConnectionFactory" entries="java:/ConnectionFactory2" connectors="in-vm"/>
                 <connection-factory name="RemoteConnectionFactory" entries="java:jboss/exported/jms/RemoteConnectionFactory" connectors="http-connector"/>
-                <pooled-connection-factory name="activemq-ra" entries="java:/JmsXA java:jboss/DefaultJMSConnectionFactory" connectors="in-vm" transaction="xa"/>
+                <pooled-connection-factory name="activemq-ra" entries="java:/JmsXA" connectors="in-vm" transaction="xa"/>
+                <remote-connector name="remote-artemis" socket-binding="remote-artemis"/>
+                <pooled-connection-factory name="remote-artemis-xa" entries="java:/jms/remoteXA java:jboss/DefaultJMSConnectionFactory"
+                                           connectors="remote-artemis" transaction="xa" user="artemis" password="simetraehcapa"/>
+                <pooled-connection-factory name="remote-artemis" entries="java:/ConnectionFactory" connectors="remote-artemis" user="artemis" password="simetraehcapa"/>
             </server>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
+            <bindings>
+                <external-context name="java:global/remoteContext" module="org.apache.activemq.artemis" class="javax.naming.InitialContext">
+                    <environment>
+                        <property name="java.naming.factory.initial" value="org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory"/>
+                        <property name="GCMPushMessageQueue" value="GCMPushMessageQueue"/>
+                    </environment>
+                </external-context>
+                <lookup name="java:/GCMPushMessageQueue" lookup="java:global/remoteContext/GCMPushMessageQueue"/>
+            </bindings>
             <remote-naming/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:pojo:1.0"/>
@@ -602,6 +616,9 @@
         <socket-binding name="txn-status-manager" port="4713"/>
         <outbound-socket-binding name="mail-smtp">
             <remote-destination host="localhost" port="25"/>
+        </outbound-socket-binding>
+        <outbound-socket-binding name="remote-artemis">
+            <remote-destination host="artemis" port="61617"/>
         </outbound-socket-binding>
     </socket-binding-group>
 </server>
