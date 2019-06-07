@@ -1,0 +1,9 @@
+{
+  "realm" : "${ups.realm.name}",
+  "auth-server-url" : "${ups.auth.server.url}",
+  "ssl-required" : "external",
+  "resource" : "unified-push-server",
+  "bearer-only" : true,
+  "disable-trust-manager" : true
+}
+

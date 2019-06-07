@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   unifiedpushserver:
-    image: aerogear/unifiedpush-wildfly-plain:2.2.2-SNAPSHOT
+    image: aerogear/unifiedpush-configurable-container:2.2.2-SNAPSHOT
     volumes:
        - ./helper:/ups-helper:z
     entrypoint: "/ups-helper/exportKeycloakHost.sh"
@@ -17,6 +17,10 @@ services:
         POSTGRES_DATABASE: ${POSTGRES_DATABASE}
         KEYCLOAK_SERVICE_HOST: ${KEYCLOAK_SERVICE_HOST}
         KEYCLOAK_SERVICE_PORT: ${KEYCLOAK_SERVICE_PORT}
+        ARTEMIS_USER: ${ARTEMIS_USER}
+        ARTEMIS_PASSWORD: ${ARTEMIS_PASSWORD}
+        ARTEMIS_SERVICE_HOST: ${ARTEMIS_SERVICE_HOST}
+        ARTEMIS_SERVICE_PORT: ${ARTEMIS_SERVICE_PORT}
     links:
       - unifiedpushDB:unifiedpush
       - artemis:artemis
@@ -42,6 +46,9 @@ services:
       KEYCLOAK_USER: ${KEYCLOAK_USER}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
   artemis:
+    environment:
+      ARTEMIS_USERNAME: ${ARTEMIS_USER}
+      ARTEMIS_PASSWORD: ${ARTEMIS_PASSWORD}
     image: vromero/activemq-artemis
     volumes:
       - ./artemis-overrides:/var/lib/artemis/etc-override:z

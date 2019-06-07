@@ -64,6 +64,11 @@ The Unified Push Server can be configured with either System Properties (passed 
 * _ups.realm.name/UPS_REALM_NAME_: Override Keycloak Realm
 * _ups.auth.server.url/UPS_AUTH_SERVER_URL_: Override Keycloak authentication redirect
 * _aerogear.metrics.storage.days/AEROGEAR_METRICS_STORAGE_DAYS_: Override the number of days the metrics are stored (default is 30 days)
+* _ups.amqp.server.url/ARTEMIS_URL_ : URL For AMQP Server
+* _ups.amqp.server.port/ARTEMIS_PORT_ : PORT For AMQP Server
+* _ups.amqp.server.username/ARTEMIS_PASSWORD_: Password for AMQP server
+* _ups.amqp.server.password/ARTEMIS_USERNAME_: Username for AMQP server
+
 
 ## Releasing the UnifiedPush Server
 
