@@ -126,7 +126,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <!-- Adds custom Miredot tags (required for JDK 8 DocLint: http://openjdk.java.net/jeps/172) -->
                     <tags>
                         <tag>
                             <name>statuscode</name>
@@ -185,20 +184,5 @@
         </profile>
     </profiles>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>miredot</id>
-            <name>MireDot Releases</name>
-            <url>http://nexus.qmino.com/content/repositories/miredot</url>
-        </pluginRepository>
-    </pluginRepositories>
-
-    <repositories>
-        <repository>
-            <id>miredot</id>
-            <name>MireDot Releases</name>
-            <url>http://nexus.qmino.com/content/repositories/miredot</url>
-        </repository>
-    </repositories>
 
 </project>
