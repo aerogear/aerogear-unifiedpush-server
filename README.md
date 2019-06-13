@@ -54,20 +54,39 @@ mvn clean install
 
 and start the latest build, locally, like `docker run -p 18081:8080 -it aerogear/ups:plain`
 
+## Container Configuration
+
+The Unified Push Server build by default creates and registers a Docker formatted container image, aerogear/unifiedpush-configurable-container.  By default this container uses an in-memory database, in-vm amq messaging, and no authentication.  While ideal for testing, for actual use the following environment variables should be set 
+
+* _KEYCLOAK_SERVICE_HOST_: URL of a KeyCloak server providing authentication.
+* _KEYCLOAK_SERVICE_PORT_: KeyCloak service port.
+
+* _POSTGRES_SERVICE_HOST_: URL of Postgres database
+* _POSTGRES_SERVICE_PORT_: Port to connect to Postgres database
+* _POSTGRES_USER_: Postgres username to use
+* _POSTGRES_PASSWORD_: Postgres password to use
+* _POSTGRES_DATABASE_: Postgres database for UPS
+
+* _ARTEMIS_SERVICE_HOST_: Artemis AMQ service URL
+* _ARTEMIS_SERVICE_PORT_: Artemis AMQ service Port
+* _ARTEMIS_USER_: Artemis AMQ service username
+* _ARTEMIS_PASSWORD_: Artemis AMQ service password
+
+
 ## Configuration
 
 The Unified Push Server can be configured with either System Properties (passed to the Java commandline) or Environment Variables. The two options have different formats and the following list describes them using `System Property Name`/`Env Var Name`: `Purpose`.
 
-* _custom.aerogear.apns.push.host/CUSTOM_AEROGEAR_APNS_PUSH_HOST_: Custom host for sending Apple push notifications. Can be used for testing
-* _custom.aerogear.apns.push.port/CUSTOM_AEROGEAR_APNS_PUSH_PORT_: Custom port for the Apple Push Network host
-* _custom.aerogear.fcm.push.host/CUSTOM_AEROGEAR_FCM_PUSH_HOST_: Custom host for sending Google Firebase push notifications. Can be used for testing
-* _ups.realm.name/UPS_REALM_NAME_: Override Keycloak Realm
-* _ups.auth.server.url/UPS_AUTH_SERVER_URL_: Override Keycloak authentication redirect
-* _aerogear.metrics.storage.days/AEROGEAR_METRICS_STORAGE_DAYS_: Override the number of days the metrics are stored (default is 30 days)
-* _ups.amqp.server.url/ARTEMIS_URL_ : URL For AMQP Server
-* _ups.amqp.server.port/ARTEMIS_PORT_ : PORT For AMQP Server
-* _ups.amqp.server.username/ARTEMIS_PASSWORD_: Password for AMQP server
-* _ups.amqp.server.password/ARTEMIS_USERNAME_: Username for AMQP server
+* _CUSTOM_AEROGEAR_APNS_PUSH_HOST_: Custom host for sending Apple push notifications. Can be used for testing
+* _CUSTOM_AEROGEAR_APNS_PUSH_PORT_: Custom port for the Apple Push Network host
+* _CUSTOM_AEROGEAR_FCM_PUSH_HOST_: Custom host for sending Google Firebase push notifications. Can be used for testing
+* _UPS_REALM_NAME_: Override Keycloak Realm
+* _KEYCLOAK_SERVICE_HOST_: Override Keycloak authentication redirect
+* _AEROGEAR_METRICS_STORAGE_DAYS_: Override the number of days the metrics are stored (default is 30 days)
+* _ARTEMIS_URL_ : URL For AMQP Server
+* _ARTEMIS_PORT_ : PORT For AMQP Server
+* _ARTEMIS_PASSWORD_: Password for AMQP server
+* _ARTEMIS_USERNAME_: Username for AMQP server
 
 
 ## Releasing the UnifiedPush Server
