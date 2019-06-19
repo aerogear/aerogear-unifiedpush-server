@@ -1,0 +1,5 @@
+embed-server --server-config=${server.config:standalone.xml}
+
+/subsystem=datasources/jdbc-driver=psqlup:add(driver-name=psqlup,driver-module-name=org.postgresql,driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
+data-source add --name=UnifiedPushDS --driver-name=psqlup --jndi-name=java:jboss/datasources/UnifiedPushDS --connection-url=jdbc:postgresql://${POSTGRES_SERVICE_HOST}:${POSTGRES_SERVICE_PORT}/${POSTGRES_DATABASE} --user-name= ${POSTGRES_USER} --password= ${POSTGRES_PASSWORD} --use-ccm=false --max-pool-size=25 --blocking-timeout-wait-millis=5000 --enabled=true
+ 

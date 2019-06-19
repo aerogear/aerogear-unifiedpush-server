@@ -47,8 +47,7 @@
     </build>
 
     <modules>
-        <module>plain</module>
-        <module>keycloak</module>
+        <module>universal</module>
     </modules>
 
 </project>

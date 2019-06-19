@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+
+    <module-name>ag-push</module-name>
+
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>HttpBasic</web-resource-name>
+            <description>Matches a few special URLs, not protected by Keycloak</description>
+            <url-pattern>/rest/registry/device/*</url-pattern>
+            <url-pattern>/rest/sender/*</url-pattern>
+            <url-pattern>/rest/prometheus/*</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
+
+</web-app>

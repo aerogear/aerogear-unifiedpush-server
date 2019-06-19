@@ -1,0 +1,4 @@
+embed-server --server-config=${server.config:standalone.xml}
+
+/subsystem=datasources/data-source=UnifiedPushDS:add(jndi-name=java:jboss/datasources/UnifiedPushDS, connection-url="jdbc:h2:mem:UnifiedPushDS;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE", driver-name=h2, user-name=sa, password=sa)  
+

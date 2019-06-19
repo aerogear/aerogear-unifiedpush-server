@@ -1,0 +1,48 @@
+embed-server --server-config=${server.config:standalone.xml}
+
+/subsystem=messaging-activemq/server=default/jms-queue=APNsPushMessageQueue:add(entries=[queue/APNsPushMessageQueue])
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.APNsPushMessageQueue:add(redelivery-delay=1500, redelivery-multiplier=1.5, max-redelivery-delay=5000, max-delivery-attempts=-1)
+/subsystem=messaging-activemq/server=default/jms-queue=APNsTokenBatchQueue:add(entries=[queue/APNsTokenBatchQueue])
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.APNsTokenBatchQueue:add(address-full-policy=FAIL, max-size-bytes=40000)
+
+/subsystem=messaging-activemq/server=default/jms-queue=GCMPushMessageQueue:add(entries=[queue/GCMPushMessageQueue])
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.GCMPushMessageQueue:add(redelivery-delay=1500, redelivery-multiplier=1.5, max-redelivery-delay=5000, max-delivery-attempts=-1)
+/subsystem=messaging-activemq/server=default/jms-queue=GCMTokenBatchQueue:add(entries=[queue/GCMTokenBatchQueue])
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.GCMTokenBatchQueue:add(address-full-policy=FAIL, max-size-bytes=40000)
+
+/subsystem=messaging-activemq/server=default/jms-queue=WNSPushMessageQueue:add(entries=[queue/WNSPushMessageQueue])
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.WNSPushMessageQueue:add(redelivery-delay=1500, redelivery-multiplier=1.5, max-redelivery-delay=5000, max-delivery-attempts=-1)
+/subsystem=messaging-activemq/server=default/jms-queue=WNSTokenBatchQueue:add(entries=[queue/WNSTokenBatchQueue])
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.WNSTokenBatchQueue:add(address-full-policy=FAIL, max-size-bytes=40000)
+
+
+
+/subsystem=messaging-activemq/server=default/jms-queue=MetricsQueue:add(entries=[queue/MetricsQueue])
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.MetricsQueue:add(max-delivery-attempts=-1)
+
+/subsystem=messaging-activemq/server=default/jms-queue=TriggerMetricCollectionQueue:add(entries=[queue/TriggerMetricCollectionQueue])
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.TriggerMetricCollectionQueue:add(redelivery-delay=1000, max-delivery-attempts=-1)
+
+/subsystem=messaging-activemq/server=default/jms-queue=TriggerVariantMetricCollectionQueue:add(entries=[queue/TriggerVariantMetricCollectionQueue])
+
+
+
+/subsystem=messaging-activemq/server=default/jms-queue=BatchLoadedQueue:add(entries=[queue/BatchLoadedQueue])
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.BatchLoadedQueue:add(max-delivery-attempts=-1)
+
+/subsystem=messaging-activemq/server=default/jms-queue=AllBatchesLoadedQueue:add(entries=[queue/AllBatchesLoadedQueue])
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.AllBatchesLoadedQueue:add(max-delivery-attempts=-1)
+/subsystem=messaging-activemq/server=default/jms-queue=FreeServiceSlotQueue:add(entries=[queue/FreeServiceSlotQueue])
+
+
+
+/subsystem=messaging-activemq/server=default/jms-topic=MetricsProcessingStartedTopic:add(entries=[topic/MetricsProcessingStartedTopic])
+/subsystem=messaging-activemq/server=default/jms-topic=APNSClient:add(entries=[topic/APNSClient])
+
+
+/subsystem=messaging-activemq/server=default/connection-factory=InVmConnectionFactory:remove
+/subsystem=messaging-activemq/server=default/connection-factory=InVmConnectionFactory:add(entries=[ConnectionFactory], connectors=[in-vm])
+/subsystem=messaging-activemq/server=default/pooled-connection-factory=activemq-ra:remove
+/subsystem=messaging-activemq/server=default/pooled-connection-factory=activemq-ra:add(entries=[java:/jms/remoteXA, java:/JmsXA, java:jboss/DefaultJMSConnectionFactory], connectors=[in-vm], transaction=xa)
+/subsystem=messaging-activemq/server=default/connection-factory=RemoteConnectionFactory:remove
+/subsystem=messaging-activemq/server=default/connection-factory=RemoteConnectionFactory:add(entries=[java:jboss/exported/jms/RemoteConnectionFactory], connectors=[http-connector])
