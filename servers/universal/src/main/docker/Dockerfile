@@ -13,7 +13,7 @@ ARG CACHEBUST=1
 ENV psql_module_dir=$JBOSS_HOME/modules/org/postgresql/main/
 ENV psql_connector_jar=postgresql-jdbc.jar
 RUN mkdir -p ${psql_module_dir}
-RUN wget -O ${psql_connector_jar} http://search.maven.org/remotecontent\?filepath\=org/postgresql/postgresql/42.2.2/postgresql-42.2.2.jar
+RUN wget -O ${psql_connector_jar} http://search.maven.org/remotecontent\?filepath\=org/postgresql/postgresql/42.2.6/postgresql-42.2.6.jar
 RUN mv ${psql_connector_jar} ${psql_module_dir}
 
 ADD config/psql-module.xml ${psql_module_dir}/module.xml
