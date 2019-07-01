@@ -7,11 +7,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
@@ -22,12 +20,10 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.ClientResource;
-import org.keycloak.admin.client.resource.ClientsResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.ClientRepresentation;
-import org.keycloak.representations.idm.ClientScopeRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -80,23 +76,17 @@ public class KeycloakServiceImpl implements IKeycloakService {
 					}
 				}
 			}
-
-			String upsiRealmName = conf.getUpsiRealm();
-			RealmResource realm = kc.realms().realm(realmName);
-			if(realm != null) {
-				setRealmConfiguration(realmName, realm);
-
-			} else if(!realmNameToRealm.containsKey(conf.getUpsiRealm())) {
-				RealmResource upsiRealmResource = kc.realms().realm(upsiRealmName);
-				setRealmConfiguration(upsiRealmName, upsiRealmResource);
+			if(!realmName.toLowerCase().equals(conf.getUpsMasterRealm().toLowerCase())) {
+				RealmResource realm = kc.realm(realmName);
+				if (realm != null) {
+					setRealmConfiguration(realmName, realm);
+					return true;
+				} else {
+					return false;
+				}
 			}
-
-			return true;
-
-		}else {
-			return true;
-
 		}
+		return true;
 	}
 
 	private synchronized void initializeKeycloakAndMasterRealm() {
@@ -104,7 +94,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 		String upsMasterRealmName = conf.getUpsMasterRealm();
 		String cliClientId = conf.getAdminClient();
 		String userName = conf.getAdminUserName();
-		String userPassword = conf.getAdminPassword();
+		String userPassword = conf.getMasterPassword();
 
 		this.kc = KeycloakBuilder.builder() //
 				.serverUrl(keycloakPath) //
@@ -282,30 +272,6 @@ public class KeycloakServiceImpl implements IKeycloakService {
 		}
 
 		getRealm(realmName).users().delete(user.getId());
-	}
-
-	@Override
-	public List<String> getVariantIdsFromClient(String clientId, String realm) {
-		if (!isInitialized(realm)) {
-			return null;
-		}
-
-		ClientRepresentation client = isClientExists(clientId, realm);
-
-		List<String> variantIds = null;
-		if (client != null) {
-			Map<String, String> attributes = client.getAttributes();
-			if (attributes != null) {
-				variantIds = new ArrayList<String>(attributes.size());
-				for (Map.Entry<String, String> entry : attributes.entrySet()) {
-					if (entry.getKey().endsWith(ATTRIBUTE_VARIANT_SUFFIX)) {
-						variantIds.add(entry.getValue());
-					}
-				}
-			}
-		}
-
-		return variantIds;
 	}
 
 	@Override
@@ -495,7 +461,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
 	public String getRealmName(String applicationName) {
 		applicationName = applicationName.toLowerCase();
-		return kc.realms().realm(applicationName) != null ? applicationName : conf.getUpsiRealm();
+		return isInitialized(conf.getUpsMasterRealm()) && kc.realms().realm(applicationName) != null ? applicationName : conf.getUpsiRealm();
 	}
 
 	private RealmResource getRealm(String realmName) {

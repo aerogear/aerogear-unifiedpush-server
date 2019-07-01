@@ -20,6 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -57,6 +58,7 @@ import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.impl.AliasServiceImpl.Associated;
 import org.jboss.aerogear.unifiedpush.service.impl.ServiceConstraintViolationException;
+import org.jboss.aerogear.unifiedpush.service.impl.UserTenantInfo;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.KeycloakServiceImpl;
 import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
@@ -120,16 +122,19 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 *
 	 *             TODO - Rename to registered
 	 */
-//	@GET
-//	@Path("/exists/{alias}")
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@ReturnType("java.lang.Boolean")
-//	public Response registered(@PathParam("alias") String alias, @Context HttpServletRequest request) {
-//		if (aliasService.registered(alias))//TODO TAL TBD with Ilan
-//			return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);
-//
-//		return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
-//	}
+	@GET
+	@Path("/exists/{alias}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("java.lang.Boolean")
+	public Response registered(@PathParam("alias") String alias, @Context HttpServletRequest request) {
+		//Todo should return error if more then one push applicationid for alias
+        Set<UserTenantInfo> tenantRelations = aliasService.getTenantRelations(alias);
+        PushApplication pushApplication = pushAppService.findByPushApplicationID(tenantRelations.iterator().next().getPushId().toString());
+        if (aliasService.registered(alias, pushApplication.getName()))
+			return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);
+
+		return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
+	}
 
 	/**
 	 * RESTful API for validating alias existence (associated) within a team. The

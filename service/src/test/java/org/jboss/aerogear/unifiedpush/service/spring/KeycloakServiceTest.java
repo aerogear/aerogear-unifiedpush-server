@@ -2,15 +2,8 @@ package org.jboss.aerogear.unifiedpush.service.spring;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.validateMockitoUsage;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.List;
 
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration.DomainMatcher;
@@ -42,22 +35,6 @@ public class KeycloakServiceTest {
 	@Before
 	public void before() {
 		MockitoAnnotations.initMocks(this);
-
-		when(mockProvider.get().getVariantIdsFromClient(eq("test-client-1")))
-				.thenReturn(Arrays.asList("variant-1", "variant-2"));
-		when(mockProvider.get().getVariantIdsFromClient(eq("test-client-2")))
-				.thenReturn(Arrays.asList("variant-3", "variant-4"));
-	}
-
-	@Test
-	public void cacheTest() {
-		List<String> firstInvocation = kcServiceMock.getVariantIdsFromClient("test-client-1");
-		assertThat(firstInvocation.get(0), is("variant-1"));
-
-		List<String> secondInvocation = kcServiceMock.getVariantIdsFromClient("test-client-1");
-		assertThat(secondInvocation.get(0), is("variant-1"));
-
-		verify(mockProvider.get(), times(1)).getVariantIdsFromClient("test-client-1");
 	}
 
 	@Test

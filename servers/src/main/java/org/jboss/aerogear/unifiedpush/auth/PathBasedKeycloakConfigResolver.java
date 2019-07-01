@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush.auth;
 
+import static org.keycloak.adapters.KeycloakDeploymentBuilder.loadAdapterConfig;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -32,6 +34,7 @@ import org.keycloak.adapters.spi.HttpFacade.Request;
 import org.keycloak.common.util.KeycloakUriBuilder;
 import org.keycloak.constants.ServiceUrlConstants;
 import org.keycloak.representations.AccessToken;
+import org.keycloak.representations.adapters.config.AdapterConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +52,8 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 
 	@Override
 	public KeycloakDeployment resolve(Request request) {
-		String realm = DEFAULT_REALM_FILE;
+		String fileName = DEFAULT_REALM_FILE;
+		String jwtRealm = OAuth2Configuration.DEFAULT_OAUTH2_UPS_REALM;
 
 		AccessToken accessToken = BearerHelper.getTokenDataFromBearer(request).orNull();
 		if (accessToken != null) {
@@ -57,10 +61,10 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 
 			if (StringUtils.isNoneEmpty(issuer)) {
 				issuer = URLUtils.removeLastSlash(issuer);
-				String jwtRealm = URLUtils.getLastPart(issuer);
+				jwtRealm = URLUtils.getLastPart(issuer);
 
 				if (!OAuth2Configuration.DEFAULT_OAUTH2_UPS_REALM.equalsIgnoreCase(jwtRealm)) {
-					realm = "upsi";
+					fileName = "upsi";
 				}
 			}
 		}
@@ -68,30 +72,35 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 		URI uri = URI.create(request.getURI());
 
 		if (logger.isTraceEnabled())
-			logger.trace("Identified Bearer request, using keycloak realm! URI: {}, realm: {}", uri.toString(), realm);
+			logger.trace("Identified Bearer request, using keycloak realm! URI: {}, realm: {}", uri.toString(), jwtRealm);
 
 		String host = uri.getHost();
-		CustomKeycloakDeployment deployment = cache.get(getCacheKey(realm, host));
+		CustomKeycloakDeployment deployment = cache.get(getCacheKey(jwtRealm, host));
 		if (null == deployment) {
 			InputStream is = null;
 
 			try {
-				is = applicationContext.getResource("/WEB-INF/" + realm + ".json").getInputStream();
+				is = applicationContext.getResource("/WEB-INF/" + fileName + ".json").getInputStream();
 			} catch (IOException e) {
-				throw new IllegalStateException("Not able to find the file /" + realm + ".json");
+				throw new IllegalStateException("Not able to find the file /" + fileName + ".json");
 			}
 
 			if (is == null) {
-				throw new IllegalStateException("Not able to find the file /" + realm + ".json");
+				throw new IllegalStateException("Not able to find the file /" + fileName + ".json");
 			}
 
-			deployment = CustomKeycloakDeploymentBuilder.build(is);
+			AdapterConfig adapterConfig = loadAdapterConfig(is);
+			if(!DEFAULT_REALM_FILE.equalsIgnoreCase(fileName)) {
+				adapterConfig.setRealm(jwtRealm);
+			}
+
+			deployment = CustomKeycloakDeploymentBuilder.build(adapterConfig);
 
 			String baseUrl = getBaseBuilder(deployment, request, deployment.getAuthServerBaseUrl()).build().toString();
 			KeycloakUriBuilder serverBuilder = KeycloakUriBuilder.fromUri(baseUrl);
 			resolveUrls(deployment, serverBuilder);
 
-			cache.put(getCacheKey(realm, host), deployment);
+			cache.put(getCacheKey(adapterConfig.getRealm(), host), deployment);
 		}
 
 		return deployment;

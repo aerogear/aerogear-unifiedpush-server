@@ -22,6 +22,7 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 
 	private static final String KEY_OAUTH2_ADMIN_USERNAME = "aerogear.config.oauth2.admin.username";
 	private static final String KEY_OAUTH2_ADMIN_PASSWORD = "aerogear.config.oauth2.admin.password";
+	private static final String KEY_OAUTH2_MASTER_PASSWORD = "aerogear.config.oauth2.master.password";
 
 	private static final String KEY_OAUTH2_ADMIN_CLIENT_ID = "aerogear.config.oauth2.ups.admin.client";
 	public static final String KEY_OAUTH2_ENFORE_DOMAIN = "aerogear.config.oauth2.enforce.rooturl.domain";
@@ -66,6 +67,11 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 
 	public String getAdminPassword() {
 		return getProperty(KEY_OAUTH2_ADMIN_PASSWORD, StringUtils.EMPTY);
+	}
+
+	@Override
+	public String getMasterPassword() {
+		return getProperty(KEY_OAUTH2_MASTER_PASSWORD, StringUtils.EMPTY);
 	}
 
 	public String getRooturlDomain() {

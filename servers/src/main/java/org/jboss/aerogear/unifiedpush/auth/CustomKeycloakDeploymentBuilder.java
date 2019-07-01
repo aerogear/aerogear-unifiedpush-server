@@ -1,7 +1,5 @@
 package org.jboss.aerogear.unifiedpush.auth;
 
-import java.io.InputStream;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration;
 import org.keycloak.adapters.KeycloakDeploymentBuilder;
@@ -13,8 +11,7 @@ public class CustomKeycloakDeploymentBuilder extends KeycloakDeploymentBuilder {
 		deployment = new CustomKeycloakDeployment();
 	}
 
-	public static CustomKeycloakDeployment build(InputStream is) {
-		AdapterConfig adapterConfig = loadAdapterConfig(is);
+	public static CustomKeycloakDeployment build(AdapterConfig adapterConfig) {
 
 		// Override realm attributes from system properties if exists.
 		String upsRealmName = OAuth2Configuration.getStaticUpsRealm();
