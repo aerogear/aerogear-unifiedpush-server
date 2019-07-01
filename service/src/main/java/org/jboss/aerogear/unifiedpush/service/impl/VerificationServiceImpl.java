@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.Alias;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.InstallationVerificationAttempt;
+import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.NullUUID;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCode;
@@ -152,13 +153,14 @@ public class VerificationServiceImpl implements VerificationService {
 			codeService.delete(okey);
 
 			// Enable OAuth2 User
-
-			if (keycloakService.isInitialized() && verificationAttempt.isOauth2()) {
+			PushApplication pushApplication = pushApplicationService.findByVariantID(variantId.toString());
+			String realmName = keycloakService.getRealmName(pushApplication.getName());
+			if (keycloakService.isInitialized(realmName) && verificationAttempt.isOauth2()) {
 				if (resetOnly) {
-					keycloakService.resetUserPassword(alias, verificationAttempt.getCode());
+					keycloakService.resetUserPassword(alias, verificationAttempt.getCode(), realmName);
 				} else {
 					Collection<UserTenantInfo> tenantRelations = aliasService.getTenantRelations(alias);
-					keycloakService.createVerifiedUserIfAbsent(alias, verificationAttempt.getCode(), tenantRelations);
+					keycloakService.createVerifiedUserIfAbsent(alias, verificationAttempt.getCode(), tenantRelations, realmName);
 				}
 			}
 
@@ -193,8 +195,10 @@ public class VerificationServiceImpl implements VerificationService {
 			codeService.delete(okey);
 
 			// Enable OAuth2 User
-			if (keycloakService.isInitialized() && verificationAttempt.isOauth2()) {
-				keycloakService.createVerifiedUserIfAbsent(installation.getAlias(), verificationAttempt.getCode(), null);
+			PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
+			String realmName = keycloakService.getRealmName(pushApplication.getName());
+			if (keycloakService.isInitialized(realmName) && verificationAttempt.isOauth2()) {
+				keycloakService.createVerifiedUserIfAbsent(installation.getAlias(), verificationAttempt.getCode(), null, realmName);
 			}
 
 			return VerificationResult.SUCCESS;

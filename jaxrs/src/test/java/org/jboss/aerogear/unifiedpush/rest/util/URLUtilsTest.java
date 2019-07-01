@@ -1,7 +1,8 @@
-package org.jboss.aerogear.unifiedpush.auth;
+package org.jboss.aerogear.unifiedpush.rest.util;
 
 import static org.junit.Assert.assertTrue;
 
+import org.jboss.aerogear.unifiedpush.rest.util.URLUtils;
 import org.junit.Test;
 
 public class URLUtilsTest {

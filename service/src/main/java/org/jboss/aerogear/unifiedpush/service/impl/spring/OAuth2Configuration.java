@@ -18,6 +18,7 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 	private static final String KEY_OAUTH2_SERVER_URL = "aerogear.config.oauth2.keycloak.url";
 	private static final String KEY_OAUTH2_UPS_REALM = "aerogear.config.oauth2.ups.realm.name";
 	private static final String KEY_OAUTH2_UPSI_REALM = "aerogear.config.oauth2.upsi.realm.name";
+	private static final String KEY_OAUTH2_UPS_MASTER_REALM = "aerogear.config.oauth2.ups.master.realm.name";
 
 	private static final String KEY_OAUTH2_ADMIN_USERNAME = "aerogear.config.oauth2.admin.username";
 	private static final String KEY_OAUTH2_ADMIN_PASSWORD = "aerogear.config.oauth2.admin.password";
@@ -31,6 +32,7 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 
 	public static final String DEFAULT_OAUTH2_UPS_REALM = "unifiedpush";
 	public static final String DEFAULT_OAUTH2_UPSI_REALM = "unifiedpush-installations";
+	public static final String DEFAULT_OAUTH2_UPS_MASTER_REALM = "master";
 	public static final String DEFAULT_SUBDOMAIN_SEPERATOR = "-";
 
 	private static ConfigurationEnvironment configuration;
@@ -49,6 +51,9 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 
 	public String getUpsiRealm() {
 		return getProperty(KEY_OAUTH2_UPSI_REALM, DEFAULT_OAUTH2_UPSI_REALM);
+	}
+	public String getUpsMasterRealm() {
+		return getProperty(KEY_OAUTH2_UPS_MASTER_REALM, DEFAULT_OAUTH2_UPS_MASTER_REALM);
 	}
 
 	public String getAdminClient() {

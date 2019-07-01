@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.rest.util.BearerHelper;
+import org.jboss.aerogear.unifiedpush.rest.util.URLUtils;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.KeycloakDeployment;

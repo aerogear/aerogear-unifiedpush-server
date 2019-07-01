@@ -56,9 +56,9 @@ public interface AliasService {
 	 * @param newPassword
 	 *            - user old password
 	 */
-	void updateAliasePassword(String aliasId, String currentPassword, String newPassword);
+	void updateAliasPassword(String aliasId, String currentPassword, String newPassword, String applicationName);
 
-	boolean registered(String alias);
+	boolean registered(String alias, String applicationName);
 
 	Associated associated(String fqdn, String alias);
 
@@ -102,9 +102,5 @@ public interface AliasService {
 
 	void createAsynchronous(Alias alias);
 
-	int updateKCUsersGuids();
-
 	Set<UserTenantInfo> getTenantRelations(String alias);
-
-	int addClientScope(String clientScope);
 }

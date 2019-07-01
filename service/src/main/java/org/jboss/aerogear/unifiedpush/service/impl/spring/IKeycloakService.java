@@ -13,30 +13,28 @@ public interface IKeycloakService {
 
 	void createClientIfAbsent(PushApplication pushApplication);
 
-	void removeClient(PushApplication pushApplicaiton);
+	void removeClient(PushApplication pushApplication);
 
-	void createVerifiedUserIfAbsent(String userName, String password, Collection<UserTenantInfo> userTenantInfos);
+	void createVerifiedUserIfAbsent(String userName, String password, Collection<UserTenantInfo> userTenantInfos, String realm);
 
-	boolean exists(String userName);
+	boolean exists(String userNam, String applicationName);
 
-	void delete(String userName);
+	void delete(String userName, String applicationName);
 
 	@Cacheable(value = IKeycloakService.CACHE_NAME, unless = "#result == null")
-	List<String> getVariantIdsFromClient(String clientId);
+	List<String> getVariantIdsFromClient(String clientId, String realm);
 
-	void updateUserPassword(String aliasId, String currentPassword, String newPassword);
+	void updateUserPassword(String aliasId, String currentPassword, String newPassword, String applicationName);
 
-	void resetUserPassword(String aliasId, String newPassword);
+	void resetUserPassword(String aliasId, String newPassword, String applicationName);
 
-	boolean isInitialized();
+	boolean isInitialized(String realmName);
 
 	String strip(String fqdn);
 
 	String seperator();
 
-	int addClientScope(String clientScope);
+	void updateTenantsExistingUser(String representativeAlias, Collection<UserTenantInfo> tenantRelations, String applicationName);
 
-	int updateUserAttribute(Map<String, ? extends Collection<UserTenantInfo>> aliasToIdentifiers);
-
-	void updateTenantsExistingUser(String representativeAlias, Collection<UserTenantInfo> tenantRelations);
+	String getRealmName(String applicationName);
 }

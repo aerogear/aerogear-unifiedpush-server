@@ -52,6 +52,7 @@ import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.PasswordContainer;
 import org.jboss.aerogear.unifiedpush.rest.util.BearerHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.PushAppAuthHelper;
+import org.jboss.aerogear.unifiedpush.rest.util.URLUtils;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.impl.AliasServiceImpl.Associated;
@@ -119,16 +120,16 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 *
 	 *             TODO - Rename to registered
 	 */
-	@GET
-	@Path("/exists/{alias}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ReturnType("java.lang.Boolean")
-	public Response registered(@PathParam("alias") String alias, @Context HttpServletRequest request) {
-		if (aliasService.registered(alias))
-			return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);
-
-		return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
-	}
+//	@GET
+//	@Path("/exists/{alias}")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@ReturnType("java.lang.Boolean")
+//	public Response registered(@PathParam("alias") String alias, @Context HttpServletRequest request) {
+//		if (aliasService.registered(alias))//TODO TAL TBD with Ilan
+//			return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);
+//
+//		return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
+//	}
 
 	/**
 	 * RESTful API for validating alias existence (associated) within a team. The
@@ -225,14 +226,17 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 			@Context HttpServletRequest request) {
 
 		// Endpoint is not protected by keycloak, we assume Bearer exists.
-		// TODO - Find a way to validate current user password.
 		try {
 			AccessToken accessToken = BearerHelper.getTokenDataFromBearer(request).orNull();
 			if (accessToken != null && accessToken.getPreferredUsername().equals(alias)) {
 				ResponseBuilder response = Response.notModified();
 				if (passwordContainer.isDataValid()) {
-					aliasService.updateAliasePassword(alias, passwordContainer.getCurrentPassword(),
-							passwordContainer.getNewPassword());
+
+                    String issuer = accessToken.getIssuer();
+					String jwtApplicationName = URLUtils.getLastPart(issuer);
+
+					aliasService.updateAliasPassword(alias, passwordContainer.getCurrentPassword(),
+							passwordContainer.getNewPassword(), jwtApplicationName);
 
 					response = Response.ok(EmptyJSON.STRING);
 				}
@@ -616,35 +620,6 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 			return Response.ok().build();
 		} catch (Exception e) {
 			logger.error(String.format("Cannot destructively delete alias by alias id %s", id), e);
-			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
-		}
-	}
-
-	@POST
-	@Path("/kc/updateGuids")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ReturnType("org.jboss.aerogear.unifiedpush.api.Alias")
-	public Response updateKcGuids(@Context HttpServletRequest request) {
-		try {
-			int updated = aliasService.updateKCUsersGuids();
-			return appendAllowOriginHeader(Response.ok(Collections.singletonMap("count", updated)), request);
-		} catch (Exception e) {
-			logger.error("Cannot update guids", e);
-			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
-		}
-	}
-
-	@POST
-	@Path("/kc/addClientScope")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ReturnType("org.jboss.aerogear.unifiedpush.api.Alias")
-	public Response addClientScope(@Context HttpServletRequest request
-			, @QueryParam("clientScope") @DefaultValue(USER_TENANT_SCOPE) String clientScope) {
-		try {
-			int updated = aliasService.addClientScope(clientScope);
-			return appendAllowOriginHeader(Response.ok(Collections.singletonMap("count", updated)), request);
-		} catch (Exception e) {
-			logger.error("Cannot add client scope", e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
 		}
 	}

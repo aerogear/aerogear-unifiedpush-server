@@ -89,8 +89,8 @@ public class AliasServiceImpl implements AliasService {
 	}
 
 	@Override
-	public void updateAliasePassword(String aliasId, String currentPassword, String newPassword) {
-		keycloakService.updateUserPassword(aliasId, currentPassword, newPassword);
+	public void updateAliasPassword(String aliasId, String currentPassword, String newPassword, String applicationName) {
+		keycloakService.updateUserPassword(aliasId, currentPassword, newPassword, applicationName);
 	}
 
 	@Override
@@ -116,8 +116,9 @@ public class AliasServiceImpl implements AliasService {
 
 	private List<UserKey> remove(UUID pushApplicationId, String alias, boolean destructive) {
 		if (destructive) {
+			PushApplication pushApplication = pushApplicationService.findByPushApplicationID(pushApplicationId.toString());
 			// Remove user from keyCloak
-			keycloakService.delete(alias);
+			keycloakService.delete(alias, pushApplication.getName());
 
 			documentService.delete(pushApplicationId, find(pushApplicationId.toString(), alias));
 		}
@@ -158,8 +159,8 @@ public class AliasServiceImpl implements AliasService {
 	 * @param alias alias name
 	 */
 	@Override
-	public boolean registered(String alias) {
-		return keycloakService.exists(alias);
+	public boolean registered(String alias, String applicationName) {
+		return keycloakService.exists(alias, applicationName);
 	}
 
 	/**
@@ -169,7 +170,7 @@ public class AliasServiceImpl implements AliasService {
 	 * @param fqdn  domain / team name.
 	 */
 	@Override
-	public Associated associated(String alias, String fqdn) {
+	public Associated associated(String alias, String fqdn) {//${APPNAME}-${BAREDOMAIN:mcs.c-b4.com}.
 		PushApplication pushApplication = null;
 
 		// Return application name from fqdn.
@@ -231,7 +232,7 @@ public class AliasServiceImpl implements AliasService {
 					if (destructive) {
 						// KC users are registered by email
 						if (StringUtils.isNotEmpty(alias.getEmail()))
-							keycloakService.delete(alias.getEmail());
+							keycloakService.delete(alias.getEmail(), pushApplication.getName());
 
 						documentService.delete(pushApplicationId, alias);
 					}
@@ -273,9 +274,11 @@ public class AliasServiceImpl implements AliasService {
 		User representative = users.get(0);
 		String representativeAlias = representative.getAlias();
 
-		if (registered(representativeAlias)) {
+		PushApplication pushApplication = pushApplicationService.findByPushApplicationID(alias.getPushApplicationId().toString());
+		String applicationName = pushApplication.getName();
+		if (registered(representativeAlias, applicationName)) {
 			Set<UserTenantInfo> tenantRelations = getTenantRelations(representativeAlias);
-			keycloakService.updateTenantsExistingUser(representativeAlias, tenantRelations);
+			keycloakService.updateTenantsExistingUser(representativeAlias, tenantRelations, applicationName);
 		}
 
 	}
@@ -284,18 +287,6 @@ public class AliasServiceImpl implements AliasService {
 	@Async
 	public void createAsynchronous(Alias alias) {
 		create(alias);
-	}
-
-	@Override
-	public int updateKCUsersGuids() {
-		Map<String, Set<UserTenantInfo>> aliasToIdentifiers = aliasDao.findAllUserTenantRelations()
-				.collect(Collectors.groupingBy(row -> {
-							String alias = row.getAlias();
-							return alias.toLowerCase(); // alias is case insensitive
-						},
-						Collectors.mapping(userKeyToTenantInfo(), Collectors.toSet())));
-
-		return keycloakService.updateUserAttribute(aliasToIdentifiers);
 	}
 
 	private Function<UserKey, UserTenantInfo> userKeyToTenantInfo() {
@@ -332,11 +323,6 @@ public class AliasServiceImpl implements AliasService {
 			}
 		}
 		return result;
-	}
-
-	@Override
-	public int addClientScope(String clientScope) {
-		return keycloakService.addClientScope(clientScope);
 	}
 
 	public class Associated {

@@ -1,4 +1,4 @@
-package org.jboss.aerogear.unifiedpush.auth;
+package org.jboss.aerogear.unifiedpush.rest.util;
 
 import java.net.URI;
 import java.net.URISyntaxException;

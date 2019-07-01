@@ -88,8 +88,10 @@ public interface PushApplicationDao extends GenericBaseDao<PushApplication, Stri
      *
      * @param variantIDs list of variant ids
      *
-     * @return list of push applications
+     * @return list of push applications\
+     *
      */
+    //TODO TAL
     List<PushApplication> findByVariantIds(List<String> variantIDs);
 
     PushApplication findByVariantId(String variantId);
