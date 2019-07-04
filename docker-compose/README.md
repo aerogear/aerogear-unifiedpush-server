@@ -1,53 +1,20 @@
 # UnifiedPush Server - Docker Compose
 
-## Official Release with database and Keycloak
-
-The quickest way to run the latest release of the UPS is running it [Docker image](https://github.com/jboss-dockerfiles/aerogear/tree/master/wildfly/unifiedpush-wildfly).
+The quickest way to run the latest release of the UPS is running it [Docker image](https://hub.docker.com/r/aerogear/).
 
 But this still requires a few commands, to launch the required DB and the server itself. To fasten the process `cd` into this folder and use our Docker Compose files:
 
-| Compose File Version    	| Docker Engine Version 	|
-|-------------------------	|-----------------------	|
-| docker-compose-v2.1.yaml 	| 1.12.0+               	|
-
-
 ```
-docker-compose -f docker-compose-v2.1.yaml up -d
+docker-compose up
 ```
 
-This fires up all the components you need and finally launches the UPS at: `http:DOCKER_IP:9999/ag-push`
+This fires up all the components you need and finally launches the UPS at: `http:DOCKER_IP:9999/`
 
-## Development mode
+There is a pre configured admin user on Keycloak instance with the 123 password.
 
-in the `servers` directory we have two different flavors of the UPS:
-* `plain`: Just UPS, with H2 in-memory database
-* `keycloak`: UPS and Keycloak, both using H2 in-memory database
+> There is a *bug* on *docker-compose for Mac* with does not expose internal docker IP. To fix it you will need:
 
-### Plain UPS
-
-During the build of the project the `aerogear/ups:plain` is build. Afterwards, simply run it like:
-
-```
-docker run -p 18081:8080 -it aerogear/ups:plain 
-```
-
-This brings the UPS containers. Now, go to `http://localhost:18081/` and you can use it right away!
-
-
-### Keycloak UPS 
-
-During the build of the project the `aerogear/ups:kc` is build. Afterwards, simply run it like:
-
-```
-docker run -p 8080:8080 -it aerogear/ups:kc
-```
-
-This brings up both, Keycloak and the UPS containers. Now, go to `http://localhost:8080/` to login to the UPS!
-
-### Standalone Keycloak 
-
-It might be handy to just run Keycloak in a Linux container, like: 
-
-```
-docker-compose -f keycloak-standalone.yaml up -d
-```
+1. Change the keycloak service host to your machine IP [here](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/docker-compose/helper/exportKeycloakHost.sh#L6)
+   ```shell
+   export KEYCLOAK_SERVICE_HOST=[PUT YOUR MACHINE IP HERE] # change for you machine IP
+   ``` 
