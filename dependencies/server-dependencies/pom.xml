@@ -110,6 +110,7 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxrs</artifactId>
             <scope>provided</scope>
+            <version>3.5.0.CR1</version>
         </dependency>
 
         <dependency>
