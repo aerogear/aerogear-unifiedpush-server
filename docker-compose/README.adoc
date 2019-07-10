@@ -1,0 +1,37 @@
+ifdef::env-github[]
+:status:
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+:table-caption!:
+:namespace: mobile-security-service
+endif::[]
+
+:toc:
+:toc-placement!:
+
+= UnifiedPush Server - Docker Compose
+
+== Using Docker-Compose
+
+For your convenience, we do have an easy way of launch different configurations of the UPS, using our link:./docker-compose[Docker compose files]
+
+By the following command you can startup this project locally using Docker-Compose.
+
+[source,shell]
+----
+docker-compose -f docker-compose.yaml up
+----
+
+IMPORTANT: There is a bug on docker-compose for Mac with does not expose internal docker IP. To fix it you will need following the steps in <<Solving bug in Mac OS to use Docker-Compose>>
+
+== Solving bug in Mac OS to use Docker-Compose
+
+. Replace the keycloak service host to your IP machine in the link:./helper/exportKeycloakHost.sh[exportKeycloakHost.sh] as follows.
++
+[source,shell]
+----
+export KEYCLOAK_SERVICE_HOST=192.168.1.14 # change for you machine IP
+----

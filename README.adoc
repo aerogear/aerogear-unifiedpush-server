@@ -1,0 +1,145 @@
+ifdef::env-github[]
+:status:
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+:table-caption!:
+:namespace: mobile-security-service
+endif::[]
+
+:toc:
+:toc-placement!:
+
+= AeroGear UnifiedPush Server
+
+ifdef::status[]
+.*Project health*
+image:https://travis-ci.org/aerogear/aerogear-unifiedpush-server.png[Build Status (Trevis), link=https://travis-ci.org/aerogear/aerogear-unifiedpush-server]
+image:https://img.shields.io/:license-Apache2-blue.svg[License (License), link=http://www.apache.org/licenses/LICENSE-2.0]
+image:https://maven-badges.herokuapp.com/maven-central/org.jboss.aerogear.unifiedpush/unifiedpush-parent/badge.svg[Maven Central (Maven Central), link=https://maven-badges.herokuapp.com/maven-central/org.jboss.aerogear.unifiedpush/unifiedpush-parent]
+endif::[]
+
+:toc:
+toc::[]
+
+== Overview
+
+The _AeroGear UnifiedPush Server_ is a server that allows sending push notifications to different (mobile) platforms and has support for:
+* https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/APNSOverview.html#//apple_ref/doc/uid/TP40008194-CH8-SW1[Apple’s APNs (HTTP/2)]
+* https://firebase.google.com/docs/cloud-messaging/[Firebase Cloud Messaging]
+
+image::https://raw.githubusercontent.com/aerogear/aerogear-unifiedpush-server/master/ups-ui-screenshot.pnghttps://raw.githubusercontent.com/aerogear/aerogear-unifiedpush-server/master/ups-ui-screenshot.png[Create Server,align="center"]
+
+== Project Info
+
+|===
+| License:        | Apache License, Version 2.0
+| Build:          | https://maven.apache.org[Maven]
+| Documentation:  | https://docs.aerogear.org
+| Issue tracker:  | https://issues.jboss.org/browse/AEROGEAR
+| Mailing lists:  | https://groups.google.com/forum/#!forum/aerogear[aerogear-dev]
+|===
+
+== Prerequisites
+
+|===
+| https://maven.apache.org/install.html[Maven]
+| https://docs.docker.com/install/[Docker]
+|===
+
+== Getting started
+
+=== Cloning the repository
+
+By the following commands you will create a local directory and clone this project.
+
+[source,shell]
+----
+git clone https://github.com/aerogear/aerogear-unifiedpush-server.git
+cd aerogear-unifiedpush-server
+----
+
+=== Running locally (Standalone)
+
+By the following commands you will create a local directory and clone this project.
+
+[source,shell]
+----
+mvn clean install -DskipTests
+docker run -p 9999:8080 -it aerogear/unifiedpush-configurable-container:2.2.2-SNAPSHOT 
+----
+
+To access this server go to `http://localhost:9999/`.
+
+NOTE: The standalone is going to use H2 as database, AMQ provides for the Wildfly using to run the UPS and it will not use the https://www.keycloak.org/[Keycloak].
+
+NOTE: If you would like to use Docker-Compose see link:./docker-compose/README.adoc[README].
+
+== Configuration
+
+=== Container Configuration
+
+The Unified Push Server build by default creates and registers a Docker formatted container image, aerogear/unifiedpush-configurable-container.  By default this container uses an in-memory database, in-vm amq messaging, and no authentication.  While ideal for testing, for actual use the following environment variables should be set
+
+|===
+| *Environment Variable*    | *Description*
+| `KEYCLOAK_SERVICE_HOST` | URL of a KeyCloak server providing authentication.
+| `KEYCLOAK_SERVICE_PORT` | KeyCloak service port.
+| `POSTGRES_SERVICE_PORT` | Port to connect to Postgres database.
+| `POSTGRES_SERVICE_HOST` | URL of Postgres database.
+| `POSTGRES_USER` | Postgres username to use.
+| `POSTGRES_PASSWORD` | Postgres password to use.
+| `ARTEMIS_SERVICE_HOST` | Artemis AMQ service URL.
+| `ARTEMIS_SERVICE_PORT` |  Artemis AMQ service Port.
+| `ARTEMIS_USER` |  Artemis AMQ service username.
+| `ARTEMIS_PASSWORD` |  Artemis AMQ service password.
+|===
+
+===  Unified Push Server
+
+The Unified Push Server can be configured with either System Properties (passed to the Java commandline) or Environment Variables. The two options have different formats and the following list describes them using `System Property Name`/`Env Var Name`: `Purpose`.
+
+|===
+| *Environment Variable*    | *Description*
+| `CUSTOM_AEROGEAR_APNS_PUSH_HOST` | Custom host for sending Apple push notifications. Can be used for testing.
+| `CUSTOM_AEROGEAR_APNS_PUSH_PORT` | Custom port for the Apple Push Network host.
+| `CUSTOM_AEROGEAR_FCM_PUSH_HOST` | Custom host for sending Google Firebase push notifications. Can be used for testing.
+| `UPS_REALM_NAME` | Override Keycloak Realm.
+| `KEYCLOAK_SERVICE_HOST` | Override Keycloak authentication redirect.
+| `AEROGEAR_METRICS_STORAGE_DAYS` | Override the number of days the metrics are stored (default is 30 days).
+| `ARTEMIS_URL` | URL For AMQP Server.
+| `ARTEMIS_PORT` |  PORT For AMQP Server.
+| `ARTEMIS_PASSWORD` |  Password for AMQP server.
+| `ARTEMIS_USERNAME` |  Username for AMQP server.
+|===
+
+== Releasing the UnifiedPush Server
+
+The content of the [Release Process](https://github.com/aerogear/collateral/wiki/Release-Process-(Java)) is valid for this project as well. However, to build the full `distribution` bundle, you need to fire off the release like:
+
+[source,shell]
+----
+## prepare the release and define the TAG and adjust the versions:
+mvn release:prepare -Dtag=x.y.z.Final -Darguments=-Dgpg.passphrase=$MY_SECRET_PASS_PHRASE -Pdist,test
+
+## run the actual release process and load the artifacts to JBoss Nexus
+mvn release:perform -DperformRelease=true -Darguments=-Dgpg.passphrase=$MY_SECRET_PASS_PHRASE -Dgpg.useagent=true -Pdist,test
+----
+
+== License
+
+See link:./LICENSE.txt[LICENSE]
+
+== Contributing
+
+All contributions are hugely appreciated. Please see our https://aerogear.org/community/#guides[Contributing Guide] for guidelines on how to open issues and pull requests. Please check out our link:./.github/CODE_OF_CONDUCT.md[Code of Conduct] too.
+
+== Questions
+
+There are a number of ways you can get in in touch with us, please see the https://aerogear.org/community/#contact[AeroGear community].
+
+== Found a bug?
+
+If you found a bug please create a ticket for us on [Jira](https://issues.jboss.org/browse/AEROGEAR) with some steps to reproduce it.
