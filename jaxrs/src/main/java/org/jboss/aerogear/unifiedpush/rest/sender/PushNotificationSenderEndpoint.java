@@ -16,14 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.sender;
 
-import io.prometheus.client.Counter;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.auth.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
-import org.jboss.aerogear.unifiedpush.auth.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.aerogear.unifiedpush.service.metrics.PrometheusExporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,11 +42,6 @@ import javax.ws.rs.core.Response.Status;
 public class PushNotificationSenderEndpoint {
 
     private static final Logger logger = LoggerFactory.getLogger(PushNotificationSenderEndpoint.class);
-
-    private static final Counter promPushRequestsTotal = Counter.build()
-            .name("aerogear_ups_push_requests_total")
-            .help("Total number of push requests.")
-            .register();
 
     @Inject
     private PushApplicationService pushApplicationService;
@@ -93,7 +88,7 @@ public class PushNotificationSenderEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response send(final InternalUnifiedPushMessage message, @Context HttpServletRequest request) {
 
-        promPushRequestsTotal.inc();
+        PrometheusExporter.instance().increaseTotalPushRequests();
 
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);
         if (pushApplication == null) {
