@@ -7,31 +7,29 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.service.RealmsService;
 import org.jboss.aerogear.unifiedpush.service.impl.UserTenantInfo;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration.DomainMatcher;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
-import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -51,9 +49,15 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	private static final String ATTRIBUTE_SECRET_SUFFIX = "_secret";
 	public static final String USER_TENANT_RELATIONS = "userTenantRelations";
 
-	private ConcurrentMap<String, RealmResource> realmNameToRealm = new ConcurrentHashMap<>();
+
     private volatile Boolean oauth2Enabled;
-	private Keycloak kc;
+
+	@Autowired
+    @Lazy
+	private KeycloakClient kc;
+
+	@Autowired
+	private RealmsService realmsService;
 
 	@Autowired
 	private CacheManager cacheManager;
@@ -61,73 +65,15 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	@Autowired
 	private IOAuth2Configuration conf;
 
-    public boolean isInitialized(String realmName) {
-		if (!conf.isOAuth2Enabled()) {
-			return false;
-		}
-
-		if(!realmNameToRealm.containsKey(realmName)) {
-			if (kc == null) {
-				initializeKeycloakAndMasterRealm();
-				synchronized (this) {
-					if (kc == null) {
-						this.initializeKeycloakAndMasterRealm();
-
-					}
-				}
-			}
-			if(!realmName.toLowerCase().equals(conf.getUpsMasterRealm().toLowerCase())) {
-				RealmResource realm = kc.realm(realmName);
-				if (realm != null) {
-					setRealmConfiguration(realmName, realm);
-					return true;
-				} else {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	private synchronized void initializeKeycloakAndMasterRealm() {
-		String keycloakPath = conf.getOAuth2Url();
-		String upsMasterRealmName = conf.getUpsMasterRealm();
-		String cliClientId = conf.getAdminClient();
-		String userName = conf.getAdminUserName();
-		String userPassword = conf.getMasterPassword();
-
-		this.kc = KeycloakBuilder.builder() //
-				.serverUrl(keycloakPath) //
-				.realm(upsMasterRealmName)//
-				.username(userName) //
-				.password(userPassword) //
-				.clientId(cliClientId) //
-				.resteasyClient( //
-						// Setting TTL to 10 seconds, prevent KC token
-						// expiration.
-						new ResteasyClientBuilder().connectionPoolSize(25).connectionTTL(10, TimeUnit.SECONDS).build()) //
-				.build();
-
-		RealmResource masterRealm = this.kc.realm(upsMasterRealmName);
-		setRealmConfiguration(upsMasterRealmName, masterRealm);
-
+	@PostConstruct
+	public void init(){
 		oauth2Enabled = conf.isOAuth2Enabled();
-	}
-
-	private void setRealmConfiguration(String realmName, RealmResource realm) {
-		RealmRepresentation realmRepresentation = realm.toRepresentation();
-		realmRepresentation.setRememberMe(true);
-		realmRepresentation.setResetPasswordAllowed(true);
-		realmNameToRealm.put(realmName, realm);
 	}
 
 	@Override
 	public void createClientIfAbsent(PushApplication pushApplication) {
 		String applicationName = pushApplication.getName().toLowerCase();
 		String realmName = getRealmName(applicationName);
-		if (!isInitialized(realmName)) {
-			return;
-		}
 
 		String clientName = CLIENT_PREFIX + applicationName;
 		ClientRepresentation clientRepresentation = isClientExists(pushApplication, realmName);
@@ -164,9 +110,6 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
 	public void removeClient(PushApplication pushApplication) {
 		String realmName = getRealmName(pushApplication.getName());
-		if (!isInitialized(realmName)) {
-			return;
-		}
 
 		ClientRepresentation client = isClientExists(pushApplication, realmName);
 
@@ -185,10 +128,6 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	 * @param userTenantInfos tenant infos of the user, to be added as keycloak attribute
 	 */
 	public void createVerifiedUserIfAbsent(String userName, String password, Collection<UserTenantInfo> userTenantInfos, String realmName) {
-		if (!isInitialized(realmName)) {
-			return;
-		}
-
 		UserRepresentation user = getUser(userName, realmName);
 
 		if (user == null) {
@@ -240,9 +179,6 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
 	public boolean exists(String userName, String applicationName) {
 		String realmName = getRealmName(applicationName);
-		if (!isInitialized(realmName)) {
-			return false;
-		}
 
 		UserRepresentation user = getUser(userName, realmName);
 		if (user == null) {
@@ -256,9 +192,6 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	@Async
 	public void delete(String userName, String applicationName) {
 		String realmName = getRealmName(applicationName);
-		if (!isInitialized(realmName)) {
-			return;
-		}
 
 		if (StringUtils.isEmpty(userName)) {
 			logger.warn("Cancel attempt to remove empty or null username");
@@ -461,10 +394,22 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
 	public String getRealmName(String applicationName) {
 		applicationName = applicationName.toLowerCase();
-		return isInitialized(conf.getUpsMasterRealm()) && kc.realms().realm(applicationName) != null ? applicationName : conf.getUpsiRealm();
+		String realmName = realmsService.get(applicationName);
+		if(realmName == null){
+			Keycloak keycloak = kc.getKeycloak();
+			RealmResource realmResource = keycloak.realm(applicationName);
+			try {
+				realmName = realmResource.toRepresentation().getRealm();
+			} catch (Exception ex) {
+				logger.warn("Failed to retrieve realm representation for realm {}, cause: {}", applicationName, ex.getMessage());
+				realmName = conf.getUpsiRealm();
+			}
+			realmsService.insert(applicationName, realmName);
+		}
+		return realmName;
 	}
 
 	private RealmResource getRealm(String realmName) {
-		return realmNameToRealm.get(realmName);
+		return kc.getKeycloak().realm(realmName);
 	}
 }

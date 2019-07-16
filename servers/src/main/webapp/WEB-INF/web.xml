@@ -29,8 +29,13 @@
 	</resource-ref>
 
 	<resource-ref>
-		<res-ref-name>infinispan/config/variant-ids-per-clientid</res-ref-name>
+		<res-ref-name>infinispan/config/realms-cache</res-ref-name>
 		<lookup-name>java:jboss/infinispan/configuration/aerogear/variant-ids-per-clientid</lookup-name>
+	</resource-ref>
+
+	<resource-ref>
+		<res-ref-name>infinispan/config/realms</res-ref-name>
+		<lookup-name>java:jboss/infinispan/configuration/aerogear/realms</lookup-name>
 	</resource-ref>
 
 	<resource-ref>

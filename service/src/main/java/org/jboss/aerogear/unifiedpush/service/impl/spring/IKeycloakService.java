@@ -22,8 +22,6 @@ public interface IKeycloakService {
 
 	void resetUserPassword(String aliasId, String newPassword, String applicationName);
 
-	boolean isInitialized(String realmName);
-
 	String strip(String fqdn);
 
 	String seperator();

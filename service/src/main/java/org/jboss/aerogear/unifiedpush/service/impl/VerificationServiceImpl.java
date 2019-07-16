@@ -155,7 +155,7 @@ public class VerificationServiceImpl implements VerificationService {
 			// Enable OAuth2 User
 			PushApplication pushApplication = pushApplicationService.findByVariantID(variantId.toString());
 			String realmName = keycloakService.getRealmName(pushApplication.getName());
-			if (keycloakService.isInitialized(realmName) && verificationAttempt.isOauth2()) {
+			if (verificationAttempt.isOauth2()) {
 				if (resetOnly) {
 					keycloakService.resetUserPassword(alias, verificationAttempt.getCode(), realmName);
 				} else {
@@ -197,7 +197,7 @@ public class VerificationServiceImpl implements VerificationService {
 			// Enable OAuth2 User
 			PushApplication pushApplication = pushApplicationService.findByVariantID(variant.getVariantID());
 			String realmName = keycloakService.getRealmName(pushApplication.getName());
-			if (keycloakService.isInitialized(realmName) && verificationAttempt.isOauth2()) {
+			if (verificationAttempt.isOauth2()) {
 				keycloakService.createVerifiedUserIfAbsent(installation.getAlias(), verificationAttempt.getCode(), null, realmName);
 			}
 

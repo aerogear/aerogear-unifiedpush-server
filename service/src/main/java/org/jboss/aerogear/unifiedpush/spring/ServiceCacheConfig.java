@@ -18,6 +18,7 @@ import org.jboss.aerogear.unifiedpush.cassandra.dao.DatabaseDao;
 import org.jboss.aerogear.unifiedpush.cassandra.dao.model.OtpCodeKey;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.aerogear.unifiedpush.service.RealmsService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,7 @@ public class ServiceCacheConfig {
 			DatabaseDao.CACHE_NAME, //
 			AliasDao.CACHE_NAME, //
 			IKeycloakService.CACHE_NAME, //
+			RealmsService.REALMS_CACHE_NAME, //
 			GenericVariantService.CACHE_NAME, ///
 			PushApplicationService.APPLICATION_CACHE_BY_ID, //
 			PushApplicationService.APPLICATION_CACHE_BY_VAR_ID, //
