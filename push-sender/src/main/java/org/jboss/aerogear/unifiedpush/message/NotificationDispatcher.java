@@ -24,6 +24,7 @@ import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.message.token.TokenLoader;
+import org.jboss.aerogear.unifiedpush.service.metrics.PrometheusExporter;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +92,7 @@ public class NotificationDispatcher {
         @Override
         public void onError(final String reason) {
             logger.warn("Error on '{}' delivery: {}", variant.getType().getTypeName(), reason);
+            PrometheusExporter.instance().increaseTotalPushRequestsFail();
             pushMessageMetricsService.appendError(pushMessageInformation, variant, reason);
         }
     }

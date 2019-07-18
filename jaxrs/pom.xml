@@ -99,18 +99,6 @@
             <artifactId>guava</artifactId>
             <version>27.0.1-jre</version>
         </dependency>
-    
-        <dependency>
-            <groupId>io.prometheus</groupId>
-            <artifactId>simpleclient_common</artifactId>
-            <version>${prometheus.simpleclient.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.prometheus</groupId>
-            <artifactId>simpleclient_hotspot</artifactId>
-            <version>${prometheus.simpleclient.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.jboss.spec.javax.jms</groupId>
             <artifactId>jboss-jms-api_1.1_spec</artifactId>

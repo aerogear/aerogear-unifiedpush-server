@@ -18,7 +18,6 @@ package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.prometheus.client.Counter;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
@@ -27,6 +26,7 @@ import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.service.metrics.PrometheusExporter;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
@@ -49,11 +49,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
     // at some point we should move the mapper to a util class.?
     public static final ObjectMapper mapper = new ObjectMapper();
-
-    private static final Counter promDeviceRegisterRequestsTotal = Counter.build()
-            .name("aerogear_ups_device_register_requests_total")
-            .help("Total number of Device register requests.")
-            .register();
 
     private static final Logger logger = LoggerFactory.getLogger(InstallationRegistrationEndpoint.class);
     @Inject
@@ -153,7 +148,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
             Installation entity,
             @Context HttpServletRequest request) {
 
-        promDeviceRegisterRequestsTotal.inc();
+        PrometheusExporter.instance().increaseTotalDeviceRegisterRequests();
 
         // find the matching variation:
         final Variant variant = loadVariantWhenAuthorized(request);

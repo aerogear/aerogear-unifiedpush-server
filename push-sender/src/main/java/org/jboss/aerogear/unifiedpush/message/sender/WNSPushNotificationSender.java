@@ -18,18 +18,8 @@ package org.jboss.aerogear.unifiedpush.message.sender;
 
 import ar.com.fernandospr.wns.WnsService;
 import ar.com.fernandospr.wns.exceptions.WnsException;
-import ar.com.fernandospr.wns.model.WnsBadge;
-import ar.com.fernandospr.wns.model.WnsNotificationRequestOptional;
-import ar.com.fernandospr.wns.model.WnsNotificationResponse;
-import ar.com.fernandospr.wns.model.WnsRaw;
-import ar.com.fernandospr.wns.model.WnsTile;
-import ar.com.fernandospr.wns.model.WnsToast;
-import ar.com.fernandospr.wns.model.builders.WnsAbstractBuilder;
-import ar.com.fernandospr.wns.model.builders.WnsBadgeBuilder;
-import ar.com.fernandospr.wns.model.builders.WnsRawBuilder;
-import ar.com.fernandospr.wns.model.builders.WnsTileBuilder;
-import ar.com.fernandospr.wns.model.builders.WnsToastBuilder;
-import io.prometheus.client.Counter;
+import ar.com.fernandospr.wns.model.*;
+import ar.com.fernandospr.wns.model.builders.*;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
@@ -46,23 +36,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.UriBuilder;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @SenderType(VariantType.WINDOWS_WNS)
 public class WNSPushNotificationSender implements PushNotificationSender {
 
     private static final Logger logger = LoggerFactory.getLogger(WNSPushNotificationSender.class);
-
-    private static final Counter promPrushRequestsWindows = Counter.build()
-            .name("aerogear_ups_push_requests_windows_wns")
-            .help("Total number of Windows (WNS) push batch requests.")
-            .register();
 
     private static final String CORDOVA = "cordova";
     static final String CORDOVA_PAGE = "/Plugins/aerogear-cordova-push/P.xaml";
@@ -92,9 +72,6 @@ public class WNSPushNotificationSender implements PushNotificationSender {
             if (ttl != -1) {
                 optional.ttl = String.valueOf(ttl);
             }
-
-            // about to deliver messages for this batch
-            promPrushRequestsWindows.inc();
 
             final List<WnsNotificationResponse> responses;
             if (message.getWindows().getType() != null) {

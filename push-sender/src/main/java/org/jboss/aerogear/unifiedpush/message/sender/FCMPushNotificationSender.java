@@ -21,7 +21,6 @@ import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Message.Builder;
 import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;
-import io.prometheus.client.Counter;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
@@ -31,25 +30,16 @@ import org.jboss.aerogear.unifiedpush.message.Priority;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.sender.fcm.ConfigurableFCMSender;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.metrics.PrometheusExporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @SenderType(VariantType.ANDROID)
 public class FCMPushNotificationSender implements PushNotificationSender {
-
-    private static final Counter promPrushRequestsAndroid = Counter.build()
-            .name("aerogear_ups_push_requests_android")
-            .help("Total number of Android push batch requests.")
-            .register();
 
     // collection of error codes we check for in the FCM response
     // in order to clean-up invalid or incorrect device tokens
@@ -122,7 +112,7 @@ public class FCMPushNotificationSender implements PushNotificationSender {
             final ConfigurableFCMSender sender = new ConfigurableFCMSender(androidVariant.getGoogleKey());
 
             // we are about to send HTTP requests for all tokens of topics of this batch
-            promPrushRequestsAndroid.inc();
+            PrometheusExporter.instance().increasetotalPushAndroidRequests();
 
             // send out a message to a batch of devices...
             processFCM(androidVariant, pushTargets, fcmMessage , sender);

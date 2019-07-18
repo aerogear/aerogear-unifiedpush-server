@@ -24,7 +24,6 @@ import com.turo.pushy.apns.proxy.Socks5ProxyHandlerFactory;
 import com.turo.pushy.apns.util.ApnsPayloadBuilder;
 import com.turo.pushy.apns.util.SimpleApnsPushNotification;
 import io.netty.util.concurrent.Future;
-import io.prometheus.client.Counter;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
@@ -38,6 +37,7 @@ import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderType;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
+import org.jboss.aerogear.unifiedpush.service.metrics.PrometheusExporter;
 import org.jboss.aerogear.unifiedpush.service.proxy.ProxyConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,6 @@ import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.net.ssl.SSLException;
-
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.Map;
@@ -65,9 +64,6 @@ public class PushyApnsSender implements PushNotificationSender {
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
     private static final String customAerogearApnsPushHost = tryGetGlobalProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
     private static final Integer customAerogearApnsPushPort = tryGetGlobalIntegerProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
-
-    private static final Counter promPrushRequestsIOS = Counter.build().name("aerogear_ups_push_requests_ios")
-            .help("Total number of iOS push batch requests.").register();
 
     private final ConcurrentSkipListSet<String> invalidTokens = new ConcurrentSkipListSet();
 
@@ -120,7 +116,7 @@ public class PushyApnsSender implements PushNotificationSender {
 
             // we are connected and are about to send
             // notifications to all tokens of the batch
-            promPrushRequestsIOS.inc();
+            PrometheusExporter.instance().increaseTotalPushIosRequests();
 
             // we have managed to connect and will send tokens ;-)
             senderCallback.onSuccess();
