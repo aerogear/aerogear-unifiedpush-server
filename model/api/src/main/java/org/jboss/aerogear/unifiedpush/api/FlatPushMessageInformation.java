@@ -39,9 +39,8 @@ public class FlatPushMessageInformation extends BaseModel {
     private Date lastOpenDate;
 
     // this is new:
-    // once an error on a variant occurs, a error reason will be added to the list
+    // once an error on a variant occurs, a error reason will be added to the list    
     private Set<VariantErrorStatus> errors = new HashSet();
-
 
     // end of not relevant section
 

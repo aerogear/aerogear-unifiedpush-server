@@ -21,6 +21,8 @@ services:
         ARTEMIS_PASSWORD: ${ARTEMIS_PASSWORD}
         ARTEMIS_SERVICE_HOST: ${ARTEMIS_SERVICE_HOST}
         ARTEMIS_SERVICE_PORT: ${ARTEMIS_SERVICE_PORT}
+        AMQ_MAX_RETRIES: ${AMQ_MAX_RETRIES}
+        AMQ_BACKOFF_SECONDS: ${AMQ_BACKOFF_SECONDS}
     links:
       - unifiedpushDB:unifiedpush
       - artemis:artemis

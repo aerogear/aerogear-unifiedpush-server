@@ -19,8 +19,8 @@ package org.jboss.aerogear.unifiedpush.message.jms;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 
-import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
+import org.jboss.aerogear.unifiedpush.message.util.QueueUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,31 +34,9 @@ public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProduce
 
     private static final Logger logger = LoggerFactory.getLogger(MessageHolderWithVariantsProducer.class);
 
-
-    private static final String APNS_PUSH_MESSAGE_QUEUE = "APNsPushMessageQueue";
-
-
-    private static final String GCMPUSH_MESSAGE_QUEUE = "GCMPushMessageQueue";
-
-
-    private static final String WNSPUSH_MESSAGE_QUEUE = "WNSPushMessageQueue";
-
     public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithVariants msg) {
         logger.trace("dispatching for processing variants and trigger token querying/batching");
-        sendTransacted(selectQueue(msg.getVariantType()), msg, false);
-    }
-
-    private String selectQueue(VariantType variantType) {
-        switch (variantType) {
-            case ANDROID:
-                return GCMPUSH_MESSAGE_QUEUE;
-            case IOS:
-                return APNS_PUSH_MESSAGE_QUEUE;
-            case WINDOWS_WNS:
-                return WNSPUSH_MESSAGE_QUEUE;
-            default:
-                throw new IllegalStateException("Unknown variant type queue");
-        }
+        sendTransacted(QueueUtils.selectPushQueue(msg.getVariantType()), msg, false);
     }
 
 }

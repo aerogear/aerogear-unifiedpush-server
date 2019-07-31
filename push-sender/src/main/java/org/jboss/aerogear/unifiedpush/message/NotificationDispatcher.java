@@ -18,14 +18,18 @@ package org.jboss.aerogear.unifiedpush.message;
 
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.message.token.TokenLoader;
+import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
+import org.jboss.aerogear.unifiedpush.message.util.QueueUtils;
 import org.jboss.aerogear.unifiedpush.service.metrics.PrometheusExporter;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,12 +48,20 @@ public class NotificationDispatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(NotificationDispatcher.class);
 
+    private static int maxRetries = ConfigurationUtils.tryGetGlobalIntegerProperty("AMQ_MAX_RETRIES", 3);
+    private static int retryTimeout = ConfigurationUtils.tryGetGlobalIntegerProperty("AMQ_BACKOFF_SECONDS", 10);
+
     @Inject
     @Any
     private Instance<PushNotificationSender> senders;
 
     @Inject
     private PushMessageMetricsService pushMessageMetricsService;
+
+    @Inject
+    private JmsClient jmsClient;
+
+    
 
     /**
      * Receives a {@link UnifiedPushMessage} and list of device tokens that the message should be sent to, selects appropriate sender implementation that
@@ -63,6 +75,9 @@ public class NotificationDispatcher {
         final Collection<String> deviceTokens = msg.getDeviceTokens();
 
         logger.info("Received UnifiedPushMessage from JMS queue, will now trigger the Push Notification delivery for the %s variant ({})", variant.getType().getTypeName(), variant.getVariantID());
+        String deduplicationId = String.format("%s-%s-%d", msg.getPushMessageInformation().getId(), msg.getSerialId(), msg.getRetryCount());
+        logger.debug("Receiving message " + deduplicationId);
+
         try {
             senders.select(new SenderTypeLiteral(variant.getType())).get()
           .sendPushMessage(variant, deviceTokens, unifiedPushMessage, msg.getPushMessageInformation().getId(),
@@ -83,12 +98,44 @@ public class NotificationDispatcher {
                     deviceTokens.size(),
                     msg.getPushMessageInformation()
                   ).onError(everything.getMessage());
+                
+                  int retryCount = msg.getRetryCount();
+                  if (retryCount < maxRetries) {
+
+                    MessageHolderWithTokens newMessage = new MessageHolderWithTokens(removeErrors(msg.getPushMessageInformation()), msg.getUnifiedPushMessage(), msg.getVariant(), msg.getDeviceTokens(), msg.getSerialId());
+                    for (int i = 0; i < msg.getRetryCount() + 1; i++) {
+                        newMessage.incrRetryCount();
+                    }
+
+                    final VariantType variantType = newMessage.getVariant().getType();
+                    deduplicationId = String.format("%s-%s-%d", newMessage.getPushMessageInformation().getId(), newMessage.getSerialId(), newMessage.getRetryCount());
+                    logger.debug("Sending retry message " + deduplicationId);
+
+                    jmsClient.send(newMessage).withDelayedDelivery(retryTimeout * 1000l * newMessage.getRetryCount()).withDuplicateDetectionId(deduplicationId).to(QueueUtils.selectTokenQueue(variantType));
+                  }
             } catch (Exception writeErrorException) {
                 logger.error("There was a error writing the exception.\n" +writeErrorException.getMessage(), writeErrorException);
             }
 
         }
+
     }
+
+
+    private FlatPushMessageInformation removeErrors(FlatPushMessageInformation pushMessageInformation) {
+        FlatPushMessageInformation info = new FlatPushMessageInformation();
+        info.setAppOpenCounter(pushMessageInformation.getAppOpenCounter());
+        info.setClientIdentifier(pushMessageInformation.getClientIdentifier());
+        info.setFirstOpenDate(pushMessageInformation.getFirstOpenDate());
+        info.setId(pushMessageInformation.getId());
+        info.setIpAddress(pushMessageInformation.getIpAddress());
+        info.setLastOpenDate(pushMessageInformation.getLastOpenDate());
+        info.setPushApplicationId(pushMessageInformation.getPushApplicationId());
+        info.setRawJsonMessage(pushMessageInformation.getRawJsonMessage());
+        info.setSubmitDate(pushMessageInformation.getSubmitDate());
+        return info;
+    }
+
 
     private class SenderServiceCallback implements NotificationSenderCallback {
         private final Variant variant;
