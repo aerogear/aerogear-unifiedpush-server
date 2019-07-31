@@ -35,6 +35,7 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.message.AbstractJMSTest;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
+import org.jboss.aerogear.unifiedpush.message.util.QueueUtils;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -53,6 +54,7 @@ public class TestTokenBatchDeduplication extends AbstractJMSTest {
         return UnifiedPushArchive.forTestClass(TestTokenBatchDeduplication.class)
                 .withMessaging()
                 .withMessageDrivenBeans()
+                .addClass(QueueUtils.class)
                 .as(WebArchive.class);
     }
 

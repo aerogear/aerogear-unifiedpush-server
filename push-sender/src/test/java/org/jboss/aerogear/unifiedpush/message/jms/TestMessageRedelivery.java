@@ -25,6 +25,7 @@ import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.exception.PushNetworkUnreachableException;
 import org.jboss.aerogear.unifiedpush.message.exception.SenderResourceNotAvailableException;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
+import org.jboss.aerogear.unifiedpush.message.util.QueueUtils;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -57,7 +58,8 @@ public class TestMessageRedelivery {
                 .withMessaging()
                 .withMessageDrivenBeans()
                 .withMockito()
-                    .addClasses(MockProviders.class)
+                .addClass(QueueUtils.class)
+                .addClasses(MockProviders.class)
                 .as(WebArchive.class);
     }
 
