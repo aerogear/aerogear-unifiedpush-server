@@ -63,7 +63,8 @@ public class NotificationDispatcher {
         final Collection<String> deviceTokens = msg.getDeviceTokens();
 
         logger.info("Received UnifiedPushMessage from JMS queue, will now trigger the Push Notification delivery for the %s variant ({})", variant.getType().getTypeName(), variant.getVariantID());
-        senders.select(new SenderTypeLiteral(variant.getType())).get()
+        try {
+            senders.select(new SenderTypeLiteral(variant.getType())).get()
           .sendPushMessage(variant, deviceTokens, unifiedPushMessage, msg.getPushMessageInformation().getId(),
             new SenderServiceCallback(
               variant,
@@ -71,6 +72,22 @@ public class NotificationDispatcher {
               msg.getPushMessageInformation()
             )
           );
+          
+        } catch (Exception everything) {
+            //What this catch block does is makes sure that errors are always 
+            // caught and never lead to a message we saw being requeued.
+            logger.error("There was an uncaught exception.\n" +everything.getMessage(), everything);
+            try {
+                new SenderServiceCallback(
+                    variant,
+                    deviceTokens.size(),
+                    msg.getPushMessageInformation()
+                  ).onError(everything.getMessage());
+            } catch (Exception writeErrorException) {
+                logger.error("There was a error writing the exception.\n" +writeErrorException.getMessage(), writeErrorException);
+            }
+
+        }
     }
 
     private class SenderServiceCallback implements NotificationSenderCallback {
