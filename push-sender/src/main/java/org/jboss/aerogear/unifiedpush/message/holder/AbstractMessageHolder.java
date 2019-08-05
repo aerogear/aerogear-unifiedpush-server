@@ -30,6 +30,7 @@ public abstract class AbstractMessageHolder implements Serializable {
 
     private FlatPushMessageInformation pushMessageInformation;
     private UnifiedPushMessage unifiedPushMessage;
+    private int retryCount = 0;
 
     public AbstractMessageHolder(FlatPushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage) {
         this.pushMessageInformation = pushMessageInformation;
@@ -42,6 +43,14 @@ public abstract class AbstractMessageHolder implements Serializable {
 
     public UnifiedPushMessage getUnifiedPushMessage() {
         return unifiedPushMessage;
+    }
+
+    public int getRetryCount() {
+        return retryCount;
+    }
+
+    public void incrRetryCount() {
+        retryCount++;
     }
 
 }

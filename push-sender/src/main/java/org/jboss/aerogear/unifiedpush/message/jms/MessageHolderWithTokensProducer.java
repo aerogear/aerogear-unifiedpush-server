@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
+import org.jboss.aerogear.unifiedpush.message.util.QueueUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,12 +35,6 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
 
     private static final Logger logger = LoggerFactory.getLogger(MessageHolderWithTokensProducer.class);
 
-    private static final String apnsTokenBatchQueue = "APNsTokenBatchQueue";
-
-    private static final String gcmTokenBatchQueue = "GCMTokenBatchQueue";
-
-    private static final String wnsTokenBatchQueue = "WNSTokenBatchQueue";
-
     @Inject
     private JmsClient jmsClient;
 
@@ -47,19 +42,7 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
         final VariantType variantType = msg.getVariant().getType();
         logger.trace("dispatching payload for {} variant type", variantType);
         final String deduplicationId = String.format("%s-%s", msg.getPushMessageInformation().getId(), msg.getSerialId());
-        jmsClient.send(msg).withDuplicateDetectionId(deduplicationId).to(selectQueue(variantType));
+        jmsClient.send(msg).withDuplicateDetectionId(deduplicationId).to(QueueUtils.selectTokenQueue(variantType));
     }
 
-    private String selectQueue(VariantType variantType) {
-        switch (variantType) {
-            case ANDROID:
-                return gcmTokenBatchQueue;
-            case IOS:
-                return apnsTokenBatchQueue;
-            case WINDOWS_WNS:
-                return wnsTokenBatchQueue;
-            default:
-                throw new IllegalStateException("Unknown variant type queue");
-        }
-    }
 }

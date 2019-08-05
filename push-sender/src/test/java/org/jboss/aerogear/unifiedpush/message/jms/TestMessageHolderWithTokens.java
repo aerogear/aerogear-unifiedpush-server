@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.message.MockProviders;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
+import org.jboss.aerogear.unifiedpush.message.util.QueueUtils;
 import org.jboss.aerogear.unifiedpush.test.archive.UnifiedPushArchive;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -50,6 +51,7 @@ public class TestMessageHolderWithTokens {
                 .withMessageDrivenBeans()
                 .withMockito()
                     .addClasses(MockProviders.class)
+                    .addClass(QueueUtils.class)
                 .as(WebArchive.class);
     }
 
