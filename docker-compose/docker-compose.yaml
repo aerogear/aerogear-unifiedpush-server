@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   unifiedpushserver:
-    image: aerogear/unifiedpush-configurable-container:2.2.2-SNAPSHOT
+    image: aerogear/unifiedpush-configurable-container:2.3.1-SNAPSHOT
     volumes:
        - ./helper:/ups-helper:z
     entrypoint: "/ups-helper/exportKeycloakHost.sh"
