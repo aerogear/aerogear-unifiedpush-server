@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   JBoss, Home of Professional Open Source
   Copyright Red Hat, Inc., and individual contributors
@@ -124,7 +124,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.0.2</version>
+            <version>4.5.9</version>
         </dependency>
         <dependency>
             <groupId>com.github.fernandospr</groupId>
@@ -197,6 +197,26 @@
                     <artifactId>keycloak-core</artifactId>
                     <version>4.8.3.Final</version>
                     <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.bouncycastle</groupId>
+                            <artifactId>bcprov-jdk15on</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>org.bouncycastle</groupId>
+                            <artifactId>bcpkix-jdk15on</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                    <version>1.62</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcpkix-jdk15on</artifactId>
+                    <version>1.62</version>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.derby</groupId>
