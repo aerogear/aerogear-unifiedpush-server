@@ -107,7 +107,8 @@ public final class ApnsUtil {
                     }
                 }
             }
-            return true;
+            return ApnsUtil.readDefaultTopic(keystore, password) != null;
+            
         } catch (Exception e) {
             LOGGER.error("Error parsing .p12 file content", e);
             return false; // garbage is also not valid
