@@ -68,7 +68,7 @@ By the following commands you will create a local directory and clone this proje
 [source,shell]
 ----
 mvn clean install -DskipTests
-docker run -p 9999:8080 -it aerogear/unifiedpush-configurable-container:2.3.2
+docker run -p 9999:8080 -it aerogear/unifiedpush-configurable-container:latest
 ----
 
 To access this server go to `http://localhost:9999/`.
