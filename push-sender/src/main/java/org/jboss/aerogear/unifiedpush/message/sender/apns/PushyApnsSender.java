@@ -18,7 +18,9 @@ package org.jboss.aerogear.unifiedpush.message.sender.apns;
 
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.ApnsClientBuilder;
+import com.turo.pushy.apns.DeliveryPriority;
 import com.turo.pushy.apns.PushNotificationResponse;
+import com.turo.pushy.apns.PushType;
 import com.turo.pushy.apns.proxy.HttpProxyHandlerFactory;
 import com.turo.pushy.apns.proxy.Socks5ProxyHandlerFactory;
 import com.turo.pushy.apns.util.ApnsPayloadBuilder;
@@ -48,6 +50,7 @@ import javax.inject.Inject;
 import javax.net.ssl.SSLException;
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -127,7 +130,8 @@ public class PushyApnsSender implements PushNotificationSender {
 
             tokens.forEach(token -> {
                 final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token, defaultApnsTopic,
-                        payload);
+                        payload, new Date(System.currentTimeMillis() + SimpleApnsPushNotification.DEFAULT_EXPIRATION_PERIOD_MILLIS), 
+                        DeliveryPriority.IMMEDIATE, determinePushType(pushMessage.getMessage()), null, null);
                 final Future<PushNotificationResponse<SimpleApnsPushNotification>> notificationSendFuture = apnsClient
                         .sendNotification(pushNotification);
 
@@ -146,7 +150,18 @@ public class PushyApnsSender implements PushNotificationSender {
         }
     }
 
-    private void handlePushNotificationResponsePerToken(
+    private PushType determinePushType(Message message) {
+    	if (!isEmpty(message.getAlert()) || !isEmpty(message.getSound())) {
+    		return PushType.ALERT;
+    	}
+    	return PushType.BACKGROUND;
+	}
+    
+    private boolean isEmpty(final CharSequence cs) {
+        return cs == null || cs.length() == 0;
+    }
+
+	private void handlePushNotificationResponsePerToken(
             final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse) {
 
         final String deviceToken = pushNotificationResponse.getPushNotification().getToken();
