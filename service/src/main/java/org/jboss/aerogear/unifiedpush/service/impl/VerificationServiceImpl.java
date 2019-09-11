@@ -153,7 +153,7 @@ public class VerificationServiceImpl implements VerificationService {
 			codeService.delete(okey);
 
 			// Enable OAuth2 User
-			PushApplication pushApplication = pushApplicationService.findByVariantID(variantId.toString());
+			PushApplication pushApplication = pushApplicationService.findByPushApplicationID(aliasObj.getPushApplicationId().toString());
 			String realmName = keycloakService.getRealmName(pushApplication.getName());
 			if (verificationAttempt.isOauth2()) {
 				if (resetOnly) {

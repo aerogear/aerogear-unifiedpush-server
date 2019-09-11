@@ -64,6 +64,11 @@
 	</resource-ref>
 
 	<resource-ref>
+		<res-ref-name>infinispan/config/application-to-realm</res-ref-name>
+		<lookup-name>java:jboss/infinispan/configuration/aerogear/application-to-realm</lookup-name>
+	</resource-ref>
+
+	<resource-ref>
 		<res-ref-name>infinispan/config/cluster-events-cache</res-ref-name>
 		<lookup-name>java:jboss/infinispan/configuration/aerogear/cluster-events-cache</lookup-name>
 	</resource-ref>
