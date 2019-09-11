@@ -18,7 +18,9 @@ package org.jboss.aerogear.unifiedpush.message.sender.apns;
 
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.ApnsClientBuilder;
+import com.turo.pushy.apns.DeliveryPriority;
 import com.turo.pushy.apns.PushNotificationResponse;
+import com.turo.pushy.apns.PushType;
 import com.turo.pushy.apns.proxy.HttpProxyHandlerFactory;
 import com.turo.pushy.apns.proxy.Socks5ProxyHandlerFactory;
 import com.turo.pushy.apns.util.ApnsPayloadBuilder;
@@ -48,6 +50,7 @@ import javax.inject.Inject;
 import javax.net.ssl.SSLException;
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -123,11 +126,13 @@ public class PushyApnsSender implements PushNotificationSender {
 
             final String defaultApnsTopic = ApnsUtil.readDefaultTopic(iOSVariant.getCertificate(),
                     iOSVariant.getPassphrase().toCharArray());
+            Date expireDate = createFutureDateBasedOnTTL(pushMessage.getConfig().getTimeToLive());
             logger.debug("sending payload for all tokens for {} to APNs ({})", iOSVariant.getVariantID(), defaultApnsTopic);
 
             tokens.forEach(token -> {
-                final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token, defaultApnsTopic,
-                        payload);
+				final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token,
+						defaultApnsTopic, payload, expireDate, DeliveryPriority.IMMEDIATE,
+						determinePushType(pushMessage.getMessage()), null, null);
                 final Future<PushNotificationResponse<SimpleApnsPushNotification>> notificationSendFuture = apnsClient
                         .sendNotification(pushNotification);
 
@@ -144,6 +149,31 @@ public class PushyApnsSender implements PushNotificationSender {
             senderCallback.onError("Unable to send notifications, client is not connected");
             variantUpdateEventEvent.fire(new iOSVariantUpdateEvent(iOSVariant));
         }
+    }
+    
+    /**
+     * Helper method that creates a future {@link Date}, based on the given ttl/time-to-live value.
+     * If no TTL was provided, we use the default value from the APNs library
+     */
+    private Date createFutureDateBasedOnTTL(int ttl) {
+        // no TTL was specified on the payload, we use the Default from the APNs library:
+        if (ttl < 0) {
+            return new Date(System.currentTimeMillis() + SimpleApnsPushNotification.DEFAULT_EXPIRATION_PERIOD_MILLIS);
+        } else {
+            // apply the given TTL to the current time
+            return new Date(System.currentTimeMillis() + ttl * 1000L);
+        }
+    }
+
+    private PushType determinePushType(Message message) {
+    	if (!isEmpty(message.getAlert()) || !isEmpty(message.getSound())) {
+    		return PushType.ALERT;
+    	}
+    	return PushType.BACKGROUND;
+	}
+    
+    private boolean isEmpty(final CharSequence cs) {
+        return cs == null || cs.length() == 0;
     }
 
     private void handlePushNotificationResponsePerToken(
