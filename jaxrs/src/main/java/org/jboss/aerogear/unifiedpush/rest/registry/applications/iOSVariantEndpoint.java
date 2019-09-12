@@ -95,7 +95,9 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
         iOSVariant.setPassphrase(form.getPassphrase());
         iOSVariant.setCertificate(form.getCertificate());
         iOSVariant.setProduction(form.getProduction());
-
+        iOSVariant.setVariantID(form.getVariantID());
+        iOSVariant.setSecret(form.getSecret());
+        
         // some model validation on the entity:
         try {
             validateModelClass(iOSVariant);
