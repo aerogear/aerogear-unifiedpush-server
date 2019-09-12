@@ -126,12 +126,13 @@ public class PushyApnsSender implements PushNotificationSender {
 
             final String defaultApnsTopic = ApnsUtil.readDefaultTopic(iOSVariant.getCertificate(),
                     iOSVariant.getPassphrase().toCharArray());
+            Date expireDate = createFutureDateBasedOnTTL(pushMessage.getConfig().getTimeToLive());
             logger.debug("sending payload for all tokens for {} to APNs ({})", iOSVariant.getVariantID(), defaultApnsTopic);
 
             tokens.forEach(token -> {
-                final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token, defaultApnsTopic,
-                        payload, new Date(System.currentTimeMillis() + SimpleApnsPushNotification.DEFAULT_EXPIRATION_PERIOD_MILLIS), 
-                        DeliveryPriority.IMMEDIATE, determinePushType(pushMessage.getMessage()), null, null);
+				final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token,
+						defaultApnsTopic, payload, expireDate, DeliveryPriority.IMMEDIATE,
+						determinePushType(pushMessage.getMessage()), null, null);
                 final Future<PushNotificationResponse<SimpleApnsPushNotification>> notificationSendFuture = apnsClient
                         .sendNotification(pushNotification);
 
@@ -147,6 +148,20 @@ public class PushyApnsSender implements PushNotificationSender {
             logger.error("Unable to send notifications, client is not connected. Removing from cache pool");
             senderCallback.onError("Unable to send notifications, client is not connected");
             variantUpdateEventEvent.fire(new iOSVariantUpdateEvent(iOSVariant));
+        }
+    }
+    
+    /**
+     * Helper method that creates a future {@link Date}, based on the given ttl/time-to-live value.
+     * If no TTL was provided, we use the default value from the APNs library
+     */
+    private Date createFutureDateBasedOnTTL(int ttl) {
+        // no TTL was specified on the payload, we use the Default from the APNs library:
+        if (ttl < 0) {
+            return new Date(System.currentTimeMillis() + SimpleApnsPushNotification.DEFAULT_EXPIRATION_PERIOD_MILLIS);
+        } else {
+            // apply the given TTL to the current time
+            return new Date(System.currentTimeMillis() + ttl * 1000L);
         }
     }
 
