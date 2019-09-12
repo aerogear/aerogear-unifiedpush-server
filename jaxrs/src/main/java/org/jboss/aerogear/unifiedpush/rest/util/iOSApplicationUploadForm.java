@@ -20,6 +20,8 @@ import org.jboss.aerogear.crypto.util.PKCS12;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
 
+import java.util.UUID;
+
 import javax.validation.constraints.AssertTrue;
 import javax.ws.rs.FormParam;
 
@@ -37,6 +39,8 @@ public class iOSApplicationUploadForm {
     private byte[] certificate;
     private String name;
     private String description;
+    private String variantID = UUID.randomUUID().toString();
+    private String secret = UUID.randomUUID().toString();
 
     public Boolean getProduction() {
         return production;
@@ -58,6 +62,31 @@ public class iOSApplicationUploadForm {
 
     public String getName() {
         return name;
+    }
+
+/**
+     * Identifier used to register an {@link Installation} with this Variant
+     *
+     * @param variantID the variant ID
+     */
+    @FormParam("variantID")
+    public void setVariantID(String variantID) {
+        this.variantID = variantID;
+    }
+    @FormParam("secret")
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    /**
+     * @return the variantID
+     */
+    public String getVariantID() {
+        return variantID;
     }
 
     /**
