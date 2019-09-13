@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -63,7 +63,7 @@ public abstract class AbstractBaseEndpoint {
 
     /**
      * Generic validator used to identify constraint violations of the given model class. 
-     * 
+     *
      * @param model object to validate
      * @throws ConstraintViolationException if constraint violations on the given model have been identified.
      */
@@ -79,7 +79,7 @@ public abstract class AbstractBaseEndpoint {
 
     /**
      * Helper function to create a 400 Bad Request response, containing a JSON map giving details about the violations
-     * 
+     *
      * @param violations set of occurred constraint violations
      * @return 400 Bad Request response, containing details on the constraint violations 
      */
@@ -88,7 +88,7 @@ public abstract class AbstractBaseEndpoint {
                 .collect(Collectors.toMap(v -> v.getPropertyPath().toString(), ConstraintViolation::getMessage));
 
         return Response.status(Response.Status.BAD_REQUEST)
-                           .entity(responseObj);
+                .entity(responseObj);
     }
 
     /**
@@ -96,7 +96,7 @@ public abstract class AbstractBaseEndpoint {
      *
      * @return the push search service
      */
-    protected PushSearchService getSearch(){
+    protected PushSearchService getSearch() {
         return searchManager.getSearchService();
     }
 
