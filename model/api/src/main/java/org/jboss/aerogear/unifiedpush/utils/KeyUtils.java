@@ -11,7 +11,6 @@ import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.util.BigIntegers;
 
 import java.math.BigInteger;
-
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 
