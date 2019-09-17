@@ -125,6 +125,16 @@
         <version>${slfj4.version}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcprov-jdk15on</artifactId>
+        <version>1.62</version>
+      </dependency>
+      <dependency>
+        <groupId>nl.martijndwars</groupId>
+        <artifactId>web-push</artifactId>
+        <version>5.0.2</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

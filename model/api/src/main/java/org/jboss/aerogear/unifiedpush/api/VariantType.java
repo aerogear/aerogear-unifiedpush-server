@@ -36,7 +36,12 @@ public enum VariantType {
     /**
      * The type identifier for our Windows WNS variants.
      */
-    WINDOWS_WNS("windows_wns");
+    WINDOWS_WNS("windows_wns"),
+
+    /**
+     * WebPush type identifier
+     */
+    WEB_PUSH("web_push");
 
     private final String typeName;
 
