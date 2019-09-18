@@ -436,6 +436,8 @@
                 <address-setting name="jms.queue.GCMTokenBatchQueue" max-size-bytes="40000" address-full-policy="FAIL"/>
                 <address-setting name="jms.queue.WNSPushMessageQueue" redelivery-delay="1500" redelivery-multiplier="1.5" max-delivery-attempts="-1" max-redelivery-delay="5000"/>
                 <address-setting name="jms.queue.WNSTokenBatchQueue" max-size-bytes="40000" address-full-policy="FAIL"/>
+                <address-setting name="jms.queue.WebPushMessageQueue" redelivery-delay="1500" redelivery-multiplier="1.5" max-delivery-attempts="-1" max-redelivery-delay="5000"/>
+                <address-setting name="jms.queue.WebTokenBatchQueue" max-size-bytes="40000" address-full-policy="FAIL"/>
                 <address-setting name="jms.queue.MetricsQueue" max-delivery-attempts="-1"/>
                 <address-setting name="jms.queue.TriggerMetricCollectionQueue" redelivery-delay="1000" max-delivery-attempts="-1"/>
                 <address-setting name="jms.queue.BatchLoadedQueue" max-delivery-attempts="-1"/>
@@ -463,6 +465,8 @@
                 <jms-queue name="GCMTokenBatchQueue" entries="queue/GCMTokenBatchQueue"/>
                 <jms-queue name="WNSPushMessageQueue" entries="queue/WNSPushMessageQueue"/>
                 <jms-queue name="WNSTokenBatchQueue" entries="queue/WNSTokenBatchQueue"/>
+                <jms-queue name="WebPushMessageQueue" entries="queue/WebPushMessageQueue"/>
+                <jms-queue name="WebTokenBatchQueue" entries="queue/WebTokenBatchQueue"/>
                 <jms-queue name="MetricsQueue" entries="queue/MetricsQueue"/>
                 <jms-queue name="TriggerMetricCollectionQueue" entries="queue/TriggerMetricCollectionQueue"/>
                 <jms-queue name="TriggerVariantMetricCollectionQueue" entries="queue/TriggerVariantMetricCollectionQueue"/>

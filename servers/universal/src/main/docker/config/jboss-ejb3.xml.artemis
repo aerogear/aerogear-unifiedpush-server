@@ -83,7 +83,25 @@
                 </activation-config-property>
             </activation-config>
         </message-driven>
-
+        <message-driven>
+            <ejb-name>WebPushMessageConsumer</ejb-name>
+            <ejb-class>org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithVariantsConsumer</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>destination</activation-config-property-name>
+                    <activation-config-property-value>WebPushMessageQueue</activation-config-property-value>
+                </activation-config-property>
+                <activation-config-property>
+                    <activation-config-property-name>destinationType</activation-config-property-name>
+                    <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+                </activation-config-property>
+                <activation-config-property>
+                    <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+                    <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
         <!-- Token Batch Queue MDBs -->
         <message-driven>
             <ejb-name>APNsTokenBatchConsumer</ejb-name>
@@ -155,6 +173,29 @@
             </activation-config>
         </message-driven>
         <message-driven>
+                    <ejb-name>WebTokenBatchConsumer</ejb-name>
+                    <ejb-class>org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithTokensConsumer</ejb-class>
+                    <transaction-type>Container</transaction-type>
+                    <activation-config>
+                        <activation-config-property>
+                            <activation-config-property-name>destination</activation-config-property-name>
+                            <activation-config-property-value>queue/WebTokenBatchQueue</activation-config-property-value>
+                        </activation-config-property>
+                        <activation-config-property>
+                            <activation-config-property-name>destinationType</activation-config-property-name>
+                            <activation-config-property-value>javax.jms.Queue</activation-config-property-value>
+                        </activation-config-property>
+                        <activation-config-property>
+                            <activation-config-property-name>acknowledgeMode</activation-config-property-name>
+                            <activation-config-property-value>Auto-acknowledge</activation-config-property-value>
+                        </activation-config-property>
+                        <activation-config-property>
+                            <activation-config-property-name>maxSession</activation-config-property-name>
+                            <activation-config-property-value>15</activation-config-property-value>
+                        </activation-config-property>
+                    </activation-config>
+                </message-driven>
+        <message-driven>
             <ejb-name>APNSClientConsumer</ejb-name>
             <ejb-class>org.jboss.aerogear.unifiedpush.message.jms.APNSClientConsumer</ejb-class>
             <transaction-type>Container</transaction-type>
@@ -188,6 +229,10 @@
             <r:resource-adapter-name>remote-artemis-xa</r:resource-adapter-name>
         </r:resource-adapter-binding>
         <r:resource-adapter-binding>
+            <ejb-name>WebPushMessageConsumer</ejb-name>
+            <r:resource-adapter-name>remote-artemis-xa</r:resource-adapter-name>
+        </r:resource-adapter-binding>
+        <r:resource-adapter-binding>
             <ejb-name>APNsPushMessageConsumer</ejb-name>
             <r:resource-adapter-name>remote-artemis-xa</r:resource-adapter-name>
         </r:resource-adapter-binding>
@@ -197,6 +242,10 @@
         </r:resource-adapter-binding>
         <r:resource-adapter-binding>
             <ejb-name>WNSTokenBatchConsumer</ejb-name>
+            <r:resource-adapter-name>remote-artemis-xa</r:resource-adapter-name>
+        </r:resource-adapter-binding>
+        <r:resource-adapter-binding>
+            <ejb-name>WebTokenBatchConsumer</ejb-name>
             <r:resource-adapter-name>remote-artemis-xa</r:resource-adapter-name>
         </r:resource-adapter-binding>
         <r:resource-adapter-binding>
