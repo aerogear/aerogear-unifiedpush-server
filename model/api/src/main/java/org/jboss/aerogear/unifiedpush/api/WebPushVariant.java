@@ -24,6 +24,7 @@ import org.jboss.aerogear.unifiedpush.utils.KeyUtils;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.net.MalformedURLException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
@@ -34,7 +35,6 @@ public class WebPushVariant extends Variant {
 
     private static final long serialVersionUID = -1873585264296190331L;
 
-
     @NotNull
     @Size(min = 1, max = 255, message = "Public Key must be max. 255 chars long")
     private String publicKey;
@@ -42,8 +42,13 @@ public class WebPushVariant extends Variant {
     /**
      * TODO: Find a way to store this securely
      */
+    @NotNull
     @Size(max = 255, message = "Private Key must be max. 255 chars long")
     private String privateKey;
+
+    @NotNull
+    @Size(max = 255, message = "Alias Must be a max of 255 Chars")
+    private String alias;
 
     /**
      * This is a VAPID public key.  It must match the private key.
@@ -76,6 +81,13 @@ public class WebPushVariant extends Variant {
         return VariantType.WEB_PUSH;
     }
 
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
 
     /**
      * Validates whether the certificate/passphrase pair
@@ -91,6 +103,26 @@ public class WebPushVariant extends Variant {
             PublicKey publicKeyObject = KeyUtils.loadPublicKey(getPublicKey());
             return Utils.verifyKeyPair(privateKeyObject, publicKeyObject);
         } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @AssertTrue(message = "Alias must be a url or mailto")
+    @JsonIgnore
+    public boolean isAlisURLorMailto() {
+        try {
+            if (alias == null || alias.isEmpty()) {
+                return false;
+            }
+            if (alias.toLowerCase().startsWith("mailto:")) {
+                return  alias.contains("@");
+            }
+            new java.net.URL(alias);
+            return true;
+        } catch (MalformedURLException e) {
+            //Bad practice to use an exception to check if a URL is valid, but I don't want to include a library for the purpose.
+            return false;
+        } catch (Exception e) {//We didn't expect this exception
             return false;
         }
     }

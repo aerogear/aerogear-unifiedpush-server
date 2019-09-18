@@ -11,10 +11,10 @@ import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.util.BigIntegers;
 import org.jboss.aerogear.unifiedpush.api.WebPushRegistration;
+
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.PublicKey;
@@ -60,7 +60,7 @@ public class KeyUtils {
     /**
      * Returns the base64 encoded public key as a PublicKey object
      */
-    public static PublicKey getUserPublicKey(WebPushRegistration registration) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+    public static PublicKey getUserPublicKey(WebPushRegistration registration) throws NoSuchAlgorithmException, InvalidKeySpecException {
 
         KeyFactory kf = KeyFactory.getInstance("ECDH", PROVIDER);
         ECNamedCurveParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec("secp256r1");
