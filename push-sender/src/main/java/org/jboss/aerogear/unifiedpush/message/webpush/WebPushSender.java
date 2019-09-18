@@ -51,7 +51,7 @@ public class WebPushSender implements PushNotificationSender {
                 Notification notification = null;
                 try {
                     notification = new Notification(registration.getEndpoint(), getUserPublicKey(registration),
-                            registration.getAuthAsBytes(), pushMessage.getMessage().getAlert().getBytes());
+                            registration.getAuthAsBytes(), gson.toJson(pushMessage.getMessage()).getBytes());
                     webPushService.send(notification);
                 } catch (GeneralSecurityException | IOException | JoseException | ExecutionException | InterruptedException e) {
                     logger.error("Error sending web push message.", e);
