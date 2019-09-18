@@ -60,6 +60,11 @@ public class SenderConfigurationProvider {
         return loadConfigurationFor(VariantType.WINDOWS_WNS, new SenderConfiguration(10, 1000));
     }
 
+    @Produces @ApplicationScoped @SenderType(VariantType.WEB_PUSH)
+    public SenderConfiguration produceWebPushConfiguration() {
+        return loadConfigurationFor(VariantType.WEB_PUSH, new SenderConfiguration(10, 1000));
+    }
+
     private SenderConfiguration loadConfigurationFor(VariantType type, SenderConfiguration defaultConfiguration) {
         return validateAndSanitizeConfiguration(type, new SenderConfiguration(
                 getProperty(type, ConfigurationProperty.batchesToLoad, defaultConfiguration.batchesToLoad(), Integer.class),
