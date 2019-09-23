@@ -16,8 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.api.validation;
 
-import org.jboss.aerogear.unifiedpush.api.VariantType;
+import com.google.gson.Gson;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.api.WebPushRegistration;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -75,7 +77,21 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
                 return ANDROID_DEVICE_TOKEN.matcher(deviceToken).matches();
             case WINDOWS_WNS:
                 return WINDOWS_DEVICE_TOKEN.matcher(deviceToken).matches();
+            case WEB_PUSH:
+                return isWebPushRegistration(deviceToken);
         }
         return false;
+    }
+
+    private static boolean isWebPushRegistration(String deviceToken) {
+        try {
+            Gson gson = new Gson();
+            WebPushRegistration registration = gson.fromJson(deviceToken, WebPushRegistration.class);
+            return !registration.getEndpoint().isEmpty()
+                    && !registration.getKeys().getAuth().isEmpty()
+                    && !registration.getKeys().getP256dh().isEmpty();
+        } catch (Exception ignore) {
+            return false;
+        }
     }
 }

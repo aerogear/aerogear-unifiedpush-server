@@ -26,7 +26,7 @@ services:
     links:
       - unifiedpushDB:unifiedpush
       - artemis:artemis
-      - keycloakServer:keycloak
+    - keycloakServer:keycloak
     ports:
       - 9999:8080
   unifiedpushDB:

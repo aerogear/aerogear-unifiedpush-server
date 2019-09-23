@@ -79,7 +79,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     public Response crossOriginForInstallations(
             @Context HttpHeaders headers,
             @PathParam("token") String token) {
-
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
     }
 
@@ -99,7 +98,6 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      */
     @OPTIONS
     public Response crossOriginForInstallations(@Context HttpHeaders headers) {
-
         return appendPreflightResponseHeaders(headers, Response.ok()).build();
     }
 

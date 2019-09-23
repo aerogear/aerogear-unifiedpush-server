@@ -3,16 +3,22 @@ package org.jboss.aerogear.unifiedpush.utils;
 import nl.martijndwars.webpush.Base64Encoder;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.bouncycastle.jce.spec.ECPrivateKeySpec;
 import org.bouncycastle.jce.spec.ECPublicKeySpec;
 import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.util.BigIntegers;
+import org.jboss.aerogear.unifiedpush.api.WebPushRegistration;
 
 import java.math.BigInteger;
-
-import java.security.*;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.Provider;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 
 
@@ -29,7 +35,7 @@ public class KeyUtils {
     private static final String ALGORITHM = "ECDH";
     private static final Provider PROVIDER = new BouncyCastleProvider();
 
-    public static PrivateKey loadPrivateKey(String privateKey) throws  NoSuchAlgorithmException, InvalidKeySpecException {
+    public static PrivateKey loadPrivateKey(String privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] decodedPrivateKey = Base64Encoder.decode(privateKey);
         BigInteger s = BigIntegers.fromUnsignedByteArray(decodedPrivateKey);
         ECParameterSpec parameterSpec = ECNamedCurveTable.getParameterSpec(CURVE);
@@ -50,4 +56,20 @@ public class KeyUtils {
         return keyFactory.generatePublic(pubSpec);
 
     }
+
+
+    /**
+     * Returns the base64 encoded public key as a PublicKey object
+     */
+    public static PublicKey getUserPublicKey(WebPushRegistration registration) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+
+        KeyFactory kf = KeyFactory.getInstance("ECDH", PROVIDER);
+        ECNamedCurveParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec("secp256r1");
+        ECPoint point = ecSpec.getCurve().decodePoint(registration.getKeyAsBytes());
+        ECPublicKeySpec pubSpec = new ECPublicKeySpec(point, ecSpec);
+
+        return kf.generatePublic(pubSpec);
+    }
+
+
 }

@@ -16,7 +16,9 @@
  */
 package org.jboss.aerogear.unifiedpush.api.validation;
 
+import com.google.gson.Gson;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.api.WebPushRegistration;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,5 +41,44 @@ public class DeviceTokenValidatorTest {
     public void testInvalidToken() {
         final VariantType andVariantType = VariantType.ANDROID;
         assertThat(DeviceTokenValidator.isValidDeviceTokenForVariant("some-bogus:token", andVariantType)).isFalse();
+    }
+
+    @Test
+    public void testInvalidWebPush() {
+
+        final Gson gson = new Gson();
+
+        final VariantType webPushType = VariantType.WEB_PUSH;
+        assertThat(DeviceTokenValidator.isValidDeviceTokenForVariant("some-bogus:token", webPushType)).isFalse();
+
+        WebPushRegistration registration = new WebPushRegistration();
+        String registrationJson = gson.toJson(registration);
+        assertThat(DeviceTokenValidator.isValidDeviceTokenForVariant(registrationJson, webPushType)).isFalse();
+
+        registration.setEndpoint("https://some nonsense");
+        registrationJson = gson.toJson(registration);
+        assertThat(DeviceTokenValidator.isValidDeviceTokenForVariant(registrationJson, webPushType)).isFalse();
+
+    }
+
+    /**
+     * This just tests that the endpoint and keyfields are set, it does not veryify anything.
+     */
+    @Test
+    public void testValidWebPush() {
+
+        final Gson gson = new Gson();
+
+        final VariantType webPushType = VariantType.WEB_PUSH;
+
+        WebPushRegistration registration = new WebPushRegistration();
+        registration.setEndpoint("https://some nonsense");
+        registration.getKeys().setAuth("authTokens");
+        registration.getKeys().setP256dh("devicePublicKey");
+        String registrationJson = gson.toJson(registration);
+        assertThat(DeviceTokenValidator.isValidDeviceTokenForVariant(registrationJson, webPushType)).isTrue();
+
+
+
     }
 }
