@@ -56,6 +56,21 @@ public class WebPushSender implements PushNotificationSender {
     @Inject
     private FlatPushMessageInformationDao flatPushMessageInformationDao;
 
+    /**
+     * Default for CDI
+     */
+    public WebPushSender() {
+    }
+
+    /**
+     * This is a constructor for injecting dependencies for testing.
+     * @param flatPushMessageInformationDao
+     */
+    public WebPushSender(FlatPushMessageInformationDao flatPushMessageInformationDao, NotificationDispatcher dispatcher, ClientInstallationService clientInstallationService) {
+        this.flatPushMessageInformationDao = flatPushMessageInformationDao;
+        this.dispatcher = dispatcher;
+        this.clientInstallationService = clientInstallationService;
+    }
 
     @Override
     public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage, final String pushMessageInformationId, final NotificationSenderCallback senderCallback) {
