@@ -48,8 +48,7 @@ public class KeyUtils {
     public static PublicKey loadPublicKey(String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] decodedPublicKey = Base64Encoder.decode(publicKey);
         KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM, PROVIDER);
-        ECParameterSpec parameterSpec;
-        parameterSpec = ECNamedCurveTable.getParameterSpec(CURVE);
+        ECParameterSpec parameterSpec = ECNamedCurveTable.getParameterSpec(CURVE);
         ECCurve curve = parameterSpec.getCurve();
         ECPoint point = curve.decodePoint(decodedPublicKey);
         ECPublicKeySpec pubSpec = new ECPublicKeySpec(point, parameterSpec);
