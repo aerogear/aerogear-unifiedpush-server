@@ -109,7 +109,7 @@ public class WebPushVariant extends Variant {
 
     @AssertTrue(message = "Alias must be a url or mailto")
     @JsonIgnore
-    public boolean isAlisURLorMailto() {
+    public boolean isAliasURLorMailto() {
         try {
             if (alias == null || alias.isEmpty()) {
                 return false;
