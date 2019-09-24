@@ -15,8 +15,6 @@ services:
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_SERVICE_PORT: ${POSTGRES_SERVICE_PORT}
         POSTGRES_DATABASE: ${POSTGRES_DATABASE}
-        KEYCLOAK_SERVICE_HOST: ${KEYCLOAK_SERVICE_HOST}
-        KEYCLOAK_SERVICE_PORT: ${KEYCLOAK_SERVICE_PORT}
         ARTEMIS_USER: ${ARTEMIS_USER}
         ARTEMIS_PASSWORD: ${ARTEMIS_PASSWORD}
         ARTEMIS_SERVICE_HOST: ${ARTEMIS_SERVICE_HOST}
@@ -26,7 +24,6 @@ services:
     links:
       - unifiedpushDB:unifiedpush
       - artemis:artemis
-      - keycloakServer:keycloak
     ports:
       - 9999:8080
   unifiedpushDB:

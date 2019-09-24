@@ -28,6 +28,7 @@ import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
 
 import java.security.Security;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -126,12 +127,14 @@ public class WebPushSenderTest {
     @Test
     public void testMessageSent() throws InterruptedException {
         respondWith(HttpStatus.SC_CREATED);
-        final var succesRef = new AtomicBoolean(false);
-        final var errorMessageRef = new AtomicReference<>("");
-        final var latch = new CountDownLatch(1);
+        final AtomicBoolean succesRef = new AtomicBoolean(false);
+        final AtomicReference<String> errorMessageRef = new AtomicReference<>("");
+        final CountDownLatch latch = new CountDownLatch(1);
         NotificationSenderCallback callback = callback(succesRef, errorMessageRef, latch);
 
-        sender.sendPushMessage(pushVariant, List.of(TOKEN), MESSAGE, "42", callback);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(TOKEN);
+        sender.sendPushMessage(pushVariant, tokenList, MESSAGE, "42", callback);
 
         latch.await(1, TimeUnit.SECONDS);
         assertEquals("", errorMessageRef.get());
@@ -141,12 +144,14 @@ public class WebPushSenderTest {
     @Test
     public void testReschedule() throws InterruptedException {
         respondWith(429);
-        final var succesRef = new AtomicBoolean(false);
-        final var errorMessageRef = new AtomicReference<>("");
-        final var latch = new CountDownLatch(1);
+        final AtomicBoolean succesRef = new AtomicBoolean(false);
+        final AtomicReference<String> errorMessageRef = new AtomicReference<>("");
+        final CountDownLatch latch = new CountDownLatch(1);
         NotificationSenderCallback callback = callback(succesRef, errorMessageRef, latch);
 
-        sender.sendPushMessage(pushVariant, List.of(TOKEN), MESSAGE, "42", callback);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(TOKEN);
+        sender.sendPushMessage(pushVariant, tokenList, MESSAGE, "42", callback);
 
         latch.await(1, TimeUnit.SECONDS);
         assertEquals("", errorMessageRef.get());
@@ -158,12 +163,14 @@ public class WebPushSenderTest {
     @Test
     public void testGone() throws InterruptedException {
         respondWith(SC_GONE);
-        final var succesRef = new AtomicBoolean(false);
-        final var errorMessageRef = new AtomicReference<>("");
-        final var latch = new CountDownLatch(1);
+        final AtomicBoolean succesRef = new AtomicBoolean(false);
+        final AtomicReference<String> errorMessageRef = new AtomicReference<>("");
+        final CountDownLatch latch = new CountDownLatch(1);
         NotificationSenderCallback callback = callback(succesRef, errorMessageRef, latch);
 
-        sender.sendPushMessage(pushVariant, List.of(TOKEN), MESSAGE, "42", callback);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(TOKEN);
+        sender.sendPushMessage(pushVariant, tokenList, MESSAGE, "42", callback);
 
         latch.await(1, TimeUnit.SECONDS);
         assertEquals("", errorMessageRef.get());
@@ -175,12 +182,14 @@ public class WebPushSenderTest {
     @Test
     public void testNotFound() throws InterruptedException {
         respondWith(SC_NOT_FOUND);
-        final var succesRef = new AtomicBoolean(false);
-        final var errorMessageRef = new AtomicReference<>("");
-        final var latch = new CountDownLatch(1);
+        final AtomicBoolean succesRef = new AtomicBoolean(false);
+        final AtomicReference<String> errorMessageRef = new AtomicReference<>("");
+        final CountDownLatch latch = new CountDownLatch(1);
         NotificationSenderCallback callback = callback(succesRef, errorMessageRef, latch);
 
-        sender.sendPushMessage(pushVariant, List.of(TOKEN), MESSAGE, "42", callback);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(TOKEN);
+        sender.sendPushMessage(pushVariant, tokenList, MESSAGE, "42", callback);
 
         latch.await(1, TimeUnit.SECONDS);
         assertEquals("", errorMessageRef.get());
@@ -191,12 +200,14 @@ public class WebPushSenderTest {
     @Test
     public void testTooLong() throws InterruptedException {
         respondWith(SC_REQUEST_TOO_LONG);
-        final var succesRef = new AtomicBoolean(false);
-        final var errorMessageRef = new AtomicReference<>("");
-        final var latch = new CountDownLatch(1);
+        final AtomicBoolean succesRef = new AtomicBoolean(false);
+        final AtomicReference<String> errorMessageRef = new AtomicReference<>("");
+        final CountDownLatch latch = new CountDownLatch(1);
         NotificationSenderCallback callback = callback(succesRef, errorMessageRef, latch);
 
-        sender.sendPushMessage(pushVariant, List.of(TOKEN), MESSAGE, "42", callback);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(TOKEN);
+        sender.sendPushMessage(pushVariant, tokenList, MESSAGE, "42", callback);
 
         latch.await(1, TimeUnit.SECONDS);
         assertEquals("Request was too long. Message id 42", errorMessageRef.get());
@@ -205,12 +216,14 @@ public class WebPushSenderTest {
     @Test
     public void testBadRequest() throws InterruptedException {
         respondWith(SC_BAD_REQUEST);
-        final var succesRef = new AtomicBoolean(false);
-        final var errorMessageRef = new AtomicReference<>("");
-        final var latch = new CountDownLatch(1);
+        final AtomicBoolean succesRef = new AtomicBoolean(false);
+        final AtomicReference<String> errorMessageRef = new AtomicReference<>("");
+        final CountDownLatch latch = new CountDownLatch(1);
         NotificationSenderCallback callback = callback(succesRef, errorMessageRef, latch);
 
-        sender.sendPushMessage(pushVariant, List.of(TOKEN), MESSAGE, "42", callback);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(TOKEN);
+        sender.sendPushMessage(pushVariant, tokenList, MESSAGE, "42", callback);
 
         latch.await(1, TimeUnit.SECONDS);
         assertEquals("Bad request. Message id 42", errorMessageRef.get());

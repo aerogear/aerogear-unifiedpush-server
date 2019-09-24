@@ -2,14 +2,15 @@ language: java
 
 sudo: required
 
-dist: bionic
+# required for oraclejdk9
+dist: trusty
 
 # required for oraclejdk9
 group: edge
 
 jdk:
-  - oraclejdk11
-  - oraclejdk12
+  - oraclejdk8
+  - oraclejdk9
 
 addons:
   sonarcloud:
@@ -19,7 +20,7 @@ addons:
 
 matrix:
   allow_failures:
-    - jdk: oraclejdk12
+    - jdk: oraclejdk9
 
 notifications:
   irc: "irc.freenode.org#aerogear"
