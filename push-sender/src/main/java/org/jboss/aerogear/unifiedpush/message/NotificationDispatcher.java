@@ -74,7 +74,7 @@ public class NotificationDispatcher {
         final UnifiedPushMessage unifiedPushMessage = msg.getUnifiedPushMessage();
         final Collection<String> deviceTokens = msg.getDeviceTokens();
 
-        logger.info("Received UnifiedPushMessage from JMS queue, will now trigger the Push Notification delivery for the %s variant ({})", variant.getType().getTypeName(), variant.getVariantID());
+        logger.info("Received UnifiedPushMessage from JMS queue, will now trigger the Push Notification delivery for the {} variant ({})", variant.getType().getTypeName(), variant.getVariantID());
         String deduplicationId = String.format("%s-%s-%d", msg.getPushMessageInformation().getId(), msg.getSerialId(), msg.getRetryCount());
         logger.debug("Receiving message " + deduplicationId);
 
