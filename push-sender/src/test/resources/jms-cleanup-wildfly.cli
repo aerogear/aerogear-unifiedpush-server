@@ -20,6 +20,11 @@ batch
 /subsystem=messaging-activemq/server=default/jms-queue=WNSTokenBatchQueue:remove()
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.WNSTokenBatchQueue:remove()
 
+/subsystem=messaging-activemq/server=default/jms-queue=WebPushMessageQueue:remove()
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.WebPushMessageQueue:remove()
+/subsystem=messaging-activemq/server=default/jms-queue=WebTokenBatchQueue:remove()
+/subsystem=messaging-activemq/server=default/address-setting=jms.queue.WebTokenBatchQueue:remove()
+
 
 
 /subsystem=messaging-activemq/server=default/jms-queue=MetricsQueue:remove()

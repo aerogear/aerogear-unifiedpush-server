@@ -72,7 +72,10 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
                 <column name="public_key" length="255" nullable="false"/>
             </basic>
             <basic name="privateKey">
-                <column name="private_key" length="255"/>
+                <column name="private_key" length="255" nullable="false"/>
+            </basic>
+            <basic name="alias">
+                <column name="alias" length="255" nullable="false"/>
             </basic>
         </attributes>
     </entity>
