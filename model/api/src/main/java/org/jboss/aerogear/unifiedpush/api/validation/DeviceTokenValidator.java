@@ -23,6 +23,7 @@ import org.jboss.aerogear.unifiedpush.api.WebPushRegistration;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.Base64;
 import java.util.regex.Pattern;
 
 /**
@@ -85,8 +86,9 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
 
     private static boolean isWebPushRegistration(String deviceToken) {
         try {
+            String jsonToken = new String(Base64.getDecoder().decode(deviceToken));
             Gson gson = new Gson();
-            WebPushRegistration registration = gson.fromJson(deviceToken, WebPushRegistration.class);
+            WebPushRegistration registration = gson.fromJson(jsonToken, WebPushRegistration.class);
             return !registration.getEndpoint().isEmpty()
                     && !registration.getKeys().getAuth().isEmpty()
                     && !registration.getKeys().getP256dh().isEmpty();

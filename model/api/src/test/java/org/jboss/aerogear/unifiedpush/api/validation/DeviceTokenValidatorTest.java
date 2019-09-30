@@ -21,6 +21,8 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.WebPushRegistration;
 import org.junit.Test;
 
+import java.util.Base64;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DeviceTokenValidatorTest {
@@ -52,7 +54,7 @@ public class DeviceTokenValidatorTest {
         assertThat(DeviceTokenValidator.isValidDeviceTokenForVariant("some-bogus:token", webPushType)).isFalse();
 
         WebPushRegistration registration = new WebPushRegistration();
-        String registrationJson = gson.toJson(registration);
+        String registrationJson = Base64.getEncoder().encodeToString(gson.toJson(registration).getBytes());
         assertThat(DeviceTokenValidator.isValidDeviceTokenForVariant(registrationJson, webPushType)).isFalse();
 
         registration.setEndpoint("https://some nonsense");
@@ -75,7 +77,7 @@ public class DeviceTokenValidatorTest {
         registration.setEndpoint("https://some nonsense");
         registration.getKeys().setAuth("authTokens");
         registration.getKeys().setP256dh("devicePublicKey");
-        String registrationJson = gson.toJson(registration);
+        String registrationJson = Base64.getEncoder().encodeToString(gson.toJson(registration).getBytes());
         assertThat(DeviceTokenValidator.isValidDeviceTokenForVariant(registrationJson, webPushType)).isTrue();
 
 

@@ -26,6 +26,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -91,7 +92,8 @@ public class WebPushSender implements PushNotificationSender {
             final Set<String> rescheduleTokens = new HashSet<>();
 
             tokens.forEach(token -> {
-                final WebPushRegistration registration = gson.fromJson(token, WebPushRegistration.class);
+                String tokenAsJson = new String(Base64.getDecoder().decode(token));
+                final WebPushRegistration registration = gson.fromJson(tokenAsJson, WebPushRegistration.class);
 
                 try {
                     final Notification notification = new Notification(registration.getEndpoint(), getUserPublicKey(registration),
