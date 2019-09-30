@@ -29,6 +29,7 @@ import org.mockserver.model.HttpResponse;
 
 import java.security.Security;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -57,7 +58,7 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 @RunWith(MockitoJUnitRunner.class)
 public class WebPushSenderTest {
 
-    private static final String TOKEN = "{\"endpoint\":\"http://localhost:5309/send\",\"keys\":{\"p256dh\":\"BNrYBAc87+z7mFp8Jx8RoEZu/bYQVNJGd6ddAyuQnY9MnNpalbAbAYIHQ1T2kTU/mZCpbIs0NH4yYxAMsAuLCAI=\",\"auth\":\"vpD1pBCVtFi0usZumLYjYw==\"}}";
+    private static final String TOKEN = Base64.getEncoder().encodeToString("{\"endpoint\":\"http://localhost:5309/send\",\"keys\":{\"p256dh\":\"BNrYBAc87+z7mFp8Jx8RoEZu/bYQVNJGd6ddAyuQnY9MnNpalbAbAYIHQ1T2kTU/mZCpbIs0NH4yYxAMsAuLCAI=\",\"auth\":\"vpD1pBCVtFi0usZumLYjYw==\"}}".getBytes());
     private static final UnifiedPushMessage MESSAGE;
 
     private ClientAndServer mockServer;
@@ -239,7 +240,7 @@ public class WebPushSenderTest {
 
             @Override
             public void describeTo(Description description) {
-
+                description.appendText("Expected to include" + TOKEN);
             }
         };
     }
