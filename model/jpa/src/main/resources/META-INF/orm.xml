@@ -87,7 +87,25 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
                 <column name="cert_data" length="100000"/>
             </basic>
             <basic name="production">
-                <column name="production" nullable="false" />
+                <column name="production" nullable="false"/>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="iOSTokenVariant" access="FIELD">
+        <table name="ios_token_variant"/>
+        <discriminator-value>ios_token</discriminator-value>
+        <attributes>
+            <basic name="keyId">
+                <column name="key_id" nullable="false"/>
+            </basic>
+            <basic name="teamId">
+                <column name="team_id" nullable="false"/>
+            </basic>
+            <basic name="privateKey">
+                <column name="private_key" nullable="false"/>
+            </basic>
+            <basic name="production">
+                <column name="production" nullable="false"/>
             </basic>
         </attributes>
     </entity>
@@ -104,7 +122,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
                 <column name="api_key"/>
             </basic>
             <basic name="masterSecret">
-                <column name="master_secret" />
+                <column name="master_secret"/>
             </basic>
             <basic name="developer">
                 <column name="developer" length="255"/>

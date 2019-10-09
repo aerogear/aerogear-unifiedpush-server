@@ -32,6 +32,10 @@ public enum VariantType {
      * The type identifier for our iOS variants.
      */
     IOS("ios"),
+    /**
+     * The type identifier for our iOS variants using a token.
+     */
+    IOS_TOKEN("ios_token"),
 
     /**
      * The type identifier for our Windows WNS variants.
@@ -42,6 +46,7 @@ public enum VariantType {
      * WebPush type identifier
      */
     WEB_PUSH("web_push");
+
 
     private final String typeName;
 
