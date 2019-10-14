@@ -2,3 +2,4 @@
 * [Getting Started](getting-started.md)
 * [Configuration](configuration.md)
 * [Terminology](terminology.md)
+* [Device registration](device_registration.md)
