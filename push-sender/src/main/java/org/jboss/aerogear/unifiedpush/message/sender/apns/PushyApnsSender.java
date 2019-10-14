@@ -29,7 +29,7 @@ import io.netty.util.concurrent.Future;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
+import org.jboss.aerogear.unifiedpush.event.APNSVariantUpdateEvent;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
@@ -75,7 +75,7 @@ public class PushyApnsSender implements PushNotificationSender {
     @Inject
     private ClientInstallationService clientInstallationService;
     @Inject
-    private Event<iOSVariantUpdateEvent> variantUpdateEventEvent;
+    private Event<APNSVariantUpdateEvent> variantUpdateEventEvent;
 
     @Override
     public void sendPushMessage(final Variant variant, final Collection<String> tokens, final UnifiedPushMessage pushMessage,
@@ -147,7 +147,7 @@ public class PushyApnsSender implements PushNotificationSender {
         } else {
             logger.error("Unable to send notifications, client is not connected. Removing from cache pool");
             senderCallback.onError("Unable to send notifications, client is not connected");
-            variantUpdateEventEvent.fire(new iOSVariantUpdateEvent(iOSVariant));
+            variantUpdateEventEvent.fire(new APNSVariantUpdateEvent(iOSVariant));
         }
     }
     

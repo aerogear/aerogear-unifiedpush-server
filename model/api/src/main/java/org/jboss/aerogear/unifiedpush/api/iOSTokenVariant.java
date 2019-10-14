@@ -19,22 +19,17 @@ package org.jboss.aerogear.unifiedpush.api;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turo.pushy.apns.auth.ApnsSigningKey;
-import nl.martijndwars.webpush.Utils;
-import org.jboss.aerogear.unifiedpush.utils.KeyUtils;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.util.Base64;
 
 /**
  * This class is similar to iOSVariant, but uses token signing instead of certificate identifitcation.
  */
-public class iOSTokenVariant extends Variant {
+public class iOSTokenVariant extends Variant implements IsAPNSVariant {
     private static final long serialVersionUID = -889367404039436329L;
 
     private boolean production;

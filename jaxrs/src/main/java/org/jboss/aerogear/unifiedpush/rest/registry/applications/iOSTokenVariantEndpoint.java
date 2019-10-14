@@ -20,9 +20,7 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.iOSTokenVariant;
 import org.jboss.aerogear.unifiedpush.message.jms.APNSClientProducer;
 import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
-import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;

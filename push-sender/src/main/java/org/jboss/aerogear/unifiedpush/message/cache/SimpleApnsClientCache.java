@@ -22,8 +22,8 @@ import io.netty.util.concurrent.GenericFutureListener;
 import net.jodah.expiringmap.ExpirationListener;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
-import org.jboss.aerogear.unifiedpush.event.iOSVariantUpdateEvent;
+import org.jboss.aerogear.unifiedpush.api.IsAPNSVariant;
+import org.jboss.aerogear.unifiedpush.event.APNSVariantUpdateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +67,7 @@ public class SimpleApnsClientCache {
                 }).build();
     }
 
-    public ApnsClient getApnsClientForVariant(final iOSVariant iOSVariant, final ServiceConstructor<ApnsClient> constructor) {
+    public ApnsClient getApnsClientForVariant(final IsAPNSVariant iOSVariant, final ServiceConstructor<ApnsClient> constructor) {
         final String connectionKey = extractConnectionKey(iOSVariant);
         ApnsClient client = apnsClientExpiringMap.get(connectionKey);
 
@@ -92,7 +92,7 @@ public class SimpleApnsClientCache {
      * Receives iOS variant change event to remove client from the cache and also tear down the connection.
      * @param variant event fired when updating the variant
      */
-    public void disconnectOnChange(final iOSVariant variant) {
+    public void disconnectOnChange(final IsAPNSVariant variant) {
         final String connectionKey = extractConnectionKey(variant);
         final ApnsClient client = apnsClientExpiringMap.remove(connectionKey);
         logger.debug("Removed client from cache for {}", variant.getVariantID());
@@ -101,12 +101,12 @@ public class SimpleApnsClientCache {
         }
     }
 
-    public void disconnectOnChangeEvent(@Observes final iOSVariantUpdateEvent iOSVariantUpdateEvent) {
-        final iOSVariant variant = iOSVariantUpdateEvent.getiOSVariant();
+    public void disconnectOnChangeEvent(@Observes final APNSVariantUpdateEvent APNSVariantUpdateEvent) {
+        final IsAPNSVariant variant = APNSVariantUpdateEvent.getApnsVariant();
         disconnectOnChange(variant);
     }
 
-    private String extractConnectionKey(final iOSVariant iOSVariant) {
+    private String extractConnectionKey(final IsAPNSVariant iOSVariant) {
         final StringBuilder sb = new StringBuilder(iOSVariant.getVariantID())
                 .append(iOSVariant.isProduction() ? "-prod" : "-dev");
 

@@ -26,7 +26,7 @@ import java.util.Base64;
 /**
  * The iOS variant class encapsulates APNs specific behavior.
  */
-public class iOSVariant extends Variant {
+public class iOSVariant extends Variant implements IsAPNSVariant {
     private static final long serialVersionUID = -889367404039436329L;
 
     private boolean production;
