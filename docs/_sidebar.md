@@ -2,5 +2,7 @@
 * [Getting Started](getting-started.md)
 * [Configuration](configuration.md)
 * [Terminology](terminology.md)
+* [Application](application.md)
+* [Variant](variant.md)
 * [Device registration](device_registration.md)
 * [Sending push message](sending_push_message.md)

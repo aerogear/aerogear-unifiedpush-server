@@ -3,6 +3,7 @@
 ## Message Format
 
 ```bash
+
 curl -u "{PushApplicationID}:{MasterSecret}"
    -v -H "Accept: application/json" -H "Content-type: application/json" 
    -X POST
