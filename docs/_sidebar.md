@@ -3,3 +3,4 @@
 * [Configuration](configuration.md)
 * [Terminology](terminology.md)
 * [Device registration](device_registration.md)
+* [Sending push message](sending_push_message.md)
