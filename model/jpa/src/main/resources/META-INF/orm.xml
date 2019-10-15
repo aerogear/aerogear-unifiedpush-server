@@ -102,7 +102,7 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
                 <column name="team_id" nullable="false"/>
             </basic>
             <basic name="privateKey">
-                <column name="private_key" nullable="false"/>
+                <column name="private_key"  length="2048"  nullable="false"/>
             </basic>
             <basic name="production">
                 <column name="production" nullable="false"/>
