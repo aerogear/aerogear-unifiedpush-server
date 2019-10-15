@@ -36,18 +36,19 @@ public class iOSTokenVariant extends Variant implements IsAPNSVariant {
 
     @NotNull
     @Size(max = 10, min = 10, message = "Team ID must be 10 characters long")
-    @JsonIgnore
     private String teamId;
 
     @NotNull
     @Size(max = 10, min = 10, message = "Key ID must be 10 characters long")
-    @JsonIgnore
     private String keyId;
 
 
     @NotNull(message = "Private key must be provided in p8 format")
     @JsonIgnore
     private String privateKey;
+
+    @NotNull(message = "Bundle ID is required.")
+    private String bundleId;
 
     /**
      * If <code>true</code> a connection to Apple's Production APNs server
@@ -72,12 +73,10 @@ public class iOSTokenVariant extends Variant implements IsAPNSVariant {
      *
      * @return the teamID
      */
-    @JsonIgnore
     public String getTeamId() {
         return this.teamId;
     }
 
-    @JsonProperty
     public void setTeamId(final String teamId) {
         this.teamId = teamId;
     }
@@ -87,21 +86,19 @@ public class iOSTokenVariant extends Variant implements IsAPNSVariant {
      *
      * @return the keyId
      */
-    @JsonIgnore
     public String getKeyId() {
         return this.keyId;
     }
 
-    @JsonProperty
     public void setKeyId(final String keyId) {
         this.keyId = keyId;
     }
 
     /**
-     * The APNs certificate that is needed to establish a connection to any
+     * The APNs privateKey that is needed to establish a connection to any
      * of Apple's APNs Push Servers.
      *
-     * @return the certificate
+     * @return the privateKey
      */
     @JsonIgnore
     public String getPrivateKey() {
@@ -135,5 +132,15 @@ public class iOSTokenVariant extends Variant implements IsAPNSVariant {
         }
     }
 
+    /**
+     * Bundle ID is the unique identified for your app in APNS.
+     * @return bundle id
+     */
+    public String getBundleId() {
+        return bundleId;
+    }
 
+    public void setBundleId(String bundleId) {
+        this.bundleId = bundleId;
+    }
 }

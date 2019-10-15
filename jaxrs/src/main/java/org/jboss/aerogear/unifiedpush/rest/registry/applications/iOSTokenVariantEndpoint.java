@@ -145,6 +145,7 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
             iOSTokenVariant.setDescription(updatediOSVariant.getDescription());
             iOSTokenVariant.setProduction(updatediOSVariant.isProduction());
             iOSTokenVariant.setKeyId(updatediOSVariant.getKeyId());
+            iOSTokenVariant.setBundleId(updatediOSVariant.getBundleId());
             iOSTokenVariant.setTeamId(updatediOSVariant.getTeamId());
             iOSTokenVariant.setPrivateKey(updatediOSVariant.getPrivateKey());
 
@@ -196,6 +197,7 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
             iOSTokenVariant.setProduction(updatediOSVariant.isProduction());
             iOSTokenVariant.setKeyId(updatediOSVariant.getKeyId());
             iOSTokenVariant.setTeamId(updatediOSVariant.getTeamId());
+            iOSTokenVariant.setBundleId(updatediOSVariant.getBundleId());
             iOSTokenVariant.setPrivateKey(updatediOSVariant.getPrivateKey());
 
             // update performed, we now need to invalidate existing connection w/ APNs:

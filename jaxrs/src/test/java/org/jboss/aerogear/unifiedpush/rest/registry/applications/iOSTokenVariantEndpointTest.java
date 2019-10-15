@@ -65,6 +65,9 @@ public class iOSTokenVariantEndpointTest {
         final iOSTokenVariant form = new iOSTokenVariant();
         form.setName("variant name");
         form.setPrivateKey("privateKey");
+        form.setTeamId("team id");
+        form.setKeyId("key id");
+        form.setBundleId("test.my.toe");
         form.setProduction(false);
 
         when(searchService.findByPushApplicationIDForDeveloper("push-app-id")).thenReturn(pushApp);
@@ -75,6 +78,12 @@ public class iOSTokenVariantEndpointTest {
         assertEquals(response.getStatus(), 201);
         final iOSTokenVariant createdVariant = (iOSTokenVariant) response.getEntity();
         assertEquals(createdVariant.getName(), "variant name");
+        assertEquals(createdVariant.getPrivateKey(), "privateKey");
+        assertEquals(createdVariant.getTeamId(), "team id");
+        assertEquals(createdVariant.getKeyId(), "key id");
+        assertEquals(createdVariant.getBundleId(), "test.my.toe");
+
+
         assertEquals(response.getMetadata().get("location").get(0).toString(), "http://example.org/abc/" + createdVariant.getVariantID());
 
         verify(variantService).addVariant(createdVariant);
@@ -110,6 +119,11 @@ public class iOSTokenVariantEndpointTest {
         final iOSTokenVariant update = new iOSTokenVariant();
         update.setName("variant name");
         update.setPrivateKey("certificate");
+        update.setTeamId("team id");
+        update.setKeyId("key id");
+        update.setBundleId("test.my.toe");
+
+
         update.setProduction(false);
 
         when(variantService.findByVariantID("variant-id")).thenReturn(original);
@@ -118,6 +132,11 @@ public class iOSTokenVariantEndpointTest {
 
         assertEquals(response.getStatus(), 204);
         assertEquals(original.getName(), "variant name");
+        assertEquals(original.getPrivateKey(), "certificate");
+        assertEquals(original.getTeamId(), "team id");
+        assertEquals(original.getKeyId(), "key id");
+        assertEquals(original.getBundleId(), "test.my.toe");
+
 
         verify(variantService).updateVariant(original);
     }

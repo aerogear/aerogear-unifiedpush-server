@@ -107,6 +107,9 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             <basic name="production">
                 <column name="production" nullable="false"/>
             </basic>
+            <basic name="bundleId">
+                <column name="bundle_id" nullable="false"/>
+            </basic>
         </attributes>
     </entity>
     <entity class="PushApplication" access="FIELD">

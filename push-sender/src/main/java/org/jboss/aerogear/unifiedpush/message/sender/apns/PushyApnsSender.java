@@ -130,10 +130,9 @@ public class PushyApnsSender implements PushNotificationSender {
             // we have managed to connect and will send tokens ;-)
             senderCallback.onSuccess();
 
-            final String defaultApnsTopic = ApnsUtil.readDefaultTopic(iOSVariant.getCertificate(),
-                    iOSVariant.getPassphrase().toCharArray());
+            final String defaultApnsTopic = iOSTokenVariant.getBundleId();
             Date expireDate = createFutureDateBasedOnTTL(pushMessage.getConfig().getTimeToLive());
-            logger.debug("sending payload for all tokens for {} to APNs ({})", iOSVariant.getVariantID(), defaultApnsTopic);
+            logger.debug("sending payload for all tokens for {} to APNs ({})", iOSTokenVariant.getVariantID(), defaultApnsTopic);
 
             tokens.forEach(token -> {
                 final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token,
@@ -153,7 +152,7 @@ public class PushyApnsSender implements PushNotificationSender {
         } else {
             logger.error("Unable to send notifications, client is not connected. Removing from cache pool");
             senderCallback.onError("Unable to send notifications, client is not connected");
-            variantUpdateEventEvent.fire(new APNSVariantUpdateEvent(iOSVariant));
+            variantUpdateEventEvent.fire(new APNSVariantUpdateEvent(iOSTokenVariant));
         }
     }
 
