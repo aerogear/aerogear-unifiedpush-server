@@ -20,8 +20,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import org.jboss.aerogear.unifiedpush.message.windows.TileType;
-import org.jboss.aerogear.unifiedpush.message.windows.Type;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -54,9 +52,6 @@ public class UnifiedPushMessageTest {
         message.getApns().setActionCategory("some value");
         message.setSound("default");
         message.setBadge(2);
-        message.getWindows().setPage("/MainPage.xaml");
-        message.getWindows().setType(Type.tile);
-        message.getWindows().setTileType(TileType.TileWideBlockAndText01);
         message.getApns().setContentAvailable(true);
 
         final HashMap<String, Object> data = new HashMap<>();
@@ -652,11 +647,6 @@ public class UnifiedPushMessageTest {
         apnsObject.put("action-category", "category");
         apnsObject.put("content-available", "true");
         messageObject.put("simple-push", "version=123");
-        Map<String, Object> windows = new HashMap<>();
-        windows.put("type", "tile");
-        windows.put("tileType", "TileWideBlockAndText01");
-        windows.put("page", "cordova");
-        messageObject.put("windows", windows);
         messageObject.put("apns",apnsObject);
 
         container.put("message", messageObject);
@@ -689,11 +679,6 @@ public class UnifiedPushMessageTest {
         apnsObject.put("action-category", "category");
         apnsObject.put("content-available", "true");
         messageObject.put("simple-push", "version=123");
-        Map<String, Object> windows = new HashMap<>();
-        windows.put("type", "tile");
-        windows.put("tileType", "TileWideBlockAndText01");
-        windows.put("page", "cordova");
-        messageObject.put("windows", windows);
         messageObject.put("apns",apnsObject);
 
         container.put("message", messageObject);

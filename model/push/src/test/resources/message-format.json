@@ -5,18 +5,6 @@
     "badge": 2,
     "consolidationKey": null,
     "priority": "normal",
-    "windows": {
-      "type": "tile",
-      "duration": null,
-      "badge": null,
-      "tileType": "TileWideBlockAndText01",
-      "toastType": null,
-      "images": [
-      ],
-      "textFields": [
-      ],
-      "page": "/MainPage.xaml"
-    },
     "apns": {
       "title": null,
       "action": null,

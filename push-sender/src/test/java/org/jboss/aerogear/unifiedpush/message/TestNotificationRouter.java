@@ -90,11 +90,11 @@ public class TestNotificationRouter {
     @Test
     public void testTwoVariantsOfSameType() throws InterruptedException {
         countDownLatch = new CountDownLatch(1);
-        app.getVariants().add(new WindowsWNSVariant());
-        app.getVariants().add(new WindowsWNSVariant());
+        app.getVariants().add(new AndroidVariant());
+        app.getVariants().add(new AndroidVariant());
         router.submit(app, message);
         countDownLatch.await(3, TimeUnit.SECONDS);
-        assertEquals(variants(VariantType.WINDOWS_WNS), variantTypeHolder.getVariantTypes());
+        assertEquals(variants(VariantType.ANDROID), variantTypeHolder.getVariantTypes());
     }
 
     @Test
@@ -102,10 +102,9 @@ public class TestNotificationRouter {
         countDownLatch = new CountDownLatch(3);
         app.getVariants().add(new AndroidVariant());
         app.getVariants().add(new iOSVariant());
-        app.getVariants().add(new WindowsWNSVariant());
         router.submit(app, message);
         countDownLatch.await(3, TimeUnit.SECONDS);
-        assertEquals(variants(VariantType.ANDROID, VariantType.IOS, VariantType.WINDOWS_WNS), variantTypeHolder.getVariantTypes());
+        assertEquals(variants(VariantType.ANDROID, VariantType.IOS), variantTypeHolder.getVariantTypes());
     }
 
     @Test

@@ -38,11 +38,6 @@ public enum VariantType {
     IOS_TOKEN("ios_token"),
 
     /**
-     * The type identifier for our Windows WNS variants.
-     */
-    WINDOWS_WNS("windows_wns"),
-
-    /**
      * WebPush type identifier
      */
     WEB_PUSH("web_push");

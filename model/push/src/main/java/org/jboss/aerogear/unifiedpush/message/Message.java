@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.jboss.aerogear.unifiedpush.message.apns.APNs;
 import org.jboss.aerogear.unifiedpush.message.json.PriorityDeserializer;
 import org.jboss.aerogear.unifiedpush.message.json.PrioritySerializer;
-import org.jboss.aerogear.unifiedpush.message.windows.Windows;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -56,7 +55,6 @@ public class Message implements Serializable {
 
     private String consolidationKey;
 
-    private Windows windows = new Windows();
     private APNs apns = new APNs();
 
     /**
@@ -158,17 +156,6 @@ public class Message implements Serializable {
 
     public void setApns(APNs apns) {
         this.apns = apns;
-    }
-
-    /**
-     * Windows specific parameters to configure how the message will be displayed.
-     */
-    public Windows getWindows() {
-        return windows;
-    }
-
-    public void setWindows(Windows windows) {
-        this.windows = windows;
     }
 
     public Priority getPriority() {

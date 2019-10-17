@@ -19,7 +19,7 @@ package org.jboss.aerogear.unifiedpush.message.jms;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
+import org.jboss.aerogear.unifiedpush.api.iOSTokenVariant;
 import org.jboss.aerogear.unifiedpush.message.MockProviders;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.exception.PushNetworkUnreachableException;
@@ -116,7 +116,7 @@ public class TestMessageRedelivery {
     @Test
     public void testMessageCannotBeRedelivered() throws InterruptedException {
         // given
-        variant = new WindowsWNSVariant();
+        variant = new iOSTokenVariant();
         failed = new CountDownLatch(NUMBER_OF_MESSAGES);
         counter.set(0);
 
@@ -153,7 +153,7 @@ public class TestMessageRedelivery {
     }
 
     public void emulateNonRedeliverableMessageProcessing(@Observes @Dequeue MessageHolderWithTokens msg) {
-        if (msg.getVariant() instanceof WindowsWNSVariant) {
+        if (msg.getVariant() instanceof iOSTokenVariant) {
             int count = counter.incrementAndGet();
             System.out.println("fail #" + count);
             failed.countDown();

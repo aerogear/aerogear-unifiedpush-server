@@ -24,15 +24,11 @@ public class QueueUtils {
 
     private static final String gcmTokenBatchQueue = "GCMTokenBatchQueue";
 
-    private static final String wnsTokenBatchQueue = "WNSTokenBatchQueue";
-
     private static final String webTokenBatchQueue = "WebTokenBatchQueue";
 
     private static final String apnsPushBatchQueue = "APNsPushMessageQueue";
 
     private static final String gcmPushBatchQueue = "GCMPushMessageQueue";
-
-    private static final String wnsPushBatchQueue = "WNSPushMessageQueue";
 
     private static final String webPushBatchQueue = "WebPushMessageQueue";
 
@@ -43,8 +39,6 @@ public class QueueUtils {
             case IOS:
             case IOS_TOKEN:
                 return apnsTokenBatchQueue;
-            case WINDOWS_WNS:
-                return wnsTokenBatchQueue;
             case WEB_PUSH:
                 return webTokenBatchQueue;
             default:
@@ -59,8 +53,6 @@ public class QueueUtils {
             case IOS:
             case IOS_TOKEN:
                 return apnsPushBatchQueue;
-            case WINDOWS_WNS:
-                return wnsPushBatchQueue;
             case WEB_PUSH:
                 return webPushBatchQueue;
             default:

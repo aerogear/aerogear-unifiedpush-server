@@ -12,8 +12,6 @@ import org.jboss.aerogear.unifiedpush.message.Message;
 import org.jboss.aerogear.unifiedpush.message.NotificationDispatcher;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.webpush.WebPushSender;
-import org.jboss.aerogear.unifiedpush.message.windows.TileType;
-import org.jboss.aerogear.unifiedpush.message.windows.Type;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.junit.After;
 import org.junit.Before;
@@ -82,9 +80,6 @@ public class WebPushSenderTest {
         message.getApns().setActionCategory("some value");
         message.setSound("default");
         message.setBadge(2);
-        message.getWindows().setPage("/MainPage.xaml");
-        message.getWindows().setType(Type.tile);
-        message.getWindows().setTileType(TileType.TileWideBlockAndText01);
         message.getApns().setContentAvailable(true);
         MESSAGE.setMessage(message);
 

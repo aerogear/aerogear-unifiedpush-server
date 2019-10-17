@@ -32,7 +32,6 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Category;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
-import org.jboss.aerogear.unifiedpush.api.WindowsWNSVariant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.ResultStreamException;
@@ -403,24 +402,6 @@ public class InstallationDaoTest {
   }
 
   @Test
-  public void shouldSaveWhenValidateDeviceIdWindows() {
-    // given
-    final Installation installation = new Installation();
-    installation.setDeviceToken(
-        "https://db3.notify.windows.com/?token=AgYAAACH%2fZixlZK4v%2bkD3LFiz7zHOJm13"
-            + "smBVRn8rH%2b32Xu6tv3fj%2fh8bb4VhNTS7NqS8TclpW044YxAbaN%2bB4NjpyVSZs3He7SwwjExbEsBFRLYc824%2f0"
-            + "615fPox8bwoxrTU%3d");
-
-    final WindowsWNSVariant variant = new WindowsWNSVariant();
-    variant.setName("Windows Variant Name");
-    variant.setClientSecret("12");
-    variant.setSid("12");
-
-    // when
-    deviceTokenTest(installation, variant);
-  }
-
-  @Test
   public void shouldSaveWhenValidateDeviceIdAndroid() {
     // given
     final Installation installation = new Installation();
@@ -662,4 +643,5 @@ public class InstallationDaoTest {
       throw new IllegalStateException(e);
     }
   }
+
 }
