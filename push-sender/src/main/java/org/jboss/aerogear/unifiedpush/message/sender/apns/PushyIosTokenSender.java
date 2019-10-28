@@ -21,6 +21,7 @@ import com.turo.pushy.apns.ApnsClientBuilder;
 import com.turo.pushy.apns.DeliveryPriority;
 import com.turo.pushy.apns.PushNotificationResponse;
 import com.turo.pushy.apns.PushType;
+import com.turo.pushy.apns.auth.ApnsSigningKey;
 import com.turo.pushy.apns.proxy.HttpProxyHandlerFactory;
 import com.turo.pushy.apns.proxy.Socks5ProxyHandlerFactory;
 import com.turo.pushy.apns.util.ApnsPayloadBuilder;
@@ -28,7 +29,7 @@ import com.turo.pushy.apns.util.SimpleApnsPushNotification;
 import io.netty.util.concurrent.Future;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.api.iOSTokenVariant;
 import org.jboss.aerogear.unifiedpush.event.APNSVariantUpdateEvent;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.Message;
@@ -58,10 +59,10 @@ import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetGlo
 import static org.jboss.aerogear.unifiedpush.system.ConfigurationUtils.tryGetGlobalProperty;
 
 @Stateless
-@SenderType(VariantType.IOS)
-public class PushyApnsSender implements PushNotificationSender {
+@SenderType(VariantType. IOS_TOKEN)
+public class PushyIosTokenSender implements PushNotificationSender {
 
-    private static final Logger logger = LoggerFactory.getLogger(PushyApnsSender.class);
+    private static final Logger logger = LoggerFactory.getLogger(PushyIosTokenSender.class);
 
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_HOST = "custom.aerogear.apns.push.host";
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
@@ -85,19 +86,14 @@ public class PushyApnsSender implements PushNotificationSender {
             return;
         }
 
-        final iOSVariant apnsVariant = (iOSVariant) variant;
+        final iOSTokenVariant apnsVariant = (iOSTokenVariant) variant;
 
-        handleCertificateVariant(apnsVariant, senderCallback, pushMessage, pushMessageInformationId, tokens);
+        handleTokenVariant(apnsVariant, senderCallback, pushMessage, pushMessageInformationId, tokens);
+
 
     }
 
-    private void handleCertificateVariant(iOSVariant iOSVariant, NotificationSenderCallback senderCallback, UnifiedPushMessage pushMessage, String pushMessageInformationId, Collection<String> tokens) {
-        // Check the certificate first
-        if (!ApnsUtil.checkValidity(iOSVariant.getCertificate(), iOSVariant.getPassphrase().toCharArray())) {
-            senderCallback.onError("The provided certificate is invalid or expired for variant " + iOSVariant.getId());
-            return;
-        }
-
+    private void handleTokenVariant(iOSTokenVariant iOSTokenVariant, NotificationSenderCallback senderCallback, UnifiedPushMessage pushMessage, String pushMessageInformationId, Collection<String> tokens) {
         final String payload;
         {
             try {
@@ -112,7 +108,7 @@ public class PushyApnsSender implements PushNotificationSender {
         final ApnsClient apnsClient;
         {
             try {
-                apnsClient = receiveApnsConnection(iOSVariant);
+                apnsClient = receiveApnsConnection(iOSTokenVariant);
             } catch (IllegalArgumentException iae) {
                 logger.error(iae.getMessage(), iae);
                 senderCallback.onError(String.format("Unable to connect to APNs (%s))", iae.getMessage()));
@@ -129,10 +125,9 @@ public class PushyApnsSender implements PushNotificationSender {
             // we have managed to connect and will send tokens ;-)
             senderCallback.onSuccess();
 
-            final String defaultApnsTopic = ApnsUtil.readDefaultTopic(iOSVariant.getCertificate(),
-                    iOSVariant.getPassphrase().toCharArray());
+            final String defaultApnsTopic = iOSTokenVariant.getBundleId();
             Date expireDate = createFutureDateBasedOnTTL(pushMessage.getConfig().getTimeToLive());
-            logger.debug("sending payload for all tokens for {} to APNs ({})", iOSVariant.getVariantID(), defaultApnsTopic);
+            logger.debug("sending payload for all tokens for {} to APNs ({})", iOSTokenVariant.getVariantID(), defaultApnsTopic);
 
             tokens.forEach(token -> {
                 final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token,
@@ -152,7 +147,7 @@ public class PushyApnsSender implements PushNotificationSender {
         } else {
             logger.error("Unable to send notifications, client is not connected. Removing from cache pool");
             senderCallback.onError("Unable to send notifications, client is not connected");
-            variantUpdateEventEvent.fire(new APNSVariantUpdateEvent(iOSVariant));
+            variantUpdateEventEvent.fire(new APNSVariantUpdateEvent(iOSTokenVariant));
         }
     }
 
@@ -226,11 +221,10 @@ public class PushyApnsSender implements PushNotificationSender {
         return payloadBuilder.buildWithDefaultMaximumLength();
     }
 
-    private synchronized ApnsClient receiveApnsConnection(final iOSVariant apnsVariant) {
+    private synchronized ApnsClient receiveApnsConnection(final iOSTokenVariant apnsVariant) {
         return simpleApnsClientCache.getApnsClientForVariant(apnsVariant, () -> {
             final ApnsClientBuilder builder = new ApnsClientBuilder();
-
-            assambleApnsClientBuilderForCertificate(apnsVariant, builder);
+            assambleApnsClientBuilderForToken( apnsVariant, builder);
 
             connectToDestinations(apnsVariant, builder);
 
@@ -249,15 +243,17 @@ public class PushyApnsSender implements PushNotificationSender {
         });
     }
 
-    private void assambleApnsClientBuilderForCertificate(final iOSVariant iOSVariant, final ApnsClientBuilder builder) {
+    private void assambleApnsClientBuilderForToken(final iOSTokenVariant iOSVariant, final ApnsClientBuilder builder) {
 
         // this check should not be needed, but you never know:
-        if (iOSVariant.getCertificate() != null && iOSVariant.getPassphrase() != null) {
+        if (iOSVariant.getTeamId() != null && iOSVariant.getKeyId() != null && iOSVariant.getPrivateKey() != null) {
 
-            // add the certificate:
-            try (final ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getCertificate())) {
+            // add the token:
+            try (final ByteArrayInputStream stream = new ByteArrayInputStream(iOSVariant.getPrivateKey().getBytes())) {
 
-                builder.setClientCredentials(stream, iOSVariant.getPassphrase());
+                builder.setSigningKey(
+                        ApnsSigningKey.loadFromInputStream(stream,iOSVariant.getTeamId(), iOSVariant.getKeyId())
+                );
 
                 if (ProxyConfiguration.hasHttpProxyConfig()) {
                     if (ProxyConfiguration.hasBasicAuth()) {
@@ -281,7 +277,7 @@ public class PushyApnsSender implements PushNotificationSender {
         throw new IllegalArgumentException("Not able to construct APNS client");
     }
 
-    private void connectToDestinations(final iOSVariant iOSVariant, final ApnsClientBuilder builder) {
+    private void connectToDestinations(final iOSTokenVariant iOSVariant, final ApnsClientBuilder builder) {
 
         String apnsHost;
         int apnsPort = ApnsClientBuilder.DEFAULT_APNS_PORT;

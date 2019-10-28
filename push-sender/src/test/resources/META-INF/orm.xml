@@ -30,6 +30,14 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             <id name="id"/>
         </attributes>
     </mapped-superclass>
+    <mapped-superclass class="APNSVariant" access="FIELD">
+        <attributes>
+            <basic name="production">
+                <column name="production" nullable="false" />
+            </basic>
+        </attributes>
+    </mapped-superclass>
+
     <entity class="Variant" access="PROPERTY">
         <table name="variant"/>
         <inheritance strategy="JOINED"/>
@@ -50,6 +58,16 @@ http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
             <basic name="developer">
                 <column name="developer"/>
             </basic>
+        </attributes>
+    </entity>
+    <entity class="iOSTokenVariant" access="FIELD">
+        <table name="ios_token_variant"/>
+        <discriminator-value>ios_token</discriminator-value>
+        <attributes>
+            <basic name="certificateData">
+                <column name="cert_data" length="100000"/>
+            </basic>
+
         </attributes>
     </entity>
     <entity class="iOSVariant" access="FIELD">

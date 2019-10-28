@@ -16,36 +16,37 @@
  */
 package org.jboss.aerogear.unifiedpush.event;
 
-import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+
 
 import java.util.Objects;
+import org.jboss.aerogear.unifiedpush.api.APNSVariant;
 
 /**
- * Fired when the iOS variant is updated to contain a new .p12 file,
+ * Fired when the apns variant is updated to contain a new .p12 file,
  * therefore the update event is used to trigger a removal from the internal connection cache.
  */
-public class iOSVariantUpdateEvent {
+public class APNSVariantUpdateEvent {
 
-    private iOSVariant iOSVariant;
+    private APNSVariant apnsVariant;
 
-    public iOSVariantUpdateEvent(iOSVariant iOSVariant) {
-        this.iOSVariant = iOSVariant;
+    public APNSVariantUpdateEvent(APNSVariant apnsVariant) {
+        this.apnsVariant = apnsVariant;
     }
 
-    public iOSVariant getiOSVariant() {
-        return iOSVariant;
+    public APNSVariant getApnsVariant() {
+        return apnsVariant;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof iOSVariantUpdateEvent)) return false;
-        iOSVariantUpdateEvent that = (iOSVariantUpdateEvent) o;
-        return Objects.equals(iOSVariant, that.iOSVariant);
+        if (!(o instanceof APNSVariantUpdateEvent)) return false;
+        APNSVariantUpdateEvent that = (APNSVariantUpdateEvent) o;
+        return Objects.equals(apnsVariant, that.apnsVariant);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(iOSVariant);
+        return Objects.hash(apnsVariant);
     }
 }

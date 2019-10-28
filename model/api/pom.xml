@@ -53,6 +53,12 @@
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
       </dependency>
+        <dependency>
+            <groupId>com.turo</groupId>
+            <artifactId>pushy</artifactId>
+            <version>0.13.9</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
     

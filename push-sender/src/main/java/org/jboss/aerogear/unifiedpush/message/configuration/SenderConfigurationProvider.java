@@ -55,6 +55,11 @@ public class SenderConfigurationProvider {
         return loadConfigurationFor(VariantType.IOS, new SenderConfiguration(3, 2000));
     }
 
+    @Produces @ApplicationScoped @SenderType(VariantType.IOS_TOKEN)
+    public SenderConfiguration produceIosTokenConfiguration() {
+        return loadConfigurationFor(VariantType.IOS_TOKEN, new SenderConfiguration(3, 2000));
+    }
+
     @Produces @ApplicationScoped @SenderType(VariantType.WINDOWS_WNS)
     public SenderConfiguration produceWindowsWnsConfiguration() {
         return loadConfigurationFor(VariantType.WINDOWS_WNS, new SenderConfiguration(10, 1000));

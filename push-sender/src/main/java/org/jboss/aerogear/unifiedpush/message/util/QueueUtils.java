@@ -41,6 +41,7 @@ public class QueueUtils {
             case ANDROID:
                 return gcmTokenBatchQueue;
             case IOS:
+            case IOS_TOKEN:
                 return apnsTokenBatchQueue;
             case WINDOWS_WNS:
                 return wnsTokenBatchQueue;
@@ -56,6 +57,7 @@ public class QueueUtils {
             case ANDROID:
                 return gcmPushBatchQueue;
             case IOS:
+            case IOS_TOKEN:
                 return apnsPushBatchQueue;
             case WINDOWS_WNS:
                 return wnsPushBatchQueue;

@@ -73,6 +73,7 @@ public class DeviceTokenValidator implements ConstraintValidator<DeviceTokenChec
     public static boolean isValidDeviceTokenForVariant(final String deviceToken, final VariantType type) {
         switch (type) {
             case IOS:
+            case IOS_TOKEN:
                 return IOS_DEVICE_TOKEN.matcher(deviceToken).matches();
             case ANDROID:
                 return ANDROID_DEVICE_TOKEN.matcher(deviceToken).matches();
