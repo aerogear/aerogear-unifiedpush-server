@@ -16,9 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.event;
 
-import org.jboss.aerogear.unifiedpush.api.IsAPNSVariant;
+
 
 import java.util.Objects;
+import org.jboss.aerogear.unifiedpush.api.APNSVariant;
 
 /**
  * Fired when the apns variant is updated to contain a new .p12 file,
@@ -26,13 +27,13 @@ import java.util.Objects;
  */
 public class APNSVariantUpdateEvent {
 
-    private IsAPNSVariant apnsVariant;
+    private APNSVariant apnsVariant;
 
-    public APNSVariantUpdateEvent(IsAPNSVariant apnsVariant) {
+    public APNSVariantUpdateEvent(APNSVariant apnsVariant) {
         this.apnsVariant = apnsVariant;
     }
 
-    public IsAPNSVariant getApnsVariant() {
+    public APNSVariant getApnsVariant() {
         return apnsVariant;
     }
 

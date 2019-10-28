@@ -26,10 +26,9 @@ import java.util.Base64;
 /**
  * The iOS variant class encapsulates APNs specific behavior.
  */
-public class iOSVariant extends Variant implements IsAPNSVariant {
+public class iOSVariant extends APNSVariant {
     private static final long serialVersionUID = -889367404039436329L;
 
-    private boolean production;
 
     @NotNull
     @Size(max = 255, message = "Passphrase must be 1-255 characters long")
@@ -39,24 +38,6 @@ public class iOSVariant extends Variant implements IsAPNSVariant {
     @NotNull(message = "Certificate must be provided")
     @JsonIgnore
     private String certificateData;
-
-    /**
-     * If <code>true</code> a connection to Apple's Production APNs server
-     * will be established for this iOS variant.
-     *
-     * If the method returns <code>false</code> a connection to
-     * Apple's Sandbox/Development APNs server will be established
-     * for this iOS variant.
-     *
-     * @return production state
-     */
-    public boolean isProduction() {
-        return production;
-    }
-
-    public void setProduction(boolean production) {
-        this.production = production;
-    }
 
     /**
      * The APNs passphrase that is needed to establish a connection to any

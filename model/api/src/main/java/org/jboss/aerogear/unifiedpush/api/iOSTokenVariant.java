@@ -29,10 +29,10 @@ import java.io.InputStream;
 /**
  * This class is similar to iOSVariant, but uses token signing instead of certificate identifitcation.
  */
-public class iOSTokenVariant extends Variant implements IsAPNSVariant {
+public class iOSTokenVariant extends APNSVariant {
     private static final long serialVersionUID = -889367404039436329L;
 
-    private boolean production;
+
 
     @NotNull
     @Size(max = 10, min = 10, message = "Team ID must be 10 characters long")
@@ -50,23 +50,6 @@ public class iOSTokenVariant extends Variant implements IsAPNSVariant {
     @NotNull(message = "Bundle ID is required.")
     private String bundleId;
 
-    /**
-     * If <code>true</code> a connection to Apple's Production APNs server
-     * will be established for this iOS variant.
-     *
-     * If the method returns <code>false</code> a connection to
-     * Apple's Sandbox/Development APNs server will be established
-     * for this iOS variant.
-     *
-     * @return production state
-     */
-    public boolean isProduction() {
-        return production;
-    }
-
-    public void setProduction(boolean production) {
-        this.production = production;
-    }
 
     /**
      * The APNs team ID is a value you set for developing apps. Obtain this value from your Apple developer account.
