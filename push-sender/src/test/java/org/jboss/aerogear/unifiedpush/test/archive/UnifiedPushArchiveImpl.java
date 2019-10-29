@@ -90,7 +90,6 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
     @Override
     public UnifiedPushArchive withMessageModel() {
         return addClasses(UnifiedPushMessage.class, InternalUnifiedPushMessage.class, Config.class, Criteria.class, Message.class, Priority.class)
-                .addPackage(org.jboss.aerogear.unifiedpush.message.windows.Windows.class.getPackage())
                 .addPackage(org.jboss.aerogear.unifiedpush.message.apns.APNs.class.getPackage())
                 .addMavenDependencies("com.fasterxml.jackson.core:jackson-databind");
     }
