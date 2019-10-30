@@ -331,12 +331,13 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	}
 
 	private UserRepresentation getUser(String username) {
-		List<UserRepresentation> users = this.realm.users().search(username, 0, 1);
-		if (users != null && users.size() > 0) {
-			return users.get(0);
-		}
-
-		return null;
+		List<UserRepresentation> users = this.realm.users().search(username);
+		return users == null
+				? null
+				: users.stream()
+					.filter(u -> username.equalsIgnoreCase(u.getUsername()))
+					.findFirst()
+					.orElseGet(null);
 	}
 
 	private ClientRepresentation isClientExists(PushApplication pushApp) {
