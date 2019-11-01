@@ -1,0 +1,11 @@
+#!/bin/bash
+echo "$QUAY_PASSWORD" | docker login -u "$QUAY_USERNAME" --password-stdin quay.io
+
+export HASH=$(git rev-parse --short HEAD)
+export $(printf 'VERSION=${project.version}\n0\n' | mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate | grep '^VERSION')
+
+docker tag aerogear/unifiedpush-configurable-container:$VERSION quay.io/aerogear/unifiedpush-configurable-container:$VERSION.$HASH
+docker tag quay.io/aerogear/unifiedpush-configurable-container:$VERSION.$HASH quay.io/aerogear/unifiedpush-configurable-container:master
+docker push quay.io/aerogear/unifiedpush-configurable-container:$VERSION.$HASH
+docker push quay.io/aerogear/unifiedpush-configurable-container:master
+
