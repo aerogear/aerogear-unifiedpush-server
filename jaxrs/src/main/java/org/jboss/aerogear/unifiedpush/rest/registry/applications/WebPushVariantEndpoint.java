@@ -28,7 +28,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-@Path("/applications/{pushAppID}/webpush")
+@Path("/applications/{pushAppID}/{webPush:(web_push|webpush)}")
 public class WebPushVariantEndpoint extends AbstractVariantEndpoint<WebPushVariant> {
 
     public WebPushVariantEndpoint() {
@@ -126,6 +126,7 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint<WebPushVaria
             // apply updated data:
             webPushVariant.setPublicKey(updatedVariant.getPublicKey());
             webPushVariant.setPrivateKey(updatedVariant.getPrivateKey());
+            webPushVariant.setAlias(updatedVariant.getAlias());
             webPushVariant.setName(updatedVariant.getName());
             webPushVariant.setDescription(updatedVariant.getDescription());
             logger.trace("Updating WebPush Variant '{}'", webPushID);
