@@ -1,0 +1,112 @@
+// For more information, see: https://redhat-documentation.github.io/modular-docs/
+
+[id='setting-up-sdk-{context}']
+= Setting up the {unifiedpush-service} Service SDK
+
+This section helps you to set up the {unifiedpush-service} service SDK in your App.
+It describes how to set up and initialize the {unifiedpush-service} service SDK.
+
+.Prerequisites
+
+* Your local `mobile-services.json` file is up-to-date.
+
+[tabs]
+====
+// tag::excludeDownstream[]
+Android::
++
+--
+A link:https://firebase.google.com/[Firebase account^].
+--
+iOS::
++
+--
+An link:https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/APNSOverview.html#//apple_ref/doc/uid/TP40008194-CH8-SW1[APNs service^].
+--
+// end::excludeDownstream[]
+====
+
+.Procedure
+
+. Import the libraries
++
+[tabs]
+====
+// tag::excludeDownstream[]
+Android::
++
+--
+. Add the push dependency to your application module
++
+[source,groovy,subs="attributes"]
+----
+implementation "org.aerogear:aerogear-push:{release-number}"
+implementation "com.google.firebase:firebase-messaging:[version]"
+----
++
+. Create a new project in link:https://console.firebase.google.com[Firebase console^]
+. Add link:https://developers.google.com/android/guides/google-services-plugin[The Google Services Gradle Plugin^] in your root `build.gradle` file
+[source,groovy]
+  buildscript {
+      dependencies {
+          classpath 'com.google.gms:google-services:[version]'
+      }
+  }
+. Apply the plugin in your app `build.gradle` file
+[source,groovy]
+  // ADD THIS AT THE BOTTOM
+  apply plugin: 'com.google.gms.google-services'
+
+--
+iOS::
++
+--
+. Add the dependency to your Podfile
++
+[source,ruby]
+----
+target '[TARGET NAME]' do
+    pod 'AGSPush', '[VERSION]'
+end
+----
+. Update the dependencies
++
+[source,bash]
+----
+$ pod install
+----
+. Import the SDK
++
+[source,swift]
+----
+import AGSPush
+----
+--
+Cordova::
++
+--
+// end::excludeDownstream[]
+. Install `cordova-plugin-aerogear-push`:
++
+[source,bash]
+----
+$ cordova plugin add @aerogear/cordova-plugin-aerogear-push
+----
+
+. Install the Unified Push Server package needed for device registration:
++
+[source,bash]
+----
+$ npm install --save @aerogear/push
+----
+
+--
+// tag::excludeDownstream[]
+Xamarin::
++
+--
+This feature is not yet supported in the AeroGear Xamarin SDK
+--
+// end::excludeDownstream[]
+====
+

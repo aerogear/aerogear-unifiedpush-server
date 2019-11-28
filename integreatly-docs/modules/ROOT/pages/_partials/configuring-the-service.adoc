@@ -1,0 +1,223 @@
+// For more information, see: https://redhat-documentation.github.io/modular-docs/
+
+[id='configuring-the-{context}']
+= Configuring the {unifiedpush-service} Service In A Local Development Environment
+
+This guide will help you to set up the {unifiedpush-service} service SDK in your App.
+
+.Procedure
+
+=== Importing the libraries
+
+[tabs]
+====
+// tag::excludeDownstream[]
+Android::
++
+--
+. Add the push dependency to your application module
++
+[source,groovy,subs="attributes"]
+----
+implementation "org.aerogear:aerogear-push:{release-number}"
+implementation "com.google.firebase:firebase-messaging:[version]"
+----
++
+. Create a new project in link:https://console.firebase.google.com[Firebase console^]
+. Add link:https://developers.google.com/android/guides/google-services-plugin[The Google Services Gradle Plugin^] in your root `build.gradle` file
+[source,groovy]
+  buildscript {
+      dependencies {
+          classpath 'com.google.gms:google-services:[version]'
+      }
+  }
+. Apply the plugin in your app `build.gradle` file
+[source,groovy]
+  // ADD THIS AT THE BOTTOM
+  apply plugin: 'com.google.gms.google-services'
+
+--
+iOS::
++
+--
+
+. Add the dependency to your Podfile
++
+[source,ruby]
+----
+target '[TARGET NAME]' do
+    pod 'AGSPush', '[VERSION]'
+end
+----
+
+. Update the dependencies
++
+[source,bash]
+----
+$ pod install
+----
+
+. Import the SDK
++
+[source,swift]
+----
+import AGSPush
+----
+
+--
+// end::excludeDownstream[]
+Cordova::
++
+--
+
+. Install `cordova-plugin-aerogear-push`:
++
+[source,bash]
+----
+$ cordova plugin add @aerogear/cordova-plugin-aerogear-push
+----
+
+. Ionic Apps require an additional dependency, the link:https://ionicframework.com/docs/native/push/[Ionic Native Push Library^]
++
+[source,bash]
+----
+$ npm install --save @ionic-native/push
+----
+
+. Install the Unified Push Server package needed for device registration:
++
+[source,bash]
+----
+$ npm install --save @aerogear/push
+----
+
+--
+// tag::excludeDownstream[]
+Xamarin::
++
+--
+This feature is not yet supported in the AeroGear Xamarin SDK
+--
+// end::excludeDownstream[]
+====
+
+=== Device registration
+
+To make use of the {unifiedpush-service} service, devices need to be registered by calling an endpoint of the server.
+The SDKs will handle this for you and the following steps will give you everything you need to start working with push notifications.
+
+[tabs]
+====
+// tag::excludeDownstream[]
+Android::
++
+--
+. Getting an instance of the PushService
++
+[source,java]
+----
+PushService pushService = new PushService.Builder().openshift().build();
+----
+
+. Registration request
++
+[source,java]
+----
+pushService.registerDevice()
+  .requestOn(new AppExecutors().mainThread())
+  .respondWith(new Responder<Boolean>() {
+    @Override
+    public void onResult(Boolean value) { // Yay }
+
+    @Override
+    public void onException(Exception exception) { // Oops! }
+});
+----
+
+--
+iOS::
++
+--
+
+[source,swift]
+----
+func application(_ application: UIApplication,
+                 didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    var config = UnifiedPushConfig()
+    AgsPush.instance.register(
+        deviceToken,
+        config,
+        success: {
+           print("Successfully registered to Unified Push Server")
+        },
+        failure: { (error: Error!) in
+           print("Failure to register for on Unified Push Server: \(error)")
+        }
+    )
+}
+----
+
+--
+
+Cordova::
++
+--
+// end::excludeDownstream[]
+*Using plain Cordova*
+
+[source,javascript]
+----
+const push = PushNotification.init({
+    android: {},
+    ios: {
+        alert: "true",
+        badge: "true",
+        sound: "true"
+    }
+});
+
+// Registration handler
+push.on('registration', data => {
+    // PushRegistration is part of @aerogear/push
+    new PushRegistration().register(data.registrationId).then(() => {
+        // Registration with UPS successful, you can now send push notifications from the UPS UI
+    }).catch(err => {
+        // Error on device registration
+    });
+});
+----
+
+*Using Ionic*
+
+[source,javascript]
+----
+import { Push } from "@ionic-native/push";
+
+const pushObject = new Push().init({
+    android: {},
+    ios: {
+        alert: true,
+        badge: true,
+        sound: true
+    }
+});
+
+pushObject.on('registration').subscribe(data => {
+    new PushRegistration().register(data.registrationId).then(() => {
+        // Registration with UPS successful, you can now send push notifications from the UPS UI
+    }).catch(err => {
+        //Error on device registration
+    });
+});
+----
+
+--
+// tag::excludeDownstream[]
+Xamarin::
++
+--
+
+This feature is not yet supported in the AeroGear Xamarin SDK
+--
+// end::excludeDownstream[]
+====

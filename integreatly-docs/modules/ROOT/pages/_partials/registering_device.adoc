@@ -1,0 +1,115 @@
+// For more information, see: https://redhat-documentation.github.io/modular-docs/
+
+[id='registering-device']
+= Registering device on {unifiedpush-service} Service
+
+To receive native push notifications from a Push Network, for example APNs or FCM, the mobile device is identified with a unique device-token assigned by that Push Network. 
+This device-token is passed, by the operating system, to the mobile application.
+Refer to the operating system and Push Network documentation for further details.
+
+Every time a user launches a mobile app,  that app receives the  `device-token`, from a _platform-specific_ method (or callback). 
+Since the Push Network  may assign a new token to a device, {org-name} recommends that the app registers the `device-token` with the UnifiedPush Server each time.
+
+The required metadata for an `Installation`:
+
+* *deviceToken:* _Identifies the device/user-agent within its Push Network.
+* *variantID:* The ID of the variant, where the client belongs to
+* *variantSecret:* Password of the actual variant
+
+The AeroGear UnifiedPush Server is able to store some user-specific metadata as well:
+
+* *deviceType:* The device type of the device or the user agent.
+* *operatingSystem:* The name of the underlying Operating System.
+* *osVersion:* The version of the used Operating System.
+* *alias:* Application specific alias to identify users with the system. For instance an `email address` or a `username`.
+* *categories:* Used to apply one or more "tags".
+
+The device-token needs to be registered with the AeroGear UnifiedPush Server, to indicate there is a new Installation for a Variant. This registration is performed by calling an endpoint of the server.
+
+[tabs]
+====
+// tag::excludeDownstream[]
+Android::
++
+--
+. Getting an instance of the PushService
++
+[source,java]
+----
+PushService pushService = new PushService.Builder().openshift().build();
+----
+
+. Registration request
++
+[source,java]
+----
+pushService.registerDevice()
+  .requestOn(new AppExecutors().mainThread())
+  .respondWith(new Responder<Boolean>() {
+    @Override
+    public void onResult(Boolean value) { // Yay }
+
+    @Override
+    public void onException(Exception exception) { // Oops! }
+});
+----
+
+--
+iOS::
++
+--
+
+[source,swift]
+----
+func application(_ application: UIApplication,
+                 didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    var config = UnifiedPushConfig()
+    AgsPush.instance.register(
+        deviceToken,
+        config,
+        success: {
+           print("Successfully registered to Unified Push Server")
+        },
+        failure: { (error: Error!) in
+           print("Failure to register for on Unified Push Server: \(error)")
+        }
+    )
+}
+----
+
+--
+// end::excludeDownstream[]
+Cordova::
++
+--
+[source,javascript]
+----
+import { PushRegistration } from "@aerogear/push";
+
+new PushRegistration(app.config).register().then(() => {
+    // Registration with UPS successful, you can now send push notifications from the UPS UI
+}).catch(err => {
+    // Error on device registration
+});
+----
+
+NOTE: Optionally, you can pass the parameters below to the register method
+
+[source,javascript]
+----
+{
+  alias: 'some-alias',
+  categories: ['one', 'or', 'more', 'categories'],
+  timeout: 5000 // in milliseconds
+}
+----
+--
+// tag::excludeDownstream[]
+Xamarin::
++
+--
+
+This feature is not yet supported in the AeroGear Xamarin SDK
+--
+// end::excludeDownstream[]
+====

@@ -1,0 +1,53 @@
+// For more information, see: https://redhat-documentation.github.io/modular-docs/
+
+[id='downloading-the-configuration-file-{context}']
+= Downloading the Configuration File
+
+The `mobile-services.json` file provides the information for your mobile app to communicate with services.
+After you change any configuration in the {mobile-developer-console}, it is important to update that file in your IDE.
+
+.Prerequisites
+
+* The configuration of your {mobile-client} in {mobile-developer-console} is up-to-date.
+* You have set up your mobile app development environment.
+
+.Procedure
+
+. Open your {short-mobile-client} in the Mobile Developer Console.
+. Copy the `mobile-services.json` configuration to your clipboard.
+. Save the contents of the clipboard to a new file called `mobile-services.json`.
++
+NOTE: The `mobile-services.json` file is the link between your provisioned services on OpenShift and the mobile app you are developing. This file provides all required configuration to initialise the various SDKs and get them hooked up/connected to the back-end services.
+. Move `mobile-services.json` to the following location in your application project:
++
+[tabs]
+====
+// tag::excludeDownstream[]
+Android::
++
+--
+`app/src/main/assets/mobile-services.json`
+--
+iOS::
++
+--
+`<app directory>/mobile-services.json`
+NOTE: Ensure that `mobile-services.json` is a member of the project in the Xcode Project Navigator.
+
+--
+Cordova::
++
+--
+// end::excludeDownstream[]
+`src/mobile-services.json`
+
+NOTE: To run the Cordova app on the Android device you also need to download the `google-services.json` from Firebase and put it on the root folder of your project.
+// tag::excludeDownstream[]
+--
+Xamarin::
++
+--
+`Resources/mobile-services.json`
+--
+// end::excludeDownstream[]
+====

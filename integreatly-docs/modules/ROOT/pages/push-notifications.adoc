@@ -1,0 +1,76 @@
+:toclevels: 4
+
+:include-tags:
+
+include::_partials/attributes.adoc[tags={include-tags}]
+
+
+:toc:
+
+// For more information, see: https://redhat-documentation.github.io/modular-docs/
+
+:context: push
+ifdef::context[:parent-context: {context}]
+
+[id='a-collection-of-modules']
+= Using the {unifiedpush-service} Mobile Service
+:page-partial:
+
+[[introduction]]
+The {unifiedpush-service} service allows you to send native push notifications to different mobile operating systems.
+
+* Code once and push notifications to iOS and Android.
+* Push notifications to defined groups.
+* Push notifications to either iOS only or Android only.
+* Push notifications to different variants of a mobile app.
+* Push notifications from different back-end apps to the same mobile app.
+
+
+Currently the service supports:
+
+* link:https://developer.apple.com/notifications/[Apple Push Notification Service^]
+* link:https://firebase.google.com/products/cloud-messaging/[Firebase Cloud Messaging^]
+
+
+The {unifiedpush-service} service offers a unified Notification Service API to the above mentioned Push Network Services.
+It can be seen as a _broker_ that distributes push messages to different 3rd party Push Networks.
+
+[NOTE]
+====
+* The payload of the push notification is delivered to 3rd party Push Network providers, Google or Apple. {org-name} recommends that users do not send any sensitive personal or confidential information (for example, a social security number, financial account or transactional information) as part of any Push Notification. Users of push notifications should not have an expectation of secure transmission.
+
+* For analytic purposes, the service stores the content of the +alert+ key sent to the UnifiedPush Server.
+The content of the +alert+ key belongs to the metadata, which is deleted after 30 days, using a nightly job within the UnifiedPush Server.
+
+* You are only able to send push notifications to a real device, sending push notifications to an emulator fails.
+
+* Push is a signalling mechanism and is not suitable to be used as a data carrying system, for example, a chat application.
+====
+
+.Prerequisites
+
+* You understand {unifiedpush-service}.
+* You have logged into the OpenShift console and the Mobile Developer Console.
+
+.Additional resources
+
+* link:https://developer.apple.com/notifications/[Apple Push Notification Service^]
+* link:https://firebase.google.com/products/cloud-messaging/[Firebase Cloud Messaging^]
+
+include::_partials/ref_terminology.adoc[leveloffset=+1,tags={include-tags}]
+[[setting-up-the-push-service]]
+== Setting Up the {unifiedpush-service} Mobile Service
+include::_partials/obtaining_firebase_cloud_messaging_credentials.adoc[leveloffset=+2,tags={include-tags}]
+include::_partials/enable_push_notifications_for_ios_app.adoc[leveloffset=+2,tags={include-tags}]
+[[setting-up-the-push-client-app]]
+== Configuring your client app
+//include::_partials/downloading-configuration-file.adoc[leveloffset=+2,tags={include-tags}]
+include::_partials/setting-up-the-push-sdk.adoc[leveloffset=+2,tags={include-tags}]
+include::_partials/registering_device.adoc[leveloffset=+1,tags={include-tags}]
+include::_partials/sending-a-push-notification.adoc[leveloffset=+1,tags={include-tags}]
+include::_partials/handling-push-notifications.adoc[leveloffset=+1,tags={include-tags}]
+
+
+// Restore the context to what it was before this assembly.
+ifdef::parent-context[:context: {parent-context}]
+ifndef::parent-context[:!context:]

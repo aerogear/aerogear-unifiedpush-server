@@ -1,0 +1,19 @@
+// For more information, see: https://redhat-documentation.github.io/modular-docs/
+
+[id='enable_push_notifications_for_ios_app-{context}']
+= Obtaining Apple Push Notification Service Credentials
+
+This procedure describes how to enable {unifiedpush-service} for your iOS application and get the credentials required for push from Apple.
+
+.Procedure
+
+. Follow the link:https://help.apple.com/xcode/mac/current/#/devdfd3d04a1[official Apple guide] to enable push notifications for your Xcode project.
+
+. Follow the link:https://help.apple.com/developer-account/#/dev82a71386a[official Apple guide] to generate an APNs client TLS certificate and export the client TLS identity from your Mac.
++
+[NOTE]
+====
+Make sure to protect the p12 file with a password.
+
+The exported p12 file with the password will be used later when binding your {mobile-client} to the {unifiedpush-service}.
+====
