@@ -337,7 +337,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 				: users.stream()
 					.filter(u -> username.equalsIgnoreCase(u.getUsername()))
 					.findFirst()
-					.orElseGet(null);
+					.orElse(null);
 	}
 
 	private ClientRepresentation isClientExists(PushApplication pushApp) {
