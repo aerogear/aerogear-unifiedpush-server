@@ -1,7 +1,7 @@
-name: aerogear
+name: push
 title: Push Notifications
 version: 'latest'
-start_ROOT: ROOT:getting-started.adoc
+start_ROOT: ROOT:index.adoc
 nav:
 - modules/ROOT/nav.adoc
 
