@@ -1,0 +1,10 @@
+include::{partialsdir}/attributes.adoc[]
+
+** xref:index.adoc[{unifiedpush-service}]
+*** xref:index.adoc#introduction[Introduction]
+*** xref:index.adoc#setting-up-the-push-service[Setting Up]
+*** xref:index.adoc#setting-up-the-push-client-app[App configuration]
+*** xref:index.adoc#registering-device[Registering device]
+*** xref:index.adoc#sending-a-push-notification-push[Sending a Notification]
+*** xref:index.adoc#handling-push-notifications-push[Handling a Notification]
+

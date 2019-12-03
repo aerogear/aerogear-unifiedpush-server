@@ -1,0 +1,74 @@
+// For more information, see: https://redhat-documentation.github.io/modular-docs/
+
+[id='handling-push-notifications-{context}']
+= Handling Incoming Push Notifications
+
+This section describes how to handle incoming {push-notification}s in your foregrounded application.
+
+NOTE: Push notifications that arrive when the application is in the background are always handled by the OS.
+
+.Procedure
+
+[tabs]
+====
+// tag::excludeDownstream[]
+Android::
++
+--
+Add to your project an implementation of *MessageHandler*:
+
+[source,java]
+----
+public class MyMessageHandler implements MessageHandler {
+
+    @Override
+    public void onMessage(Context context, Map<String, String> message) {
+        // Handle incoming message
+    }
+
+}
+----
+
+Add it to your application's manifest.
+
+[source,xml]
+----
+<meta-data
+    android:name="DEFAULT_MESSAGE_HANDLER_KEY"
+    android:value=".MyMessageHandler" />
+----
+
+--
+iOS::
++
+--
+
+The {SDK} for iOS does not provide a way to handle incoming messages. Instead, follow the link:https://developer.apple.com/notifications/[Apple's official documentation^] about notifications.
+
+--
+
+Cordova::
++
+--
+// end::excludeDownstream[]
+
+Add the following code to your app:
+
+[source,javascript]
+----
+import { PushRegistration } from "@aerogear/push";
+
+PushRegistration.onMessageReceived((notification: any) => {
+  console.log('Received a push notification', notification);
+});
+----
+
+--
+// tag::excludeDownstream[]
+Xamarin::
++
+--
+This feature is not yet supported in the AeroGear Xamarin SDK
+--
+// end::excludeDownstream[]
+====
