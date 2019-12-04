@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.message.jms.APNSClientProducer;
+import org.jboss.aerogear.unifiedpush.rest.annotations.DisabledByEnvironment;
 import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
@@ -36,6 +37,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 @Path("/applications/{pushAppID}/ios")
+@DisabledByEnvironment("ios")
 public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
 
     @Inject

@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.iOSTokenVariant;
 import org.jboss.aerogear.unifiedpush.message.jms.APNSClientProducer;
+import org.jboss.aerogear.unifiedpush.rest.annotations.DisabledByEnvironment;
 import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
@@ -39,7 +40,8 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-@Path("/applications/{pushAppID}/ios_token")
+@Path("/applications/{pushAppID}/{ignore:iostoken|ios_token}")
+@DisabledByEnvironment({"ios_token","iostoken"})
 public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVariant> {
 
     @Inject

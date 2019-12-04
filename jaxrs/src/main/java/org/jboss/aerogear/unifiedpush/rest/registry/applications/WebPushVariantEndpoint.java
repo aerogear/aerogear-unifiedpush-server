@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.WebPushVariant;
+import org.jboss.aerogear.unifiedpush.rest.annotations.DisabledByEnvironment;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
 import javax.validation.ConstraintViolationException;
@@ -28,7 +29,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-@Path("/applications/{pushAppID}/webpush")
+@Path("/applications/{pushAppID}/{ignore:webpush|web_push}")
+@DisabledByEnvironment({"webpush","web_push"})
 public class WebPushVariantEndpoint extends AbstractVariantEndpoint<WebPushVariant> {
 
     public WebPushVariantEndpoint() {

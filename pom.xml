@@ -226,7 +226,7 @@
     <wildfly-maven-plugin.version>1.2.0.Final</wildfly-maven-plugin.version>
 
     <aerogear.bom.version>1.1.15</aerogear.bom.version>
-    <admin-ui.version>2.2.1</admin-ui.version>
+    <admin-ui.version>2.2.3</admin-ui.version>
 
     <!-- Override versions of AeroGear BOMs-->
     <junit.version>4.12</junit.version>

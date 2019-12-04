@@ -19,7 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
-
+import org.jboss.aerogear.unifiedpush.rest.annotations.DisabledByEnvironment;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.ws.rs.*;
@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 @Path("/applications/{pushAppID}/android")
+@DisabledByEnvironment("android")
 public class AndroidVariantEndpoint extends AbstractVariantEndpoint<AndroidVariant> {
 
     // required for RESTEasy
@@ -97,8 +98,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint<AndroidVaria
      * @return                  list of {@link AndroidVariant}s
      */
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
+    @Produces(MediaType.APPLICATION_JSON)    public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
         return Response.ok(getVariants(application)).build();
     }
