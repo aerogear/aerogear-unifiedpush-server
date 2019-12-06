@@ -20,6 +20,7 @@ import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
 import org.jboss.aerogear.unifiedpush.service.dashboard.DashboardData;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import java.util.Arrays;
 import java.util.List;
 
 @Path("/metrics/dashboard")
@@ -68,6 +71,23 @@ public class DashboardEndpoint {
         final List<ApplicationVariant> variantsWithWarnings = service.getSearchService().getVariantsWithWarnings();
 
         return Response.ok(variantsWithWarnings).build();
+    }
+
+
+    /**
+     * GET enabled variants
+     *
+     * @param request the request
+     *
+     * @return  list of {@link Strings}s
+     */
+    @GET
+    @Path("/disabledVariants")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDisabledVariants(@Context HttpServletRequest request) {
+        final List<String> disabledVariants = Arrays.asList(ConfigurationUtils.tryGetGlobalProperty("UPS_DISABLED", "").split(","));
+
+        return Response.ok(disabledVariants).build();
     }
 
     /**
