@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -16,13 +18,18 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.service.RealmsService;
 import org.jboss.aerogear.unifiedpush.service.impl.UserTenantInfo;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.OAuth2Configuration.DomainMatcher;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.admin.client.token.TokenManager;
+import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +54,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
 	private static final String ATTRIBUTE_VARIANT_SUFFIX = "_variantid";
 	private static final String ATTRIBUTE_SECRET_SUFFIX = "_secret";
-	public static final String USER_TENANT_RELATIONS = "userTenantRelations";
+	private static final String USER_TENANT_RELATIONS = "userTenantRelations";
 
 
     private volatile Boolean oauth2Enabled;
@@ -95,7 +102,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
 			clientRepresentation.setStandardFlowEnabled(true);
 			clientRepresentation.setPublicClient(true);
-			clientRepresentation.setWebOrigins(Arrays.asList("*"));
+			clientRepresentation.setWebOrigins(Collections.singletonList("*"));
 
 			clientRepresentation.setAttributes(getClientAttributes(pushApplication));
 			getRealm(realmName).clients().create(clientRepresentation);
@@ -150,7 +157,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 		UserRepresentation user = new UserRepresentation();
 		user.setUsername(userName);
 
-		user.setRequiredActions(Arrays.asList(UPDATE_PASSWORD_ACTION));
+		user.setRequiredActions(Collections.singletonList(UPDATE_PASSWORD_ACTION));
 		user.setRealmRoles(Collections.singletonList(KEYCLOAK_ROLE_USER));
 
 		user.setEnabled(enabled);
@@ -159,7 +166,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 			user.setEmailVerified(true);
 			user.setEmail(userName);
 
-			user.setCredentials(Arrays.asList(getUserCredentials(password, false)));
+			user.setCredentials(Collections.singletonList(getUserCredentials(password, false)));
 		}
 		if (userTenantInfos == null) {
 			logger.error("create(username={}) no userTenantInfos received", userName);
@@ -226,7 +233,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
 		boolean isCurrentPasswordValid = isCurrentPasswordValid(user, currentPassword);
 
-		if (isCurrentPasswordValid == true || temp) {
+		if (isCurrentPasswordValid || temp) {
 			UsersResource users = getRealm(realmName).users();
 			UserResource userResource = users.get(user.getId());
 
@@ -258,6 +265,10 @@ public class KeycloakServiceImpl implements IKeycloakService {
 				.orElse(null);
 	}
 
+	private UserResource getUserResource(String username, String realmName) {
+		return getRealm(realmName).users().get(getUser(username, realmName).getId());
+	}
+
 	private ClientRepresentation isClientExists(PushApplication pushApp, String realm) {
 		return isClientExists(getClientId(pushApp), realm);
 	}
@@ -275,7 +286,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	private ClientRepresentation isClientExists(String clientId, String realm) {
 		List<ClientRepresentation> clients = getRealm(realm).clients().findByClientId(clientId);
 
-		if (clients == null | clients.size() == 0) {
+		if (clients == null || clients.size() == 0) {
 			return null;
 		}
 
@@ -316,11 +327,11 @@ public class KeycloakServiceImpl implements IKeycloakService {
 		return StringUtils.EMPTY;
 	}
 
-	public String seperator() {
+	public String separator() {
 		return conf.getRooturlMatcher().seperator();
 	}
 
-	public static final int BULK_SIZE = 100;
+	private static final int BULK_SIZE = 100;
 
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -411,5 +422,71 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
 	private RealmResource getRealm(String realmName) {
 		return kc.getKeycloak().realm(realmName);
+	}
+
+	@Override
+	public void createRealmIfAbsent(String realmName) {
+		 List<RealmRepresentation> realmRepresentations = kc.getKeycloak().realms().findAll().stream()
+				.filter(realmRepresentation -> realmRepresentation.getRealm().equals(realmName))
+				.collect(Collectors.toList());
+		if (realmRepresentations.isEmpty()) {
+			RealmRepresentation realm = new RealmRepresentation();
+			realm.setId(realmName);
+			realm.setRealm(realmName);
+			realm.setEnabled(true);
+			kc.getKeycloak().realms().create(realm);
+		}
+	}
+
+	@Override
+	public String getUserAccessToken(String userName, String password, String realm, String appId) {
+		Keycloak kc = getKeycloak(userName, password, realm, CLIENT_PREFIX + appId);
+
+		TokenManager tokenManager = kc.tokenManager();
+
+		AccessTokenResponse accessToken;
+		accessToken = tokenManager.getAccessToken();
+		return accessToken.getToken();
+	}
+
+	@Override
+	public void setPasswordUpdateRequired(String userName, String realm, boolean isRequired) {
+		UserRepresentation userRepresentation = getUser(userName, realm);
+		if (isRequired) {
+			userRepresentation.setRequiredActions(Collections.singletonList(UPDATE_PASSWORD_ACTION));
+		} else {
+			userRepresentation.getRequiredActions().remove(UPDATE_PASSWORD_ACTION);
+		}
+		getUserResource(userName, realm).update(userRepresentation);
+	}
+
+	@Override
+	public void setDirectAccessGrantsEnabled(String appName, String realmName, boolean directAccessGrantsEnabled) {
+		ClientRepresentation clientRepresentation = isClientExists(CLIENT_PREFIX + appName, realmName);
+		if (clientRepresentation.isDirectAccessGrantsEnabled() == directAccessGrantsEnabled) {
+			return;
+		}
+		clientRepresentation.setDirectAccessGrantsEnabled(directAccessGrantsEnabled);
+		getRealm(realmName).clients().get(clientRepresentation.getId()).update(clientRepresentation);
+	}
+
+	@Override
+	public List<String> getUtr(String userName, String realm) {
+		UserRepresentation user =  getUser(userName, realm);
+		return user.getAttributes().get(USER_TENANT_RELATIONS);
+	}
+
+	private Keycloak getKeycloak(String userName, String password, String realm, String appId) {
+		String serverUrl = conf.getOAuth2Url();
+
+		return KeycloakBuilder.builder()
+			.serverUrl(serverUrl)
+			.realm(realm)
+			.username(userName)
+			.password(password)
+			.clientId(appId)
+			.resteasyClient(
+					new ResteasyClientBuilder().connectionPoolSize(25).connectionTTL(10, TimeUnit.SECONDS).build())
+			.build();
 	}
 }

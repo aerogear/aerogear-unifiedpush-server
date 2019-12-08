@@ -182,7 +182,7 @@ public class AliasServiceImpl implements AliasService {
 		Alias aliasObj = find(pushApplication == null ? null : pushApplication.getPushApplicationID(), alias);
 
 		if (aliasObj != null)
-			return new Associated(true, getClientId(aliasObj.getPushApplicationId()), keycloakService.seperator());
+			return new Associated(true, getClientId(aliasObj.getPushApplicationId()), keycloakService.separator());
 
 		return new Associated(false);
 	}
