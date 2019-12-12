@@ -1,8 +1,5 @@
 package org.jboss.aerogear.unifiedpush.rest.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,8 +7,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import com.google.gson.Gson;
 
 import org.jboss.aerogear.unifiedpush.system.ConfigurationUtils;
 
@@ -38,32 +33,6 @@ public class UIConfigEndpoint {
 
     @SuppressWarnings("unchecked")
     private Map<String, String> getDocsLinks(String docsPath) throws Exception {
-        InputStream stream;
-
-        stream = getClass().getClassLoader().getResourceAsStream(docsPath);
-        if (stream == null) {
-            File file = new File(docsPath);
-            stream = new FileInputStream(file);
-        }
-
-        String json = readAsSting(stream);
-        Gson gson = new Gson();
-        return gson.fromJson(json, Map.class);
+        return DocLinks.getInstance().getDocsLinks();
     }
-
-    private String readAsSting(InputStream stream) throws Exception {
-        StringBuilder builder = new StringBuilder();
-        try {
-
-            int data = stream.read();
-            while (data != -1) {
-                builder.append((char) data);
-                data = stream.read();
-            }
-        } finally {
-            stream.close();
-        }
-        return builder.toString();
-    }
-
 }
