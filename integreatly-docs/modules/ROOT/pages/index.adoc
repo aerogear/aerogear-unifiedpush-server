@@ -67,12 +67,12 @@ include::_partials/enable_push_notifications_for_ios_app.adoc[leveloffset=+2,tag
 
 Access the Push Notification Service section by clicking *Push Notification Service* under the *All Services* tab from the {webapp}.
 
-* If some applications already exist, they will be displayed so click "Create Application" to go to the Welcome page.  If there are no previous applications, you will be taken directly to the Welcome page.
-* Click *Start Here* to dismiss the Welcome Page and go to the *Create Application* screen
-* Enter a name for your application and click *Create App* to go to the Variant screen
-* Click *Add a Variant*
-* Enter a name for your variant and select the platform that you intend to target
-* Enter the Push Network details necessary for your push network and click *Create*
-* Copy each of the various code snippets into its corresponding file in your application 
-* Build and deploy your app
-* Click the *Skip the wizard* link to finish.
+. If some applications already exist, they will be displayed so click "Create Application" to go to the Welcome page.  If there are no previous applications, you will be taken directly to the Welcome page.
+. Click *Start Here* to dismiss the Welcome Page and go to the *Create Application* screen
+. Enter a name for your application and click *Create App* to go to the Variant screen
+. Click *Add a Variant*
+. Enter a name for your variant and select the platform that you intend to target
+. Enter the Push Network details necessary for your push network and click *Create*
+. Copy each of the various code snippets into its corresponding file in your application 
+. Build and deploy your app
+. Click the *Skip the wizard* link to finish.
