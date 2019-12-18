@@ -31,7 +31,6 @@ Currently the service supports:
 * link:https://developer.apple.com/notifications/[Apple Push Notification Service^]
 * link:https://firebase.google.com/products/cloud-messaging/[Firebase Cloud Messaging^]
 
-
 The {unifiedpush-service} service offers a unified Notification Service API to the above mentioned Push Network Services.
 It can be seen as a _broker_ that distributes push messages to different 3rd party Push Networks.
 
@@ -44,7 +43,7 @@ The content of the +alert+ key belongs to the metadata, which is deleted after 3
 
 * You are only able to send push notifications to a real device, sending push notifications to an emulator fails.
 
-* Push is a signalling mechanism and is not suitable to be used as a data carrying system, for example, a chat application.
+* Push is a signaling mechanism and is not suitable to be used as a data carrying system, for example, a chat application.
 ====
 
 .Prerequisites
@@ -63,14 +62,16 @@ include::_partials/ref_terminology.adoc[leveloffset=+1,tags={include-tags}]
 include::_partials/obtaining_firebase_cloud_messaging_credentials.adoc[leveloffset=+2,tags={include-tags}]
 include::_partials/enable_push_notifications_for_ios_app.adoc[leveloffset=+2,tags={include-tags}]
 [[setting-up-the-push-client-app]]
-== Configuring your client app
-//include::_partials/downloading-configuration-file.adoc[leveloffset=+2,tags={include-tags}]
-include::_partials/setting-up-the-push-sdk.adoc[leveloffset=+2,tags={include-tags}]
-include::_partials/registering_device.adoc[leveloffset=+1,tags={include-tags}]
-include::_partials/sending-a-push-notification.adoc[leveloffset=+1,tags={include-tags}]
-include::_partials/handling-push-notifications.adoc[leveloffset=+1,tags={include-tags}]
 
+== Configuring the Push Notification Service
 
-// Restore the context to what it was before this assembly.
-ifdef::parent-context[:context: {parent-context}]
-ifndef::parent-context[:!context:]
+Access the Push Notification Service section by clicking *Push Notification Service* from the {webapp}. Log in if you are requested to do so.
+
+* Click *Start Here*
+* Enter a name for your application and click *Create App*
+* Click *Add a Variant*
+* Enter a name for your variant and select the platform that intend to target (IOS/Android)
+* Enter the *Push Network* details necessary for your push network
+* Click *Create*
+* Code snippets for your applications are displayed.  Copy each snippet into the appropriate file in your application 
+* Click the *Skip the wizard* link to finish.
