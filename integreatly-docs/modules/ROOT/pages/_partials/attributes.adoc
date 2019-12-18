@@ -35,6 +35,7 @@
 :unifiedpush-service: Push Notifications
 :push-ui: Unified Push Admin UI
 :push-notification: push notification
+:webapp: Solution Explorer
 
 // Build Service
 :mobile-ci-cd-service: Mobile CI/CD
