@@ -1,6 +1,6 @@
 site:
   title: Push Noticiations
-  url: 
+  url:
   start_page: push::index
 content:
   sources:
