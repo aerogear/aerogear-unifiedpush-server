@@ -17,7 +17,6 @@ import org.jboss.aerogear.unifiedpush.rest.RestEndpointTest;
 import org.jboss.aerogear.unifiedpush.rest.WebConfigTest;
 import org.jboss.aerogear.unifiedpush.rest.util.Authenticator;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
-import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedInUser;
 import org.jboss.aerogear.unifiedpush.service.impl.UserTenantInfo;
@@ -39,10 +38,6 @@ public class SecuredRegistrationEndpointTest extends RestEndpointTest {
 
     @Inject
     private IKeycloakService keycloakService;
-    @Inject
-    private PushApplicationService pushApplicationService;
-    @Inject
-    private DocumentService documentService;
     @Inject
     AliasService aliasService;
     @Inject
@@ -99,13 +94,11 @@ public class SecuredRegistrationEndpointTest extends RestEndpointTest {
         //validate utr added to the keycloak user
         List<String> utrFromKeycloak = keycloakService.getUtr(userName, realmName);
         UserTenantInfo utrFromDb = aliasService.getTenantRelations(userName).iterator().next();
-        if (utrFromKeycloak.size() != 1) {
-            Assert.fail("Got invalid UTR from keycloak user " + userName + "  with size " + utrFromKeycloak.size());
-        }
 
-        if (utrFromDb == null) {
-            Assert.fail("Got invalid UTR from DB user " + userName + " with size " + utrFromKeycloak.size());
-        }
+        Assert.assertEquals("Got invalid UTR from keycloak user " + userName + "  with size " + utrFromKeycloak.size(), utrFromKeycloak.size(), 1);
+
+        Assert.assertNotNull("Got invalid UTR from DB user " + userName + " with size " + utrFromKeycloak.size(), utrFromDb);
+
 
         UserTenantInfo parsedUtr = null;
         try {

@@ -1,6 +1,7 @@
 package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -21,17 +22,11 @@ import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
-import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.UserTenantInfo;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.KeycloakSecurityContext;
-import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import com.qmino.miredot.annotations.ReturnType;
@@ -45,8 +40,6 @@ public class SecuredRegistrationEndpoint extends AbstractBaseRegistrationEndpoin
 	private AliasService aliasService;
 	@Inject
 	private IKeycloakService keycloakService;
-	@Inject
-	private PushApplicationService pushApplicationService;
 
 	@POST
 	@Path("/{type: .*}")
@@ -88,19 +81,15 @@ public class SecuredRegistrationEndpoint extends AbstractBaseRegistrationEndpoin
 			return Response.status(Response.Status.NOT_FOUND.getStatusCode(), "UTR for user " + alias + " not found").build();
 		}
 		keycloakService.updateTenantsExistingUser(alias, tenantRelations, app.getName());
+
+		String realmName = keycloakService.getRealmName(app.getName());
+
+		// add 'installation' realm role
+		keycloakService.addUserRealmRoles(Collections.singletonList(keycloakService.KEYCLOAK_ROLE_USER), alias, realmName);
+
+		// disable password
+		keycloakService.disableUserCredentials(alias, realmName);
+
 		return Response.ok(tenantRelations).build();
 	}
-
-	private AccessToken getAccessToken() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Object principal = authentication.getPrincipal();
-		AccessToken token = null;
-		if(principal instanceof KeycloakPrincipal) {
-			KeycloakPrincipal<?> p = (KeycloakPrincipal<?>) principal;
-			KeycloakSecurityContext keycloakSecurityContext = p.getKeycloakSecurityContext();
-			token = keycloakSecurityContext.getToken();
-		}
-		return token;
-	}
-
 }

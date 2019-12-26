@@ -49,12 +49,12 @@ public class KeycloakServiceImpl implements IKeycloakService {
     private static final Logger logger = LoggerFactory.getLogger(KeycloakServiceImpl.class);
 
 	private static final String CLIENT_PREFIX = "ups-installation-";
-	private static final String KEYCLOAK_ROLE_USER = "installation";
 	private static final String UPDATE_PASSWORD_ACTION = "UPDATE_PASSWORD";
 
 	private static final String ATTRIBUTE_VARIANT_SUFFIX = "_variantid";
 	private static final String ATTRIBUTE_SECRET_SUFFIX = "_secret";
 	private static final String USER_TENANT_RELATIONS = "userTenantRelations";
+	private static final String PASSWORD_CREDNTIAL_DISABLE = "password";
 
 
     private volatile Boolean oauth2Enabled;
@@ -474,6 +474,23 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	public List<String> getUtr(String userName, String realm) {
 		UserRepresentation user =  getUser(userName, realm);
 		return user.getAttributes().get(USER_TENANT_RELATIONS);
+	}
+
+	@Override
+	public void addUserRealmRoles(List<String> roles, String userName, String realmName) {
+		UserResource userResource = getUserResource(userName, realmName);
+
+		userResource.roles().realmLevel().listAvailable().forEach(roleRepresentation -> {
+			if (roles.contains(roleRepresentation.getName())) {
+				userResource.roles().realmLevel().add(Collections.singletonList(roleRepresentation));
+			}
+		});
+	}
+
+	@Override
+	public void disableUserCredentials(String userName, String realmName) {
+		UserResource userResource = getUserResource(userName, realmName);
+		userResource.disableCredentialType(Collections.singletonList(PASSWORD_CREDNTIAL_DISABLE));
 	}
 
 	private Keycloak getKeycloak(String userName, String password, String realm, String appId) {

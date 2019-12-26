@@ -8,6 +8,7 @@ import org.jboss.aerogear.unifiedpush.service.impl.UserTenantInfo;
 
 public interface IKeycloakService {
 	String CACHE_NAME = "variant-ids-per-clientid";
+	String KEYCLOAK_ROLE_USER = "installation";
 
 	void createClientIfAbsent(PushApplication pushApplication);
 
@@ -40,4 +41,8 @@ public interface IKeycloakService {
 	void setDirectAccessGrantsEnabled(String appName, String realmName, boolean directAccessGrantsEnabled);
 
 	List<String> getUtr(String userName, String realm);
+
+	void addUserRealmRoles(List<String> roles, String userName, String realm);
+
+	void disableUserCredentials(String userName, String realm);
 }
