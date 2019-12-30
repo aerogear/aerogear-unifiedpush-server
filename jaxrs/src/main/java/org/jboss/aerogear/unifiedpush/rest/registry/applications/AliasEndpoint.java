@@ -65,6 +65,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 
 import com.qmino.miredot.annotations.ReturnType;
 
@@ -127,14 +128,18 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("java.lang.Boolean")
 	public Response registered(@PathParam("alias") String alias, @Context HttpServletRequest request) {
-		//Todo should return error if more then one push applicationid for alias
+        //Todo should return error if more then one push applicationid for alias
         Set<UserTenantInfo> tenantRelations = aliasService.getTenantRelations(alias);
-        PushApplication pushApplication = pushAppService.findByPushApplicationID(tenantRelations.iterator().next().getPushId().toString());
+        if (CollectionUtils.isEmpty(tenantRelations)) {
+            return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
+        }
+        String pushApplicationID = tenantRelations.iterator().next().getPushId().toString();
+        PushApplication pushApplication = pushAppService.findByPushApplicationID(pushApplicationID);
         if (aliasService.registered(alias, pushApplication.getName()))
-			return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);
+            return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);
 
-		return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
-	}
+        return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
+    }
 
 	/**
 	 * RESTful API for validating alias existence (associated) within a team. The

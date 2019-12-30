@@ -170,7 +170,7 @@ public class AliasServiceImpl implements AliasService {
 	 * @param fqdn  domain / team name.
 	 */
 	@Override
-	public Associated associated(String alias, String fqdn) {//${APPNAME}-${BAREDOMAIN:mcs.c-b4.com}.
+	public Associated associated(String alias, String fqdn) {
 		PushApplication pushApplication = null;
 
 		// Return application name from fqdn.
