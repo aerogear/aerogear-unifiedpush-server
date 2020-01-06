@@ -114,6 +114,7 @@ The Unified Push Server can be configured with either System Properties (passed 
 | `ARTEMIS_PASSWORD` |  Password for AMQP server.
 | `ARTEMIS_USERNAME` |  Username for AMQP server.
 | `UPS_DISABLED` | a comma separated list of variants to be disabled per their variant type.  See `org.jboss.aerogear.unifiedpush.rest.annotations.DisabledByEnvironment` for more details
+| `DOCS_PATH` |  File system path for documentation links json file. See [docs-links](./jaxrs/src/main/resources/doc-links.json) as an example
 |===
 
 == Releasing the UnifiedPush Server
