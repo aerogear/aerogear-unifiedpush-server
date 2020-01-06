@@ -1,0 +1,13 @@
+site:
+  title: Push Noticiations
+  url:
+  start_page: push::index
+content:
+  sources:
+    - url: .
+      branches: HEAD
+      start_path: integreatly-docs
+ui:
+  bundle:
+    url: https://github.com/integr8ly/user-docs-site/raw/master/ui-bundle.zip
+    snapshot: true

@@ -25,3 +25,5 @@ release.properties
 
 .DS_Store
 *.checkstyle
+
+build/
