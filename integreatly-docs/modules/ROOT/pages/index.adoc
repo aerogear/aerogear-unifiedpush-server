@@ -1,5 +1,5 @@
 
-include::_partials/attributes.adoc[tags={include-tags}]
+include::_partials/attributes.adoc[]
 
 
 :toc:
@@ -53,6 +53,7 @@ include::_partials/ref_terminology.adoc[leveloffset=+1]
 include::_partials/obtaining_firebase_cloud_messaging_credentials.adoc[leveloffset=+2]
 include::_partials/enable_push_notifications_for_ios_app.adoc[leveloffset=+2]
 [[setting-up-the-push-client-app]]
+include::_partials/creating-variant.adoc[leveloffset=+2]
 include::_partials/setting-up-the-push-sdk.adoc[leveloffset=+2]
 include::_partials/registering_device.adoc[leveloffset=+1]
 include::_partials/sending-a-push-notification.adoc[leveloffset=+1]

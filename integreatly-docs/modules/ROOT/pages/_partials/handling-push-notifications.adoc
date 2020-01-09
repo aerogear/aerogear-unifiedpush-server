@@ -11,7 +11,7 @@ NOTE: Push notifications that arrive when the application is in the background a
 
 
 . Add the following code to your app:
-
++
 [source,javascript]
 ----
 import { PushRegistration } from "@aerogear/push";
