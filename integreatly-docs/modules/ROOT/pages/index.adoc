@@ -1,8 +1,5 @@
-:toclevels: 4
 
-:include-tags:
-
-include::_partials/attributes.adoc[tags={include-tags}]
+include::_partials/attributes.adoc[]
 
 
 :toc:
@@ -13,20 +10,18 @@ include::_partials/attributes.adoc[tags={include-tags}]
 ifdef::context[:parent-context: {context}]
 
 [id='a-collection-of-modules']
-= Using the {unifiedpush-service} Mobile Service
+= Using the {unifiedpush-service} Service
 :page-partial:
 
 [[introduction]]
 The {unifiedpush-service} service allows you to send native push notifications to different mobile operating systems.
 
 * Code once and push notifications to iOS and Android.
-* Push notifications to defined groups.
 * Push notifications to either iOS only or Android only.
 * Push notifications to different variants of a mobile app.
-* Push notifications from different back-end apps to the same mobile app.
 
 
-Currently the service supports:
+The service supports:
 
 * link:https://developer.apple.com/notifications/[Apple Push Notification Service^]
 * link:https://firebase.google.com/products/cloud-messaging/[Firebase Cloud Messaging^]
@@ -46,33 +41,20 @@ The content of the +alert+ key belongs to the metadata, which is deleted after 3
 * Push is a signaling mechanism and is not suitable to be used as a data carrying system, for example, a chat application.
 ====
 
-.Prerequisites
-
-* You understand {unifiedpush-service}.
-* You have logged into the OpenShift console and the Mobile Developer Console.
 
 .Additional resources
 
 * link:https://developer.apple.com/notifications/[Apple Push Notification Service^]
 * link:https://firebase.google.com/products/cloud-messaging/[Firebase Cloud Messaging^]
 
-include::_partials/ref_terminology.adoc[leveloffset=+1,tags={include-tags}]
+include::_partials/ref_terminology.adoc[leveloffset=+1]
 [[setting-up-the-push-service]]
 == Setting Up the {unifiedpush-service} Mobile Service
-include::_partials/obtaining_firebase_cloud_messaging_credentials.adoc[leveloffset=+2,tags={include-tags}]
-include::_partials/enable_push_notifications_for_ios_app.adoc[leveloffset=+2,tags={include-tags}]
+include::_partials/obtaining_firebase_cloud_messaging_credentials.adoc[leveloffset=+2]
+include::_partials/enable_push_notifications_for_ios_app.adoc[leveloffset=+2]
 [[setting-up-the-push-client-app]]
-
-== Configuring the Push Notification Service
-
-Access the Push Notification Service section by clicking *Push Notification Service* under the *All Services* tab from the {webapp}.
-
-. If some applications already exist, they will be displayed so click "Create Application" to go to the Welcome page.  If there are no previous applications, you will be taken directly to the Welcome page.
-. Click *Start Here* to dismiss the Welcome Page and go to the *Create Application* screen
-. Enter a name for your application and click *Create App* to go to the Variant screen
-. Click *Add a Variant*
-. Enter a name for your variant and select the platform that you intend to target
-. Enter the Push Network details necessary for your push network and click *Create*
-. Copy each of the various code snippets into its corresponding file in your application 
-. Build and deploy your app
-. Click the *Skip the wizard* link to finish.
+include::_partials/creating-variant.adoc[leveloffset=+2]
+include::_partials/setting-up-the-push-sdk.adoc[leveloffset=+2]
+include::_partials/registering_device.adoc[leveloffset=+1]
+include::_partials/sending-a-push-notification.adoc[leveloffset=+1]
+include::_partials/handling-push-notifications.adoc[leveloffset=+1]

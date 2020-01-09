@@ -1,0 +1,22 @@
+// For more information, see: https://redhat-documentation.github.io/modular-docs/
+
+[id='creating-variant-{context}']
+= Creating a variant
+
+This procedure describes how to register your app on the UnifiedPush Server
+
+
+.Procedure
+
+. Log into the Solution Explorer.
+. Click *Open Console* beside *Push Notification Service*.
+. If push applications already exist, they are displayed, click "Create Application" to navigate to the Welcome page.  
+If no push applications exist, the Welcome page is displayed.
+. Click *Start Here* to dismiss the Welcome Page and go to the *Create Application* screen
+. Enter a name for your application and click *Create App* to go to the Variant screen
+. Click *Add a Variant*
+. Enter a name for your variant and select the platform that you intend to target
+. Enter the Push Network details necessary for your push network and click *Create*
+. Copy each of the various code snippets into its corresponding file in your application 
+. Build and deploy your app
+. Click the *Skip the wizard* link to finish.
