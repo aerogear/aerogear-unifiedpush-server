@@ -9,50 +9,8 @@ NOTE: Push notifications that arrive when the application is in the background a
 
 .Procedure
 
-[tabs]
-====
-// tag::excludeDownstream[]
-Android::
-+
---
-Add to your project an implementation of *MessageHandler*:
 
-[source,java]
-----
-public class MyMessageHandler implements MessageHandler {
-
-    @Override
-    public void onMessage(Context context, Map<String, String> message) {
-        // Handle incoming message
-    }
-
-}
-----
-
-Add it to your application's manifest.
-
-[source,xml]
-----
-<meta-data
-    android:name="DEFAULT_MESSAGE_HANDLER_KEY"
-    android:value=".MyMessageHandler" />
-----
-
---
-iOS::
-+
---
-
-The {SDK} for iOS does not provide a way to handle incoming messages. Instead, follow the link:https://developer.apple.com/notifications/[Apple's official documentation^] about notifications.
-
---
-
-Cordova::
-+
---
-// end::excludeDownstream[]
-
-Add the following code to your app:
+. Add the following code to your app:
 
 [source,javascript]
 ----
@@ -63,12 +21,4 @@ PushRegistration.onMessageReceived((notification: any) => {
 });
 ----
 
---
-// tag::excludeDownstream[]
-Xamarin::
-+
---
-This feature is not yet supported in the AeroGear Xamarin SDK
---
-// end::excludeDownstream[]
-====
+. Build and run your app.
