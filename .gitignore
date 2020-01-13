@@ -27,3 +27,6 @@ release.properties
 *.checkstyle
 
 build/
+
+#VSCode dotfiles
+.vscode/
