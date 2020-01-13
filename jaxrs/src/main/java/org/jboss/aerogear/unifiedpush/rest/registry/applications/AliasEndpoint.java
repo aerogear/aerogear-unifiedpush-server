@@ -1,3 +1,4 @@
+package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
@@ -6,7 +7,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -69,10 +69,11 @@ import org.springframework.util.CollectionUtils;
 
 import com.qmino.miredot.annotations.ReturnType;
 
+@SuppressWarnings("CheckStyle")
 @Controller
 @Path("/alias")
 public class AliasEndpoint extends AbstractBaseEndpoint {
-	public static final String USER_TENANT_SCOPE = "userTenantScope";
+	public static final String INVALID_REQUEST_URI_RESPOONSE = "Invalid request URI";
 	private final Logger logger = LoggerFactory.getLogger(AliasEndpoint.class);
 
 	@Autowired
@@ -105,6 +106,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	}
 
 	/**
+	 * @deprecated
 	 * RESTful API for validating alias is already registered (Keycloak). The
 	 * Endpoint has public access.
 	 *
@@ -121,27 +123,43 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	 *             required values).
 	 * @statuscode 401 The request requires authentication.
 	 *
-	 *             TODO - Rename to registered
 	 */
 	@GET
 	@Path("/exists/{alias}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ReturnType("java.lang.Boolean")
-	public Response registered(@PathParam("alias") String alias, @Context HttpServletRequest request) {
-        //Todo should return error if more then one push applicationid for alias
-        Set<UserTenantInfo> tenantRelations = aliasService.getTenantRelations(alias);
-        if (CollectionUtils.isEmpty(tenantRelations)) {
-            return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
-        }
-        String pushApplicationID = tenantRelations.iterator().next().getPushId().toString();
-        PushApplication pushApplication = pushAppService.findByPushApplicationID(pushApplicationID);
-        if (aliasService.registered(alias, pushApplication.getName()))
-            return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);
-
-        return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
-    }
+	@Deprecated
+	public Response registeredDeprecated(@PathParam("alias") String alias, @Context HttpServletRequest request) {
+		return isAliasRegistered(alias, request);
+	}
 
 	/**
+	 * RESTful API for validating alias is already registered (Keycloak). The
+	 * Endpoint has public access.
+	 *
+	 * @param alias The alias name.
+	 * @return {@link Boolean}
+	 *
+	 * @responseheader Access-Control-Allow-Origin With host in your "Origin" header
+	 * @responseheader Access-Control-Allow-Credentials true
+	 * @responseheader WWW-Authenticate Basic realm="UnifiedPush Server" (only for
+	 *                 401 response)
+	 *
+	 * @statuscode 200 True/False String value.
+	 * @statuscode 400 The format of the aliases request was incorrect (e.g. missing
+	 *             required values).
+	 * @statuscode 401 The request requires authentication.*
+	 */
+	@GET
+	@Path("/registered/{alias}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ReturnType("java.lang.Boolean")
+	public Response registered(@PathParam("alias") String alias, @Context HttpServletRequest request) {
+		return isAliasRegistered(alias, request);
+	}
+
+	/**
+	 * @deprecated
 	 * RESTful API for validating alias existence (associated) within a team. The
 	 * Endpoint has public access.
 	 *
@@ -172,10 +190,18 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	@Deprecated
 	public Response associated(@PathParam("alias") String alias, @QueryParam("fqdn") String fqdn,
 			@Context HttpServletRequest request) {
-		Associated associated = aliasService.associated(alias, fqdn);
-		if (associated != null && associated.isAssociated())
-			return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);
+		URI uri;
+		try {
+			uri = new URI(request.getRequestURI());
+		} catch (URISyntaxException e) {
+			logger.error("Unable to create URI from requestURI :" + request.getRequestURI(), e);
+			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST.getStatusCode(), INVALID_REQUEST_URI_RESPOONSE), request);
+		}
 
+		Associated associated = aliasService.associated(alias, fqdn, uri.getHost());
+		if (associated != null && associated.isAssociated()) {
+			return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);
+		}
 		return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
 	}
 
@@ -185,26 +211,28 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	@ReturnType("org.jboss.aerogear.unifiedpush.service.impl.AliasServiceImpl.Associated")
 	public Response isAssociated(@PathParam("alias") String alias, @QueryParam("fqdn") String fqdn,
 			@Context HttpServletRequest request) {
-		Associated associated = aliasService.associated(alias, fqdn);
+
+		URI uri;
+		try {
+			uri = new URI(request.getRequestURL().toString());
+		} catch (URISyntaxException e) {
+			logger.error("Unable to create URI from requestURI:" + request.getRequestURI(), e);
+			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST.getStatusCode(), INVALID_REQUEST_URI_RESPOONSE), request);
+		}
+
+		Associated associated = aliasService.associated(alias, fqdn, uri.getHost());
+		String host = uri.getHost();
 
 		if (associated.isAssociated()) {
-			StringBuffer domain = new StringBuffer(KeycloakServiceImpl.stripClientPrefix(associated.getClient()));
-			try {
-				URI uri = new URI(request.getRequestURI());
-
-				String host = uri.getHost();
-				if (StringUtils.startsWithIgnoreCase(host, domain.toString())) {
-					// Already subdomain access, use host as subdomain
-					associated.setSubdomain(host);
-				} else {
-					domain.append(associated.getSeperator());
-					domain.append(request.getServerName());
-					associated.setSubdomain(domain.toString());
-				}
-			} catch (URISyntaxException e) {
-				logger.error("Unable to create URI from URL:" + request.getRequestURI(), e);
+			StringBuffer client = new StringBuffer(KeycloakServiceImpl.stripClientPrefix(associated.getClient()));
+			if (StringUtils.startsWithIgnoreCase(host, client.toString())) {
+				// Already subdomain access, use host as subdomain
+				associated.setSubdomain(host);
+			} else {
+				client.append(associated.getSeperator());
+				client.append(request.getServerName());
+				associated.setSubdomain(client.toString());
 			}
-
 		}
 		return appendAllowOriginHeader(Response.ok().entity(associated), request);
 	}
@@ -632,5 +660,30 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 			logger.error(String.format("Cannot destructively delete alias by alias id %s", id), e);
 			return appendAllowOriginHeader(Response.status(Status.INTERNAL_SERVER_ERROR), request);
 		}
+	}
+
+	private Response isAliasRegistered(String alias, HttpServletRequest request) {
+		URI uri;
+		try {
+			uri = new URI(request.getRequestURL().toString());
+		} catch (URISyntaxException e) {
+			logger.error("Unable to create URI from requestURI:" + request.getRequestURI(), e);
+			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST.getStatusCode(), INVALID_REQUEST_URI_RESPOONSE), request);
+		}
+
+		//Todo should return error if more then one push applicationid for alias
+		Set<UserTenantInfo> tenantRelations = aliasService.getTenantRelations(alias);
+		if (CollectionUtils.isEmpty(tenantRelations)) {
+			return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
+		}
+
+		String pushApplicationID = tenantRelations.iterator().next().getPushId().toString();
+		PushApplication pushApplication = pushAppService.findByPushApplicationID(pushApplicationID);
+		if (aliasService.associated(alias, null, uri.getHost()).isAssociated()
+				&& aliasService.registered(alias, pushApplication.getName())) {
+			return appendAllowOriginHeader(Response.ok().entity(Boolean.TRUE), request);
+		}
+
+		return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
 	}
 }

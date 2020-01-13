@@ -63,6 +63,10 @@ public class SecuredRegistrationEndpointTest extends RestEndpointTest {
         String userName = "mike@mail.com";
         PushApplication app = new PushApplication();
         app.setName(appName);
+        PushApplication oldApplication = pushApplicationService.findByName(appName);
+        if (oldApplication != null) {
+            pushApplicationService.removePushApplication(oldApplication);
+        }
         pushAppService.addPushApplication(app, new LoggedInUser(userName));
         keycloakService.createClientIfAbsent(app);
         keycloakService.setDirectAccessGrantsEnabled(appName, realmName, true);
@@ -122,6 +126,10 @@ public class SecuredRegistrationEndpointTest extends RestEndpointTest {
         String userName = "mike@mail.com";
         PushApplication app = new PushApplication();
         app.setName(appName);
+        PushApplication oldApplication = pushApplicationService.findByName(appName);
+        if (oldApplication != null) {
+            pushApplicationService.removePushApplication(oldApplication);
+        }
         pushAppService.addPushApplication(app, new LoggedInUser(userName));
         keycloakService.createClientIfAbsent(app);
         keycloakService.setDirectAccessGrantsEnabled(appName, realmName, true);

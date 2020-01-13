@@ -46,6 +46,7 @@ import org.jboss.aerogear.unifiedpush.service.DocumentService;
 import org.jboss.aerogear.unifiedpush.service.PostDelete;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
+import org.jboss.aerogear.unifiedpush.service.impl.spring.IOAuth2Configuration;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.KeycloakServiceImpl;
 import org.jboss.aerogear.unifiedpush.spring.ServiceCacheConfig;
 import org.jboss.aerogear.unifiedpush.spring.ServiceCacheConfig.ClusterEvent;
@@ -70,6 +71,8 @@ public class AliasServiceImpl implements AliasService {
 	private DocumentService documentService;
 	@Inject
 	protected ServiceCacheConfig cacheService;
+	@Inject
+	private IOAuth2Configuration conf;
 
 	@Override
 	public List<Alias> addAll(PushApplication pushApplication, List<Alias> aliases, boolean oauth2) {
@@ -166,11 +169,12 @@ public class AliasServiceImpl implements AliasService {
 	/**
 	 * Validate rather an alias is associated to a team/application.
 	 *
-	 * @param alias alias name
-	 * @param fqdn  domain / team name.
+	 *  @param alias alias name
+	 *  @param fqdn  domain / team name.
+	 *  @param host host name
 	 */
 	@Override
-	public Associated associated(String alias, String fqdn) {
+	public Associated associated(String alias, String fqdn, String host) {
 		PushApplication pushApplication = null;
 
 		// Return application name from fqdn.
@@ -181,9 +185,21 @@ public class AliasServiceImpl implements AliasService {
 
 		Alias aliasObj = find(pushApplication == null ? null : pushApplication.getPushApplicationID(), alias);
 
-		if (aliasObj != null)
-			return new Associated(true, getClientId(aliasObj.getPushApplicationId()), keycloakService.separator());
-
+		if (aliasObj != null) {
+			pushApplication = pushApplication == null
+					? pushApplicationService.findByPushApplicationID(aliasObj.getPushApplicationId().toString())
+					: pushApplication;
+			StringBuffer expectedHost = new StringBuffer();
+			String realmName = keycloakService.getRealmName(pushApplication.getName());
+			expectedHost.append(realmName)
+					.append(keycloakService.separator())
+					.append(conf.getRootUrlDomain());
+			if (host.equals(expectedHost.toString())
+					|| host.equals(conf.getRootUrlDomain())
+					|| realmName.equals(conf.getUpsiRealm())) {
+				return new Associated(true, getClientId(aliasObj.getPushApplicationId()), keycloakService.separator());
+			}
+		}
 		return new Associated(false);
 	}
 

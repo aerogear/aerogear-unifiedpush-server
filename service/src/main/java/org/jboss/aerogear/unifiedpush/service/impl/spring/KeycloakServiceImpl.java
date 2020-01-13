@@ -92,7 +92,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 			clientRepresentation.setClientId(clientName);
 			clientRepresentation.setEnabled(true);
 
-			String domain = conf.getRooturlDomain();
+			String domain = conf.getRootUrlDomain();
 			String protocol = conf.getRooturlProtocol();
 			clientRepresentation.setRootUrl(conf.getRooturlMatcher().rootUrl(protocol, domain, applicationName));
 			// localhost is required for cordova redirect
@@ -317,7 +317,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
 	 * application name is unique and valid domain.
 	 */
 	public String strip(String fqdn) {
-		String domain = conf.getRooturlDomain();
+		String domain = conf.getRootUrlDomain();
 		DomainMatcher matcher = conf.getRooturlMatcher();
 
 		if (StringUtils.isNotEmpty(fqdn)) {

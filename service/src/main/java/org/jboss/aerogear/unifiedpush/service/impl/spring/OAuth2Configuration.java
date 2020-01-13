@@ -68,7 +68,7 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 		return getProperty(KEY_OAUTH2_ADMIN_PASSWORD, StringUtils.EMPTY);
 	}
 
-	public String getRooturlDomain() {
+	public String getRootUrlDomain() {
 		return getProperty(KEY_OAUTH2_ENFORE_DOMAIN, StringUtils.EMPTY);
 	}
 

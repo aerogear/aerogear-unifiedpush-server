@@ -144,6 +144,8 @@ public class AliasServiceTest extends AbstractCassandraServiceTest {
 	public void addPushApplication() {
 		String domain = "aerogear.com";
 		String appName = "xxx";
+		String realmName = "testRealm";
+		String hostName = realmName + OAuth2Configuration.DEFAULT_SUBDOMAIN_SEPERATOR + domain;
 
 		System.setProperty(OAuth2Configuration.KEY_OAUTH2_ENFORE_DOMAIN, domain);
 
@@ -161,11 +163,11 @@ public class AliasServiceTest extends AbstractCassandraServiceTest {
 
 		// Sync 3 aliases
 		aliasService.addAll(pushApplication, aliasList, false);
-		Associated associated = aliasService.associated(aliases[0].getEmail(), appName + "-" + domain);
+		Associated associated = aliasService.associated(aliases[0].getEmail(), appName + "-" + domain, hostName);
 	
 		assertThat(associated != null && associated.isAssociated()).isTrue();
 
-		associated = aliasService.associated(aliases[0].getEmail(), null);
+		associated = aliasService.associated(aliases[0].getEmail(), null, hostName);
 		assertThat(associated != null && associated.isAssociated()).isTrue();
 	}
 

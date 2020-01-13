@@ -60,7 +60,7 @@ public interface AliasService {
 
 	boolean registered(String alias, String applicationName);
 
-	Associated associated(String fqdn, String alias);
+	Associated associated(String fqdn, String alias, String host);
 
 	List<Alias> findAll(UUID pushApplicationId);
 
