@@ -66,17 +66,30 @@ public class SecuredRegistrationEndpoint extends AbstractBaseRegistrationEndpoin
 		return register(var, oldToken, entity, synchronously, request);
 	}
 
+	/**
+	 * Endpoint for adding UTR to an existing user at Keycloak.
+	 * Notice: after successful UTR sync user credentials shall be disabled
+	 *
+	 * @param alias User alias
+	 * @param request The request object
+	 *
+	 * return UTR
+	 *
+	 * @statuscode 200 Successful storage of the alias.
+	 * @statuscode 404 if keyclaok user or UTR for the user not found
+	 *
+	 */
 	@POST
 	@Path("/syncUtr/{alias}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response syncUtr(@PathParam("alias") String alias, @Context HttpServletRequest request) {
 		PushApplication app = authenticationHelper.loadApplicationWhenAuthorized(request);
-		Collection<UserTenantInfo> tenantRelations = aliasService.getTenantRelations(alias);
 		if (!keycloakService.exists(alias, app.getName())) {
 			return Response.status(Response.Status.NOT_FOUND.getStatusCode(), "Keycloak user " + alias + " not found").build();
 		}
 
+		Collection<UserTenantInfo> tenantRelations = aliasService.getTenantRelations(alias);
 		if (tenantRelations.isEmpty()) {
 			return Response.status(Response.Status.NOT_FOUND.getStatusCode(), "UTR for user " + alias + " not found").build();
 		}

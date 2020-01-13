@@ -69,7 +69,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.qmino.miredot.annotations.ReturnType;
 
-@SuppressWarnings("CheckStyle")
 @Controller
 @Path("/alias")
 public class AliasEndpoint extends AbstractBaseEndpoint {
@@ -106,7 +105,9 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated This endpoint path does not reflect what it does. Thus it will be replaced with "/registered/{alias}" as part of 13647 after
+     *      force update is complete to version which includes CAPP-13639
+     *
 	 * RESTful API for validating alias is already registered (Keycloak). The
 	 * Endpoint has public access.
 	 *
@@ -270,7 +271,7 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 				ResponseBuilder response = Response.notModified();
 				if (passwordContainer.isDataValid()) {
 
-                    String issuer = accessToken.getIssuer();
+					String issuer = accessToken.getIssuer();
 					String jwtApplicationName = URLUtils.getLastPart(issuer);
 
 					aliasService.updateAliasPassword(alias, passwordContainer.getCurrentPassword(),
@@ -671,7 +672,6 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST.getStatusCode(), INVALID_REQUEST_URI_RESPOONSE), request);
 		}
 
-		//Todo should return error if more then one push applicationid for alias
 		Set<UserTenantInfo> tenantRelations = aliasService.getTenantRelations(alias);
 		if (CollectionUtils.isEmpty(tenantRelations)) {
 			return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);

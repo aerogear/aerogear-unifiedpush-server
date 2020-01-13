@@ -52,6 +52,7 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 	public String getUpsiRealm() {
 		return getProperty(KEY_OAUTH2_UPSI_REALM, DEFAULT_OAUTH2_UPSI_REALM);
 	}
+
 	public String getUpsMasterRealm() {
 		return getProperty(KEY_OAUTH2_UPS_MASTER_REALM, DEFAULT_OAUTH2_UPS_MASTER_REALM);
 	}

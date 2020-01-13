@@ -83,9 +83,9 @@ public class AliasEndpointTest extends RestEndpointTest {
 		HttpGet httpRequest = new HttpGet("http://" + hostName +":8080/rest/alias/isassociated/" + userName);
 
 		HttpResponse httpResponse;
-        AliasServiceImpl.Associated associated = null;
+		AliasServiceImpl.Associated associated = null;
 		try {
-            httpResponse = httpClient.execute(httpRequest);
+			httpResponse = httpClient.execute(httpRequest);
 			associated = parseResponse(httpResponse, AliasServiceImpl.Associated.class);
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -290,7 +290,8 @@ public class AliasServiceImpl implements AliasService {
 		User representative = users.get(0);
 		String representativeAlias = representative.getAlias();
 
-		PushApplication pushApplication = pushApplicationService.findByPushApplicationID(alias.getPushApplicationId().toString());
+        final String pushApplicationID = alias.getPushApplicationId().toString();
+        PushApplication pushApplication = pushApplicationService.findByPushApplicationID(pushApplicationID);
 		String applicationName = pushApplication.getName();
 		if (registered(representativeAlias, applicationName)) {
 			Set<UserTenantInfo> tenantRelations = getTenantRelations(representativeAlias);
