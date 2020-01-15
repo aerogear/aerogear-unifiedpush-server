@@ -27,18 +27,55 @@ You should now be able to access the Unified Push admin ui at http://localhost:9
 
 ## Running for app developers
 If you are an app developer and wanting to run Unified Push locally on your development machine, you probably want to have your configuration persist between environment restarts. Additionally, you may need to configure SSL certificates for native push on some devices and operating systems.
-### Enabling persistence
+
+### Enabling persistence with Postgres
 
 Unified Push uses Hibernate as an ORM layer.  This means that as long as there is a Hibernate dialect for you database you can reconfigure Unified Push to work with your database.  The shipped container image supports postgres.  When using the default container, you may use the environment variables `POSTGRES_SERVICE_PORT`, `POSTGRES_SERVICE_HOST`, `POSTGRES_USER`, and `POSTGRES_PASSWORD`.  The postgres user will need to be able to create tables inside of its table space.
 
-For example, with this configuration : 
+For example, if you had the following postgres database : 
 POSTGRES_SERVICE_HOST|POSTGRES_SERVICE_PORT|POSTGRES_USER|POSTGRES_PASSWORD
 ---------------------|---------------------|-------------|-----------------
+172.17.0.2           |5432                 | unifiedpush |unifiedpush
 
+You would run Unified Push with the following podman command
 
+```bash
+podman run -p 8080:8080 --rm \
+  -e POSTGRES_USER=unifiedpush \
+  -e POSTGRES_PASSWORD=unifiedpush \
+  -e POSTGRES_SERVICE_HOST=172.17.0.2 \
+  -e POSTGRES_SERVICE_PORT=5432 \
+  -e POSTGRES_DATABASE=unifiedpush \
+  quay.io/aerogear/unifiedpush-configurable-container:master
+```
 
 ### Using SSL Certificates
+
+
 ## Running in Production
+In production security and scalability are very important concerns.  Unified Push supports using Keycloak to provide user athentication, and it is horizontally scalable if you provide an external AMQ broker like Artemis.
+
+### Using Keycloak for Authentication
+[Keycloak](https://www.keycloak.org/) is an authentication service that provides out of the box OAuth support for single sign on.  By setting the correct environment variables, Unified Push will require users to log into Keycloak before they are allowed access to the Unified Push console. Setting `KEYCLOAK_SERVICE_HOST` and `KEYCLOAK_SERVICE_PORT` will trigger Unified Push to look for a Keycloak service running at `KEYCLOAK_SERVICE_HOST:KEYCLOAK_SERVICE_PORT`.  Additionally you will need to configure a keycloak realm named *aerogear* with a client *unifies-push-server* that provides a user with a role named 'admin', or use our [sample realm](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/docker-compose/keycloak-realm/ups-realm-sample.json).
+
+A keycloak with the following configuration
+
+KEYCLOAK_SERVICE_HOST|KEYCLOAK_SERVICE_PORT|
+---------------------|---------------------|
+172.17.0.2           |8080                 |
+
+would be run with the following podman command 
+
+```bash
+podman run -p 8080:8080 --rm \
+  -e KEYCLOAK_SERVICE_HOST=172.17.0.2 \
+  -e KEYCLOAK_SERVICE_PORT=8080 \
+  quay.io/aerogear/unifiedpush-configurable-container:master
+```
+
+### Using an external AMQ broker 
+
+
 - AeroGear 10146
 ## Running with Operator
 - AeroGear 10145

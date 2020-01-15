@@ -10,7 +10,9 @@ services:
        unifiedpushDB:
          condition: service_healthy
     environment:
-        POSTGRES_SERVICE_HOST: ${POSTGRES_SERVICE_HOST}
+        POSTGRES_SERVICE_HOST: ${POSTGRES_SERVICE_HOST}        
+        KEYCLOAK_SERVICE_HOST: ${KEYCLOAK_SERVICE_HOST}
+        KEYCLOAK_SERVICE_PORT: ${KEYCLOAK_SERVICE_PORT}
         POSTGRES_USER: ${POSTGRES_USER}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_SERVICE_PORT: ${POSTGRES_SERVICE_PORT}
@@ -39,7 +41,7 @@ services:
     ports:
       - 5432:5432
   keycloakServer:
-    image: docker.io/jboss/keycloak:4.1.0.Final
+    image: docker.io/jboss/keycloak:latest
     command: "-b 0.0.0.0 -Dkeycloak.import=/ups-keycloak-config/ups-realm-sample.json"
     volumes:
       - ./keycloak-realm:/ups-keycloak-config:z
