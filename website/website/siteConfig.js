@@ -105,6 +105,10 @@ const siteConfig = {
   // You may provide arbitrary config keys to be used as needed by your
   // template. For example, if you need your repo's URL...
   //   repoUrl: 'https://github.com/facebook/test-site',
+  markdownPlugins: [
+    // Highlight admonitions (callouts such as tips, warnings, note, important, etc)
+    require('remarkable-admonitions')({ icon: 'svg-inline' })
+  ],
 };
 
 module.exports = siteConfig;
