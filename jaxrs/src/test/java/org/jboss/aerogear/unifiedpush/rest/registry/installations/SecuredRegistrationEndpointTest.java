@@ -39,7 +39,7 @@ public class SecuredRegistrationEndpointTest extends RestEndpointTest {
     @Inject
     private IKeycloakService keycloakService;
     @Inject
-    AliasService aliasService;
+    private AliasService aliasService;
     @Inject
     private PushApplicationService pushAppService;
     @Inject
@@ -89,7 +89,7 @@ public class SecuredRegistrationEndpointTest extends RestEndpointTest {
         //invoke utrSync endpoint
         String token = keycloakService.getUserAccessToken(userName, password, realmName, appName);
         ResteasyClient client = new ResteasyClientBuilder().register(new Authenticator(app.getPushApplicationID(), app.getMasterSecret())).build();
-        ResteasyWebTarget target = client.target(getRestFullPath() + "/registry/type/syncUtr/" + alias.getEmail().toLowerCase());
+        ResteasyWebTarget target = client.target(getRestFullPath() + "/registry/type/bindWithSSO");
         Response response = target.request().header(HttpHeaders.AUTHORIZATION, "bearer " + token).post(Entity.entity(app, MediaType.APPLICATION_JSON_TYPE));
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
             Assert.fail("Failed to update UTR. Got status code " + response.getStatus());
@@ -141,6 +141,13 @@ public class SecuredRegistrationEndpointTest extends RestEndpointTest {
         keycloakService.setPasswordUpdateRequired(userName, realmName, false);
         keycloakService.updateUserPassword(userName, password, password, appName);
 
+        //create keycloak user without corresponding user at DB
+        String wrongUserName = "WRONG_" + userName;
+        keycloakService.delete(wrongUserName, appName);
+        keycloakService.createVerifiedUserIfAbsent(wrongUserName, password, Collections.emptyList(), realmName);
+        keycloakService.setPasswordUpdateRequired(wrongUserName, realmName, false);
+        keycloakService.updateUserPassword(wrongUserName, password, password, appName);
+
         //create same user at DB
         UUID id = UUIDs.timeBased();
         String email = userName;
@@ -150,9 +157,9 @@ public class SecuredRegistrationEndpointTest extends RestEndpointTest {
         aliasDao.create(alias);
 
         //invoke utrSync endpoint
-        String token = keycloakService.getUserAccessToken(userName, password, realmName, appName);
+        String token = keycloakService.getUserAccessToken(wrongUserName, password, realmName, appName);
         ResteasyClient client = new ResteasyClientBuilder().register(new Authenticator(app.getPushApplicationID(), app.getMasterSecret())).build();
-        ResteasyWebTarget target = client.target(getRestFullPath() + "/registry/type/syncUtr/" + "WRONG_" + alias.getEmail().toLowerCase());
+        ResteasyWebTarget target = client.target(getRestFullPath() + "/registry/type/bindWithSSO");
         Response response = target.request().header(HttpHeaders.AUTHORIZATION, "bearer " + token).post(Entity.entity(app, MediaType.APPLICATION_JSON_TYPE));
         Assert.assertEquals("syncUtrNegativeTest", response.getStatus(), Response.Status.NOT_FOUND.getStatusCode());
     }

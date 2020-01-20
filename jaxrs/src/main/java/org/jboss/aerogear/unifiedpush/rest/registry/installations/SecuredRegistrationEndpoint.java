@@ -21,10 +21,12 @@ import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.rest.util.BearerHelper;
 import org.jboss.aerogear.unifiedpush.service.AliasService;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.UserTenantInfo;
 import org.jboss.aerogear.unifiedpush.service.impl.spring.IKeycloakService;
+import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -70,20 +72,26 @@ public class SecuredRegistrationEndpoint extends AbstractBaseRegistrationEndpoin
 	 * Endpoint for adding UTR to an existing user at Keycloak.
 	 * Notice: after successful UTR sync user credentials shall be disabled
 	 *
-	 * @param alias User alias
 	 * @param request The request object
 	 *
 	 * return UTR
 	 *
 	 * @statuscode 200 Successful storage of the alias.
+	 * @statuscode 401 if access token not found
 	 * @statuscode 404 if keyclaok user or UTR for the user not found
-	 *
 	 */
 	@POST
-	@Path("/syncUtr/{alias}")
+	@Path("/bindWithSSO")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response syncUtr(@PathParam("alias") String alias, @Context HttpServletRequest request) {
+	public Response bindWithSSO(@Context HttpServletRequest request) {
+		AccessToken accessToken = BearerHelper.getTokenDataFromBearer(request).orNull();
+		if (accessToken == null) {
+			return create401Response(request);
+		}
+
+		String alias = accessToken.getPreferredUsername();
+
 		PushApplication app = authenticationHelper.loadApplicationWhenAuthorized(request);
 		if (!keycloakService.exists(alias, app.getName())) {
 			return Response.status(Response.Status.NOT_FOUND.getStatusCode(), "Keycloak user " + alias + " not found").build();

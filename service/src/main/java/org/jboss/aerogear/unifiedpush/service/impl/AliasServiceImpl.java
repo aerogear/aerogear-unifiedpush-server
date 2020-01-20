@@ -185,6 +185,7 @@ public class AliasServiceImpl implements AliasService {
 
 		Alias aliasObj = find(pushApplication == null ? null : pushApplication.getPushApplicationID(), alias);
 
+		//User exists, now we need to check whether he belongs to correct realm
 		if (aliasObj != null) {
 			pushApplication = pushApplication == null
 					? pushApplicationService.findByPushApplicationID(aliasObj.getPushApplicationId().toString())
@@ -194,9 +195,9 @@ public class AliasServiceImpl implements AliasService {
 			expectedHost.append(realmName)
 					.append(keycloakService.separator())
 					.append(conf.getRootUrlDomain());
-			if (host.equals(expectedHost.toString())
-					|| host.equals(conf.getRootUrlDomain())
-					|| realmName.equals(conf.getUpsiRealm())) {
+			if (host.equals(expectedHost.toString()) // host contains the correct realm and domain
+					|| host.equals(conf.getRootUrlDomain()) // host contains domain only, this happens when request comes from mobile
+					|| realmName.equals(conf.getUpsiRealm())) { // the realm is as before realm separation(unifiedpush-installations)
 				return new Associated(true, getClientId(aliasObj.getPushApplicationId()), keycloakService.separator());
 			}
 		}

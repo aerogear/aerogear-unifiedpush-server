@@ -86,7 +86,7 @@ public class PathBasedKeycloakConfigResolver implements KeycloakConfigResolver {
 			}
 
 			if (is == null) {
-				throw new IllegalStateException("Not able to find the file /" + fileName + ".json");
+				throw new IllegalStateException("Not able to open the file /" + fileName + ".json");
 			}
 
 			AdapterConfig adapterConfig = loadAdapterConfig(is);

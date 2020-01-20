@@ -82,7 +82,6 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 		web.ignoring().antMatchers("/rest/keycloak/config");
 		web.ignoring().antMatchers("/rest/heartbeat*");
 		web.ignoring().antMatchers("/rest/otp/*");
-		web.ignoring().antMatchers("/rest/realms/**");
 
 		// JWT validation internally
 		web.ignoring().antMatchers("/rest/shortlinks/**");

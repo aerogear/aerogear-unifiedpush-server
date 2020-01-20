@@ -105,8 +105,9 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	}
 
 	/**
-	 * @deprecated This endpoint path does not reflect what it does. Thus it will be replaced with "/registered/{alias}" as part of 13647 after
-     *      force update is complete to version which includes CAPP-13639
+	 * @deprecated This endpoint path does not reflect what it does. Thus it will be replaced with
+	 * 		"/registered/{alias}" as part of CAPP-13647 after force update is complete to
+	 * 		version which includes CAPP-13639
      *
 	 * RESTful API for validating alias is already registered (Keycloak). The
 	 * Endpoint has public access.
@@ -191,11 +192,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	@Deprecated
 	public Response associated(@PathParam("alias") String alias, @QueryParam("fqdn") String fqdn,
 			@Context HttpServletRequest request) {
-		URI uri;
-		try {
-			uri = new URI(request.getRequestURI());
-		} catch (URISyntaxException e) {
-			logger.error("Unable to create URI from requestURI :" + request.getRequestURI(), e);
+		URI uri = getUri(request);
+		if (uri == null) {
 			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST.getStatusCode(), INVALID_REQUEST_URI_RESPOONSE), request);
 		}
 
@@ -213,11 +211,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	public Response isAssociated(@PathParam("alias") String alias, @QueryParam("fqdn") String fqdn,
 			@Context HttpServletRequest request) {
 
-		URI uri;
-		try {
-			uri = new URI(request.getRequestURL().toString());
-		} catch (URISyntaxException e) {
-			logger.error("Unable to create URI from requestURI:" + request.getRequestURI(), e);
+		URI uri = getUri(request);
+		if (uri == null) {
 			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST.getStatusCode(), INVALID_REQUEST_URI_RESPOONSE), request);
 		}
 
@@ -271,6 +266,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 				ResponseBuilder response = Response.notModified();
 				if (passwordContainer.isDataValid()) {
 
+					// Extract application name from issuer.
+					// Last part of issuer uri is the application name
 					String issuer = accessToken.getIssuer();
 					String jwtApplicationName = URLUtils.getLastPart(issuer);
 
@@ -664,11 +661,8 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 	}
 
 	private Response isAliasRegistered(String alias, HttpServletRequest request) {
-		URI uri;
-		try {
-			uri = new URI(request.getRequestURL().toString());
-		} catch (URISyntaxException e) {
-			logger.error("Unable to create URI from requestURI:" + request.getRequestURI(), e);
+		URI uri = getUri(request);
+		if (uri == null) {
 			return appendAllowOriginHeader(Response.status(Status.BAD_REQUEST.getStatusCode(), INVALID_REQUEST_URI_RESPOONSE), request);
 		}
 
@@ -677,7 +671,9 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 			return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
 		}
 
-		String pushApplicationID = tenantRelations.iterator().next().getPushId().toString();
+		UserTenantInfo utr = tenantRelations.iterator().next();
+		UUID pushAppUUID = utr.getPushId();
+		String pushApplicationID = pushAppUUID.toString();
 		PushApplication pushApplication = pushAppService.findByPushApplicationID(pushApplicationID);
 		if (aliasService.associated(alias, null, uri.getHost()).isAssociated()
 				&& aliasService.registered(alias, pushApplication.getName())) {
@@ -685,5 +681,14 @@ public class AliasEndpoint extends AbstractBaseEndpoint {
 		}
 
 		return appendAllowOriginHeader(Response.ok().entity(Boolean.FALSE), request);
+	}
+
+	private URI getUri(HttpServletRequest request) {
+		try {
+			return new URI(request.getRequestURL().toString());
+		} catch (URISyntaxException e) {
+			logger.error("Unable to create URI from requestURI:" + request.getRequestURI(), e);
+			return null;
+		}
 	}
 }
