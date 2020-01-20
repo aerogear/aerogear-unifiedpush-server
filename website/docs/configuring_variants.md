@@ -8,25 +8,24 @@ title: Configuring Variants
 ## Android
 	AEROGEAR-10142
 ## iOS
-### APNS Certificate
- The following step-by-step guides, give you an introduction on how to use the AeroGear UnifiedPush Server for sending 
- Push Notifications to your own iOS Apps. The guide assumes you have an Apple developer account already setup.
+### APNs Certificate
+ The following step-by-step guide gives you an introduction on how to use the AeroGear UnifiedPush Server for sending 
+ Push Notifications to your own iOS Apps. The guide assumes you have an Apple developer account already setup, and uses tools available in macOS.
 
 #### Apple App ID and SSL Certificate for APNs
- Before you are able to use Push Notifications on your iOS Application, a few steps are required. Below you will find 
- a quick overview of what is needed.
+ Before you are able to use Push Notifications on your iOS Application, you must configure the Apple Push Notification service (APNs) with a certificate. 
  
 ##### Certificate Signing Request
  First you need to submit a request for a new digital certificate, which is based on a public/private key. The 
  Certificate itself is acting as the public key, and when you request it, a private key is added to your **KeyChain** 
- tool. The Cerficate will be used later on, to request an SSL certificate for the Apple Push Network Service, which 
+ tool. The Cerficate will be used later on, to request an SSL certificate for the Apple Push Network service, which 
  will allow the _AeroGear Push Server_ to send notification messages to it. Now the actual CSR (Certificate Signing 
- Request) is done using **KeyChain Access** tool found in **Applications > Utilities** folder on your Mac. Once opened, in 
+ Request) is done using **KeyChain Access** found in the **Applications > Utilities** folder on your Mac. Once opened, in 
  the **KeyChain Access** menu, choose **Certificate Assistant > Request a Certificate** from a **Certificate Authority**:
  
  > ![Creating a CSR](assets/ios/CreateCert.png "Creating a CSR")
  
- Make sure that you have chosen to store the CSR on file, so we can upload it later in the provisioning portal when 
+ Make sure that you have chosen "Saved to disk" to save the CSR locally; we will upload it later in the provisioning portal when 
  requesting the actual SSL cert. Going back to **KeyChain Access** you now see a new private key:
  
  > ![Store CSR into KeyChain](assets/ios/KeyChain-keys.png)
@@ -52,8 +51,7 @@ title: Configuring Variants
  > ![Set App ID](assets/ios/SetAppId.png)
 
 In the next screen confirm your new App ID, and double check that the _Push Notifications_ option is enabled. 
-Afterwards click the _Register_ button! Now you are Done. 
-Finally, click on on the newly created App ID. After clicking on it, ensure that the _Push Notifications_ capability
+Afterwards click the _Register_ button! Then, click on on the newly created App ID, and ensure that the _Push Notifications_ capability
 is enable and click on the _Configure_ button close to that.
 The following screen will appear:
 
@@ -93,31 +91,28 @@ Apple Push Network Service and send messages to it.
 
  > ![Download P12](assets/ios/DownloadP12.png)
 
-When exporting the file you need to assign a passphrase that will protect the private key. Make note of it, because later 
-when uploading it to the _AeroGear Push Server_ you will need both the exported file and the passphrase.
+When exporting the file you need to assign a passphrase that will protect the private key. Make note of the passphrase, because later 
+when uploading the private key to the _AeroGear Push Server_ you will need both the exported file and the passphrase.
 
 Follow the same steps to download the _Production SSL Certificate_, the file is being downloaded as aps_production.cer. 
 This file will be uploaded later on to the AeroGear Push Server enabling it to authorize itself for your production 
 application on Apple Push Network Service and send messages to it.
 
-Again, you will have to associate a password to the exported file: make not of it because you will need it later.
-
 #### The Unified Push Server
-With all the Apple work being done, we are now ready to setup the _UnifiedPush Server_, so that it can be used to 
-connect to APNs for a later message sending.
+APNs is now configured and we are now ready to setup the _UnifiedPush Server_ to connect to APNs and send push messages.
 
 In the Wizard after you create a PushApplication, click the **Add Variant** button and fill out the iOS option. 
-You will want to use the certificate, that you created earlier:
+You will want to use the certificate and passphrase you create earlier:
 
  > ![Add Variant](assets/ios/AddVariant.png)
 
-Afterwards you will see some code snippets, containing the Variant ID and Secret, that you can use in your Windows 
-application for the registration of the device, running your app:
+Afterwards you will see some code snippets containing the **Variant ID** and **Secret** that you can use in your iOS 
+application for registering the device when running your app:
 
  > ![Add Variant](assets/ios/Snippets.png)
 
 | **NOTE**: Clicking on the appropriate tab, you can choose between Objective-C, Swift and Cordova snippet |
 | --- |
 
-### APNS Token
+### APNs Token
 	AEROGEAR-10140
