@@ -5,8 +5,12 @@ title: Configuring Clients
 
 ## Android
  - AEROGEAR-10136	
+ 
 ## iOS
- - AEROGEAR-10135
+
+TBD
+
+
 ## Webpush
  - AEROGEAR-10134
 ## cordova
