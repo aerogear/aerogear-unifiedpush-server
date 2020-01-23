@@ -4,8 +4,28 @@ title: Configuring Clients
 ---
 
 ## Android
- - AEROGEAR-10136	
+ Before you begin configurating an Android application to receive push messages, you should have the following installed, available, or configured as appropriate.
+
+  * Android Studio
+  * Google Firebase Account
+  * Android Emulator or device with Google Play Services
+  * Unified Push with a Android Variant Configured
  
+### Firebase Configuration with Android Studio
+Android Studio can automate much of the Firebase integration process using the Firebase Assistant.
+
+Access the assistant from the **Tools > Firebase** menu item.
+
+In the assistant select **Set up Firebase Cloud Messaging**, and then follow the wizards launched by the *Connect to Firebase* and *Add FCM to your app* buttons.  The Firebase project name you choose to use should match the name of the Firebase project you used to configurate your Android Variant.
+
+The other steps in the Firebase Assistant are handled by Unified Push and its SDKs and may be ignored.
+
+### Configure the Unified Push SDK
+### Register Message Handlers
+### Receiving your first message
+
+### Additional Topics
+
 ## iOS
 
 Prerequisites: to be able to follow the instructions below, you must have [cocoapods](https://cocoapods.org/)
