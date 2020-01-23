@@ -51,6 +51,86 @@ Now, be sure you click in `Remote notifications` under `Background Modes` to ena
 
 >![CreateDemoApp](./assets/ios/checkBackgroundModes.png)
 
+### Add the pod dependencies
+
+Close _XCode_ and open a terminal, then change your current directory to the folder where you saved your project.
+You should see a content similar to the image below:
+
+>![CreateDemoApp](./assets/ios/project-folder.png)
+
+from there run
+
+```bash
+pod init
+```
+
+That will create a `Podfile` file in the current folder with the following content:
+
+>```bash
+># Uncomment the next line to define a global platform for your project
+># platform :ios, '9.0'
+>
+>target 'Demo App' do
+>  # Comment the next line if you don't want to use dynamic frameworks
+>  use_frameworks!
+>
+>  # Pods for Demo App
+>
+>  target 'Demo AppTests' do
+>    inherit! :search_paths
+>    # Pods for testing
+>  end
+>
+>  target 'Demo AppUITests' do
+>    # Pods for testing
+>  end
+>end
+>```
+
+Uncomment the platform as suggested and add
+```
+pod 'AeroGearPush-Swift', '~> 3.0.0'
+```
+
+to the `Podfile`:
+
+>```bash
+>platform :ios, '9.0'
+>
+>target 'Demo App' do
+>  # Comment the next line if you don't want to use dynamic frameworks
+>  use_frameworks!
+>
+>  # Pods for Demo App
+>
+>  target 'Demo AppTests' do
+>    inherit! :search_paths
+>    pod 'AeroGearPush-Swift', '~> 3.1.0'
+>    # Pods for testing
+>  end
+>
+>  target 'Demo AppUITests' do
+>    # Pods for testing
+>  end
+>end
+>```
+
+and run
+```bash
+pod install
+```
+
+you will end having a `.xcworkspace` file (in my case `Demo App.xcworkspace`).
+Open it with XCode:
+
+```aidl
+open Demo\ App.xcworkspace
+```
+
+:::warning
+Remember to close `XCode` before running the `open` command
+:::
+
 ### Registering your app
 
 Before you can receive any _push notification_ the first thing needed is to register the app to the _Unified Push Server_.
@@ -70,7 +150,7 @@ A good place to put the registration code could be
 ```swift
 func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data)
 ```
-of the `ApplDelegate` class
+of the `AppDelegate` class
 :::
 
 #### Registering using a plist file
