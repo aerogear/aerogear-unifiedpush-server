@@ -89,7 +89,7 @@ That will create a `Podfile` file in the current folder with the following conte
 
 Uncomment the platform as suggested and add
 ```
-pod 'AeroGearPush-Swift', '~> 3.0.0'
+pod 'AeroGearPush-Swift', '~> 3.1.0'
 ```
 
 to the `Podfile`:
