@@ -9,7 +9,7 @@ title: Configuring Clients
   * Android Studio
   * Google Firebase Account
   * Android Emulator or device with Google Play Services
-  * Unified Push with a Android Variant Configured
+  * Unified Push with an Android Variant Configured
  
 ### Overview
 Unified Push makes use of Google's Firebase Cloud Messaging service (FCM).  Before you can use push messages with Android you will need to create a Firebase project.  Android Studio can guide you through this process.  Once you have your Firebase project set up, you can enable Firebase in your Android application.  Like before, Android Studio has tools to facilitate this.  These steps are covered in the section *Firebase Configuration with Android Studio*.
@@ -21,7 +21,20 @@ Android Studio can automate much of the Firebase integration process using the F
 
 Access the assistant from the **Tools > Firebase** menu item.
 
-In the assistant select **Set up Firebase Cloud Messaging**, and then follow the wizards launched by the *Connect to Firebase* and *Add FCM to your app* buttons.  The Firebase project name you choose to use should match the name of the Firebase project you used to configure your Android Variant.
+> ![Load Firebase Assistant](assets/android/android_studio_tools_menu_firebase.png) 
+
+In the assistant select **Set up Firebase Cloud Messaging**. 
+
+> ![Load Firebase Assistant](assets/android/android_studio_firebase_assistant.png)
+
+Then follow the wizards launched by the *Connect to Firebase*.  The Firebase project name you choose to use should match the name of the Firebase project you used to configure your Android Variant.
+
+> ![Connect To Firebase](assets/android/android_studio_connect_to_firebase_dialog.png)
+
+Finally, press the *Add FCM to your app* button and Android Studio will configure your build files so that your application can connect to Firebase.
+
+> ![Firebase Build File Wizard](assets/android/android_studio_firebase_build_file.png)
+
 
 The other steps in the Firebase Assistant are handled by Unified Push and its SDKs and may be ignored.
 
@@ -165,7 +178,6 @@ RegistrarManager.unregisterBackgroundThreadHandler(messageHandler);
 
 ```
 RegistrarManager.registerBackgroundThreadHandler(messageHandler);
-}
 ```
 
 ### Hello World Example
