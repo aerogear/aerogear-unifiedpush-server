@@ -138,57 +138,6 @@
 				<artifactId>build-helper-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<groupId>com.qmino</groupId>
-				<artifactId>miredot-plugin</artifactId>
-				<version>2.0.3</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>restdoc</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<organizationId>c6818e4f-24f9-41dd-a391-61be863ea5fb</organizationId>
-					<licence>cHJvamVjdHxvcmcuamJvc3MuYWVyb2dlYXIudW5pZmllZHB1c2gudW5pZmllZHB1c2gtamF4cnN8MjAyMC0wMS0zMXx0cnVlfC0xI01Dd0NGRDhNNUE1eDhlZjdpTHFVeXFlbHVocDJZQUlYQWhSUUVNT3lmS1FEYlVVUS9vNGFWaFNKWitHOGdBPT0=</licence>
-					<output>
-						<html>
-							<baseUrl>https://SERVER:PORT/CONTEXT</baseUrl>
-							<initialCollapseLevel>100</initialCollapseLevel>
-							<hideIssuesTab>false</hideIssuesTab>
-						</html>
-					</output>
-					<restModel>
-						<restFramework>
-							<name>jax-rs</name>
-						</restFramework>
-						<httpStatusCodes>
-							<httpStatusCode>
-								<httpCode>200</httpCode>
-								<document>get</document>
-								<defaultMessage>The service call has completed successfully</defaultMessage>
-							</httpStatusCode>
-							<httpStatusCode>
-								<httpCode>500</httpCode>
-								<document>explicit: java.util.concurrent.ExecutionException</document>
-								<defaultMessage>The computation threw an exception</defaultMessage>
-							</httpStatusCode>
-							<httpStatusCode>
-								<httpCode>500</httpCode>
-								<document>explicit: java.lang.InterruptedException</document>
-								<defaultMessage>The thread was interrupted</defaultMessage>
-							</httpStatusCode>
-						</httpStatusCodes>
-					</restModel>
-					<analysis>
-						<checks>
-							<JAVADOC_MISSING_AUTHORS>ignore</JAVADOC_MISSING_AUTHORS>
-							<JAVADOC_MISSING_SUMMARY>ignore</JAVADOC_MISSING_SUMMARY>
-						</checks>
-					</analysis>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
