@@ -360,6 +360,13 @@ Before you begin configuring a Cordova application to receive push messages, you
 In this document we will give step by step instructions to build a very simple application that is able to receive push notification
 using the _aerogear push sdk_.
  
+:::tip Running the samples in the android emulator
+This documentation will use the `cordova emulate android` command to run the samples. Such command expects the emulator to be already up and running.
+To start the emulator use the `emulator @AVDMNAME -no-snapshot-load` commmand, replacing *AVDNAME* with your AVD.
+To have the list of AVDS use `emulator -list-avds`
+The `emulator` command can be found in the `emulator` folder of the _Android SDK_.
+::: 
+
 ### Create a new project
 
 To create a new cordova application, run the following command:
@@ -474,25 +481,14 @@ to
 ```
 
 :::caution
-In this example, I enabled _clear-text_ on *every site*. A better choice would be to put the _IP Address_ of your _UnifiedPush Server_ instead of the _*_
+In this example, we enabled _clear-text_ on *every site*. A better choice would be to put the _IP Address_ of your _UnifiedPush Server_ instead of the _*_
 :::
 
-If you are targeting _android_ you will have to edit the _platforms/android/app/src/main/AndroidManifest.xml_ file also by changing
+If you are targeting _android_ you will have to add this to your `config.xml` file
 ```xml
-<application 
-  android:hardwareAccelerated="true" 
-  android:icon="@mipmap/ic_launcher" 
-  android:label="@string/app_name" 
-  android:supportsRtl="true">
-``` 
-to
-```xml
-<application 
-  android:hardwareAccelerated="true" 
-  android:icon="@mipmap/ic_launcher" 
-  android:label="@string/app_name" 
-  android:supportsRtl="true" 
-  android:usesCleartextTraffic="true">
+<edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application" xmlns:android="http://schemas.android.com/apk/res/android">
+  <application android:usesCleartextTraffic="true" />
+</edit-config>
 ```
 
 ### Register the application with the UnifiedPush Server
@@ -586,15 +582,16 @@ var app = {
 
 app.initialize();
 ``` 
-### Running the application on a real device
-The easiest way to run the application on a device and see its console and check if the messages are received is through the IDE. 
+### Running the application
+The application can run into the emulator for Android, while it needs to run on a real device for iOS (iOS simulator 
+does not supports _push notifications_). 
 
 <!--DOCUSAURUS_CODE_TABS-->
 <!--Android-->
-1. Open the `platforms/ios/android` workspace with _Android Studio_
-2. Select your device as target device
-3. Click on the _run_ icon 
+1. Be sure that the emulator is already up and running
+2. Issue `cordova emulate android`
 <!--iOS-->
+1. Connect an iOS device to the USB port of your mac
 1. Run _XCode_ with
     ```bash
     $ open platforms/ios/UpsHelloWorld.xcworkspace
@@ -602,3 +599,12 @@ The easiest way to run the application on a device and see its console and check
 2. Configure the _Signing and Capabilities_
 3. Click on the _run_ icon
 <!--END_DOCUSAURUS_CODE_TABS-->
+
+#### Throubleshooting
+##### `cordova emulator android` takes forever to install the app into the emulator
+
+From time to time can happen that the `cordova emulator android` command is not able to install the app into the emulator.
+To solve the issue, simply close the emulator and run it again with 
+```bash
+emulator @AVDNAME -no-snapshot-load
+```
