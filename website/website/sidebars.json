@@ -1,6 +1,6 @@
 {
   "docs": {
-    "Running Unified Push": ["running"],
+    "Running Unified Push": ["running", "jms"],
     "Unified Push Server SDK": ["server_sdk"],
     "Configuring Variants": ["configuring_variants"],
     "Configuring Clients": ["configuring_clients"],
