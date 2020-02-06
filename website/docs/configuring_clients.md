@@ -140,9 +140,9 @@ That is all what is needed to register with the UnifiedPush server! Note that we
 
 
 
-[NOTE]
+:::note
 If you don't see the _Registration Succeeded_ popup, means that an error has occurred during the registration. Switch to the LogCat console in Android Studio to locate the exception and act accordingly.
-
+:::
 
 ### Register Message Handlers
 
