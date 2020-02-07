@@ -353,15 +353,15 @@ Before you begin configuring a Cordova application to receive push messages, you
 * Java 8 (no newer versions since they would cause errors with the `advmanager`)
 * Node.js
 * Cordova (see [Cordova Documentation](https://cordova.apache.org/docs))
-* [Android Studio](https://developer.android.com/studio) if developing for an android platform
+* [Android Studio](https://developer.android.com/studio) if developing for an Android platform
 * XCode if developing for an iOS platform
 :::
 
-In this document we will give step by step instructions to build a very simple application that is able to receive push notification
+In this document we will give step by step instructions to build a very simple application that is able to receive push notifications
 using the _aerogear push sdk_.
  
 :::tip Running the samples in the android emulator
-This documentation will use the `cordova emulate android` command to run the samples. Such command expects the emulator to be already up and running.
+This documentation will use the `cordova emulate android` command to run the samples. This command expects the emulator to be already up and running.
 To start the emulator use the `emulator @AVDMNAME -no-snapshot-load` commmand, replacing *AVDNAME* with your AVD.
 To have the list of AVDS use `emulator -list-avds`
 The `emulator` command can be found in the `emulator` folder of the _Android SDK_.
@@ -583,8 +583,8 @@ var app = {
 app.initialize();
 ``` 
 ### Running the application
-The application can run into the emulator for Android, while it needs to run on a real device for iOS (iOS simulator 
-does not supports _push notifications_). 
+The application can run in the emulator for Android, while it needs to run on a real device for iOS (the iOS simulator 
+does not support _push notifications_). 
 
 <!--DOCUSAURUS_CODE_TABS-->
 <!--Android-->
@@ -603,7 +603,7 @@ does not supports _push notifications_).
 #### Throubleshooting
 ##### `cordova emulator android` takes forever to install the app into the emulator
 
-From time to time can happen that the `cordova emulator android` command is not able to install the app into the emulator.
+This can happen when the `cordova emulator android` command is not able to install the app into the emulator.
 To solve the issue, simply close the emulator and run it again with 
 ```bash
 emulator @AVDNAME -no-snapshot-load
