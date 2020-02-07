@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   JBoss, Home of Professional Open Source
   Copyright Red Hat, Inc., and individual contributors
@@ -31,7 +31,31 @@
 
   <name>AeroGear UnifiedPush Server</name>
   <url>http://aerogear.org/push</url>
-
+  <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
+  <repositories>
+    <repository>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
   <scm>
     <connection>scm:git:git://github.com/aerogear/aerogear-unifiedpush-server.git</connection>
     <developerConnection>scm:git:git@github.com:aerogear/aerogear-unifiedpush-server.git
@@ -281,6 +305,7 @@
         <ups.ddl_value>update</ups.ddl_value>
       </properties>
     </profile>
+
 
     <profile>
       <id>code-coverage</id>
