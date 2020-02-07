@@ -523,7 +523,239 @@ An example application can be found [here](https://github.com/aerogear/aerogear-
 To run it, follow the instruction in the [README](https://github.com/aerogear/aerogear-ios-cookbook/blob/master/UnifiedPushHelloWorld/README.md) file.
 
 ## Webpush
- - AEROGEAR-10134
+
+Prerequisites: to be able to follow the instructions below, you must have [Node.js](https://nodejs.org/) installed and 
+working and you must have a [WebPush Variant](configuring_variants#WebPush) already configured.
+
+The guide below will be a simple step-by-step guide to integrate a sample `React` application with _UnifiedPush Server_.
+
+### Create a new project
+This guide will walk you through the creation of a _typescrypt React_ application.
+To create one, run:
+```bash
+$ npx create-react-app hello-world-webpush --template typescript
+```
+
+### Add the required dependencies
+```bash
+$ cd hello-world-webpush
+$ npm install --save @aerogear/push
+```
+
+### Add the service worker
+
+To be able to handle _push notifications_, a service worker is needed. In this guide we will provide a very simple implementation,
+for instructions about writing service workers please refer to the [official documentation](https://developer.mozilla.org/en-US/docs/Web/API/Push_API). 
+
+Inside the `public` folder, create a file named `simple-sw.js` with the following content:
+```javascript
+self.addEventListener('push', event => {
+  const data = event.data.text();
+  const msg_chan = new MessageChannel();
+  clients.matchAll().then(clients => {
+    // If a browser tab is opened to our application, route the message to the application
+    clients.forEach(client => {
+      client.postMessage(data, [msg_chan.port2]);
+    });
+    if (clients.length === 0) {
+      // otherwise show a browser notification
+      self.registration.showNotification(data);
+    }
+  });
+});
+
+self.addEventListener('install', function(event) {
+  self.skipWaiting();
+});
+```
+
+:::important
+By default the react template unregisters the _service worker_ automatically. That must be removed.
+:::
+
+Edit the `src/index.tsx` file and comment the `serviceWorker.unregister();` call.
+
+### Add _UnifiedPush Server Integration_
+
+#### Registration/Unregistration
+
+The object responsible for the registration/unregistration is the `PushRegistration` class, which exposes a `register` method.
+The `PushRegistration` constructors takes a configuration object as parameters with the following structure:
+```javascript
+const push_config = {
+  url: 'your unified pushserver URL',
+  webpush: {
+    variantID: 'the ID of the WebPush variant you created in UPS',
+    variantSecret: 'the secret of the variant identified by variantID',
+    appServerKey: 'your VAPID public key (you can get it by opening the variant in UPS)'
+  }
+}
+```
+The `register` method takes one parameter also, with the following structure:
+```javascript
+{
+    serviceWorker: 'service worker name' // in this walkthrough, simple-sw.js
+}
+```
+
+Add a `register` method to the `src/App.tsx` class:
+
+```typescript
+private readonly push_config: PushInitConfig = {
+  url: 'your unified pushserver URL',
+  webpush: {
+    variantID: 'the ID of the WebPush variant you created in UPS',
+    variantSecret: 'the secret of the variant identified by variantID',
+    appServerKey: 'your VAPID public key (you can get it by opening the variant in UPS)'
+  }
+};
+
+/**
+ * Resister to the UPS
+ */
+private register = () => {
+  new PushRegistration(this.push_config)
+    .register({ serviceWorker: 'simple-sw.js' })
+    .then(() => console.log("Registration successful!"))
+    .catch(error => console.log("Registration failed with error: ", error.message));
+};
+
+/**
+ * Unregister from UPS
+ */
+private unregister = () => {
+  new PushRegistration(this.push_config)
+    .unregister()
+    .then(() => console.log("Unregistered successfully"))
+    .catch(error => console.log("Unregistration failed with error: ", error.message));
+};
+```
+
+#### Handling notifications
+
+To be able to receive notifications into your web application, you will need to register a callback that will receive
+the notification object as input:
+
+```typescript
+PushRegistration.onMessageReceived(notification => {
+  const obj = JSON.parse(notification);
+  console.log('Notification: ', {
+    priority: obj.priority,
+    text: obj.alert,
+    date: new Date(),
+  });
+});
+```
+
+#### Putting all together
+
+Add a constructor to the `App.tsx` class:
+
+```typescript
+constructor(props: {}) {
+  super(props);
+  PushRegistration.onMessageReceived(notification => {
+    const obj = JSON.parse(notification);
+    console.log('Notification: ', {
+      priority: obj.priority,
+      text: obj.alert,
+      date: new Date(),
+    });
+   });
+   this.register();
+}
+```
+
+The content of the `App.tsx` could be:
+
+```typescript
+import React from 'react';
+import { Component } from 'react';
+import { PushInitConfig, PushRegistration } from '@aerogear/push';
+
+class App extends Component<{}> {
+  private readonly push_config: PushInitConfig = {
+    url: 'your unified pushserver URL',
+    webpush: {
+      variantID: 'the ID of the WebPush variant you created in UPS',
+      variantSecret: 'the secret of the variant identified by variantID',
+      appServerKey: 'your VAPID public key (you can get it by opening the variant in UPS)'
+    }
+  };
+
+  constructor(props: {}) {
+    super(props);
+    PushRegistration.onMessageReceived(notification => {
+      const obj = JSON.parse(notification);
+      console.log('Notification: ', {
+        priority: obj.priority,
+        text: obj.alert,
+        date: new Date(),
+      });
+     });
+     this.register();
+  }
+  /**
+   * Resister to the UPS
+   */
+  private register = () => {
+    new PushRegistration(this.push_config)
+      .register({ serviceWorker: 'simple-sw.js' })
+      .then(() => console.log("Registration successful!"))
+      .catch(error => console.log("Registration failed with error: ", error.message));
+  };
+    
+  /**
+   * Unregister from UPS
+   */
+  private unregister = () => {
+    new PushRegistration(this.push_config)
+      .unregister()
+      .then(() => console.log("Unregistered successfully"))
+      .catch(error => console.log("Unregistration failed with error: ", error.message));
+  };
+  
+  render() {
+  return (
+      <div className="App">
+        <header className="App-header">
+          <p>
+            Edit <code>src/App.tsx</code> and save to reload.
+          </p>
+          <a
+            className="App-link"
+            href="https://reactjs.org"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn React
+          </a>
+        </header>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
+You can now start the application with:
+
+```bash
+$ npm start
+```
+
+:::important
+Remember to edit the `push_config` variable withe correct values!
+:::
+
+If you look at the console log (in the development console) you will see messages saying if the registration has been 
+successfull or not.
+If the registration has been successful, you will be able to see in the console every message you send from UPS to 
+the variant.
+
+For a more complete example, look at the [WebPush HelloWorld](https://github.com/aerogear/unifiedpush-cookbook/tree/master/webpush/hello-world-webpush) example.
+
 ## Cordova
 
 :::important
