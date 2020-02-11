@@ -549,38 +549,119 @@ for instructions about writing service workers please refer to the [official doc
 
 Inside the `public` folder, create a file named `simple-sw.js` with the following content:
 ```javascript
-self.addEventListener('push', event => {
-  const data = event.data.text();
-  const msg_chan = new MessageChannel();
-  clients.matchAll().then(clients => {
-    // If a browser tab is opened to our application, route the message to the application
-    clients.forEach(client => {
-      client.postMessage(data, [msg_chan.port2]);
-    });
-    if (clients.length === 0) {
-      // otherwise show a browser notification
-      self.registration.showNotification(data);
-    }
-  });
+self.addEventListener('install', function(event) {
+  event.waitUntil(self.skipWaiting());
 });
 
-self.addEventListener('install', function(event) {
-  self.skipWaiting();
+self.addEventListener('push', event => {
+  const msg_chan = new MessageChannel();
+  event.waitUntil(
+    self.clients.matchAll().then(clientList => {
+      if (clientList.length === 0) {
+        return self.registration.showNotification(data);
+      } else {
+        clientList.forEach(client => {
+          client.postMessage(event.data.text(), [msg_chan.port2]);
+        });
+      }
+    })
+  );
 });
 ```
-
 :::important
-By default the react template unregisters the _service worker_ automatically. That must be removed.
+By default the react template unregisters the _service worker_ automatically. That must be disabled.
 :::
 
 Edit the `src/index.tsx` file and comment the `serviceWorker.unregister();` call.
+
+### Creating the _HelloWorld_ component
+
+We are going to create a very simple component that will display a title ('Hello World') and the messages received by UPS.
+Create a file named _HelloWorld.tsx_ in the _src_ folder:
+
+```javascript
+import React from 'react';
+import { Component } from 'react';
+
+interface HelloWorldState {
+  message?: string,
+  registered: boolean
+}
+
+export class HelloWorld extends Component<{}, HelloWorldState> {
+  constructor() {
+    super({});
+    this.state = { registered: false };
+  }
+
+  private register = () => {
+    // we will implement this later  
+  };
+
+  private unregister = () => {
+    // we will implement this later
+  };
+
+  private handleRegistrationStatus = () => {
+    if (this.state.registered) {
+      this.unregister();  
+    } else {
+      this.register();
+    }
+  };
+
+  public render = () =>{
+    return (
+      <>
+        <h1>Hello World!!!</h1><br/>
+          { this.state.message
+              ? `UPS Says: ${this.state.message}`
+              : 'No messages received yet' }<br/>
+            <button onClick={this.handleRegistrationStatus}>{this.state.registered ? "Unregister" : "Register"}</button>
+      </>
+    )
+  };
+}
+``` 
+From now on, we will add here the code that integrates the _UnifiedPush Server_.
+
+We now have the _HelloWorld_ component, but we still don't reference it anywhere. Edit the `src/App.tsx` file by removing
+all the scaffolding code and add the _HelloWorld_ component to the page body. The result should be a content like the
+following:
+
+```javascript
+import React from 'react';
+import './App.css';
+
+import { HelloWorld } from './HelloWorld';
+
+const App = () => {
+  return (
+    <div className="App">
+      <HelloWorld/>
+    </div>
+  );
+}
+
+export default App;
+```
+
+Now we can run the app to see that everything works as expected:
+```bash
+$ npm run start
+```
+
+In the browser you should see:
+
+ >![Stage 1](./assets/webpush/hello-world-stage1.png)
+
 
 ### Add _UnifiedPush Server Integration_
 
 #### Registration/Unregistration
 
 The object responsible for the registration/unregistration is the `PushRegistration` class, which exposes a `register` method.
-The `PushRegistration` constructors takes a configuration object as parameters with the following structure:
+The `PushRegistration` constructor takes a configuration object as parameters with the following structure:
 ```javascript
 const push_config = {
   url: 'your unified pushserver URL',
@@ -598,9 +679,9 @@ The `register` method takes one parameter also, with the following structure:
 }
 ```
 
-Add a `register` method to the `src/App.tsx` class:
+Add a configuration object to the HelloWorld class in the `src/HelloWorld.tsx` file:
 
-```typescript
+```javascript
 private readonly push_config: PushInitConfig = {
   url: 'your unified pushserver URL',
   webpush: {
@@ -609,15 +690,18 @@ private readonly push_config: PushInitConfig = {
     appServerKey: 'your VAPID public key (you can get it by opening the variant in UPS)'
   }
 };
+```
 
+Then fill the `register` and the `unregister` method:
+```javascript
 /**
- * Resister to the UPS
+ * Register to the UPS
  */
 private register = () => {
   new PushRegistration(this.push_config)
     .register({ serviceWorker: 'simple-sw.js' })
-    .then(() => console.log("Registration successful!"))
-    .catch(error => console.log("Registration failed with error: ", error.message));
+    .then(() => this.setState({ message: "Registration successful!", registered: true }))
+    .catch(error => this.setState({ message: `Registration failed - ${error}` }))
 };
 
 /**
@@ -626,54 +710,52 @@ private register = () => {
 private unregister = () => {
   new PushRegistration(this.push_config)
     .unregister()
-    .then(() => console.log("Unregistered successfully"))
-    .catch(error => console.log("Unregistration failed with error: ", error.message));
+    .then(() => this.setState({ message: "Unregistered successfully", registered: false }))
+    .catch(error => this.setState({ message: `Operation failed - ${error}` }))
 };
 ```
 
-#### Handling notifications
+:::important
+Note the parameter passed to the `register` method: the value of the _serviceWorker_ key is exactly the name of the _service worker_ file we created into the `public` folder.
+:::
 
-To be able to receive notifications into your web application, you will need to register a callback that will receive
+#### Receiving the notifications
+
+To be able to receive notifications in your web application, you will need to register a callback that will receive
 the notification object as input:
 
-```typescript
-PushRegistration.onMessageReceived(notification => {
-  const obj = JSON.parse(notification);
-  console.log('Notification: ', {
-    priority: obj.priority,
-    text: obj.alert,
-    date: new Date(),
-  });
-});
-```
-
-#### Putting all together
-
-Add a constructor to the `App.tsx` class:
-
-```typescript
-constructor(props: {}) {
-  super(props);
+```javascript
   PushRegistration.onMessageReceived(notification => {
     const obj = JSON.parse(notification);
-    console.log('Notification: ', {
-      priority: obj.priority,
-      text: obj.alert,
-      date: new Date(),
-    });
+    this.setState({ message: obj.alert });
    });
-   this.register();
-}
 ```
 
-The content of the `App.tsx` could be:
+#### Putting it all together
 
-```typescript
+Edit the constructor of the `HelloWorld.tsx` class and add the following code:
+
+```javascript
+  PushRegistration.onMessageReceived(notification => {
+    const obj = JSON.parse(notification);
+    this.setState({ message: obj.alert });
+   });
+```
+
+The content of the `src/HelloWorld.tsx` file should be:
+
+```javascript
 import React from 'react';
 import { Component } from 'react';
-import { PushInitConfig, PushRegistration } from '@aerogear/push';
+import { PushInitConfig, PushRegistration } from "@aerogear/push";
 
-class App extends Component<{}> {
+interface HelloWorldState {
+  message?: string,
+  registered: boolean
+}
+
+export class HelloWorld extends Component<{}, HelloWorldState> {
+
   private readonly push_config: PushInitConfig = {
     url: 'your unified pushserver URL',
     webpush: {
@@ -683,63 +765,58 @@ class App extends Component<{}> {
     }
   };
 
-  constructor(props: {}) {
-    super(props);
+  constructor() {
+    super({});
+    this.state = { registered: false };
     PushRegistration.onMessageReceived(notification => {
       const obj = JSON.parse(notification);
-      console.log('Notification: ', {
-        priority: obj.priority,
-        text: obj.alert,
-        date: new Date(),
-      });
-     });
-     this.register();
+      this.setState({ message: obj.alert });
+    });
   }
+
   /**
-   * Resister to the UPS
+   * Register to the UPS
    */
   private register = () => {
     new PushRegistration(this.push_config)
-      .register({ serviceWorker: 'simple-sw.js' })
-      .then(() => console.log("Registration successful!"))
-      .catch(error => console.log("Registration failed with error: ", error.message));
+        .register({ serviceWorker: 'simple-sw.js' })
+        .then(() => this.setState({ message: "Registration successful!", registered: true }))
+        .catch(error => this.setState({ message: `Registration failed - ${error}` }))
   };
-    
+
   /**
    * Unregister from UPS
    */
   private unregister = () => {
     new PushRegistration(this.push_config)
-      .unregister()
-      .then(() => console.log("Unregistered successfully"))
-      .catch(error => console.log("Unregistration failed with error: ", error.message));
+        .unregister()
+        .then(() => this.setState({ message: "Unregistered successfully", registered: false }))
+        .catch(error => this.setState({ message: `Operation failed - ${error}` }))
   };
-  
-  render() {
-  return (
-      <div className="App">
-        <header className="App-header">
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
-}
 
-export default App;
+  private handleRegistrationStatus = () => {
+    if (this.state.registered) {
+      this.unregister();
+    } else {
+      this.register();
+    }
+  };
+
+  public render = () => {
+    return (
+      <>
+        <h1>Hello World!!!</h1><br/>
+          { this.state.message
+              ? `UPS Says: ${this.state.message}`
+              : 'No messages received yet' }<br/>
+              <button onClick={this.handleRegistrationStatus}>{this.state.registered ? "Unregister" : "Register"}</button>
+      </>
+    )
+  };
+}
 ```
 
-You can now start the application with:
+If you didn't do already, you can now start the application with:
 
 ```bash
 $ npm start
@@ -749,12 +826,13 @@ $ npm start
 Remember to edit the `push_config` variable withe correct values!
 :::
 
-If you look at the console log (in the development console) you will see messages saying if the registration has been 
-successfull or not.
-If the registration has been successful, you will be able to see in the console every message you send from UPS to 
-the variant.
+Click on _Register_: if everything is ok, you should see a confirmation message. 
 
-For a more complete example, look at the [WebPush HelloWorld](https://github.com/aerogear/unifiedpush-cookbook/tree/master/webpush/hello-world-webpush) example.
+Now try to send messages to your variant from the _UnifiedPush Server_.
+You should see something like this:
+ >![Stage 1](./assets/webpush/hello-world-stage2.png)
+
+For a complete example, look at the [WebPush HelloWorld](https://github.com/aerogear/unifiedpush-cookbook/tree/master/webpush/hello-world-webpush) example.
 
 ## Cordova
 
