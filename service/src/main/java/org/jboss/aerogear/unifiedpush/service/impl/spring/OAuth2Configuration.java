@@ -23,6 +23,9 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 	private static final String KEY_OAUTH2_ADMIN_USERNAME = "aerogear.config.oauth2.admin.username";
 	private static final String KEY_OAUTH2_ADMIN_PASSWORD = "aerogear.config.oauth2.admin.password";
 
+	private static final String KEY_MASTER_REALM_ADMIN_USERNAME = "aerogear.config.master.realm.admin.username";
+	private static final String KEY_MASTER_REALM_ADMIN_PASSWORD = "aerogear.config.master.realm.admin.password";
+
 	private static final String KEY_OAUTH2_ADMIN_CLIENT_ID = "aerogear.config.oauth2.ups.admin.client";
 	public static final String KEY_OAUTH2_ENFORE_DOMAIN = "aerogear.config.oauth2.enforce.rooturl.domain";
 	private static final String KEY_OAUTH2_ENFORCE_PROTOCOL = "aerogear.config.oauth2.enforce.rooturl.protocol";
@@ -67,6 +70,14 @@ public class OAuth2Configuration implements IOAuth2Configuration {
 
 	public String getAdminPassword() {
 		return getProperty(KEY_OAUTH2_ADMIN_PASSWORD, StringUtils.EMPTY);
+	}
+
+	public String getMasterRealmAdminUserName() {
+		return getProperty(KEY_MASTER_REALM_ADMIN_USERNAME, StringUtils.EMPTY);
+	}
+
+	public String getMasterRealmAdminPassword() {
+		return getProperty(KEY_MASTER_REALM_ADMIN_PASSWORD, StringUtils.EMPTY);
 	}
 
 	public String getRootUrlDomain() {

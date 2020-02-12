@@ -28,8 +28,8 @@ class KeycloakClient {
         String keycloakPath = conf.getOAuth2Url();
         String upsMasterRealmName = conf.getUpsMasterRealm();
         String cliClientId = conf.getAdminClient();
-        String userName = conf.getAdminUserName();
-        String userPassword = conf.getAdminPassword();
+        String userName = conf.getMasterRealmAdminUserName();
+        String userPassword = conf.getMasterRealmAdminPassword();
 
         keycloak = KeycloakBuilder.builder() //
                 .serverUrl(keycloakPath) //

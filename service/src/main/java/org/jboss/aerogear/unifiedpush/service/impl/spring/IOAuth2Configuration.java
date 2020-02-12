@@ -20,6 +20,10 @@ public interface IOAuth2Configuration {
 
 	String getAdminPassword();
 
+	String getMasterRealmAdminUserName();
+
+	String getMasterRealmAdminPassword();
+
 	String getRootUrlDomain();
 
 	String getRooturlProtocol();
