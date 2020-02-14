@@ -39,10 +39,10 @@ Click on `create` and your webpush variant is ready!
  * with an APNs Certificate
  * with an APNs Token
 
- The first one is the legacy one: with the method you will require to have one certificate for each application and, furthermore,
+ The first one is the legacy one: with this method you will be required to have one certificate for each application and, furthermore,
  you need two distinct certificates for the production and the development environments.
  
- The second one is the new token based authentication, that makes authentication much simpler:
+ The second one is the new token based authentication, which makes authentication much simpler:
  
  * The same key can be used for both development and production environments
  * The same key can be used for all the apps registered into your developer account
