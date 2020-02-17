@@ -29,13 +29,32 @@ Click on `create` and your webpush variant is ready!
 ## Android
 	AEROGEAR-10142
 ## iOS
-### APNs Certificate
+
  The following step-by-step guide gives you an introduction on how to use the AeroGear UnifiedPush Server for sending 
  Push Notifications to your own iOS Apps. The guide assumes you have an Apple developer account already setup, and uses tools available in macOS.
 
-#### Apple App ID and SSL Certificate for APNs
- Before you are able to use Push Notifications on your iOS Application, you must configure the Apple Push Notification service (APNs) with a certificate. 
+ To be able to send _push notifications_ to iOS, an _iOS variant_ must be created. That variant can be an _iOS (Certificate) Variant_ or an _iOS (APNS Token) Variant, 
+ depending on the way we are going to authenticate to the APNs: 
+
+ * with an APNs Certificate
+ * with an APNs Token
+
+ The first one is the legacy one: with this method you will be required to have one certificate for each application and, furthermore,
+ you need two distinct certificates for the production and the development environments.
  
+ The second one is the new token based authentication, which makes authentication much simpler:
+ 
+ * The same key can be used for both development and production environments
+ * The same key can be used for all the apps registered into your developer account
+ * The key does not expire
+ 
+ In this manual we will describe how to use both the approaches.
+
+### APNs Certificate authentication
+ A couple of configuration steps needs to be performed on the _Apple developer site_ before we can create the actual variant in the _Unified Push Server_:
+ * Create a **CSR** _(Certificate Signing Request)_: this will be used to ask apple to generate a _development_ and/or _production_ certificate
+ * Create an **App ID and its SSL certificate**: this will be used to authenticate the application to the APNs
+
 ##### Certificate Signing Request
  First you need to submit a request for a new digital certificate, which is based on a public/private key. The 
  Certificate itself is acting as the public key, and when you request it, a private key is added to your **KeyChain** 
@@ -119,7 +138,7 @@ Follow the same steps to download the _Production SSL Certificate_, the file is 
 This file will be uploaded later on to the AeroGear Push Server enabling it to authorize itself for your production 
 application on Apple Push Network Service and send messages to it.
 
-#### The Unified Push Server
+#### Creating the variant in the UnifiedPush Server
 APNs is now configured and we are now ready to setup the _UnifiedPush Server_ to connect to APNs and send push messages.
 
 In the Wizard after you create a PushApplication, click the **Add Variant** button and fill out the iOS option. 
@@ -132,8 +151,64 @@ application for registering the device when running your app:
 
  > ![Add Variant](assets/ios/Snippets.png)
 
-| **NOTE**: Clicking on the appropriate tab, you can choose between Objective-C, Swift and Cordova snippet |
-| --- |
+:::note
+Clicking on the appropriate tab, you can choose between Objective-C, Swift and Cordova snippet |
+:::
 
-### APNs Token
-	AEROGEAR-10140
+### APNs Token Authentication
+ To be able to authentication using _token authentication_ you will need to collect the following informations:
+ * your **bundle id**: This is similar to Java packages. In this example we choose _org.aerogear.PushHelloWorld_, however you must use your own ID
+ * your **team ID**
+ * your **private key**
+ * your **key id**
+
+#### The TEAM ID
+ Your _Team ID_ can be obtained very easily form your _developer account_:
+ * Enter your development account
+ * Click on _Certificates, IDs & Profiles_
+ 
+ > ![Team ID](assets/ios/team-id.png)
+
+ Your _team id_ will be on the upper right corner, right below your name, next to your team name.
+
+#### Generating the private key and the Key ID
+
+As for the [team id](#the-team-id), go to the _Certificates, IDs & Profiles_ page.
+Once there click _Keys_ to go the _keys management page_ and click on the _plus sign_ at the right of the _keys_ header:
+
+ > ![Team ID](assets/ios/keys.png)
+
+That will lead to a form where you will be able to set a name for the _key_ and select the feature to enable.
+
+:::important
+Double check that **Apple Push Notifications service (APNs)** is enabled here!
+::: 
+ 
+ > ![Team ID](assets/ios/apns-key.png)
+
+We are almost done: click on _Continue_ and then on _Register_. That will bring you to a screen similar to the one below. 
+
+ > ![Team ID](assets/ios/key-details.png)
+
+ Take note of the _Key ID_ and click on _Download_ to save the key somewhere, since we will need it to create the variant.
+ 
+ :::warning
+ Please, take care of the downloaded key, since, after you click on _download_ you won't be able to download it again!
+ :::
+  
+#### Creating the variant in the UnifiedPush Server
+APNs is now configured and we are now ready to setup the _UnifiedPush Server_ to connect to APNs and send push messages.
+
+In the Wizard after you create a PushApplication, click the **Add Variant** button and select **iOS (APNS Token)**. 
+You will need the private key you just downloaded, its **key id**, your **team id** and your **bundle id**
+
+ ![Add Variant](assets/ios/apns-token-variant.png)
+
+Afterwards you will see some code snippets containing the **Variant ID** and **Secret** that you can use in your iOS 
+application for registering the device when running your app:
+
+ > ![Add Variant](assets/ios/apns-token-variant-details.png)
+
+:::note
+Clicking on the appropriate tab, you can choose between Objective-C, Swift and Cordova snippet |
+:::
