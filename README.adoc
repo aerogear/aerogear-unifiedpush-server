@@ -16,7 +16,7 @@ endif::[]
 
 ifdef::status[]
 .*Project health*
-image:https://travis-ci.org/aerogear/aerogear-unifiedpush-server.png[Build Status (Trevis), link=https://travis-ci.org/aerogear/aerogear-unifiedpush-server]
+image:https://travis-ci.org/aerogear/aerogear-unifiedpush-server.png[Build Status , link=https://travis-ci.org/aerogear/aerogear-unifiedpush-server]
 image:https://img.shields.io/:license-Apache2-blue.svg[License (License), link=http://www.apache.org/licenses/LICENSE-2.0]
 image:https://maven-badges.herokuapp.com/maven-central/org.jboss.aerogear.unifiedpush/unifiedpush-parent/badge.svg[Maven Central (Maven Central), link=https://maven-badges.herokuapp.com/maven-central/org.jboss.aerogear.unifiedpush/unifiedpush-parent]
 endif::[]
