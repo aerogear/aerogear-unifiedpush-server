@@ -13,6 +13,8 @@ const MarkdownBlock = CompLibrary.MarkdownBlock; /* Used to read markdown */
 const Container = CompLibrary.Container;
 const GridBlock = CompLibrary.GridBlock;
 
+const frontpage = require(process.cwd() + '/pages/en/frontpage.js');
+
 class HomeSplash extends React.Component {
   render() {
     const {siteConfig, language = ''} = this.props;
@@ -94,10 +96,14 @@ class Index extends React.Component {
 
     const FeatureCallout = () => (
       <div
-        className="productShowcaseSection paddingBottom"
-        style={{textAlign: 'center'}}>
-        <h2>Feature Callout</h2>
-        <MarkdownBlock>These are features of this project</MarkdownBlock>
+        className="paddingBottom"
+        >
+          {/*<ReactMarkdown source={frontpage}/>*/}
+          <Container>
+          <MarkdownBlock>
+              { frontpage }
+          </MarkdownBlock>
+          </Container>
       </div>
     );
 
@@ -195,14 +201,14 @@ class Index extends React.Component {
 
     return (
       <div>
-        <HomeSplash siteConfig={siteConfig} language={language} />
+        {/*<HomeSplash siteConfig={siteConfig} language={language} />*/}
         <div className="mainContainer">
-          <Features />
+          {/*<Features />*/}
           <FeatureCallout />
-          <LearnHow />
-          <TryOut />
-          <Description />
-          <Showcase />
+          {/*<LearnHow />*/}
+          {/*<TryOut />*/}
+          {/*<Description />*/}
+          {/*<Showcase />*/}
         </div>
       </div>
     );
