@@ -21,8 +21,8 @@ const users = [
 ];
 
 const siteConfig = {
-  title: 'AeroGear', // Title for your website.
-  tagline: 'AeroGear Website',
+  title: 'UnifiedPush Server', // Title for your website.
+  tagline: '',
   url: 'https://aerogear.org', // Your website URL
   baseUrl: '/', // Base URL for your project */
   // For github.io type URLs, you would set the url and baseUrl like:
