@@ -8,7 +8,78 @@ This page documents how to use UPS
 
 ## Senders
 ### JavaSender
- - AEROGEAR-10139	
+
+The _UnifiedPush Server_ supports a Java API Client for sending Push Notifications
+
+#### Getting Started
+
+You must add the following dependencies to your `pom.xml` file:
+
+```Java
+    <dependency>
+    <groupId>org.jbos.aerogear</groupId>
+    <artifactId>unifiedpush-java-client</artifactIt>
+    <version>1.1.0.Final</version>
+    </dependency>
+```
+
+#### Usage
+
+You can create the `JavaSender` or alternatively you can use an external `pushConfig.json` file to configure connecting to the _UnifiedPush Server_.
+
+Creating a `JavaSender` would look like:
+
+```Java
+    Pushsender defaultPushSender = DefaultPushSender
+    .withRootServerURL("<yourPushServerURL e.g http://localhost:9999/>")
+    .pushApplicationId("<yourPushApplicationId e.g. B868CC08-BCC8-4A0A-B21E-1AC56AF0C734>")
+    .masterSecret("<yourMasterSecret e.g. 4L30AV41-3278-4983-8F99-0EEA138J7O1I>")
+    .build();
+```
+
+The external `pushConfig.json` file would look like this:
+
+```JSON
+    {
+        "serverUrl":"<yourPushServerURL e.g http://localhost:9999/>",
+        "pushApplicationId": "<yourPushApplicationId e.g. B868CC08-BCC8-4A0A-B21E-1AC56AF0C734>",
+        "masterSecret": "<yourMasterSecret e.g. 4L30AV41-3278-4983-8F99-0EEA138J7O1I>"
+    }
+```
+And then, to connect using the external `pushConfig.json` file your JavaSender would look like:
+
+```Java
+    PushSender defaultPushSender = DefaultPushSender
+        .withConfig("pushConfig.json")
+        .build();
+```
+You can connect to the _UnifiedPush Server_ via proxy with the `JavaSender` API also!
+
+```Java
+    PushSender defaultPushSender = DefaultPushSender
+    .withConfig("pushConfig.json")
+    .proxy("proxy.example.com", 8080)
+    .proxyUser("proxyuser")
+    .proxyPassword("password")
+    .proxyType(Prox.Type.HTTP)
+    .build();
+```
+:::note
+The ability to connect via proxy is a feature only available with the JavaSender Client API
+:::
+
+You can implement your own custom `TrustStore` as follows:
+
+```Java
+    PushSender defaultPushSender = DefaultPushSender
+        .withConfig("pushConfig.json")
+        .customTrustStore("setup/aerogear.truststore", "jks", "aerogear")
+        .build();
+```
+
+#### Sending Messages
+
+
 
 ### Node Sender
 ---
