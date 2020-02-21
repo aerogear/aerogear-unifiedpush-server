@@ -79,6 +79,9 @@ You can implement your own custom `TrustStore` as follows:
 
 #### Sending Messages
 
+A `UnifiedMessage` represents a message in the format expected from the _UnifiedPush Server_, the format is: A generic `JSON` map is used to send messages to Android and iOS devices. The application on the devices will receive the `JSON` map and are responsible for performing a lookup to read values of the given keys
+
+The UnifiedMessage consists of the 
 
 
 ### Node Sender
