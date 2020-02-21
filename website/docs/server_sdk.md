@@ -9,10 +9,10 @@ This page documents how to use UPS
 ## Senders
 ### JavaSender
  - AEROGEAR-10139	
-### Node Sender
- ### Node Sender
 
-The _UnifiedPush Server_ supports a Node Sender API.This version of the sender is compatible with the 1.1x series of the UnifiedPush Server. 
+### Node Sender
+
+The _UnifiedPush Server_ supports a Node Sender API. This version of the sender is compatible with the 1.1x series of the UnifiedPush Server. 
 
 #### Getting Started
 
@@ -34,7 +34,6 @@ const settings = {
 };
 ```
 
-
 Sending a message involves first, getting a handle on the client object and using `client.sender.send` method to send a single message. 
 
 ```Javascript
@@ -45,7 +44,7 @@ agSender(settings).then((client) => {
 });
 ```
 
-Sending multiple messages is a similar process but instead uses the sendBatch method
+Sending multiple messages is a similar process but instead uses the `sendBatch` method
 to pass an array of `{message, options}` objects.
 
 ```Javascript
@@ -61,56 +60,38 @@ agSender(settings).then((client) => {
 The Sender class returns a promise with the `client` object which contains a `settings` object for the particular client. The Sender settings consists of the:
 
 - `url`  String - The URL of the Unified Push Server.
-
 - `applicationId` String - The ID of an Application from the Unified Push Sever
-
 - `masterSecret` String - The master secret for that Application
-
 - `headers` Object - The hash of custom HTTP headers/ header overrides 
 
 
 The `message` object that gets sent is made up of the following parameters:
 
 - `alert` String - message that will be displayed on the alert UI element
-
 - `priority` String - sets a processing priority on a push message, values can be 'NORMAL' or 'HIGH'
-
 - `sound` String - The name of a sound file
-
 - `badge` String - The Number to display as the badge of the app icon
-
 - userData Object - any extra user data to be passed 
 
 For Applications on Apple devices/products there is a `message.apns` Object
 
 - `title` String - Describes the purpose of the notification
-
 - `action` String - The label of the action button
-
 - `urlArgs` Array - An array of values that are paired with the placeholders inside the url FormatString value of your website.json file. Safari Only
-
 - `titleLockey` String - The key to a title string in the Localizable.strings file for the current localization. iOS Only 
-
-- `titleLocArgs` Array - Variable strings values appear in plac of the format specifiers in title-loc-key. iOS Only
-
+- `titleLocArgs` Array - Variable strings values appear in place of the format specifiers in title-loc-key. iOS Only
 - `actionCategory` String - The Identifier of the action category for the interactive notification
-
 - `contentAvailable` Boolean - Provide this ket with a value of 1 to indicate that new content is available. iOS Only
 
 The `options` Object is made up of two sub parts, the `options.config` Object and the `options.criteria` Object
 
 - `options.config` 
-    
     - `ttl` Number - The time to live in second. This value is supported by APNS and FCM only 
 
 - `options.criteria` 
-    
     - `alias` Array - A list of email or name strings
-
     - `deviceType` Array - A list of device types as strings
-
     - `categories` Array - A list of categories as strings
-    
     - `variants` Array - A list of variantID's as strings
 
 #### Message Response
