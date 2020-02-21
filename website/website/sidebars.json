@@ -1,5 +1,11 @@
 {
   "docs": {
+    "Introduction": [
+      "introduction/ups-overview",
+      "introduction/ups-terminology",
+      "introduction/how-it-works",
+      "introduction/use-cases"
+    ],
     "Running Unified Push": ["running", "jms"],
     "Unified Push Server SDK": ["server_sdk"],
     "Configuring Variants": ["configuring_variants"],

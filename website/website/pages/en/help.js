@@ -22,18 +22,16 @@ function Help(props) {
   const supportLinks = [
     {
       content: `Learn more using the [documentation on this site.](${docUrl(
-        'doc1.html',
+        'running',
       )})`,
       title: 'Browse Docs',
     },
     {
-      content: 'Ask questions about the documentation and project',
+      content: 'If you’ve got ideas for the AeroGear project or want to share what you\'re working on or struggling with, ' +
+          'the <a href="https://groups.google.com/forum/#!forum/aerogear">AeroGear Google Group</a> is a good place to ' +
+          'start. The Mailing List is used for both team-wide and community communication.',
       title: 'Join the community',
-    },
-    {
-      content: "Find out what's new with this project",
-      title: 'Stay up to date',
-    },
+    }
   ];
 
   return (
@@ -44,7 +42,7 @@ function Help(props) {
             <h1>Need help?</h1>
           </header>
           <p>This project is maintained by a dedicated group of people.</p>
-          <GridBlock contents={supportLinks} layout="threeColumn" />
+          <GridBlock contents={supportLinks} layout="twoColumn" />
         </div>
       </Container>
     </div>
