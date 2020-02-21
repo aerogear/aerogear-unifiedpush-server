@@ -60,39 +60,39 @@ agSender(settings).then((client) => {
 The Sender class returns a promise with the `client` object which contains a `settings` object for the particular client. The Sender settings consists of the:
 
 - `url`  String - The URL of the Unified Push Server.
-- `applicationId` String - The ID of an Application from the Unified Push Sever
-- `masterSecret` String - The master secret for that Application
-- `headers` Object - The hash of custom HTTP headers/ header overrides 
+- `applicationId` String - The ID of an Application from the Unified Push Sever.
+- `masterSecret` String - The master secret for that Application.
+- `headers` Object - The hash of custom HTTP headers/ header overrides .
 
 
 The `message` object that gets sent is made up of the following parameters:
 
-- `alert` String - message that will be displayed on the alert UI element
-- `priority` String - sets a processing priority on a push message, values can be 'NORMAL' or 'HIGH'
-- `sound` String - The name of a sound file
-- `badge` String - The Number to display as the badge of the app icon
-- userData Object - any extra user data to be passed 
+- `alert` String - message that will be displayed on the alert UI element.
+- `priority` String - sets a processing priority on a push message, values can be 'NORMAL' or 'HIGH'.
+- `sound` String - The name of a sound file.
+- `badge` String - The Number to display as the badge of the app icon.
+- `userData` Object - any extra user data to be passed. 
 
-For Applications on Apple devices/products there is a `message.apns` Object
+For Applications on Apple devices/products there is a `message.apns` object
 
-- `title` String - Describes the purpose of the notification
-- `action` String - The label of the action button
-- `urlArgs` Array - An array of values that are paired with the placeholders inside the url FormatString value of your website.json file. Safari Only
-- `titleLockey` String - The key to a title string in the Localizable.strings file for the current localization. iOS Only 
-- `titleLocArgs` Array - Variable strings values appear in place of the format specifiers in title-loc-key. iOS Only
-- `actionCategory` String - The Identifier of the action category for the interactive notification
-- `contentAvailable` Boolean - Provide this ket with a value of 1 to indicate that new content is available. iOS Only
+- `title` String - Describes the purpose of the notification.
+- `action` String - The label of the action button.
+- `urlArgs` Array - An array of values that are paired with the placeholders inside the url FormatString value of your website.json file. Safari Only.
+- `titleLockey` String - Only for iOS, contains the key to a title string in the `Localizable.strings` file for the current localization. 
+- `titleLocArgs` Array - Only for iOS, variable strings values appear in place of the format specifiers in `title-loc-key`.
+- `actionCategory` String - The Identifier of the action category for the interactive notification.
+- `contentAvailable` Boolean - Only for iOS, provide this key with a value of 1 to indicate that new content is available.
 
-The `options` Object is made up of two sub parts, the `options.config` Object and the `options.criteria` Object
+The `options` Object is made up of two sub parts, the `options.config` object and the `options.criteria` object
 
 - `options.config` 
-    - `ttl` Number - The time to live in second. This value is supported by APNS and FCM only 
+    - `ttl` Number - The time to live in second. This value is supported by APNS and FCM only. 
 
 - `options.criteria` 
-    - `alias` Array - A list of email or name strings
-    - `deviceType` Array - A list of device types as strings
-    - `categories` Array - A list of categories as strings
-    - `variants` Array - A list of variantID's as strings
+    - `alias` Array - A list of email or name strings.
+    - `deviceType` Array - A list of device types as strings.
+    - `categories` Array - A list of categories as strings.
+    - `variants` Array - A list of variantID's as strings.
 
 #### Message Response
 
@@ -100,7 +100,7 @@ Two different response messages can be expected
 
 A `202 message` will be received on a successful connection to the _UnifiedPush Server_ 
 
-A `401 message` will be received on an authorization failure between the endpoint and the _UnifiedPush Server_. This would indicate that the `variantId` or the `masterSecret` are incorrect.
+A `401 message` will be received on an authorization failure between the caller and the _UnifiedPush Server_. This would indicate that the `variantId` or the `masterSecret` are incorrect.
 
 
  
