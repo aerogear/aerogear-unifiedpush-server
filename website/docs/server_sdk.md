@@ -15,7 +15,7 @@ The _UnifiedPush Server_ supports a Java API Client for sending Push Notificatio
 
 You must add the following dependencies to your `pom.xml` file:
 
-```Java
+```xml
     <dependency>
     <groupId>org.jbos.aerogear</groupId>
     <artifactId>unifiedpush-java-client</artifactIt>
@@ -30,39 +30,39 @@ You can create the `JavaSender` or alternatively you can use an external `pushCo
 Creating a `JavaSender` would look like:
 
 ```Java
-    Pushsender defaultPushSender = DefaultPushSender
-    .withRootServerURL("<yourPushServerURL e.g http://localhost:9999/>")
-    .pushApplicationId("<yourPushApplicationId e.g. B868CC08-BCC8-4A0A-B21E-1AC56AF0C734>")
-    .masterSecret("<yourMasterSecret e.g. 4L30AV41-3278-4983-8F99-0EEA138J7O1I>")
-    .build();
+Pushsender defaultPushSender = DefaultPushSender
+  .withRootServerURL("<yourPushServerURL e.g http://localhost:9999/>")
+  .pushApplicationId("<yourPushApplicationId e.g. B868CC08-BCC8-4A0A-B21E-1AC56AF0C734>")
+  .masterSecret("<yourMasterSecret e.g. 4L30AV41-3278-4983-8F99-0EEA138J7O1I>")
+  .build();
 ```
 
 The external `pushConfig.json` file would look like this:
 
 ```JSON
-    {
-        "serverUrl":"<yourPushServerURL e.g http://localhost:9999/>",
-        "pushApplicationId": "<yourPushApplicationId e.g. B868CC08-BCC8-4A0A-B21E-1AC56AF0C734>",
-        "masterSecret": "<yourMasterSecret e.g. 4L30AV41-3278-4983-8F99-0EEA138J7O1I>"
-    }
+{
+  "serverUrl":"<yourPushServerURL e.g http://localhost:9999/>",
+  "pushApplicationId": "<yourPushApplicationId e.g. B868CC08-BCC8-4A0A-B21E-1AC56AF0C734>",
+  "masterSecret": "<yourMasterSecret e.g. 4L30AV41-3278-4983-8F99-0EEA138J7O1I>"
+}
 ```
 And then, to connect using the external `pushConfig.json` file your JavaSender would look like:
 
 ```Java
-    PushSender defaultPushSender = DefaultPushSender
-        .withConfig("pushConfig.json")
-        .build();
+PushSender defaultPushSender = DefaultPushSender
+  .withConfig("pushConfig.json")
+  .build();
 ```
 You can connect to the _UnifiedPush Server_ via proxy with the `JavaSender` API also!
 
 ```Java
-    PushSender defaultPushSender = DefaultPushSender
-    .withConfig("pushConfig.json")
-    .proxy("proxy.example.com", 8080)
-    .proxyUser("proxyuser")
-    .proxyPassword("password")
-    .proxyType(Prox.Type.HTTP)
-    .build();
+PushSender defaultPushSender = DefaultPushSender
+  .withConfig("pushConfig.json")
+  .proxy("proxy.example.com", 8080)
+  .proxyUser("proxyuser")
+  .proxyPassword("password")
+  .proxyType(Prox.Type.HTTP)
+  .build();
 ```
 :::note
 The ability to connect via proxy is a feature only available with the JavaSender Client API
@@ -71,10 +71,10 @@ The ability to connect via proxy is a feature only available with the JavaSender
 You can implement your own custom `TrustStore` as follows:
 
 ```Java
-    PushSender defaultPushSender = DefaultPushSender
-        .withConfig("pushConfig.json")
-        .customTrustStore("setup/aerogear.truststore", "jks", "aerogear")
-        .build();
+PushSender defaultPushSender = DefaultPushSender
+  .withConfig("pushConfig.json")
+  .customTrustStore("setup/aerogear.truststore", "jks", "aerogear")
+  .build();
 ```
 
 #### Sending Messages
@@ -115,15 +115,15 @@ The `configBuilder` object consists of
 This is simple example of a UnifiedMessage
 
 ```Java
-    UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
-            .alert("Hello")
-            .sound("default")
-            .criteria()
-                .variants("c3f0a94f-48de-4b77-a08e-68114460857e") //e.g HR_Premium 
-                .aliases("Peter", "Paula")
-                .categories("sport", "Rugby")
-                .deviceType("iPhone", "AndroidTablet")
-            .build();
+UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
+  .alert("Hello")
+  .sound("default")
+  .criteria()
+  .variants("c3f0a94f-48de-4b77-a08e-68114460857e") //e.g HR_Premium 
+  .aliases("Peter", "Paula")
+  .categories("sport", "Rugby")
+  .deviceType("iPhone", "AndroidTablet")
+  .build();
 
 ```
 
