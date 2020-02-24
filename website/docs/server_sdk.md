@@ -43,6 +43,41 @@ agSender(settings).then((client) => {
     })
 });
 ```
+This is an example of what sending a single message would look like:
+
+```Javascript
+const agSender = require('./');
+
+const settings = require('./settings.json');
+
+const message = {
+    alert: 'Hello World!',
+    sound: 'alarm',
+    badge: '1',
+    userData: {
+        someKey: 'a value',
+        anotherCustomKey: 'another value'
+    }
+};
+
+const options = {
+    config: {
+        ttl: 3600,
+    },
+    criteria: {
+        variants: ['1234', '5678'],
+        categories: ['category1', 'category3', 'category5']
+    }
+};
+
+
+agSender(settings).then((client) => {
+    client.sender.send(message, options).then((response) => {
+        console.log('success', response);
+    })
+});
+```
+
 
 Sending multiple messages is a similar process but instead uses the `sendBatch` method
 to pass an array of `{message, options}` objects.
@@ -94,7 +129,7 @@ The `options` Object is made up of two sub parts, the `options.config` object an
     - `categories` Array - A list of categories as strings.
     - `variants` Array - A list of variantID's as strings.
 
-#### Message Response
+#### Response Codes
 
 Two different response messages can be expected
 
