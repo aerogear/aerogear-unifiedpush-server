@@ -41,10 +41,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.google.android.gcm.server.Message.Builder;
 import com.google.android.gcm.server.Constants;
 import com.google.android.gcm.server.Message;
-import com.google.android.gcm.server.Message.Builder;
 import com.google.android.gcm.server.MulticastResult;
+import com.google.android.gcm.server.Notification;
 import com.google.android.gcm.server.Result;
 
 @Service
@@ -90,6 +91,8 @@ public class FCMPushNotificationSender implements PushNotificationSender {
         fcmBuilder.addData("alert", message.getAlert());
         fcmBuilder.addData("sound", message.getSound());
         fcmBuilder.addData("badge", String.valueOf(message.getBadge()));
+        Notification notification = new Notification.Builder("").body(message.getAlert()).build();
+        fcmBuilder.notification(notification);
 
         /*
         The Message defaults to a Normal priority.  High priority is used
