@@ -21,8 +21,8 @@ function Help(props) {
 
   const supportLinks = [
     {
-      content: `Learn more using the [documentation on this site.](${docUrl(
-        'running',
+      content: `If you would like to learn more about UnifiedPush Server, [documentation on this site.](${docUrl(
+        'introduction/ups-overview',
       )})`,
       title: 'Browse Docs',
     },
@@ -31,8 +31,22 @@ function Help(props) {
           'the <a href="https://groups.google.com/forum/#!forum/aerogear">AeroGear Google Group</a> is a good place to ' +
           'start. The Mailing List is used for both team-wide and community communication.',
       title: 'Join the community',
+    },
+    {
+      content: ' The AeroGear community is an open and inclusive environment, we expect members to be ' +
+      ' acquainted with our <a href="https://github.com/Aindriunannerb/aerogear-unifiedpush-server/blob/master/.github/CODE_OF_CONDUCT.md">Code of Conduct</a>',
+      title: 'Code of Conduct',
+    },
+    {
+      content: 'The UnifiedPush Server Github Repository can be found <a href="https://github.com/aerogear/aerogear-unifiedpush-server">here.</a> ' +
+      'If you would like to find more great projects within the AeroGear Organization check out our <a href="https://github.com/aerogear">GitHub.</a>' +
+      ' If you want to dive right into UnifiedPush, the <a href="https://github.com/aerogear/unifiedpush-cookbook">UnifiedPush Cookbook</a> repository contains' + 
+      ' simple example applications that illustrate how to integrate' +
+      ' UnifiedPush Server into your own application',
+      title: 'AeroGear Repositories'
     }
-  ];
+  ]
+    
 
   return (
     <div className="docMainWrapper wrapper">
