@@ -3,7 +3,6 @@ id: javasender
 title: Using the Java Sender API
 ---
 
-## JavaSender
 
 The _UnifiedPush Server_ supports a Java API Client for sending Push Notifications
 

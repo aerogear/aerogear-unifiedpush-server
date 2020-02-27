@@ -3,7 +3,6 @@ id: nodesender
 title: Using the Node Sender API
 ---
 
-### Node Sender
 
 The _UnifiedPush Server_ supports a Node Sender API. This version of the sender is compatible with the 1.1x series of the UnifiedPush Server. 
 

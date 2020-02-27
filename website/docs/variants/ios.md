@@ -3,7 +3,6 @@ id: ios
 title: Configuring an iOS Variant
 ---
 
-## iOS
 
  The following step-by-step guide gives you an introduction on how to use the AeroGear UnifiedPush Server for sending 
  Push Notifications to your own iOS Apps. The guide assumes you have an Apple developer account already setup, and uses tools available in macOS.

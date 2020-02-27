@@ -3,7 +3,7 @@ id: android
 title: Configuring an Android Variant
 ---
 
-## Android
+
 ### Obtaining Firebase Cloud Messaging Credentials
 
 Before the Android application is able to receive notifications, you must set up access to Firebase Cloud Messaging. You also need an emulator with Google Services or an Android device.  This section shows you how to obtain the **Server key** and the **Sender ID** from Firebase Cloud Messaging for configuring Unified Push.

@@ -4,8 +4,6 @@ title: Using the RESTful Sender API
 ---
 
 
-### REST Sender 
-
 The _UnifiedPush Server_ supports a RESTful endpoint found at `/rest/send`. For connecting to RESTful clients this endpoint consumes and produces _JSON_ serialised messages that are protected by HTTP Basic authentication, returning a _202 Accepted_ status for message acceptance and a _401 Unauthorized_ status when there is an authentication error between the server and application.
 
 #### Authentication

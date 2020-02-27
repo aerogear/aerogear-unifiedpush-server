@@ -3,7 +3,7 @@ id: webpush
 title: Configuring a WebPush Variant
 ---
 
-## WebPush
+
  The following step-by-step guide gives you an introduction on how to use the _AeroGear UnifiedPush Server_ for sending 
  _Web Push Notifications_ to your web application.
  
