@@ -3,6 +3,7 @@
     "Introduction": [
       "introduction/ups-overview",
       "introduction/ups-terminology",
+      "introduction/push-notifications",
       "introduction/how-it-works",
       "introduction/use-cases"
     ],
