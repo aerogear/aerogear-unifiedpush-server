@@ -34,7 +34,7 @@ function Help(props) {
     },
     {
       content: ' The AeroGear community is an open and inclusive environment, we expect members to be ' +
-      ' acquainted with our <a href="https://github.com/Aindriunannerb/aerogear-unifiedpush-server/blob/master/.github/CODE_OF_CONDUCT.md">Code of Conduct</a>',
+      ' acquainted with our <a href="https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/.github/CODE_OF_CONDUCT.md">Code of Conduct</a>',
       title: 'Code of Conduct',
     },
     {
