@@ -1,12 +1,12 @@
 ---
 id: javasender
-title: Using the Java Sender API
+title: Java Sender API
 ---
 
 
 The _UnifiedPush Server_ supports a Java API Client for sending Push Notifications
 
-#### Getting Started
+## Getting Started
 
 You must add the following dependencies to your `pom.xml` file:
 
@@ -18,7 +18,7 @@ You must add the following dependencies to your `pom.xml` file:
     </dependency>
 ```
 
-#### Usage
+## Usage
 
 You can create the `JavaSender` or alternatively you can use an external `pushConfig.json` file to configure connecting to the _UnifiedPush Server_.
 
@@ -72,7 +72,7 @@ PushSender defaultPushSender = DefaultPushSender
   .build();
 ```
 
-#### Sending Messages
+## Sending Messages
 
 A `UnifiedMessage` represents a message in the format expected from the _UnifiedPush Server_, the format is: A generic `JSON` map is used to send messages to Android and iOS devices. The application on the devices will receive the `JSON` map and are responsible for performing a lookup to read values of the given keys
 

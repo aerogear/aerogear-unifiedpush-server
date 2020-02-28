@@ -1,12 +1,12 @@
 ---
 id: restfulsender
-title: Using the RESTful Sender API
+title: RESTful Sender API
 ---
 
 
 The _UnifiedPush Server_ supports a RESTful endpoint found at `/rest/send`. For connecting to RESTful clients this endpoint consumes and produces _JSON_ serialised messages that are protected by HTTP Basic authentication, returning a _202 Accepted_ status for message acceptance and a _401 Unauthorized_ status when there is an authentication error between the server and application.
 
-#### Authentication
+## Authentication
 The _UPS RESTful_ endpoint receives a _HTTP POST_ request and checks the _HTTP Basic header_ to extract the  **pushApplicationId** and the **masterSecret** which make up a token in custom header and are sent as part of the application message for authentication against the push client.
 
 This can be seen in an example `curl` request 
@@ -27,7 +27,7 @@ This can be seen in an example `curl` request
         https://SERVER:PORT/CONTEXT/rest/sender
 ```
        
-#### Data Format 
+## Data Format 
 The sent message is a JSON formatted instance of [`org.jboss.aerogear.unifiedpush.message`](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/model/push/src/main/java/org/jboss/aerogear/unifiedpush/message/Message.java). This message is made up of three different collections of information:
 
  - The Message 
@@ -81,7 +81,7 @@ The sent message is a JSON formatted instance of [`org.jboss.aerogear.unifiedpus
     "ttl" : 3600,
     }
 ```
-#### Response Codes
+## Response Codes
 
 Two different response messages can be expected.
 

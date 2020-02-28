@@ -1,10 +1,10 @@
 ---
 id: android
-title: Configuring an Android Variant
+title: Android Variant
 ---
 
 
-### Obtaining Firebase Cloud Messaging Credentials
+## Obtaining Firebase Cloud Messaging Credentials
 
 Before the Android application is able to receive notifications, you must set up access to Firebase Cloud Messaging. You also need an emulator with Google Services or an Android device.  This section shows you how to obtain the **Server key** and the **Sender ID** from Firebase Cloud Messaging for configuring Unified Push.
 
@@ -20,7 +20,7 @@ Before the Android application is able to receive notifications, you must set up
 
 > ![Retrieve Credentials](assets/android/retrieve_credentials.png)
 
-### Configure the Variant
+## Configure the Variant
 
 With all the Google work being done, we are now ready to setup the [UnifiedPush Server](https://github.com/aerogear/aerogear-unified-push-server), so that it can be used to connect to FCM for later message sending.
 

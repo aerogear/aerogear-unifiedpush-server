@@ -1,23 +1,22 @@
 ---
 id: ios-client
-title: Creating an iOS Client
+title: iOS Client
 ---
 
-## iOS
 
 Prerequisites: to be able to follow the instructions below, you must have [cocoapods](https://cocoapods.org/)
- installed and working and you must have a [variant](/docs/variants/ios.md) already configured.
+ installed and working and you must have a [variant](../variants/ios.md) already configured.
 For instructions on how to setup [cocoapods](https://cocoapods.org/) see [here](https://guides.cocoapods.org/using/getting-started.html)
 
-### Create a new project
+## Create a new project
 
 Open `XCode` and create a new project selecting `iOS` and `Single View App`:
 
- >![CreateSingleViewApp](./assets/ios/CreateSingleViewApp.png)
+ >![CreateSingleViewApp](assets/ios/CreateSingleViewApp.png)
 
 Click `Next`. In the next page, insert the name of you application (in this example _Demo App_) and select your team.
 
- >![CreateDemoApp](./assets/ios/DemoApp.png)
+ >![CreateDemoApp](assets/ios/DemoApp.png)
 
 :::warning
 If you plan on supporting _iOS 12_ or older, change _User Interface_ to _Storyboard_.
@@ -30,7 +29,7 @@ a terminal there.
 Take note of the folder you will save the project in, since you will need to go there with the terminal and run some command to install the required pods!
 :::
 
-#### Add required capabilities
+### Add required capabilities
 
 Click on the project to show the screen below:
 
@@ -46,22 +45,22 @@ To be able to add the _Push Notifications_ capability be sure you select the rig
 
 After you have added both capabilities your window should look as below:
 
- >![CreateDemoApp](./assets/ios/capabilities.png)
+ >![CreateDemoApp](assets/ios/capabilities.png)
 
 Now, be sure you click in `Remote notifications` under `Background Modes` to enable it:
 
->![CreateDemoApp](./assets/ios/checkBackgroundModes.png)
+>![CreateDemoApp](assets/ios/checkBackgroundModes.png)
 
 :::warning
 If you are using _XCode 11_, the generated project won't work with _iOS 12_ or older. If you need to support _iOS 12_, follow the [_Make the application backward compatible_](#make-the-application-backward-compatible) guide.
 :::
 
-#### Add the pod dependencies
+### Add the pod dependencies
 
 Close _XCode_ and open a terminal, then change your current directory to the folder where you saved your project.
 You should see a content similar to the image below:
 
->![CreateDemoApp](./assets/ios/project-folder.png)
+>![CreateDemoApp](assets/ios/project-folder.png)
 
 from there run
 
@@ -155,12 +154,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 ```
 
-### Registering your app
+## Registering your app
 
 If the user grants permissions to receive _push notification_, the next step is to register the app to the _Unified Push Server_.
 To be able to perform such operation, you will need the following information:
   * The _URL_ of the _Unified Push Server_ instance
-  * The _ID_ of an _iOS_ variant you previously created in UPS (to see how, look [here](./configuring_variants#ios)) 
+  * The _ID_ of an _iOS_ variant you previously created in UPS (to see how, look [here](configuring_variants#ios)) 
   * The _secret_ of the _iOS_ variant
 
 To register the app the SDK offers the `DeviceRegistration` object, which, in turns, offers two different initializers:
@@ -177,7 +176,7 @@ func application(_ application: UIApplication, didRegisterForRemoteNotifications
 of the `AppDelegate` class
 :::
 
-#### Registering using a plist file
+### Registering using a plist file
 ```swift
 // setup registration. 'pushconfig' is the name of the 'plist' file
 let registration = DeviceRegistration(config: "pushconfig")
@@ -212,7 +211,7 @@ The `plist` file must contain three string properties:
 
 To make it work with the example above, name the plist file `pushconfig.plist`.
 
-#### Registering programmatically
+### Registering programmatically
 
 ```swift
 // setup registration
@@ -246,7 +245,7 @@ registration.register(
 
 To make the code work, remember to replace the placeholder with the real values.
 
-### Handle the push notifications
+## Handle the push notifications
 
 To handle the notification, in you `AppDelegate.swift` override the following method:
 
@@ -257,7 +256,7 @@ func application(_ application: UIApplication, didReceiveRemoteNotification user
 the `userInfo` parameters will contains all the information about the notifications. For further details, refer
 to the [apple website](https://developer.apple.com/documentation/uikit/uiapplicationdelegate/1623013-application).
 
-### Make the application backward compatible
+## Make the application backward compatible
 
 :::important
 These steps are required only if you created the project with _XCode 11_ and you need to support _iOS 12_ or older
@@ -265,15 +264,15 @@ These steps are required only if you created the project with _XCode 11_ and you
 
 To make an application created with _XCode 11_ work with _iOS 12_ or older, few steps are necessary.
 
-#### Change the deployment target
+### Change the deployment target
 
 By default, when you create an application with _XCode 11_, it targets _iOS 13_. 
 
 To change the deployment target, open the project settings and go to the _General_ tab as shown below:
 
->![CreateDemoApp](./assets/ios/ChangeTarget.png)
+>![CreateDemoApp](assets/ios/ChangeTarget.png)
 
-#### Make the code backward compatible
+### Make the code backward compatible
 
 The _XCode 11_ application template, by default uses lot of things that are not available in _iOS 12_: to fix those issues, 
 we will have to mark them with the `@available` keyword.

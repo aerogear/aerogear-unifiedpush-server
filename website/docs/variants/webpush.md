@@ -1,13 +1,13 @@
 ---
 id: webpush
-title: Configuring a WebPush Variant
+title: WebPush Variant
 ---
 
 
  The following step-by-step guide gives you an introduction on how to use the _AeroGear UnifiedPush Server_ for sending 
  _Web Push Notifications_ to your web application.
  
-### Create WebPush Variants
+## Create WebPush Variants
 
  Before you can create a _WebPush Variant_ with the _UnifiedPush Server_ you need to get your VAPID Keys 
  (see [The Web Push Protocol](https://developers.google.com/web/fundamentals/push-notifications/web-push-protocol) for details).

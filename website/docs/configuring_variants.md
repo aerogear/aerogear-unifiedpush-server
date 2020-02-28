@@ -87,7 +87,7 @@ Unified Push is now configured, configuring the Android client is covered in [th
 ##### Certificate Signing Request
  First you need to submit a request for a new digital certificate, which is based on a public/private key. The 
  Certificate itself is acting as the public key, and when you request it, a private key is added to your **KeyChain** 
- tool. The Cerficate will be used later on, to request an SSL certificate for the Apple Push Network service, which 
+ tool. The Certificate will be used later on, to request an SSL certificate for the Apple Push Network service, which 
  will allow the _AeroGear Push Server_ to send notification messages to it. Now the actual CSR (Certificate Signing 
  Request) is done using **KeyChain Access** found in the **Applications > Utilities** folder on your Mac. Once opened, in 
  the **KeyChain Access** menu, choose **Certificate Assistant > Request a Certificate** from a **Certificate Authority**:

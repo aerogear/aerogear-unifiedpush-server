@@ -1,18 +1,18 @@
 ---
 id: nodesender
-title: Using the Node Sender API
+title: Node Sender API
 ---
 
 
 The _UnifiedPush Server_ supports a Node Sender API. This version of the sender is compatible with the 1.1x series of the UnifiedPush Server. 
 
-#### Getting Started
+## Getting Started
 
 The sender dependency must be added to your project, this can be done by:
 
 `npm i unifiedpush-node-sender`
 
-#### Usage
+## Usage
 
 The sender is created in your application with the following, where `url`, `applicationId`, `masterSecret` are values from your _UnifiedPush Server_
 
@@ -82,7 +82,7 @@ agSender(settings).then((client) => {
 });
 ```
 
-#### API Documentation
+## API Documentation
 
 The Sender class returns a promise with the `client` object which contains a `settings` object for the particular client. The Sender settings consists of the:
 
@@ -121,7 +121,7 @@ The `options` Object is made up of two sub parts, the `options.config` object an
     - `categories` Array - A list of categories as strings.
     - `variants` Array - A list of variantID's as strings.
 
-#### Response Codes
+## Response Codes
 
 Two different response messages can be expected
 

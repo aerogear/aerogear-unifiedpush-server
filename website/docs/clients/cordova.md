@@ -1,9 +1,8 @@
 ---
 id: cordova-client
-title: Creating a Cordova Client
+title: Cordova Client
 ---
 
-## Cordova
 
 :::important
 Before you begin configuring a Cordova application to receive push messages, you should have the following installed, available, or configured as appropriate:
@@ -24,7 +23,7 @@ To have the list of AVDS use `emulator -list-avds`
 The `emulator` command can be found in the `emulator` folder of the _Android SDK_.
 ::: 
 
-### Create a new project
+## Create a new project
 
 To create a new cordova application, run the following command:
 
@@ -73,7 +72,7 @@ cordova emulate ios
 To avoid _signing issues_ when running on iOS, do not connect any iOS device to your development machine.
 :::
 
-#### Installing the push libraries
+### Installing the push libraries
 
 To be able to use the _push sdk_ you will need to install the following packages:
 * cordova-plugin-device: this is used by the SDK to detect the platform the sdk is running on
@@ -93,7 +92,7 @@ If you are targeting an android device, you will need to put the `google-service
 To get that file, you must create an app in your _FireBase_ account (with package `org.aerogear.PushHelloWorld`) and download it from there. 
 :::
 
-#### Installing webpack
+### Installing webpack
 The following steps will be needed to correctly install webpack:
 1. install the `cordova-plugin-webpack` plugin
     ```bash
@@ -120,7 +119,7 @@ The following steps will be needed to correctly install webpack:
         devtool: 'inline-source-map',
       };" > webpack.config.js
     ```
-#### Enabling clear-text connection
+### Enabling clear-text connection
 If your _UnifiedPush Server_ is exposed on an `http` address, you will need to enable _clear-text_ connection in your 
 application by editing the _Content Security Policy_ in your `www/index.html` file
 
@@ -148,7 +147,7 @@ If you are targeting _android_ you will have to add this to your `config.xml` fi
 </edit-config>
 ```
 
-### Register the application with the UnifiedPush Server
+## Register the application with the UnifiedPush Server
 
 To register the application, you must use the `PushRegistration` object from the `@aerogear/push` package with a code
 similar to the following:
@@ -174,7 +173,7 @@ function register() {
 }
 ```
 
-### Receiving Push Notifications
+## Receiving Push Notifications
 Receiving _Push Notifications_ is as simple as registering a callback handler:
 ```javascript
 PushRegistration.onMessageReceived((notification => {
@@ -182,7 +181,7 @@ PushRegistration.onMessageReceived((notification => {
 }));
 ```
 
-### Complete code
+## Complete code
 Change the `src/index.js` file with the following content:
 ```javascript
 import { PushRegistration } from '@aerogear/push';
@@ -239,7 +238,7 @@ var app = {
 
 app.initialize();
 ``` 
-### Running the application
+## Running the application
 The application can run in the emulator for Android, while it needs to run on a real device for iOS (the iOS simulator 
 does not support _push notifications_). 
 
@@ -257,8 +256,8 @@ does not support _push notifications_).
 3. Click on the _run_ icon
 <!--END_DOCUSAURUS_CODE_TABS-->
 
-#### Throubleshooting
-##### `cordova emulator android` takes forever to install the app into the emulator
+### Throubleshooting
+#### `cordova emulator android` takes forever to install the app into the emulator
 
 This can happen when the `cordova emulator android` command is not able to install the app into the emulator.
 To solve the issue, simply close the emulator and run it again with 

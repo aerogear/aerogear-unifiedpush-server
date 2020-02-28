@@ -1,6 +1,6 @@
 ---
 id: ios
-title: Configuring an iOS Variant
+title: iOS Variant
 ---
 
 
@@ -24,12 +24,12 @@ title: Configuring an iOS Variant
  
  In this manual we will describe how to use both the approaches.
 
-### APNs Certificate authentication
+## APNs Certificate authentication
  A couple of configuration steps needs to be performed on the _Apple developer site_ before we can create the actual variant in the _Unified Push Server_:
  * Create a **CSR** _(Certificate Signing Request)_: this will be used to ask apple to generate a _development_ and/or _production_ certificate
  * Create an **App ID and its SSL certificate**: this will be used to authenticate the application to the APNs
 
-##### Certificate Signing Request
+#### Certificate Signing Request
  First you need to submit a request for a new digital certificate, which is based on a public/private key. The 
  Certificate itself is acting as the public key, and when you request it, a private key is added to your **KeyChain** 
  tool. The Cerficate will be used later on, to request an SSL certificate for the Apple Push Network service, which 
@@ -44,7 +44,7 @@ title: Configuring an iOS Variant
  
  > ![Store CSR into KeyChain](assets/ios/KeyChain-keys.png)
  
-##### Apple App ID and SSL certificate for APNs
+#### Apple App ID and SSL certificate for APNs
  Now that the CSR is generated, go to the [Provisioning Portal](https://developer.apple.com/account/overview.action) 
  and log in with your Apple developer account. Now, click on the **Identifiers** link in order to create a new App ID 
  (use the **PLUS** Icon on the right). 
@@ -112,7 +112,7 @@ Follow the same steps to download the _Production SSL Certificate_, the file is 
 This file will be uploaded later on to the AeroGear Push Server enabling it to authorize itself for your production 
 application on Apple Push Network Service and send messages to it.
 
-#### Creating the variant in the UnifiedPush Server
+### Creating the variant in the UnifiedPush Server
 APNs is now configured and we are now ready to setup the _UnifiedPush Server_ to connect to APNs and send push messages.
 
 In the Wizard after you create a PushApplication, click the **Add Variant** button and fill out the iOS option. 
@@ -129,14 +129,14 @@ application for registering the device when running your app:
 Clicking on the appropriate tab, you can choose between Objective-C, Swift and Cordova snippet |
 :::
 
-### APNs Token Authentication
+## APNs Token Authentication
  To be able to authentication using _token authentication_ you will need to collect the following informations:
  * your **bundle id**: This is similar to Java packages. In this example we choose _org.aerogear.PushHelloWorld_, however you must use your own ID
  * your **team ID**
  * your **private key**
  * your **key id**
 
-#### The TEAM ID
+### The TEAM ID
  Your _Team ID_ can be obtained very easily form your _developer account_:
  * Enter your development account
  * Click on _Certificates, IDs & Profiles_
@@ -145,7 +145,7 @@ Clicking on the appropriate tab, you can choose between Objective-C, Swift and C
 
  Your _team id_ will be on the upper right corner, right below your name, next to your team name.
 
-#### Generating the private key and the Key ID
+### Generating the private key and the Key ID
 
 As for the [team id](#the-team-id), go to the _Certificates, IDs & Profiles_ page.
 Once there click _Keys_ to go the _keys management page_ and click on the _plus sign_ at the right of the _keys_ header:
@@ -170,7 +170,7 @@ We are almost done: click on _Continue_ and then on _Register_. That will bring 
  Please, take care of the downloaded key, since, after you click on _download_ you won't be able to download it again!
  :::
   
-#### Creating the variant in the UnifiedPush Server
+### Creating the variant in the UnifiedPush Server
 APNs is now configured and we are now ready to setup the _UnifiedPush Server_ to connect to APNs and send push messages.
 
 In the Wizard after you create a PushApplication, click the **Add Variant** button and select **iOS (APNS Token)**. 

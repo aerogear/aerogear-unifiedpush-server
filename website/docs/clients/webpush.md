@@ -1,29 +1,28 @@
 ---
 id: webpush-client
-title: Creating a Webpush Client
+title: Webpush Client
 ---
 
-## Webpush
 
 Prerequisites: to be able to follow the instructions below, you must have [Node.js](https://nodejs.org/) installed and 
-working and you must have a [WebPush Variant](configuring_variants#WebPush) already configured.
+working and you must have a [WebPush Variant](../variants/webpush.md) already configured.
 
 The guide below will be a simple step-by-step guide to integrate a sample `React` application with _UnifiedPush Server_.
 
-### Create a new project
+## Create a new project
 This guide will walk you through the creation of a _typescrypt React_ application.
 To create one, run:
 ```bash
 $ npx create-react-app hello-world-webpush --template typescript
 ```
 
-### Add the required dependencies
+## Add the required dependencies
 ```bash
 $ cd hello-world-webpush
 $ npm install --save @aerogear/push
 ```
 
-### Add the service worker
+## Add the service worker
 
 To be able to handle _push notifications_, a service worker is needed. In this guide we will provide a very simple implementation,
 for instructions about writing service workers please refer to the [official documentation](https://developer.mozilla.org/en-US/docs/Web/API/Push_API). 
@@ -55,7 +54,7 @@ By default the react template unregisters the _service worker_ automatically. Th
 
 Edit the `src/index.tsx` file and comment the `serviceWorker.unregister();` call.
 
-### Creating the _HelloWorld_ component
+## Creating the _HelloWorld_ component
 
 We are going to create a very simple component that will display a title ('Hello World') and the messages received by UPS.
 Create a file named _HelloWorld.tsx_ in the _src_ folder:
@@ -134,12 +133,12 @@ $ npm run start
 
 In the browser you should see:
 
- >![Stage 1](./assets/webpush/hello-world-stage1.png)
+ >![Stage 1](/assets/webpush/hello-world-stage1.png)
 
 
-### Add _UnifiedPush Server Integration_
+## Add _UnifiedPush Server Integration_
 
-#### Registration/Unregistration
+### Registration/Unregistration
 
 The object responsible for the registration/unregistration is the `PushRegistration` class, which exposes a `register` method.
 The `PushRegistration` constructor takes a configuration object as parameters with the following structure:
@@ -200,7 +199,7 @@ private unregister = () => {
 Note the parameter passed to the `register` method: the value of the _serviceWorker_ key is exactly the name of the _service worker_ file we created into the `public` folder.
 :::
 
-#### Receiving the notifications
+### Receiving the notifications
 
 To be able to receive notifications in your web application, you will need to register a callback that will receive
 the notification object as input:
@@ -212,7 +211,7 @@ the notification object as input:
    });
 ```
 
-#### Putting it all together
+### Putting it all together
 
 Edit the constructor of the `HelloWorld.tsx` class and add the following code:
 
@@ -311,6 +310,6 @@ Click on _Register_: if everything is ok, you should see a confirmation message.
 
 Now try to send messages to your variant from the _UnifiedPush Server_.
 You should see something like this:
- >![Stage 1](./assets/webpush/hello-world-stage2.png)
+ >![Stage 1](/assets/webpush/hello-world-stage2.png)
 
 For a complete example, look at the [WebPush HelloWorld](https://github.com/aerogear/unifiedpush-cookbook/tree/master/webpush/hello-world-webpush) example.

@@ -1,9 +1,8 @@
 ---
 id: android-client
-title: Creating an Android Client
+title: Android Client
 ---
 
-## Android
  Before you begin configuring an Android application to receive push messages, you should have the following installed, available, or configured as appropriate.
 
   * Android Studio
@@ -11,12 +10,12 @@ title: Creating an Android Client
   * Android Emulator or device with Google Play Services
   * Unified Push with an Android Variant Configured
  
-### Overview
+## Overview
 Unified Push makes use of Google's Firebase Cloud Messaging service (FCM).  Before you can use push messages with Android you will need to create a Firebase project.  Android Studio can guide you through this process.  Once you have your Firebase project set up, you can enable Firebase in your Android application.  Like before, Android Studio has tools to facilitate this.  These steps are covered in the section *Firebase Configuration with Android Studio*.
 
 Once you have Firebase configured in your application, you can configure Unified Push.  This involves adding the Unified Push libraries to your Android project, and adding a configuration file to your assets folder.  With the configuration in place, you can begin using the Unified Push SDK. Configuration and usage are discussed beginning with the section *Configure the Unified Push SDK*
 
-### Firebase Configuration with Android Studio
+## Firebase Configuration with Android Studio
 Android Studio can automate much of the Firebase integration process using the Firebase Assistant.
 
 Access the assistant from the **Tools > Firebase** menu item.
@@ -38,7 +37,7 @@ Finally, press the *Add FCM to your app* button and Android Studio will configur
 
 The other steps in the Firebase Assistant are handled by Unified Push and its SDKs and may be ignored.
 
-### Configure the Unified Push SDK
+## Configure the Unified Push SDK
 
 The Unified Push SDK needs to be added to your project and configured.  
 
@@ -64,7 +63,7 @@ Now create a file `push-config.json` in `app/src/main/assets` folder.  Use the f
 
 Ensure that you put valid values on those params, otherwise you would be unable to register and receive notifications from the UnifiedPush server. Invalid configuration params are a very common source of problems, so please revisit them if you are experiencing problems.
 
-### Register With Unified Push
+## Register With Unified Push
 
 The entry point for registration is the [RegistrarManager](https://github.com/aerogear/aerogear-android-push/blob/master/library/src/main/java/org/jboss/aerogear/android/unifiedpush/RegistrarManager.java). This is a *factory* of different implementations of the [PushRegistrar](https://github.com/aerogear/aerogear-android-push/blob/master/library/src/main/java/org/jboss/aerogear/android/unifiedpush/PushRegistrar.java) interface which contain the actual registration/unregistration methods.
 
@@ -144,11 +143,11 @@ That is all what is needed to register with the UnifiedPush server! Note that we
 If you don't see the _Registration Succeeded_ popup, means that an error has occurred during the registration. Switch to the LogCat console in Android Studio to locate the exception and act accordingly.
 :::
 
-### Register Message Handlers
+## Register Message Handlers
 
 Classes which implement the MessageHandler interface may be registered with the Unified Push SDK to handle notifications send from the Unified Push Server.  These classes may be executed on the main thread, or in background threads.  You may also provide a default handler that is executed if a message is received while your application is not running.
 
-#### Registering and Unregistering and The Activity Lifecycle
+### Registering and Unregistering and The Activity life cycle
 
 When your Activity comes into the foreground you will want to register any MessageHandlers that need to run in the main thread.  Likewise when your Activity is in the background, you will want to have your main thread handlers disabled.  You may do this by overriding the onPause and onResume methods. 
 
@@ -180,6 +179,6 @@ RegistrarManager.unregisterBackgroundThreadHandler(messageHandler);
 RegistrarManager.registerBackgroundThreadHandler(messageHandler);
 ```
 
-### Hello World Example
+## Hello World Example
 
 The AeroGear project provides an example Unified Push application in their [android-cookbook repository](https://github.com/aerogear/aerogear-android-cookbook/tree/master/HelloPush)
