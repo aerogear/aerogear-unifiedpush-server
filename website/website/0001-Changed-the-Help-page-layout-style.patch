@@ -1,0 +1,96 @@
+From f39d5a42c3580f5c68cd852e558894ed622833f8 Mon Sep 17 00:00:00 2001
+From: Massimiliano Ziccardi <mziccard@redhat.com>
+Date: Fri, 28 Feb 2020 16:59:24 +0100
+Subject: [PATCH] Changed the Help page layout style
+
+---
+ website/website/pages/en/help.js      | 40 +++++++++++++++------------
+ website/website/static/css/custom.css |  6 ----
+ 2 files changed, 22 insertions(+), 24 deletions(-)
+
+diff --git a/website/website/pages/en/help.js b/website/website/pages/en/help.js
+index 231a387c..84b4b9bd 100644
+--- a/website/website/pages/en/help.js
++++ b/website/website/pages/en/help.js
+@@ -21,10 +21,27 @@ function Help(props) {
+ 
+   const supportLinks = [
+     {
+-      content: `If you would like to learn more about UnifiedPush Server, [documentation on this site.](${docUrl(
++      content: `Learn more about UnifiedPush Server using the [official documentation](${docUrl(
+         'introduction/ups-overview',
+-      )})`,
+-      title: 'Browse Docs',
++      )}).`,
++      title: 'Browse the docs',
++    },
++    {
++      title: 'Discord',
++      content: 'You can join the conversation on [Discord](https://discord.gg/mJ7j84m) in our channel: #unified-push'
++    },
++    {
++      content: 'You can follow and contact us on [Twitter](https://twitter.com/aerogears).',
++      title: 'Twitter',
++    },
++    {
++      content: 'At our [GitHub repo](https://github.com/aerogear/aerogear-unifiedpush-server) Browse and submit ' +
++          '[issues](https://github.com/aerogear/aerogear-unifiedpush-server/issues) ' +
++          'or [pull requests](https://github.com/aerogear/aerogear-unifiedpush-server/pulls) for bugs you find or ' +
++          'any new features you may want implemented. Be sure to also check out our ' +
++          '[contributing information](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/.github/CONTRIBUTING.md)' +
++          'and out [code of conduct](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/.github/CODE_OF_CONDUCT.md).',
++      title: 'GitHub'
+     },
+     {
+       content: 'If you’ve got ideas for the AeroGear project or want to share what you\'re working on or struggling with, ' +
+@@ -32,20 +49,7 @@ function Help(props) {
+           'start. The Mailing List is used for both team-wide and community communication.',
+       title: 'Join the community',
+     },
+-    {
+-      content: ' The AeroGear community is an open and inclusive environment, we expect members to be ' +
+-      ' acquainted with our <a href="https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/.github/CODE_OF_CONDUCT.md">Code of Conduct</a>',
+-      title: 'Code of Conduct',
+-    },
+-    {
+-      content: 'The UnifiedPush Server Github Repository can be found <a href="https://github.com/aerogear/aerogear-unifiedpush-server">here.</a> ' +
+-      'If you would like to find more great projects within the AeroGear Organization check out our <a href="https://github.com/aerogear">GitHub.</a>' +
+-      ' If you want to dive right into UnifiedPush, the <a href="https://github.com/aerogear/unifiedpush-cookbook">UnifiedPush Cookbook</a> repository contains' + 
+-      ' simple example applications that illustrate how to integrate' +
+-      ' UnifiedPush Server into your own application',
+-      title: 'AeroGear Repositories'
+-    }
+-  ]
++  ];
+     
+ 
+   return (
+@@ -56,7 +60,7 @@ function Help(props) {
+             <h1>Need help?</h1>
+           </header>
+           <p>This project is maintained by a dedicated group of people.</p>
+-          <GridBlock contents={supportLinks} layout="twoColumn" />
++          <GridBlock contents={supportLinks} layout="fourColumn" />
+         </div>
+       </Container>
+     </div>
+diff --git a/website/website/static/css/custom.css b/website/website/static/css/custom.css
+index 4f546141..9c8efeb3 100644
+--- a/website/website/static/css/custom.css
++++ b/website/website/static/css/custom.css
+@@ -22,12 +22,6 @@
+ @media only screen and (min-width: 1500px) {
+ }
+ 
+-@media only screen and (min-width: 736px) {
+-    .gridBlock > * {
+-        margin: 0
+-    }
+-}
+-
+ .imageAlignTop .blockImage {
+     /*max-width: 60%;*/
+     height: 100px;
+-- 
+2.21.1 (Apple Git-122.3)
+
