@@ -7,12 +7,6 @@
       "introduction/use-cases"
     ],
     "Running Unified Push": ["running", "jms"],
-    "Unified Push Server SDK": [
-      
-      "server_sdk/javasender",
-      "server_sdk/nodesender",
-      "server_sdk/restfulsender"
-    ],
     "Configuring Variants": [
       
       "variants/android",
@@ -25,6 +19,12 @@
       "clients/ios-client",
       "clients/webpush-client",
       "clients/cordova-client"
+    ],
+    "Unified Push Server SDK": [
+      
+      "server_sdk/javasender",
+      "server_sdk/nodesender",
+      "server_sdk/restfulsender"
     ],
     "Maintaining Unified Push": ["maintenance"],
     "Extending Unified Push": ["extending"]

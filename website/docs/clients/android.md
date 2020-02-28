@@ -1,6 +1,7 @@
 ---
 id: android-client
-title: Android Client
+sidebar_label: Android Client
+title: Configuring an Android Client
 ---
 
  Before you begin configuring an Android application to receive push messages, you should have the following installed, available, or configured as appropriate.
@@ -181,4 +182,4 @@ RegistrarManager.registerBackgroundThreadHandler(messageHandler);
 
 ## Hello World Example
 
-The AeroGear project provides an example Unified Push application in their [android-cookbook repository](https://github.com/aerogear/aerogear-android-cookbook/tree/master/HelloPush)
+The AeroGear project provides an example UnifiedPush application in their [unifiedpush-cookbook repository](https://github.com/aerogear/unifiedpush-cookbook/tree/master/HelloPush)

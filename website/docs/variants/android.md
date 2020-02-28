@@ -32,4 +32,4 @@ Afterwards you will see some code snippets, containing the **Variant ID** and **
 
 > ![Android Variant Details](assets/android/variant_02.png)
 
-Unified Push is now configured, configuring the Android client is covered in [the client guide](/docs/configuring_clients).
+Unified Push is now configured, configuring the Android client is covered in [the client guide](../clients/android.md).

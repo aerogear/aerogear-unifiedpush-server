@@ -59,8 +59,9 @@ title: iOS Variant
     _org.aerogear.PushHelloWorld_, however you must use your own ID
   * Double check that the **Push Notifications** checkbox is selected in the list of _Capabilities_:
  
- | **NOTE**: The _Bundle ID_ has to match the one from the actual iOS application that you are building later in this guide. |
- | --- |
+:::note 
+The _Bundle ID_ has to match the one from the actual iOS application that you are building later in this guide. 
+:::
  
  > ![Set App ID](assets/ios/SetAppId.png)
 

@@ -1,6 +1,7 @@
 ---
 id: webpush-client
-title: Webpush Client
+sidebar_label: Webpush Client
+title: Configuring a Webpush Client
 ---
 
 
@@ -133,7 +134,7 @@ $ npm run start
 
 In the browser you should see:
 
- >![Stage 1](/assets/webpush/hello-world-stage1.png)
+ >![Stage 1](assets/webpush/hello-world-stage1.png)
 
 
 ## Add _UnifiedPush Server Integration_
@@ -310,6 +311,6 @@ Click on _Register_: if everything is ok, you should see a confirmation message.
 
 Now try to send messages to your variant from the _UnifiedPush Server_.
 You should see something like this:
- >![Stage 1](/assets/webpush/hello-world-stage2.png)
+ >![Stage 1](assets/webpush/hello-world-stage2.png)
 
 For a complete example, look at the [WebPush HelloWorld](https://github.com/aerogear/unifiedpush-cookbook/tree/master/webpush/hello-world-webpush) example.

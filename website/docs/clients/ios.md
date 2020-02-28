@@ -1,6 +1,7 @@
 ---
 id: ios-client
-title: iOS Client
+sidebar_label: iOS Client
+title: Configuring a iOS Client
 ---
 
 
@@ -337,5 +338,5 @@ Otherwise you will have to manually create a storyboard.
 
 ### The Example application
 
-An example application can be found [here](https://github.com/aerogear/aerogear-ios-cookbook/tree/master/UnifiedPushHelloWorld).
-To run it, follow the instruction in the [README](https://github.com/aerogear/aerogear-ios-cookbook/blob/master/UnifiedPushHelloWorld/README.md) file.
+An example application can be found [here](https://github.com/aerogear/unifiedpush-cookbook/tree/master/ios/UnifiedPushHelloWorld).
+To run it, follow the instruction in the [README](https://github.com/aerogear/unifiedpush-cookbook/blob/master/ios/UnifiedPushHelloWorld/README.md) file.

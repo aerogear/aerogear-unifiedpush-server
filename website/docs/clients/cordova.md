@@ -1,6 +1,7 @@
 ---
 id: cordova-client
-title: Cordova Client
+sidebar_label: Cordova Client
+title: Configuring a Cordova Client
 ---
 
 
