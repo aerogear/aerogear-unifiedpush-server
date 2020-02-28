@@ -1,9 +1,8 @@
 ---
 id: push-notifications
-title: Push Notifications & In App Messaging
+title: Push Notifications
 ---
 
-## Push Notifications
 A push notification _is a message that is "pushed" from backend server or application to user interface, e.g. 
 (but not limited to) mobile applications and desktop applications_(see [wikipedia](https://en.wikipedia.org/wiki/Push_technology#Push_notification)).
 
@@ -14,7 +13,7 @@ by allowing  you to send unsolicited messages (notifications) to the users that 
 Push notifications are great marketing tool, but users could mute you if you abuse them.
 :::
 
-### _Push notification_ vs _text messages_
+## _Push notification_ vs _text messages_
 
 One question that could arise could be: _"Ok, if push notifications are a way to send unsolicited messages to the user, 
 what is the difference with text messages?"_
@@ -34,9 +33,3 @@ A _push notification_ is composed by a number of fields. The most important are:
 * **Icon**: an icon to be shown together with the content
 * **Text**: the content of the notification
 
-## In-App Messaging
-The difference between a _push notification_ and an _in-app message_ is that the former is received when the application 
-is closed or is running in background, while the latter is received only when the application is open and the user is 
-actually using it.
-For that reason, while _push notifications_ can be muted, the users can't mute an _in-app message_. And it will be unlikely
-that he is bothered by the message since he is already using your application when the message is received. 
