@@ -22,12 +22,6 @@
 @media only screen and (min-width: 1500px) {
 }
 
-@media only screen and (min-width: 736px) {
-    .gridBlock > * {
-        margin: 0
-    }
-}
-
 .imageAlignTop .blockImage {
     /*max-width: 60%;*/
     height: 100px;
