@@ -1,63 +1,8 @@
 ---
-id: configuring_variants
-title: Configuring Variants
+id: ios
+title: iOS Variant
 ---
 
-## WebPush
- The following step-by-step guide gives you an introduction on how to use the _AeroGear UnifiedPush Server_ for sending 
- _Web Push Notifications_ to your web application.
- 
-### Create WebPush Variants
-
- Before you can create a _WebPush Variant_ with the _UnifiedPush Server_ you need to get your VAPID Keys 
- (see [The Web Push Protocol](https://developers.google.com/web/fundamentals/push-notifications/web-push-protocol) for details).
- You can use, for example, [this site](https://tools.reactpwa.com/vapid) to generate them.
-
- As soon as you have the keys, open (or create) an UPS application and click on the `Add A Variant` button
-
- > ![Add Variant](assets/webpush/add_variant.png "Add Variant")
-
- A popup will open. Select `WebPush` and fill in the data:
- * Vapid Public Key: your vapid public key
- * Vapid Private Key: your vapid private key
- * Alias: The application server contact information (this must be a `mailto` or an `https` url)
- 
- > ![WebPush Variant](assets/webpush/webpush_variant.png "WebPush Variant")
-
-Click on `create` and your webpush variant is ready!
-
-## Android
-### Obtaining Firebase Cloud Messaging Credentials
-
-Before the Android application is able to receive notifications, you must set up access to Firebase Cloud Messaging. You also need an emulator with Google Services or an Android device.  This section shows you how to obtain the **Server key** and the **Sender ID** from Firebase Cloud Messaging for configuring Unified Push.
-
- Start by opening the [Firebase Console](https://console.firebase.google.com).
-
-1. If you haven't created a project in the firebase console, please do so.
-
-2. In your project side bar, click on the gear icon in the navigation column by "Project Overview" to open a menu.  Select "Project settings" from that menu.
-
-> ![Project Number](assets/android/project_settings.png)
-
-3. On the _Project Settings_ screen, switch to the _Cloud Messaging_ tab, where you can find the **Server key** and **Sender ID**.  Make a note of these values, we will use them to configure the variant in the next section.
-
-> ![Retrieve Credentials](assets/android/retrieve_credentials.png)
-
-### Configure the Variant
-
-With all the Google work being done, we are now ready to setup the [UnifiedPush Server](https://github.com/aerogear/aerogear-unified-push-server), so that it can be used to connect to FCM for later message sending.
-
-In the wizard after you create a PushApplication, click the **Add Variant** button and fill out the Android options. You will want to use the **Server Key** and **Sender ID** obtained from the *Firebase Console* in their appropriate fields:
-
-> ![Android Variant Options](assets/android/variant_01.png)
-
-Afterwards you will see some code snippets, containing the **Variant ID** and **Secret**, that you can use in your Android application for the registration of the device, running your app:
-
-> ![Android Variant Details](assets/android/variant_02.png)
-
-Unified Push is now configured, configuring the Android client is covered in [the client guide](/docs/configuring_clients).
-
-## iOS
 
  The following step-by-step guide gives you an introduction on how to use the AeroGear UnifiedPush Server for sending 
  Push Notifications to your own iOS Apps. The guide assumes you have an Apple developer account already setup, and uses tools available in macOS.
@@ -79,15 +24,15 @@ Unified Push is now configured, configuring the Android client is covered in [th
  
  In this manual we will describe how to use both the approaches.
 
-### APNs Certificate authentication
+## APNs Certificate authentication
  A couple of configuration steps needs to be performed on the _Apple developer site_ before we can create the actual variant in the _Unified Push Server_:
  * Create a **CSR** _(Certificate Signing Request)_: this will be used to ask apple to generate a _development_ and/or _production_ certificate
  * Create an **App ID and its SSL certificate**: this will be used to authenticate the application to the APNs
 
-##### Certificate Signing Request
+#### Certificate Signing Request
  First you need to submit a request for a new digital certificate, which is based on a public/private key. The 
  Certificate itself is acting as the public key, and when you request it, a private key is added to your **KeyChain** 
- tool. The Certificate will be used later on, to request an SSL certificate for the Apple Push Network service, which 
+ tool. The Cerficate will be used later on, to request an SSL certificate for the Apple Push Network service, which 
  will allow the _AeroGear Push Server_ to send notification messages to it. Now the actual CSR (Certificate Signing 
  Request) is done using **KeyChain Access** found in the **Applications > Utilities** folder on your Mac. Once opened, in 
  the **KeyChain Access** menu, choose **Certificate Assistant > Request a Certificate** from a **Certificate Authority**:
@@ -99,7 +44,7 @@ Unified Push is now configured, configuring the Android client is covered in [th
  
  > ![Store CSR into KeyChain](assets/ios/KeyChain-keys.png)
  
-##### Apple App ID and SSL certificate for APNs
+#### Apple App ID and SSL certificate for APNs
  Now that the CSR is generated, go to the [Provisioning Portal](https://developer.apple.com/account/overview.action) 
  and log in with your Apple developer account. Now, click on the **Identifiers** link in order to create a new App ID 
  (use the **PLUS** Icon on the right). 
@@ -114,8 +59,9 @@ Unified Push is now configured, configuring the Android client is covered in [th
     _org.aerogear.PushHelloWorld_, however you must use your own ID
   * Double check that the **Push Notifications** checkbox is selected in the list of _Capabilities_:
  
- | **NOTE**: The _Bundle ID_ has to match the one from the actual iOS application that you are building later in this guide. |
- | --- |
+:::note 
+The _Bundle ID_ has to match the one from the actual iOS application that you are building later in this guide. 
+:::
  
  > ![Set App ID](assets/ios/SetAppId.png)
 
@@ -167,7 +113,7 @@ Follow the same steps to download the _Production SSL Certificate_, the file is 
 This file will be uploaded later on to the AeroGear Push Server enabling it to authorize itself for your production 
 application on Apple Push Network Service and send messages to it.
 
-#### Creating the variant in the UnifiedPush Server
+### Creating the variant in the UnifiedPush Server
 APNs is now configured and we are now ready to setup the _UnifiedPush Server_ to connect to APNs and send push messages.
 
 In the Wizard after you create a PushApplication, click the **Add Variant** button and fill out the iOS option. 
@@ -184,14 +130,14 @@ application for registering the device when running your app:
 Clicking on the appropriate tab, you can choose between Objective-C, Swift and Cordova snippet |
 :::
 
-### APNs Token Authentication
+## APNs Token Authentication
  To be able to authentication using _token authentication_ you will need to collect the following informations:
  * your **bundle id**: This is similar to Java packages. In this example we choose _org.aerogear.PushHelloWorld_, however you must use your own ID
  * your **team ID**
  * your **private key**
  * your **key id**
 
-#### The TEAM ID
+### The TEAM ID
  Your _Team ID_ can be obtained very easily form your _developer account_:
  * Enter your development account
  * Click on _Certificates, IDs & Profiles_
@@ -200,7 +146,7 @@ Clicking on the appropriate tab, you can choose between Objective-C, Swift and C
 
  Your _team id_ will be on the upper right corner, right below your name, next to your team name.
 
-#### Generating the private key and the Key ID
+### Generating the private key and the Key ID
 
 As for the [team id](#the-team-id), go to the _Certificates, IDs & Profiles_ page.
 Once there click _Keys_ to go the _keys management page_ and click on the _plus sign_ at the right of the _keys_ header:
@@ -225,7 +171,7 @@ We are almost done: click on _Continue_ and then on _Register_. That will bring 
  Please, take care of the downloaded key, since, after you click on _download_ you won't be able to download it again!
  :::
   
-#### Creating the variant in the UnifiedPush Server
+### Creating the variant in the UnifiedPush Server
 APNs is now configured and we are now ready to setup the _UnifiedPush Server_ to connect to APNs and send push messages.
 
 In the Wizard after you create a PushApplication, click the **Add Variant** button and select **iOS (APNS Token)**. 
