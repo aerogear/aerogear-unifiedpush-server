@@ -30,8 +30,8 @@ const siteConfig = {
   //   baseUrl: '/test-site/',
 
   // Used for publishing and more
-  projectName: 'AeroGear',
-  organizationName: 'Red Hat',
+  projectName: 'aerogear-unifiedpush-server',
+  organizationName: 'AeroGear',
   // For top-level user or org sites, the organization is still the same.
   // e.g., for the https://JoelMarcey.github.io site, it would be set like...
   //   organizationName: 'JoelMarcey'
@@ -40,7 +40,7 @@ const siteConfig = {
   headerLinks: [
     {doc: 'introduction/ups-overview', label: 'Documentation'},
     // {doc: 'doc4', label: 'API'},
-    {page: 'help', label: 'Help'},
+    {href: 'https://github.com/aerogear/aerogear-unifiedpush-server', label: 'GitHub'},
     // {blog: true, label: 'Blog'},
   ],
 
@@ -91,6 +91,7 @@ const siteConfig = {
   // Open Graph and Twitter card images.
   ogImage: 'img/undraw_online.svg',
   twitterImage: 'img/undraw_tweetstorm.svg',
+  twitterUsername: 'aerogears',
 
   // For sites with a sizable amount of content, set collapsible to true.
   // Expand/collapse the links and subcategories under categories.
@@ -110,6 +111,9 @@ const siteConfig = {
     require('remarkable-admonitions')({ icon: 'svg-inline' })
   ],
   disableHeaderTitle: true,
+
+  // custom configs
+  mailingList: 'https://groups.google.com/forum/#!forum/aerogear',
 };
 
 module.exports = siteConfig;
