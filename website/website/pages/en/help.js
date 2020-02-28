@@ -21,18 +21,36 @@ function Help(props) {
 
   const supportLinks = [
     {
-      content: `Learn more using the [documentation on this site.](${docUrl(
-        'running',
-      )})`,
-      title: 'Browse Docs',
+      content: `Learn more about UnifiedPush Server using the [official documentation](${docUrl(
+        'introduction/ups-overview',
+      )}).`,
+      title: 'Browse the docs',
+    },
+    {
+      title: 'Discord',
+      content: 'You can join the conversation on [Discord](https://discord.gg/mJ7j84m) in our channel: #unified-push'
+    },
+    {
+      content: 'You can follow and contact us on [Twitter](https://twitter.com/aerogears).',
+      title: 'Twitter',
+    },
+    {
+      content: 'At our [GitHub repo](https://github.com/aerogear/aerogear-unifiedpush-server) Browse and submit ' +
+          '[issues](https://github.com/aerogear/aerogear-unifiedpush-server/issues) ' +
+          'or [pull requests](https://github.com/aerogear/aerogear-unifiedpush-server/pulls) for bugs you find or ' +
+          'any new features you may want implemented. Be sure to also check out our ' +
+          '[contributing information](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/.github/CONTRIBUTING.md)' +
+          'and out [code of conduct](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/.github/CODE_OF_CONDUCT.md).',
+      title: 'GitHub'
     },
     {
       content: 'If you’ve got ideas for the AeroGear project or want to share what you\'re working on or struggling with, ' +
           'the <a href="https://groups.google.com/forum/#!forum/aerogear">AeroGear Google Group</a> is a good place to ' +
           'start. The Mailing List is used for both team-wide and community communication.',
       title: 'Join the community',
-    }
+    },
   ];
+    
 
   return (
     <div className="docMainWrapper wrapper">
@@ -42,7 +60,7 @@ function Help(props) {
             <h1>Need help?</h1>
           </header>
           <p>This project is maintained by a dedicated group of people.</p>
-          <GridBlock contents={supportLinks} layout="twoColumn" />
+          <GridBlock contents={supportLinks} layout="fourColumn" />
         </div>
       </Container>
     </div>
