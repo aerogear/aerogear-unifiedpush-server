@@ -41,6 +41,7 @@ const siteConfig = {
     {doc: 'introduction/ups-overview', label: 'Documentation'},
     // {doc: 'doc4', label: 'API'},
     {href: 'https://github.com/aerogear/aerogear-unifiedpush-server', label: 'GitHub'},
+    {page: 'help', label: 'Help'},
     // {blog: true, label: 'Blog'},
   ],
 
