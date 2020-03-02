@@ -22,6 +22,8 @@ class Footer extends React.Component {
   }
 
   render() {
+    const repoUrl = `https://github.com/${this.props.config.organizationName}/${this.props.config.projectName}`;
+
     return (
       <footer className="nav-footer" id="footer">
         <section className="sitemap">
@@ -37,14 +39,17 @@ class Footer extends React.Component {
           </a>
           <div>
             <h5>Docs</h5>
-            <a href={this.docUrl('running.html', this.props.language)}>
+            <a href={this.docUrl('introduction/ups-overview.html', this.props.language)}>
               Getting Started
             </a>
           </div>
           <div>
             <h5>Community</h5>
-            <a href={this.pageUrl('users.html', this.props.language)}>
-              User Showcase
+            <a href="/help">
+              Help
+            </a>
+            <a href={this.props.config.mailingList}>
+              AeroGear mailing list
             </a>
             <a
               href="https://stackoverflow.com/questions/tagged/aerogear"
@@ -53,35 +58,27 @@ class Footer extends React.Component {
               Stack Overflow
             </a>
             {/*<a href="https://discordapp.com/">Project Chat</a>*/}
-            <a
-              href="https://twitter.com/aerogears"
-              target="_blank"
-              rel="noreferrer noopener">
-              Twitter
-            </a>
           </div>
           <div>
-            <h5>More</h5>
+            <h5>Social</h5>
             {/*<a href={`${this.props.config.baseUrl}blog`}>Blog</a>*/}
-            <a href={this.props.config.repoUrl}>GitHub</a>
             <a
-              className="github-button"
-              href={this.props.config.repoUrl}
-              data-icon="octicon-star"
-              data-count-href="/aerogear/aerogear-unifiedpush-server/stargazers"
-              data-show-count="true"
-              data-count-aria-label="# stargazers on GitHub"
-              aria-label="Star this project on GitHub">
-              Star
+                className="github-button" // part of the https://buttons.github.io/buttons.js script in siteConfig.js
+                href={repoUrl}
+                data-count-href={`${repoUrl}/stargazers`}
+                data-show-count="true"
+                data-count-aria-label="# stargazers on GitHub"
+                aria-label="Star this project on GitHub">
+              UnifiedPush Server
             </a>
             {this.props.config.twitterUsername && (
-              <div className="social">
-                <a
-                  href={`https://twitter.com/${this.props.config.twitterUsername}`}
-                  className="twitter-follow-button">
-                  Follow @{this.props.config.twitterUsername}
-                </a>
-              </div>
+                <div className="social">
+                  <a
+                      href={`https://twitter.com/${this.props.config.twitterUsername}`}
+                      className="twitter-follow-button">
+                    Follow @{this.props.config.twitterUsername}
+                  </a>
+                </div>
             )}
           </div>
         </section>
