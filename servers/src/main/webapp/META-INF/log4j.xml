@@ -18,11 +18,9 @@
 	</appender>
 
 	<logger category="org.springframework">
-		<level name="INFO" />
 	</logger>
 
 	<root>
-		<priority value="INFO" />
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="FILE" />
 	</root>
