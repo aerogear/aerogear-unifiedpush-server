@@ -33,7 +33,7 @@ class Index extends React.Component {
       <Block layout="threeColumn">
           {[
             {
-              content: 'A server written in Java which allow to send push notifications to different mobile operating systems and web application',
+              content: 'A server written in Java which allows sending push notifications to different mobile operating systems and web applications',
               image: `${baseUrl}img/notification.svg`,
               imageLink: '/docs/introduction/ups-overview',
               imageAlign: 'top',
@@ -45,10 +45,10 @@ class Index extends React.Component {
         {[
           {
             content: 'A Java library that allows the integration of the UnifiedPush Server into your native Android application',
-            image: `${baseUrl}img/java.svg`,
+            image: `${baseUrl}img/Android_robot.svg`,
             imageAlign: 'top',
             imageLink: '/docs/clients/android-client',
-            title: '<a href="/docs/clients/android-client">Java Client SDK</a>',
+            title: '<a href="/docs/clients/android-client">Android Client SDK</a>',
           },
           {
             content: 'A Swift library that allows the integration of the UnifiedPush Server into your native iOS application',
@@ -65,28 +65,28 @@ class Index extends React.Component {
             title: '<a href="/docs/clients/webpush-client#webpush">JS Client SDK</a>',
           },
           {
-            content: 'A cordova plugin that plugs our JavaScript library into your multi platform Cordova application',
+            content: 'A Cordova plugin that connects our JavaScript library to your multi-platform Cordova application',
             image: `${baseUrl}img/cordova.svg`,
             imageAlign: 'top',
             imageLink: '/docs/clients/cordova-client#cordova',
             title: '<a href="/docs/clients/cordova-client#cordova">Cordova Client SDK</a>',
           },
           {
-            content: 'A Java library that allows to easily send push notification from your own application',
+            content: 'A Java library that allows sending push notification from your backend services',
             image: `${baseUrl}img/java.svg`,
             imageAlign: 'top',
             imageLink: '/docs/server_sdk/javasender#javasender',
             title: '<a href="/docs/server_sdk/javasender#javasender">Java Sender API</a>',
           },
           {
-            content: 'A Node.js package that allows to easily send push notification from your own application',
+            content: 'A Node.js package that allows sending push notification from your backend services',
             image: `${baseUrl}img/nodejs-icon.svg`,
             imageAlign: 'top',
             imageLink: '/docs/server_sdk/nodesender#node-sender',
             title: '<a href="/docs/server_sdk/nodesender#node-sender">Node.js Sender API</a>',
           },
           {
-            content: 'A set or rest endpoints that allows to easily send push notification from your own application',
+            content: 'A set of RESTful endpoints that allow easily sending push notifications from anywhere',
             image: `${baseUrl}img/rest-api.svg`,
             imageAlign: 'top',
             imageLink: '/docs/server_sdk/restfulsender#rest-sender',
