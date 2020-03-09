@@ -4,7 +4,7 @@ title: Useful Terminology
 ---
 
 ## PushApplication
-A logical construct that represents an overall mobile application (e.g. Mobile).
+A logical construct that represents an overall application (e.g. Android, Web App, etc).
 
 ## Variant
 A variant of the _PushApplication_, representing a specific mobile platform, like _iOS_ or _Android_, or even more fine grain 
