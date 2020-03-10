@@ -71,3 +71,12 @@
     margin-right: 24px;
     padding: 18px 36px;
 }
+
+body  {
+    font-family: 'Muli', 'Helvetica', 'Tahoma', 'Geneva', 'Arial', sans-serif;
+    letter-spacing: -0.03rem;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    color: rgb(85,85,85);
+    font-size: 16.8px;
+}
