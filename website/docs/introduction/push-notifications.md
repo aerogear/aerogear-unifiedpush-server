@@ -33,3 +33,15 @@ A _push notification_ is composed by a number of fields. The most important are:
 * **Icon**: an icon to be shown together with the content
 * **Text**: the content of the notification
 
+## _Push to Sync_ notifications
+
+When a push notification is received, you are not required to show it to the user: another great usage of push notifications
+is just to notify the application that something new is ready and, for example, the application should sync as soon as possible.
+To avoid draining the battery, the _notification handler_ could enable a flag into the application data store so that, next time
+the user will open it, the application will sync its data with the server.
+
+## Push notifications and battery draining
+
+Every time the user receives a push notification, the underlying OS will need to turn on the antenna and download the notification.
+That is another reason why much attention must be posed in selecting which and how many push notifications we will send to our user: if the user
+will receive too many push notification, his battery will get drained very fast (or, even worse, he will uninstall the application).  
