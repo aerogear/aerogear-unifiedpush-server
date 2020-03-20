@@ -16,23 +16,27 @@ sidebar_label: Maintaining Unified Push
 <!--UnifiedPush running in docker-->
 If you are running _UnifiedPush Server_ from one of the provided docker images, the server is installed into the `opt` folder.
 
-To get the content of the `standalone.xml` file, first we need to get the _docker image id_, then we must ask the content of the file
+To get the content of the `standalone.xml` file, first we need to get the _docker container id_, then we must ask the content of the file
 to docker:
 
 ```bash
-$ IMAGE_ID=`docker images aerogear/unifiedpush-configurable-container -q`
-$ READ_CONF="docker run -it --rm -a stdout --entrypoint cat $IMAGE_ID /opt/jboss/wildfly/standalone/configuration/standalone.xml"
-$ bash -c $READ_CONF
+CONTAINER_ID={YOUR CONTAINER ID}
+READ_CONF="docker exec -it $CONTAINER_ID cat /opt/jboss/wildfly/standalone/configuration/standalone.xml"
+bash -c "$READ_CONF"
 ```
+
+The container must be up and running for this to work.  
+To get the **CONTAINER_ID**, use the `docker ps` command and search for the _UnifiedPush_ container.
+
 
 <!--UnifiedPush running standalone-->
  If you are running _UnifiedPush Server_ standalone in your own **WILDFLY instance**, then we just need to jump into the 
  _WILDFLY home_ to read the `standalone.xml` file:
  
 ```bash
-$ WILDFLY_HOME=/path/to/your/wildfly
-$ READ_CONF="cat $WILDFLY_HOME/standalone/configuration/standalone.xml"
-$ bash -c $READ_CONF
+WILDFLY_HOME=/path/to/your/wildfly
+READ_CONF="cat $WILDFLY_HOME/standalone/configuration/standalone.xml"
+bash -c "$READ_CONF"
 ```
 <!--END_DOCUSAURUS_CODE_TABS-->
  
@@ -45,17 +49,24 @@ $ bash -c $READ_CONF
  
  * **Connection URL**:
    ```bash
-   $ CONNECTION_URL=`bash -c $READ_CONF | xmlstarlet sel -N x="urn:jboss:domain:datasources:5.0" -t -m "//x:datasource[@pool-name='UnifiedPushDS']//x:connection-url/text()" -c .`
+   CONNECTION_URL=`bash -c "$READ_CONF" | xmlstarlet sel -N x="urn:jboss:domain:datasources:5.0" -t -m "//x:datasource[@pool-name='UnifiedPushDS']//x:connection-url/text()" -c .`
    ```
  * **Username**:
    ```bash
-   $ DB_USERNAME=`bash -c $READ_CONF | xmlstarlet sel -N x="urn:jboss:domain:datasources:5.0" -t -m "//x:datasource[@pool-name='UnifiedPushDS']//x:user-name/text()" -c .`
+   DB_USERNAME=`bash -c "$READ_CONF" | xmlstarlet sel -N x="urn:jboss:domain:datasources:5.0" -t -m "//x:datasource[@pool-name='UnifiedPushDS']//x:user-name/text()" -c .`
    ```
  * **Password**:
    ```bash
-   $ DB_PASSWORD=`bash -c $READ_CONF | xmlstarlet sel -N x="urn:jboss:domain:datasources:5.0" -t -m "//x:datasource[@pool-name='UnifiedPushDS']//x:password/text()" -c .`
+   DB_PASSWORD=`bash -c "$READ_CONF" | xmlstarlet sel -N x="urn:jboss:domain:datasources:5.0" -t -m "//x:datasource[@pool-name='UnifiedPushDS']//x:password/text()" -c .`
    ```
- 
+ Values are now stored into the **CONNECTION_URL**, **DB_USERNAME** and **DB_PASSWORD** environment variables:
+ ```bash
+ printf "CONNECTION_URL=$CONNECTION_URL \nUSERNAME=$DB_USERNAME \nPASSWORD=$DB_PASSWORD\n" 
+ ```
+
+For detailed instructions on how to backup the database, look at the official documentation"
+* MySQL: https://dev.mysql.com/doc/refman/8.0/en/backup-and-recovery.html
+* PostegreSQL: https://www.postgresql.org/docs/12/backup.html
  
 ## Upgrade
  - AEROGEAR-10131
