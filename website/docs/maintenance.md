@@ -44,17 +44,17 @@ $ bash -c $READ_CONF
  **UnifiedPushDS** or you can use a tool like `xmlstarlet`:
  
  * **Connection URL**:
-     ```bash
-     $ CONNECTION_URL=`bash -c READ_CONF | xmlstarlet sel -N x="urn:jboss:domain:datasources:5.0" -t -m "//x:datasource[@pool-name='UnifiedPushDS']//x:connection-url/text()" -c .`
-     ```
+   ```bash
+   $ CONNECTION_URL=`bash -c $READ_CONF | xmlstarlet sel -N x="urn:jboss:domain:datasources:5.0" -t -m "//x:datasource[@pool-name='UnifiedPushDS']//x:connection-url/text()" -c .`
+   ```
  * **Username**:
-     ```bash
-     $ CONNECTION_URL=`bash -c READ_CONF | xmlstarlet sel -N x="urn:jboss:domain:datasources:5.0" -t -m "//x:datasource[@pool-name='UnifiedPushDS']//x:user-name/text()" -c .`
-     ```
+   ```bash
+   $ DB_USERNAME=`bash -c $READ_CONF | xmlstarlet sel -N x="urn:jboss:domain:datasources:5.0" -t -m "//x:datasource[@pool-name='UnifiedPushDS']//x:user-name/text()" -c .`
+   ```
  * **Password**:
-     ```bash
-     $ CONNECTION_URL=`bash -c READ_CONF | xmlstarlet sel -N x="urn:jboss:domain:datasources:5.0" -t -m "//x:datasource[@pool-name='UnifiedPushDS']//x:password/text()" -c .`
-     ```
+   ```bash
+   $ DB_PASSWORD=`bash -c $READ_CONF | xmlstarlet sel -N x="urn:jboss:domain:datasources:5.0" -t -m "//x:datasource[@pool-name='UnifiedPushDS']//x:password/text()" -c .`
+   ```
  
  
 ## Upgrade
