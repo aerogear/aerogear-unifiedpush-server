@@ -124,9 +124,9 @@ podman run -p 8080:8080 --rm \
 
 ## Running with Operator
 
-_UnifiedPush_ can be easily installed and maintained on OpenShift by using the _UnifiedPush Operator_. This Operator makes managing the UnifiedPush Server and Database a seamless process.There are a number of prerequisites to getting started with the UnifiedPush Operator.
+The UnifiedPush Server can be installed and run on OpenShift by using the UnifiedPush Operator. The UnifiedPush Server is created by the Operator from Custom Resource yaml files defined as per your specifications in the operator deploy directory.  
 
-Installations required for _UnifiedPush Operator_
+Prerequisite installations required for _UnifiedPush Operator_
 
 [Install Go.](https://golang.org/doc/install)
 
@@ -142,7 +142,68 @@ Installations required for _UnifiedPush Operator_
 Currently _UnifiedPush Operator_ is only supported by v0.10.1 of the Operator SDK
 :::
 
-### Operator Installation and Usage
+### Configuration
+
+The UnifiedPush Server Image and The PostgreSQL Image that get used by the UPS Operator are recommended not to be changed. We support the released versions of the UPS Operator to manage the versions of the UnifiedPush Server and PostgreSql severs released with it. 
+
+:::note 
+The Images used can be found in the [constants.go file](https://github.com/aerogear/unifiedpush-operator/blob/master/pkg/constants/constants.go)
+:::
+The UnifiedPush Server does have configurable fields that can be defined in the the custom resource yaml file used in the `make install` command of the UnifiedPush Operator Makefile. Here are the configurable fields in a _UnifiedPush Server_:
+
+| Field Name  | Description  |  Default |
+|---|---|---|
+| Backups  |<pre>A list of backup entries that CronJobs will be created from [here](https://github.com/aerogear/unifiedpush-operator/blob/master/deploy/crds/push_v1alpha1_unifiedpushserver_cr_with_backup.yaml) for an annotated example.<br>Note that a ServiceAccount called "backupjob" must already exist before the operator will create any back CronJobs.<br>See the [backup-container-image](https://github.com/integr8ly/backup-container-image/tree/master/templates/openshift/rbac) for examples. |  No Backups |
+| useMessageBroker  | Can be set to true to use managed queues, if you are using enmasse.| false |
+|  unifiedPushResourceRequirements | Unified Push Service container resource requirements.| <Pre> limits: <br> memory: "value of UPS_MEMORY_LIMIT passed to operator"<br> cpu: "value of UPS_CPU_LIMIT passed to operator"<br>requests:<br> memory: "value of UPS_MEMORY_REQUEST passed to operator" <br> cpu: "value of UPS_CPU_REQUEST passed to operator"|
+| oAuthResourceRequirements  | OAuth Proxy container resource requirements.  | limits: <br> memory: "value of OAUTH_MEMORY_LIMIT passed to operator" <br> cpu: "value of OAUTH_CPU_LIMIT passed to operator"<br> requests: <br> memory: "value of OAUTH_MEMORY_REQUEST passed to operator" <br> cpu: "value of OAUTH_CPU_REQUEST passed to operator"|
+| postgresResourceRequirements  | Postgres container resource requirements.  | limits: <br> memory: "value of POSTGRES_MEMORY_LIMIT passed to operator" <br> cpu: "value of POSTGRES_CPU_LIMIT passed to operator"<br> requests: <br> memory: "value of POSTGRES_MEMORY_REQUEST passed to operator" <br> cpu: "value of POSTGRES_CPU_REQUEST passed to operator"|
+| postgresPVCSize  | PVC size for Postgres service  | Value of POSTGRES_PVC_SIZE environment variable passed to operator |
+
+If the values for these fields are not defined by you, in the UnifiedPush Server CR, the UnifiedPush Operator will use some default values that are passed to the operator as environment variables. If no environment variable is also passed to the operator, it will use some hardcoded values. The default values for resource sizes, limits and requests can be seen in this table
+
+| Variable | Default Value |
+|----------|---------------|
+|UPS_MEMORY_LIMIT | 2Gi |
+|UPS_MEMORY_REQUEST | 512Mi | 
+|UPS_CPU_LIMIT | 1 | 
+|UPS_CPU_REQUEST | 500m |
+|OAUTH_MEMORY_LIMIT | 64Mi |
+|OAUTH_MEMORY_REQUEST | 32Mi |
+|OAUTH_CPU_LIMIT | 20m |
+|OAUTH_CPU_REQUEST | 10m |
+|POSTGRES_MEMORY_LIMIT | 512Mi |
+|POSTGRES_MEMORY_REQUEST | 256Mi |
+|POSTGRES_CPU_LIMIT | 1 |
+|POSTGRES_CPU_REQUEST | 250m |
+|POSTGRES_PVC_SIZE | 5Gi |
+
+The [crds directory](https://github.com/aerogear/unifiedpush-operator/tree/master/deploy/crds) in the UnifiedPush Operator contains yaml files that can be used as examples of how to configure the different UnifiedPush fields. To implement these different yaml files and test them for yourself simply change the name of the custom Resource yaml file at line 76 of the Makefile. 
+ ```bash
+ - kubectl apply -n $(NAMESPACE) -f deploy/crds/push_v1alpha1_unifiedpushserver_cr.yaml
+ ```
+to 
+
+```bash
+ - kubectl apply -n $(NAMESPACE) -f deploy/crds/push_v1alpha1_unifiedpushserver_cr_with_backup.yaml
+```
+
+The container names deployed by the UnifiedPush Operator can also be modified, the following table shows the environment variables and the default names for the containers.
+
+
+| Name | Default |
+|------|---------|
+| UPS_CONTAINER_NAME | ups |
+| OAUTH_PROXY_CONTAINER_NAME | ups-oauth-proxy |
+| POSTGRES_CONTAINER_NAME | postgresql |
+
+### Development
+
+_UnifiedPush_ can be easily installed and maintained on OpenShift by using the _UnifiedPush Operator_. This Operator makes managing the UnifiedPush Server and Database a seamless process.There are a number of prerequisites to getting started with the UnifiedPush Operator.
+
+
+
+####  Operator Installation and Usage
 
 The UnifiedPush Operator needs to be downloaded and installed in the github.com directory inside the go directory. You can clone it and add it to you $GOPATH with the following command
 
@@ -184,52 +245,20 @@ make cluster/clean
 The Makefile commands for the _UnifiedPush Operator_ can be further explored [here](https://github.com/aerogear/unifiedpush-operator/blob/master/Makefile)
 :::
 
-### Configuration
+### Monitoring UnifiedPush Operator & Server
 
-The UnifiedPush Server Image and The PostgreSQL Image that get used by the UPS Operator are recommended not to be changed. We support the released versions of the UPS Operator to manage the versions of the UnifiedPush Server and PostgreSql severs released with it. 
+Monitoring of the UnifiedPush Operator and UnifiedPush Server can be done using the  [integr8ly/Grafana](https://github.com/coreos/prometheus-operator) and [Prometheus](https://github.com/coreos/prometheus-operator) Operator. These can be installed through OperatorHub onto your
 
-:::note 
-The Images used can be found in the [constants.go file](https://github.com/aerogear/unifiedpush-operator/blob/master/pkg/constants/constants.go)
+The UnifiedPush Operator will install it’s own monitoring resources required by Grafana and Prometheus on startup and will install the Resources required for monitoring the UnifiedPush Server on creation of the UnifiedPushServer CR. 
+
+:::note
+These will be ignored if the required CRDs are not installed on the cluster. Restart the operator to install the resources if the application-monitoring stack is deployed afterwards.
 :::
-The UnifiedPush Server does have configurable fields that can be defined in the the custom resource yaml file used in the `make install` command of the UnifiedPush Operator Makefile. Here are the configurable fields in a _UnifiedPush Server_:
 
-#### table not formatting correctly, not sure what way to get this information in.
+### Further Reading
 
-| Field Name  | Description  |  Default |
-|---|---|---|
-| Backups  | A list of backup entries that CronJobs will be created from. ee [here](https://github.com/aerogear/unifiedpush-operator/blob/master/deploy/crds/push_v1alpha1_unifiedpushserver_cr_with_backup.yaml) for an annotated example. Note that a ServiceAccount called "backupjob" must already exist before the operator will create any back CronJobs. See the [backup-container-image](https://github.com/integr8ly/backup-container-image/tree/master/templates/openshift/rbac) for examples. |  No Backups |
-| useMessageBroker  | Can be set to true to use managed queues, if you are using enmasse.| false |
-|  unifiedPushResourceRequirements | Unified Push Service container resource requirements.| limits: <br> memory: "value of UPS_MEMORY_LIMIT passed to operator"<br> cpu: "value of UPS_CPU_LIMIT passed to operator"<br>requests:<br> memory: "value of UPS_MEMORY_REQUEST passed to operator" <br> cpu: "value of UPS_CPU_REQUEST passed to operator"|
-| oAuthResourceRequirements  | OAuth Proxy container resource requirements.  | limits: <br> memory: "value of OAUTH_MEMORY_LIMIT passed to operator" <br> cpu: "value of OAUTH_CPU_LIMIT passed to operator"<br> requests: <br> memory: "value of OAUTH_MEMORY_REQUEST passed to operator" <br> cpu: "value of OAUTH_CPU_REQUEST passed to operator"|
-| postgresResourceRequirements  | Postgres container resource requirements.  | limits: <br> memory: "value of POSTGRES_MEMORY_LIMIT passed to operator" <br> cpu: "value of POSTGRES_CPU_LIMIT passed to operator"<br> requests: <br> memory: "value of POSTGRES_MEMORY_REQUEST passed to operator" <br> cpu: "value of POSTGRES_CPU_REQUEST passed to operator"|
-| postgresPVCSize  | PVC size for Postgres service  | Value of POSTGRES_PVC_SIZE environment variable passed to operator |
+Further information documenting testing the Operator, publishing images, tagging releases and the operator architecture can be found on the [UnifiedPush Operator Readme on Github](https://github.com/aerogear/unifiedpush-operator/blob/master/README.adoc)
 
-If the values for these fields are not defined by you, in the UnifiedPush Server CR, the UnifiedPush Operator will use some default values that are passed to the operator as environment variables. If no environment variable is also passed to the operator, it will use some hardcoded values. The default values for resource sizes, limits and requests can be seen in this table
 
-| Variable | Default Value |
-|----------|---------------|
-|UPS_MEMORY_LIMIT | 2Gi |
-|UPS_MEMORY_REQUEST | 512Mi | 
-|UPS_CPU_LIMIT | 1 | 
-|UPS_CPU_REQUEST | 500m |
-|OAUTH_MEMORY_LIMIT | 64Mi |
-|OAUTH_MEMORY_REQUEST | 32Mi |
-|OAUTH_CPU_LIMIT | 20m |
-|OAUTH_CPU_REQUEST | 10m |
-|POSTGRES_MEMORY_LIMIT | 512Mi |
-|POSTGRES_MEMORY_REQUEST | 256Mi |
-|POSTGRES_CPU_LIMIT | 1 |
-|POSTGRES_CPU_REQUEST | 250m |
-|POSTGRES_PVC_SIZE | 5Gi |
-
-The [crds directory](https://github.com/aerogear/unifiedpush-operator/tree/master/deploy/crds) in the UnifiedPush Operator contains yaml files that can be used as examples of how to configure the different UnifiedPush fields. To implement these different yaml files and test them for yourself simply change the name of the custom Resource yaml file at line 76 of the Makefile. 
- ```bash
- - kubectl apply -n $(NAMESPACE) -f deploy/crds/push_v1alpha1_unifiedpushserver_cr.yaml
- ```
-to 
-
-```bash
- - kubectl apply -n $(NAMESPACE) -f deploy/crds/push_v1alpha1_unifiedpushserver_cr_with_backup.yaml
-```
 ## Configuration
  - AEROGEAR-10148
