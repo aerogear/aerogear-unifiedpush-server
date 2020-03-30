@@ -249,7 +249,22 @@
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
-
+<repositories>
+<repository>
+               <id>jboss-staging-aerogear-repository</id>
+               <name>JBoss Staging repository</name>
+               <url>https://repository.jboss.org/nexus/service/local/repositories/jboss_thirdparty_releases_staging_profile-2165/content</url>
+               <layout>default</layout>
+               <releases>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </releases>
+               <snapshots>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </snapshots>
+            </repository>
+</repositories>
       <dependencyManagement>
         <dependencies>
           <!-- AeroGear Test Dependencies BOM Imports -->
