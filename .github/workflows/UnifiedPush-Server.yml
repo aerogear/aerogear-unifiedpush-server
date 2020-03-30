@@ -1,4 +1,4 @@
-name: Build and test the UnifiedPush Server
+name: build
 
 on: [push]
 
@@ -24,4 +24,10 @@ jobs:
       run: mvn clean install -DskipTests=true
 
     - name: Tests
-      run: mvn verify 
+      run: mvn verify
+
+    - name: Javadocs
+      run: mvn javadoc:jar
+
+    - name: Deploy
+      run: sh ./quay_push '${{secrets.QUAY_USERNAME}}' '${{secrets.QUAY_PASSWORD}}'
