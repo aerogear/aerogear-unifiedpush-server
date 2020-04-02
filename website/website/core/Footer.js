@@ -22,7 +22,7 @@ class Footer extends React.Component {
   }
 
   render() {
-    const repoUrl = `https://github.com/${this.props.config.organizationName}/${this.props.config.projectName}`;
+    const repoUrl = `https://github.com/${this.props.config.organizationName}/${this.props.config.upsRepoName}`;
 
     return (
       <footer className="nav-footer" id="footer">
@@ -45,7 +45,7 @@ class Footer extends React.Component {
           </div>
           <div>
             <h5>Community</h5>
-            <a href="/help">
+            <a href={`${this.props.config.baseUrl}/help`}>
               Help
             </a>
             <a href={this.props.config.mailingList}>
@@ -63,22 +63,22 @@ class Footer extends React.Component {
             <h5>Social</h5>
             {/*<a href={`${this.props.config.baseUrl}blog`}>Blog</a>*/}
             <a
-                className="github-button" // part of the https://buttons.github.io/buttons.js script in siteConfig.js
-                href={repoUrl}
-                data-count-href={`${repoUrl}/stargazers`}
-                data-show-count="true"
-                data-count-aria-label="# stargazers on GitHub"
-                aria-label="Star this project on GitHub">
+              className="github-button" // part of the https://buttons.github.io/buttons.js script in siteConfig.js
+              href={repoUrl}
+              data-count-href={`${repoUrl}/stargazers`}
+              data-show-count="true"
+              data-count-aria-label="# stargazers on GitHub"
+              aria-label="Star this project on GitHub">
               UnifiedPush Server
             </a>
             {this.props.config.twitterUsername && (
-                <div className="social">
-                  <a
-                      href={`https://twitter.com/${this.props.config.twitterUsername}`}
-                      className="twitter-follow-button">
-                    Follow @{this.props.config.twitterUsername}
-                  </a>
-                </div>
+              <div className="social">
+                <a
+                  href={`https://twitter.com/${this.props.config.twitterUsername}`}
+                  className="twitter-follow-button">
+                  Follow @{this.props.config.twitterUsername}
+                </a>
+              </div>
             )}
           </div>
         </section>

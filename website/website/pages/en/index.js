@@ -29,78 +29,78 @@ class Index extends React.Component {
     );
 
     const Features = () => (
-        <div>
-      <Block layout="threeColumn">
+      <div>
+        <Block layout="threeColumn">
           {[
             {
               content: 'A server written in Java which allows sending push notifications to different mobile operating systems and web applications',
               image: `${baseUrl}img/notification.svg`,
-              imageLink: '/docs/introduction/ups-overview',
+              imageLink: `${baseUrl}docs/introduction/ups-overview`,
               imageAlign: 'top',
-              title: '<a href="/docs/introduction/ups-overview">UnifiedPush Server</a>',
+              title: `<a href="${baseUrl}docs/introduction/ups-overview">UnifiedPush Server</a>`,
             },
           ]}
-      </Block>
-      <Block layout="fourColumn">
-        {[
-          {
-            content: 'A Java library that allows the integration of the UnifiedPush Server into your native Android application',
-            image: `${baseUrl}img/Android_robot.svg`,
-            imageAlign: 'top',
-            imageLink: '/docs/clients/android-client',
-            title: '<a href="/docs/clients/android-client">Android Client SDK</a>',
-          },
-          {
-            content: 'A Swift library that allows the integration of the UnifiedPush Server into your native iOS application',
-            image: `${baseUrl}img/swift.svg`,
-            imageAlign: 'top',
-            imageLink: '/docs/clients/ios-client#ios',
-            title: '<a href="/docs/clients/ios-client#ios">Swift Client SDK</a>',
-          },
-          {
-            content: 'A JavaScript library that allows the integration of the UnifiedPush Server into your JavaScript application (WebApplication, Cordova/Ionic)',
-            image: `${baseUrl}img/javascript.svg`,
-            imageAlign: 'top',
-            imageLink: '/docs/clients/webpush-client#webpush',
-            title: '<a href="/docs/clients/webpush-client#webpush">JS Client SDK</a>',
-          },
-          {
-            content: 'A Cordova plugin that connects our JavaScript library to your multi-platform Cordova application',
-            image: `${baseUrl}img/cordova.svg`,
-            imageAlign: 'top',
-            imageLink: '/docs/clients/cordova-client#cordova',
-            title: '<a href="/docs/clients/cordova-client#cordova">Cordova Client SDK</a>',
-          },
-          {
-            content: 'A Java library that allows sending push notification from your backend services',
-            image: `${baseUrl}img/java.svg`,
-            imageAlign: 'top',
-            imageLink: '/docs/server_sdk/javasender#javasender',
-            title: '<a href="/docs/server_sdk/javasender#javasender">Java Sender API</a>',
-          },
-          {
-            content: 'A Node.js package that allows sending push notification from your backend services',
-            image: `${baseUrl}img/nodejs-icon.svg`,
-            imageAlign: 'top',
-            imageLink: '/docs/server_sdk/nodesender#node-sender',
-            title: '<a href="/docs/server_sdk/nodesender#node-sender">Node.js Sender API</a>',
-          },
-          {
-            content: 'A set of RESTful endpoints that allow easily sending push notifications from anywhere',
-            image: `${baseUrl}img/rest-api.svg`,
-            imageAlign: 'top',
-            imageLink: '/docs/server_sdk/restfulsender#rest-sender',
-            title: '<a href="/docs/server_sdk/restfulsender#node-sender">REST Sender API</a>',
-          },
-        ]}
-      </Block>
-            </div>
+        </Block>
+        <Block layout="fourColumn">
+          {[
+            {
+              content: 'A Java library that allows the integration of the UnifiedPush Server into your native Android application',
+              image: `${baseUrl}img/Android_robot.svg`,
+              imageAlign: 'top',
+              imageLink: `${baseUrl}docs/clients/android-client`,
+              title: `<a href="${baseUrl}docs/clients/android-client">Android Client SDK</a>`,
+            },
+            {
+              content: 'A Swift library that allows the integration of the UnifiedPush Server into your native iOS application',
+              image: `${baseUrl}img/swift.svg`,
+              imageAlign: 'top',
+              imageLink: `${baseUrl}docs/clients/ios-client#ios`,
+              title: `<a href="${baseUrl}docs/clients/ios-client#ios">Swift Client SDK</a>`,
+            },
+            {
+              content: 'A JavaScript library that allows the integration of the UnifiedPush Server into your JavaScript application (WebApplication, Cordova/Ionic)',
+              image: `${baseUrl}img/javascript.svg`,
+              imageAlign: 'top',
+              imageLink: `${baseUrl}docs/clients/webpush-client#webpush`,
+              title: `<a href="${baseUrl}docs/clients/webpush-client#webpush">JS Client SDK</a>`,
+            },
+            {
+              content: 'A Cordova plugin that connects our JavaScript library to your multi-platform Cordova application',
+              image: `${baseUrl}img/cordova.svg`,
+              imageAlign: 'top',
+              imageLink: `${baseUrl}docs/clients/cordova-client#cordova`,
+              title: `<a href="${baseUrl}docs/clients/cordova-client#cordova">Cordova Client SDK</a>`,
+            },
+            {
+              content: 'A Java library that allows sending push notification from your backend services',
+              image: `${baseUrl}img/java.svg`,
+              imageAlign: 'top',
+              imageLink: `${baseUrl}docs/server_sdk/javasender#javasender`,
+              title: `<a href="${baseUrl}docs/server_sdk/javasender#javasender">Java Sender API</a>`,
+            },
+            {
+              content: 'A Node.js package that allows sending push notification from your backend services',
+              image: `${baseUrl}img/nodejs-icon.svg`,
+              imageAlign: 'top',
+              imageLink: `${baseUrl}docs/server_sdk/nodesender#node-sender`,
+              title: `<a href="${baseUrl}docs/server_sdk/nodesender#node-sender">Node.js Sender API</a>`,
+            },
+            {
+              content: 'A set of RESTful endpoints that allow easily sending push notifications from anywhere',
+              image: `${baseUrl}img/rest-api.svg`,
+              imageAlign: 'top',
+              imageLink: `${baseUrl}docs/server_sdk/restfulsender#rest-sender`,
+              title: `<a href="${baseUrl}docs/server_sdk/restfulsender#node-sender">REST Sender API</a>`,
+            },
+          ]}
+        </Block>
+      </div>
     );
 
     return (
       <div>
         <div className="mainContainer">
-          <Features />
+          <Features/>
         </div>
       </div>
     );
