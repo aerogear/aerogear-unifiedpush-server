@@ -1,0 +1,371 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Configuring a iOS Client · UnifiedPush Server</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Prerequisites: to be able to follow the instructions below, you must have [cocoapods](https://cocoapods.org/)"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Configuring a iOS Client · UnifiedPush Server"/><meta property="og:type" content="website"/><meta property="og:url" content="https://aerogear.org/"/><meta property="og:description" content="Prerequisites: to be able to follow the instructions below, you must have [cocoapods](https://cocoapods.org/)"/><meta property="og:image" content="https://aerogear.org/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://aerogear.org/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli&amp;display=swap"/><link rel="stylesheet" href="/css/code-blocks-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="UnifiedPush Server"/></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/introduction/ups-overview" target="_self">Documentation</a></li><li class=""><a href="https://github.com/aerogear/aerogear-unifiedpush-server" target="_self">GitHub</a></li><li class=""><a href="/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Configuring Clients</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Introduction<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/introduction/ups-overview">Overview</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/ups-terminology">Useful Terminology</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/push-notifications">Push Notifications</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/how-it-works">How the UnifiedPush Server works</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/use-cases">Use-cases and scenarios</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Running Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/running">Running Unified Push</a></li><li class="navListItem"><a class="navItem" href="/docs/jms">JMS Broker Configuration</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Configuring Variants<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/variants/android">Android Variant</a></li><li class="navListItem"><a class="navItem" href="/docs/variants/ios">iOS Variant</a></li><li class="navListItem"><a class="navItem" href="/docs/variants/webpush">WebPush Variant</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Configuring Clients<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/clients/android-client">Android Client</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/clients/ios-client">iOS Client</a></li><li class="navListItem"><a class="navItem" href="/docs/clients/webpush-client">Webpush Client</a></li><li class="navListItem"><a class="navItem" href="/docs/clients/cordova-client">Cordova Client</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Unified Push Server SDK<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/server_sdk/javasender">Java Sender API</a></li><li class="navListItem"><a class="navItem" href="/docs/server_sdk/nodesender">Node Sender API</a></li><li class="navListItem"><a class="navItem" href="/docs/server_sdk/restfulsender">RESTful Sender API</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Maintaining Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/maintenance">Maintaining Unified Push</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Extending Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/extending">Developing Unified Push</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Configuring a iOS Client</h1></header><article><div><span><p>Prerequisites: to be able to follow the instructions below, you must have <a href="https://cocoapods.org/">cocoapods</a>
+installed and working and you must have a <a href="/docs/variants/ios">variant</a> already configured.
+For instructions on how to setup <a href="https://cocoapods.org/">cocoapods</a> see <a href="https://guides.cocoapods.org/using/getting-started.html">here</a></p>
+<h2><a class="anchor" aria-hidden="true" id="create-a-new-project"></a><a href="#create-a-new-project" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Create a new project</h2>
+<p>Open <code>XCode</code> and create a new project selecting <code>iOS</code> and <code>Single View App</code>:</p>
+<blockquote>
+<p><img src="/docs/assets/ios/CreateSingleViewApp.png" alt="CreateSingleViewApp"></p>
+</blockquote>
+<p>Click <code>Next</code>. In the next page, insert the name of you application (in this example <em>Demo App</em>) and select your team.</p>
+<blockquote>
+<p><img src="/docs/assets/ios/DemoApp.png" alt="CreateDemoApp"></p>
+</blockquote>
+
+    <div class="admonition admonition-warning">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.893 1.5c-.183-.31-.52-.5-.887-.5s-.703.19-.886.5L.138 13.499a.98.98 0 0 0 0 1.001c.193.31.53.501.886.501h13.964c.367 0 .704-.19.877-.5a1.03 1.03 0 0 0 .01-1.002L8.893 1.5zm.133 11.497H6.987v-2.003h2.039v2.003zm0-3.004H6.987V5.987h2.039v4.006z"/></svg></div> warning</h5>
+      </div>
+      <div class="admonition-content">
+    <p>If you plan on supporting <em>iOS 12</em> or older, change <em>User Interface</em> to <em>Storyboard</em>.</p>
+</div></div><p>Click on <code>Finish</code> and save the app in a folder of your choice. Take note of that folder since we are going to open
+a terminal there.</p>
+
+    <div class="admonition admonition-note">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16"><path fill-rule="evenodd" d="M6.3 5.69a.942.942 0 0 1-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 0 1-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"/></svg></div> note</h5>
+      </div>
+      <div class="admonition-content">
+    <p>Take note of the folder you will save the project in, since you will need to go there with the terminal and run some command to install the required pods!</p>
+</div></div><h3><a class="anchor" aria-hidden="true" id="add-required-capabilities"></a><a href="#add-required-capabilities" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Add required capabilities</h3>
+<p>Click on the project to show the screen below:</p>
+<blockquote>
+<p><img src="/docs/assets/ios/project-config.png" alt="CreateDemoApp"></p>
+</blockquote>
+<p>Select the <em>Sign &amp; Capabilities</em> tab and click on the <code>+</code> button in the upper left corner to add the following capabilities:</p>
+<ul>
+<li>Background Modes</li>
+<li>Push Notifications</li>
+</ul>
+
+    <div class="admonition admonition-important">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"/></svg></div> important</h5>
+      </div>
+      <div class="admonition-content">
+    <p>To be able to add the <em>Push Notifications</em> capability be sure you select the right team and that the team has an active membership.</p>
+</div></div><p>After you have added both capabilities your window should look as below:</p>
+<blockquote>
+<p><img src="/docs/assets/ios/capabilities.png" alt="CreateDemoApp"></p>
+</blockquote>
+<p>Now, be sure you click in <code>Remote notifications</code> under <code>Background Modes</code> to enable it:</p>
+<blockquote>
+<p><img src="/docs/assets/ios/checkBackgroundModes.png" alt="CreateDemoApp"></p>
+</blockquote>
+
+    <div class="admonition admonition-warning">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.893 1.5c-.183-.31-.52-.5-.887-.5s-.703.19-.886.5L.138 13.499a.98.98 0 0 0 0 1.001c.193.31.53.501.886.501h13.964c.367 0 .704-.19.877-.5a1.03 1.03 0 0 0 .01-1.002L8.893 1.5zm.133 11.497H6.987v-2.003h2.039v2.003zm0-3.004H6.987V5.987h2.039v4.006z"/></svg></div> warning</h5>
+      </div>
+      <div class="admonition-content">
+    <p>If you are using <em>XCode 11</em>, the generated project won't work with <em>iOS 12</em> or older. If you need to support <em>iOS 12</em>, follow the <a href="#make-the-application-backward-compatible"><em>Make the application backward compatible</em></a> guide.</p>
+</div></div><h3><a class="anchor" aria-hidden="true" id="add-the-pod-dependencies"></a><a href="#add-the-pod-dependencies" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Add the pod dependencies</h3>
+<p>Close <em>XCode</em> and open a terminal, then change your current directory to the folder where you saved your project.
+You should see a content similar to the image below:</p>
+<blockquote>
+<p><img src="/docs/assets/ios/project-folder.png" alt="CreateDemoApp"></p>
+</blockquote>
+<p>from there run</p>
+<pre><code class="hljs"><span class="hljs-attribute">pod init</span>
+</code></pre>
+<p>That will create a <code>Podfile</code> file in the current folder with the following content:</p>
+<blockquote>
+<pre><code class="hljs css language-bash"><span class="hljs-comment"># Uncomment the next line to define a global platform for your project</span>
+<span class="hljs-comment"># platform :ios, '9.0'</span>
+
+target <span class="hljs-string">'Demo App'</span> <span class="hljs-keyword">do</span>
+ <span class="hljs-comment"># Comment the next line if you don't want to use dynamic frameworks</span>
+ use_frameworks!
+
+ <span class="hljs-comment"># Pods for Demo App</span>
+
+ target <span class="hljs-string">'Demo AppTests'</span> <span class="hljs-keyword">do</span>
+   inherit! :search_paths
+   <span class="hljs-comment"># Pods for testing</span>
+ end
+
+ target <span class="hljs-string">'Demo AppUITests'</span> <span class="hljs-keyword">do</span>
+   <span class="hljs-comment"># Pods for testing</span>
+ end
+end
+</code></pre>
+</blockquote>
+<p>Uncomment the platform as suggested and add</p>
+<pre><code class="hljs"><span class="hljs-attribute">pod</span> <span class="hljs-string">'AeroGearPush-Swift'</span>, <span class="hljs-string">'~&gt; 3.1.0'</span>
+</code></pre>
+<p>to the <code>Podfile</code>:</p>
+<blockquote>
+<pre><code class="hljs css language-bash">platform :ios, <span class="hljs-string">'9.0'</span>
+
+target <span class="hljs-string">'Demo App'</span> <span class="hljs-keyword">do</span>
+ <span class="hljs-comment"># Comment the next line if you don't want to use dynamic frameworks</span>
+ use_frameworks!
+
+ <span class="hljs-comment"># Pods for Demo App</span>
+ pod <span class="hljs-string">'AeroGearPush-Swift'</span>, <span class="hljs-string">'~&gt; 3.1.0'</span>
+
+ target <span class="hljs-string">'Demo AppTests'</span> <span class="hljs-keyword">do</span>
+   inherit! :search_paths
+   <span class="hljs-comment"># Pods for testing</span>
+ end
+
+ target <span class="hljs-string">'Demo AppUITests'</span> <span class="hljs-keyword">do</span>
+   <span class="hljs-comment"># Pods for testing</span>
+ end
+end
+</code></pre>
+</blockquote>
+<p>and run</p>
+<pre><code class="hljs">pod <span class="hljs-keyword">install</span>
+</code></pre>
+<p>you will end having a <code>.xcworkspace</code> file (in my case <code>Demo App.xcworkspace</code>).
+Open it with XCode:</p>
+<pre><code class="hljs css language-bash">open Demo\ App.xcworkspace
+</code></pre>
+
+    <div class="admonition admonition-warning">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.893 1.5c-.183-.31-.52-.5-.887-.5s-.703.19-.886.5L.138 13.499a.98.98 0 0 0 0 1.001c.193.31.53.501.886.501h13.964c.367 0 .704-.19.877-.5a1.03 1.03 0 0 0 .01-1.002L8.893 1.5zm.133 11.497H6.987v-2.003h2.039v2.003zm0-3.004H6.987V5.987h2.039v4.006z"/></svg></div> warning</h5>
+      </div>
+      <div class="admonition-content">
+    <p>Remember to close <code>XCode</code> before running the <code>open</code> command</p>
+</div></div><h3><a class="anchor" aria-hidden="true" id="asking-permissions-for-receiving-push-messages"></a><a href="#asking-permissions-for-receiving-push-messages" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Asking permissions for receiving push messages</h3>
+<p>Before you can receive any <em>push notification</em> the first thing needed is to ask the user permissions to receive push notifications.
+That can be done in the <code>AppDelegate</code> class with the code below:</p>
+<pre><code class="hljs css language-swift"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AppDelegate</span>: <span class="hljs-title">UIResponder</span>, <span class="hljs-title">UIApplicationDelegate</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">application</span><span class="hljs-params">(<span class="hljs-number">_</span> application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: <span class="hljs-keyword">Any</span>]?)</span></span> -&gt; <span class="hljs-type">Bool</span> {
+        <span class="hljs-comment">// bootstrap the registration process by asking the user to 'Accept' and then register with APNS thereafter</span>
+        <span class="hljs-type">UNUserNotificationCenter</span>.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { (granted, error) <span class="hljs-keyword">in</span>
+        })
+        <span class="hljs-type">UIApplication</span>.shared.registerForRemoteNotifications()
+        
+        <span class="hljs-comment">// Override point for customization after application launch.</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+    }
+...
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="registering-your-app"></a><a href="#registering-your-app" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Registering your app</h2>
+<p>If the user grants permissions to receive <em>push notification</em>, the next step is to register the app to the <em>Unified Push Server</em>.
+To be able to perform such operation, you will need the following information:</p>
+<ul>
+<li>The <em>URL</em> of the <em>Unified Push Server</em> instance</li>
+<li>The <em>ID</em> of an <em>iOS</em> variant you previously created in UPS (to see how, look <a href="configuring_variants#ios">here</a>)</li>
+<li>The <em>secret</em> of the <em>iOS</em> variant</li>
+</ul>
+<p>To register the app the SDK offers the <code>DeviceRegistration</code> object, which, in turns, offers two different initializers:</p>
+<ol>
+<li><code>DeviceRegistration(config: &quot;&lt;#NAME OF A PLIST FILE#&gt;&quot;)</code>: this is to be used when the parameters for the
+configuration are stored into a <code>plist</code> file</li>
+<li><code>DeviceRegistration(config: &quot;&lt;#Unified Push Server URL#&gt;&quot;)</code>: this is to be used when the connection
+parameters are passed programmatically</li>
+</ol>
+
+    <div class="admonition admonition-tip">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16"><path fill-rule="evenodd" d="M6.5 0C3.48 0 1 2.19 1 5c0 .92.55 2.25 1 3 1.34 2.25 1.78 2.78 2 4v1h5v-1c.22-1.22.66-1.75 2-4 .45-.75 1-2.08 1-3 0-2.81-2.48-5-5.5-5zm3.64 7.48c-.25.44-.47.8-.67 1.11-.86 1.41-1.25 2.06-1.45 3.23-.02.05-.02.11-.02.17H5c0-.06 0-.13-.02-.17-.2-1.17-.59-1.83-1.45-3.23-.2-.31-.42-.67-.67-1.11C2.44 6.78 2 5.65 2 5c0-2.2 2.02-4 4.5-4 1.22 0 2.36.42 3.22 1.19C10.55 2.94 11 3.94 11 5c0 .66-.44 1.78-.86 2.48zM4 14h5c-.23 1.14-1.3 2-2.5 2s-2.27-.86-2.5-2z"/></svg></div> tip</h5>
+      </div>
+      <div class="admonition-content">
+    <p>A good place to put the registration code could be</p>
+<pre><code class="hljs css language-swift"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">application</span><span class="hljs-params">(<span class="hljs-number">_</span> application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data)</span></span>
+</code></pre>
+<p>of the <code>AppDelegate</code> class</p>
+</div></div><h3><a class="anchor" aria-hidden="true" id="registering-using-a-plist-file"></a><a href="#registering-using-a-plist-file" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Registering using a plist file</h3>
+<pre><code class="hljs css language-swift"><span class="hljs-comment">// setup registration. 'pushconfig' is the name of the 'plist' file</span>
+<span class="hljs-keyword">let</span> registration = <span class="hljs-type">DeviceRegistration</span>(config: <span class="hljs-string">"pushconfig"</span>)
+
+<span class="hljs-comment">// attempt to register</span>
+registration.register(
+        clientInfo: { (clientDevice: <span class="hljs-type">ClientDeviceInformation!</span>) <span class="hljs-keyword">in</span>
+            <span class="hljs-comment">// setup configuration</span>
+            clientDevice.deviceToken = deviceToken
+
+            <span class="hljs-comment">// apply the token, to identify THIS device</span>
+            <span class="hljs-keyword">let</span> currentDevice = <span class="hljs-type">UIDevice</span>()
+
+            <span class="hljs-comment">// set some 'useful' hardware information params</span>
+            clientDevice.operatingSystem = currentDevice.systemName
+            clientDevice.osVersion = currentDevice.systemVersion
+            clientDevice.deviceType = currentDevice.model
+        },
+        success: {
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">"UnifiedPush Server registration succeeded"</span>)
+        },
+        failure: { (error: <span class="hljs-type">Error!</span>) <span class="hljs-keyword">in</span>
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">"failed to register, error: \(error.localizedDescription)"</span>)
+        }
+)
+</code></pre>
+<p>The <code>plist</code> file must contain three string properties:</p>
+<ul>
+<li><strong>serverURL</strong>: the url of the <em>Unified Push Server</em></li>
+<li><strong>variantID</strong>: the ID of the iOS variant associated with this application</li>
+<li><strong>variantSecret</strong>: the secret of the iOS variant associated with this application</li>
+</ul>
+<p>To make it work with the example above, name the plist file <code>pushconfig.plist</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="registering-programmatically"></a><a href="#registering-programmatically" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Registering programmatically</h3>
+<pre><code class="hljs css language-swift"><span class="hljs-comment">// setup registration</span>
+<span class="hljs-keyword">let</span> registration = <span class="hljs-type">DeviceRegistration</span>(serverURL: <span class="hljs-type">URL</span>(string: <span class="hljs-string">"&lt;#AeroGear UnifiedPush Server URL#&gt;"</span>)!)
+
+<span class="hljs-comment">// attempt to register</span>
+registration.register(
+        clientInfo: { (clientDevice: <span class="hljs-type">ClientDeviceInformation!</span>) <span class="hljs-keyword">in</span>
+            <span class="hljs-comment">// setup configuration</span>
+            clientDevice.deviceToken = deviceToken
+            clientDevice.variantID = <span class="hljs-string">"&lt;# Variant Id #&gt;"</span>
+            clientDevice.variantSecret = <span class="hljs-string">"&lt;# Variant Secret #&gt;"</span>
+
+            <span class="hljs-comment">// apply the token, to identify THIS device</span>
+            <span class="hljs-keyword">let</span> currentDevice = <span class="hljs-type">UIDevice</span>()
+
+            <span class="hljs-comment">// -- optional config --</span>
+            <span class="hljs-comment">// set some 'useful' hardware information params</span>
+            clientDevice.operatingSystem = currentDevice.systemName
+            clientDevice.osVersion = currentDevice.systemVersion
+            clientDevice.deviceType = currentDevice.model
+        },
+        success: {
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">"UnifiedPush Server registration succeeded"</span>)
+        },
+        failure: { (error: <span class="hljs-type">Error!</span>) <span class="hljs-keyword">in</span>
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">"failed to register, error: \(error.localizedDescription)"</span>)
+        }
+)
+</code></pre>
+<p>To make the code work, remember to replace the placeholder with the real values.</p>
+<h2><a class="anchor" aria-hidden="true" id="handle-the-push-notifications"></a><a href="#handle-the-push-notifications" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Handle the push notifications</h2>
+<p>To handle the notification, in you <code>AppDelegate.swift</code> override the following method:</p>
+<pre><code class="hljs css language-swift"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">application</span><span class="hljs-params">(<span class="hljs-number">_</span> application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: <span class="hljs-keyword">Any</span>], fetchCompletionHandler: @escaping <span class="hljs-params">(UIBackgroundFetchResult)</span></span></span> -&gt; <span class="hljs-type">Void</span>)
+</code></pre>
+<p>the <code>userInfo</code> parameters will contains all the information about the notifications. For further details, refer
+to the <a href="https://developer.apple.com/documentation/uikit/uiapplicationdelegate/1623013-application">apple website</a>.</p>
+<h2><a class="anchor" aria-hidden="true" id="make-the-application-backward-compatible"></a><a href="#make-the-application-backward-compatible" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Make the application backward compatible</h2>
+
+    <div class="admonition admonition-important">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"/></svg></div> important</h5>
+      </div>
+      <div class="admonition-content">
+    <p>These steps are required only if you created the project with <em>XCode 11</em> and you need to support <em>iOS 12</em> or older</p>
+</div></div><p>To make an application created with <em>XCode 11</em> work with <em>iOS 12</em> or older, few steps are necessary.</p>
+<h3><a class="anchor" aria-hidden="true" id="change-the-deployment-target"></a><a href="#change-the-deployment-target" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Change the deployment target</h3>
+<p>By default, when you create an application with <em>XCode 11</em>, it targets <em>iOS 13</em>.</p>
+<p>To change the deployment target, open the project settings and go to the <em>General</em> tab as shown below:</p>
+<blockquote>
+<p><img src="/docs/assets/ios/ChangeTarget.png" alt="CreateDemoApp"></p>
+</blockquote>
+<h3><a class="anchor" aria-hidden="true" id="make-the-code-backward-compatible"></a><a href="#make-the-code-backward-compatible" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Make the code backward compatible</h3>
+<p>The <em>XCode 11</em> application template, by default uses lot of things that are not available in <em>iOS 12</em>: to fix those issues,
+we will have to mark them with the <code>@available</code> keyword.</p>
+<ol>
+<li>Change the <code>ContentView.swift</code> file so that its content is marked as available only on <em>iOS13</em>:</li>
+</ol>
+<pre><code class="hljs css language-swift"><span class="hljs-keyword">import</span> SwiftUI
+
+<span class="hljs-meta">@available</span>(iOS <span class="hljs-number">13.0</span>, *)
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ContentView</span>: <span class="hljs-title">View</span> </span>{
+    <span class="hljs-keyword">var</span> body: some <span class="hljs-type">View</span> {
+        <span class="hljs-type">Text</span>(<span class="hljs-string">"Hello, World!"</span>)
+    }
+}
+
+<span class="hljs-meta">@available</span>(iOS <span class="hljs-number">13.0</span>, *)
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ContentView_Previews</span>: <span class="hljs-title">PreviewProvider</span> </span>{
+    <span class="hljs-keyword">static</span> <span class="hljs-keyword">var</span> previews: some <span class="hljs-type">View</span> {
+        <span class="hljs-type">ContentView</span>()
+    }
+}
+</code></pre>
+<ol start="2">
+<li>Do the same for the <code>SceneDelegate.swift</code></li>
+</ol>
+<pre><code class="hljs css language-swift"><span class="hljs-meta">@available</span>(iOS <span class="hljs-number">13.0</span>, *)
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SceneDelegate</span>: <span class="hljs-title">UIResponder</span>, <span class="hljs-title">UIWindowSceneDelegate</span> </span>{
+...
+</code></pre>
+<ol start="3">
+<li>In the <code>AppDelegate</code> mark with the <code>@available</code> keyword each method referring to the <code>UIScene*</code> classes</li>
+</ol>
+<pre><code class="hljs css language-swift"><span class="hljs-meta">@available</span>(iOS <span class="hljs-number">13.0</span>, *)
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">application</span><span class="hljs-params">(<span class="hljs-number">_</span> application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions)</span></span> -&gt; <span class="hljs-type">UISceneConfiguration</span> {
+    <span class="hljs-comment">// Called when a new scene session is being created.</span>
+    <span class="hljs-comment">// Use this method to select a configuration to create the new scene with.</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-type">UISceneConfiguration</span>(name: <span class="hljs-string">"Default Configuration"</span>, sessionRole: connectingSceneSession.role)
+}
+
+<span class="hljs-meta">@available</span>(iOS <span class="hljs-number">13.0</span>, *)
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">application</span><span class="hljs-params">(<span class="hljs-number">_</span> application: UIApplication, didDiscardSceneSessions sceneSessions: Set&lt;UISceneSession&gt;)</span></span> {
+    <span class="hljs-comment">// Called when the user discards a scene session.</span>
+    <span class="hljs-comment">// If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.</span>
+    <span class="hljs-comment">// Use this method to release any resources that were specific to the discarded scenes, as they will not return.</span>
+}
+</code></pre>
+<ol start="4">
+<li>Add a <code>UIWindow</code> member variable to the <code>AppDelegate</code></li>
+</ol>
+<pre><code class="hljs css language-swift"><span class="hljs-meta">@UIApplicationMain</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AppDelegate</span>: <span class="hljs-title">UIResponder</span>, <span class="hljs-title">UIApplicationDelegate</span> </span>{
+    <span class="hljs-keyword">var</span> window: <span class="hljs-type">UIWindow?</span>
+...
+</code></pre>
+<p>If you created the application selecting <em>Storyboard</em> as <em>User Interface</em> (see <a href="#create-a-new-project">Create a new project</a>), we are done: the application now works on <em>iOS 12</em>.
+Otherwise you will have to manually create a storyboard.</p>
+<h3><a class="anchor" aria-hidden="true" id="the-example-application"></a><a href="#the-example-application" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>The Example application</h3>
+<p>An example application can be found <a href="https://github.com/aerogear/unifiedpush-cookbook/tree/master/ios/UnifiedPushHelloWorld">here</a>.
+To run it, follow the instruction in the <a href="https://github.com/aerogear/unifiedpush-cookbook/blob/master/ios/UnifiedPushHelloWorld/README.md">README</a> file.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/clients/android-client"><span class="arrow-prev">← </span><span>Android Client</span></a><a class="docs-next button" href="/docs/clients/webpush-client"><span>Webpush Client</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#create-a-new-project">Create a new project</a><ul class="toc-headings"><li><a href="#add-required-capabilities">Add required capabilities</a></li><li><a href="#add-the-pod-dependencies">Add the pod dependencies</a></li><li><a href="#asking-permissions-for-receiving-push-messages">Asking permissions for receiving push messages</a></li></ul></li><li><a href="#registering-your-app">Registering your app</a><ul class="toc-headings"><li><a href="#registering-using-a-plist-file">Registering using a plist file</a></li><li><a href="#registering-programmatically">Registering programmatically</a></li></ul></li><li><a href="#handle-the-push-notifications">Handle the push notifications</a></li><li><a href="#make-the-application-backward-compatible">Make the application backward compatible</a><ul class="toc-headings"><li><a href="#change-the-deployment-target">Change the deployment target</a></li><li><a href="#make-the-code-backward-compatible">Make the code backward compatible</a></li><li><a href="#the-example-application">The Example application</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"></a><div><h5>Docs</h5><a href="/docs/en/introduction/ups-overview.html">Getting Started</a></div><div><h5>Community</h5><a href="//help">Help</a><a href="https://groups.google.com/forum/#!forum/aerogear">AeroGear mailing list</a><a href="https://stackoverflow.com/questions/tagged/aerogear" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>Social</h5><a class="github-button" href="https://github.com/AeroGear/undefined" data-count-href="https://github.com/AeroGear/undefined/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">UnifiedPush Server</a><div class="social"><a href="https://twitter.com/aerogears" class="twitter-follow-button">Follow @aerogears</a></div></div></section><section class="copyright">Copyright © 2020 the AeroGear team</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

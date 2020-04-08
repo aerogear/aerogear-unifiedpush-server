@@ -1,0 +1,162 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Node Sender API · UnifiedPush Server</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="The _UnifiedPush Server_ supports a Node Sender API. This version of the sender is compatible with the 1.1x series of the UnifiedPush Server. "/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Node Sender API · UnifiedPush Server"/><meta property="og:type" content="website"/><meta property="og:url" content="https://aerogear.org/"/><meta property="og:description" content="The _UnifiedPush Server_ supports a Node Sender API. This version of the sender is compatible with the 1.1x series of the UnifiedPush Server. "/><meta property="og:image" content="https://aerogear.org/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://aerogear.org/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli&amp;display=swap"/><link rel="stylesheet" href="/css/code-blocks-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="UnifiedPush Server"/></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/introduction/ups-overview" target="_self">Documentation</a></li><li class=""><a href="https://github.com/aerogear/aerogear-unifiedpush-server" target="_self">GitHub</a></li><li class=""><a href="/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Unified Push Server SDK</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Introduction<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/introduction/ups-overview">Overview</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/ups-terminology">Useful Terminology</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/push-notifications">Push Notifications</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/how-it-works">How the UnifiedPush Server works</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/use-cases">Use-cases and scenarios</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Running Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/running">Running Unified Push</a></li><li class="navListItem"><a class="navItem" href="/docs/jms">JMS Broker Configuration</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Configuring Variants<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/variants/android">Android Variant</a></li><li class="navListItem"><a class="navItem" href="/docs/variants/ios">iOS Variant</a></li><li class="navListItem"><a class="navItem" href="/docs/variants/webpush">WebPush Variant</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Configuring Clients<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/clients/android-client">Android Client</a></li><li class="navListItem"><a class="navItem" href="/docs/clients/ios-client">iOS Client</a></li><li class="navListItem"><a class="navItem" href="/docs/clients/webpush-client">Webpush Client</a></li><li class="navListItem"><a class="navItem" href="/docs/clients/cordova-client">Cordova Client</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Unified Push Server SDK<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/server_sdk/javasender">Java Sender API</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/server_sdk/nodesender">Node Sender API</a></li><li class="navListItem"><a class="navItem" href="/docs/server_sdk/restfulsender">RESTful Sender API</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Maintaining Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/maintenance">Maintaining Unified Push</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Extending Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/extending">Developing Unified Push</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Node Sender API</h1></header><article><div><span><p>The <em>UnifiedPush Server</em> supports a Node Sender API. This version of the sender is compatible with the 1.1x series of the UnifiedPush Server.</p>
+<h2><a class="anchor" aria-hidden="true" id="getting-started"></a><a href="#getting-started" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Getting Started</h2>
+<p>The sender dependency must be added to your project, this can be done by:</p>
+<p><code>npm i unifiedpush-node-sender</code></p>
+<h2><a class="anchor" aria-hidden="true" id="usage"></a><a href="#usage" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Usage</h2>
+<p>The sender is created in your application with the following, where <code>url</code>, <code>applicationId</code>, <code>masterSecret</code> are values from your <em>UnifiedPush Server</em></p>
+<pre><code class="hljs css language-Javascript"><span class="hljs-keyword">const</span> agSender = <span class="hljs-built_in">require</span>(<span class="hljs-string">'unifiedpush-node-sender'</span>);
+
+<span class="hljs-keyword">const</span> settings = {
+    <span class="hljs-attr">url</span>: <span class="hljs-string">'&lt;yourPushServerURL e.g http://localhost:9999/&gt;'</span>,
+    <span class="hljs-attr">applicationId</span>: <span class="hljs-string">'&lt;yourPushApplicationId e.g. B868CC08-BCC8-4A0A-B21E-1AC56AF0C734&gt;'</span>,
+    <span class="hljs-attr">masterSecret</span>: <span class="hljs-string">'&lt;yourMasterSecret e.g. 4L30AV41-3278-4983-8F99-0EEA138J7O1I&gt;'</span>
+};
+</code></pre>
+<p>Sending a message involves first, getting a handle on the client object and using <code>client.sender.send</code> method to send a single message.</p>
+<pre><code class="hljs css language-Javascript">agSender(settings).then(<span class="hljs-function">(<span class="hljs-params">client</span>) =&gt;</span> {
+    client.sender.send(message, options).then(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'success'</span>, response);
+    })
+});
+</code></pre>
+<p>This is an example of what sending a single message would look like:</p>
+<pre><code class="hljs css language-Javascript"><span class="hljs-keyword">const</span> agSender = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./'</span>);
+
+<span class="hljs-keyword">const</span> settings = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./settings.json'</span>);
+
+<span class="hljs-keyword">const</span> message = {
+    <span class="hljs-attr">alert</span>: <span class="hljs-string">'Hello World!'</span>,
+    <span class="hljs-attr">sound</span>: <span class="hljs-string">'alarm'</span>,
+    <span class="hljs-attr">badge</span>: <span class="hljs-string">'1'</span>,
+    <span class="hljs-attr">userData</span>: {
+        <span class="hljs-attr">someKey</span>: <span class="hljs-string">'a value'</span>,
+        <span class="hljs-attr">anotherCustomKey</span>: <span class="hljs-string">'another value'</span>
+    }
+};
+
+<span class="hljs-keyword">const</span> options = {
+    <span class="hljs-attr">config</span>: {
+        <span class="hljs-attr">ttl</span>: <span class="hljs-number">3600</span>,
+    },
+    <span class="hljs-attr">criteria</span>: {
+        <span class="hljs-attr">variants</span>: [<span class="hljs-string">'1234'</span>, <span class="hljs-string">'5678'</span>],
+        <span class="hljs-attr">categories</span>: [<span class="hljs-string">'category1'</span>, <span class="hljs-string">'category3'</span>, <span class="hljs-string">'category5'</span>]
+    }
+};
+
+
+agSender(settings).then(<span class="hljs-function">(<span class="hljs-params">client</span>) =&gt;</span> {
+    client.sender.send(message, options).then(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'success'</span>, response);
+    })
+});
+</code></pre>
+<p>Sending multiple messages is a similar process but instead uses the <code>sendBatch</code> method
+to pass an array of <code>{message, options}</code> objects.</p>
+<pre><code class="hljs css language-Javascript">agSender(settings).then(<span class="hljs-function">(<span class="hljs-params">client</span>) =&gt;</span> {
+    client.sender.sendBatch(messages).then(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'success'</span>, response);
+    })
+});
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="api-documentation"></a><a href="#api-documentation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>API Documentation</h2>
+<p>The Sender class returns a promise with the <code>client</code> object which contains a <code>settings</code> object for the particular client. The Sender settings consists of the:</p>
+<ul>
+<li><code>url</code>  String - The URL of the Unified Push Server.</li>
+<li><code>applicationId</code> String - The ID of an Application from the Unified Push Sever.</li>
+<li><code>masterSecret</code> String - The master secret for that Application.</li>
+<li><code>headers</code> Object - The hash of custom HTTP headers/ header overrides .</li>
+</ul>
+<p>The <code>message</code> object that gets sent is made up of the following parameters:</p>
+<ul>
+<li><code>alert</code> String - message that will be displayed on the alert UI element.</li>
+<li><code>priority</code> String - sets a processing priority on a push message, values can be 'NORMAL' or 'HIGH'.</li>
+<li><code>sound</code> String - The name of a sound file.</li>
+<li><code>badge</code> String - The Number to display as the badge of the app icon.</li>
+<li><code>userData</code> Object - any extra user data to be passed.</li>
+</ul>
+<p>For Applications on Apple devices/products there is a <code>message.apns</code> object</p>
+<ul>
+<li><code>title</code> String - Describes the purpose of the notification.</li>
+<li><code>action</code> String - The label of the action button.</li>
+<li><code>urlArgs</code> Array - An array of values that are paired with the placeholders inside the url FormatString value of your website.json file. Safari Only.</li>
+<li><code>titleLockey</code> String - Only for iOS, contains the key to a title string in the <code>Localizable.strings</code> file for the current localization.</li>
+<li><code>titleLocArgs</code> Array - Only for iOS, variable strings values appear in place of the format specifiers in <code>title-loc-key</code>.</li>
+<li><code>actionCategory</code> String - The Identifier of the action category for the interactive notification.</li>
+<li><code>contentAvailable</code> Boolean - Only for iOS, provide this key with a value of 1 to indicate that new content is available.</li>
+</ul>
+<p>The <code>options</code> Object is made up of two sub parts, the <code>options.config</code> object and the <code>options.criteria</code> object</p>
+<ul>
+<li><p><code>options.config</code></p>
+<ul>
+<li><code>ttl</code> Number - The time to live in second. This value is supported by APNS and FCM only.</li>
+</ul></li>
+<li><p><code>options.criteria</code></p>
+<ul>
+<li><code>alias</code> Array - A list of email or name strings.</li>
+<li><code>deviceType</code> Array - A list of device types as strings.</li>
+<li><code>categories</code> Array - A list of categories as strings.</li>
+<li><code>variants</code> Array - A list of variantID's as strings.</li>
+</ul></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="response-codes"></a><a href="#response-codes" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Response Codes</h2>
+<p>Two different response messages can be expected</p>
+<p>A <code>202 message</code> will be received on a successful connection to the <em>UnifiedPush Server</em></p>
+<p>A <code>401 message</code> will be received on an authorization failure between the caller and the <em>UnifiedPush Server</em>. This would indicate that the <code>variantId</code> or the <code>masterSecret</code> are incorrect.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/server_sdk/javasender"><span class="arrow-prev">← </span><span>Java Sender API</span></a><a class="docs-next button" href="/docs/server_sdk/restfulsender"><span>RESTful Sender API</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#getting-started">Getting Started</a></li><li><a href="#usage">Usage</a></li><li><a href="#api-documentation">API Documentation</a></li><li><a href="#response-codes">Response Codes</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"></a><div><h5>Docs</h5><a href="/docs/en/introduction/ups-overview.html">Getting Started</a></div><div><h5>Community</h5><a href="//help">Help</a><a href="https://groups.google.com/forum/#!forum/aerogear">AeroGear mailing list</a><a href="https://stackoverflow.com/questions/tagged/aerogear" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>Social</h5><a class="github-button" href="https://github.com/AeroGear/undefined" data-count-href="https://github.com/AeroGear/undefined/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">UnifiedPush Server</a><div class="social"><a href="https://twitter.com/aerogears" class="twitter-follow-button">Follow @aerogears</a></div></div></section><section class="copyright">Copyright © 2020 the AeroGear team</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

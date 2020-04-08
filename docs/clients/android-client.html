@@ -1,0 +1,193 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Configuring an Android Client · UnifiedPush Server</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Before you begin configuring an Android application to receive push messages, you should have the following installed, available, or configured as appropriate."/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Configuring an Android Client · UnifiedPush Server"/><meta property="og:type" content="website"/><meta property="og:url" content="https://aerogear.org/"/><meta property="og:description" content="Before you begin configuring an Android application to receive push messages, you should have the following installed, available, or configured as appropriate."/><meta property="og:image" content="https://aerogear.org/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://aerogear.org/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli&amp;display=swap"/><link rel="stylesheet" href="/css/code-blocks-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="UnifiedPush Server"/></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/introduction/ups-overview" target="_self">Documentation</a></li><li class=""><a href="https://github.com/aerogear/aerogear-unifiedpush-server" target="_self">GitHub</a></li><li class=""><a href="/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Configuring Clients</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Introduction<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/introduction/ups-overview">Overview</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/ups-terminology">Useful Terminology</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/push-notifications">Push Notifications</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/how-it-works">How the UnifiedPush Server works</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/use-cases">Use-cases and scenarios</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Running Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/running">Running Unified Push</a></li><li class="navListItem"><a class="navItem" href="/docs/jms">JMS Broker Configuration</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Configuring Variants<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/variants/android">Android Variant</a></li><li class="navListItem"><a class="navItem" href="/docs/variants/ios">iOS Variant</a></li><li class="navListItem"><a class="navItem" href="/docs/variants/webpush">WebPush Variant</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Configuring Clients<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem navListItemActive"><a class="navItem" href="/docs/clients/android-client">Android Client</a></li><li class="navListItem"><a class="navItem" href="/docs/clients/ios-client">iOS Client</a></li><li class="navListItem"><a class="navItem" href="/docs/clients/webpush-client">Webpush Client</a></li><li class="navListItem"><a class="navItem" href="/docs/clients/cordova-client">Cordova Client</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Unified Push Server SDK<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/server_sdk/javasender">Java Sender API</a></li><li class="navListItem"><a class="navItem" href="/docs/server_sdk/nodesender">Node Sender API</a></li><li class="navListItem"><a class="navItem" href="/docs/server_sdk/restfulsender">RESTful Sender API</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Maintaining Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/maintenance">Maintaining Unified Push</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Extending Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/extending">Developing Unified Push</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Configuring an Android Client</h1></header><article><div><span><p>Before you begin configuring an Android application to receive push messages, you should have the following installed, available, or configured as appropriate.</p>
+<ul>
+<li>Android Studio</li>
+<li>Google Firebase Account</li>
+<li>Android Emulator or device with Google Play Services</li>
+<li>Unified Push with an Android Variant Configured</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="overview"></a><a href="#overview" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Overview</h2>
+<p>Unified Push makes use of Google's Firebase Cloud Messaging service (FCM).  Before you can use push messages with Android you will need to create a Firebase project.  Android Studio can guide you through this process.  Once you have your Firebase project set up, you can enable Firebase in your Android application.  Like before, Android Studio has tools to facilitate this.  These steps are covered in the section <em>Firebase Configuration with Android Studio</em>.</p>
+<p>Once you have Firebase configured in your application, you can configure Unified Push.  This involves adding the Unified Push libraries to your Android project, and adding a configuration file to your assets folder.  With the configuration in place, you can begin using the Unified Push SDK. Configuration and usage are discussed beginning with the section <em>Configure the Unified Push SDK</em></p>
+<h2><a class="anchor" aria-hidden="true" id="firebase-configuration-with-android-studio"></a><a href="#firebase-configuration-with-android-studio" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Firebase Configuration with Android Studio</h2>
+<p>Android Studio can automate much of the Firebase integration process using the Firebase Assistant.</p>
+<p>Access the assistant from the <strong>Tools &gt; Firebase</strong> menu item.</p>
+<blockquote>
+<p><img src="/docs/assets/android/android_studio_tools_menu_firebase.png" alt="Load Firebase Assistant"></p>
+</blockquote>
+<p>In the assistant select <strong>Set up Firebase Cloud Messaging</strong>.</p>
+<blockquote>
+<p><img src="/docs/assets/android/android_studio_firebase_assistant.png" alt="Load Firebase Assistant"></p>
+</blockquote>
+<p>Then follow the wizards launched by the <em>Connect to Firebase</em>.  The Firebase project name you choose to use should match the name of the Firebase project you used to configure your Android Variant.</p>
+<blockquote>
+<p><img src="/docs/assets/android/android_studio_connect_to_firebase_dialog.png" alt="Connect To Firebase"></p>
+</blockquote>
+<p>Finally, press the <em>Add FCM to your app</em> button and Android Studio will configure your build files so that your application can connect to Firebase.</p>
+<blockquote>
+<p><img src="/docs/assets/android/android_studio_firebase_build_file.png" alt="Firebase Build File Wizard"></p>
+</blockquote>
+<p>The other steps in the Firebase Assistant are handled by Unified Push and its SDKs and may be ignored.</p>
+<h2><a class="anchor" aria-hidden="true" id="configure-the-unified-push-sdk"></a><a href="#configure-the-unified-push-sdk" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Configure the Unified Push SDK</h2>
+<p>The Unified Push SDK needs to be added to your project and configured.</p>
+<p>To add the SDK to your project, add the following to you application's build.gradle dependencies:</p>
+<pre><code class="hljs css language-gradle">    implementation <span class="hljs-string">'org.jboss.aerogear:aerogear-android-push:5.1.0'</span>
+</code></pre>
+<p>Now create a file <code>push-config.json</code> in <code>app/src/main/assets</code> folder.  Use the following template and copy the value from your variant in the Unified Push admin console.</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"pushServerURL"</span>: <span class="hljs-string">"pushServerURL (e.g http(s)//host:port/context)"</span>,
+  <span class="hljs-attr">"android"</span>: {
+    <span class="hljs-attr">"senderID"</span>: <span class="hljs-string">"senderID (e.g Google Project ID only for android)"</span>,
+    <span class="hljs-attr">"variantID"</span>: <span class="hljs-string">"variantID (e.g. 1234456-234320)"</span>,
+    <span class="hljs-attr">"variantSecret"</span>: <span class="hljs-string">"variantSecret (e.g. 1234456-234320)"</span>
+  }
+}
+</code></pre>
+<p>Ensure that you put valid values on those params, otherwise you would be unable to register and receive notifications from the UnifiedPush server. Invalid configuration params are a very common source of problems, so please revisit them if you are experiencing problems.</p>
+<h2><a class="anchor" aria-hidden="true" id="register-with-unified-push"></a><a href="#register-with-unified-push" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Register With Unified Push</h2>
+<p>The entry point for registration is the <a href="https://github.com/aerogear/aerogear-android-push/blob/master/library/src/main/java/org/jboss/aerogear/android/unifiedpush/RegistrarManager.java">RegistrarManager</a>. This is a <em>factory</em> of different implementations of the <a href="https://github.com/aerogear/aerogear-android-push/blob/master/library/src/main/java/org/jboss/aerogear/android/unifiedpush/PushRegistrar.java">PushRegistrar</a> interface which contain the actual registration/unregistration methods.</p>
+<p>By default, the method will return an implementation that supports registration with the UnifiedPush server. Having the flexibility of a factory method, allows us in the future to expand it to support other different message brokers under a common messaging interface.</p>
+<p>Since the registration setup is an one-step process not bound to any Android 'Activity', let's encapsulate it in a subclass of an Android <a href="http://developer.android.com/reference/android/app/Application.html">Application</a>.</p>
+<p>Create a new class, name it <code>PushApplication</code> and paste the following code:</p>
+<pre><code class="hljs css language-java"><span class="hljs-keyword">package</span> com.push.pushapplication;
+
+<span class="hljs-keyword">import</span> android.app.Application;
+
+<span class="hljs-keyword">import</span> org.jboss.aerogear.android.unifiedpush.PushRegistrar;
+<span class="hljs-keyword">import</span> org.jboss.aerogear.android.unifiedpush.RegistrarManager;
+<span class="hljs-keyword">import</span> org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushJsonConfiguration;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PushApplication</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Application</span> </span>{
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PUSH_REGISTAR_NAME = <span class="hljs-string">"myPushRegistar"</span>;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">super</span>.onCreate();
+
+        PushRegistrar pushRegistrar = RegistrarManager
+                .config(PUSH_REGISTAR_NAME, AeroGearFCMPushJsonConfiguration<span class="hljs-class">.<span class="hljs-keyword">class</span>)
+                .<span class="hljs-title">loadConfigJson</span>(<span class="hljs-title">getApplicationContext</span>())
+                .<span class="hljs-title">asRegistrar</span>()</span>;
+
+    }
+
+}
+
+</code></pre>
+<p>The setup of the registration happens on the <code>onCreate</code> lifecycle method called when Android first initializes your application. It will create (and store) a <a href="https://github.com/aerogear/aerogear-android-push/blob/master/library/src/main/java/org/jboss/aerogear/android/unifiedpush/PushRegistrar.java">PushRegistrar</a> object based on <code>push-config.json</code> configuration declared earlier. This object together with a name (it can be anything you choose) are passed as params on the <code>config</code> factory method to create the <code>PushRegistrar</code> object.</p>
+<p>We are now ready to call <em>PushRegistrar:register</em> method to register our device in the UnifiedPush server. The following code goes after you assign the pushRegistrar in your Application class.</p>
+<pre><code class="hljs css language-java">
+    pushRegistrar.register(getApplicationContext(), <span class="hljs-keyword">new</span> Callback&lt;Void&gt;() {
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onSuccess</span><span class="hljs-params">(Void data)</span> </span>{
+            Log.d(TAG, <span class="hljs-string">"Registration Succeeded"</span>);
+            Toast.makeText(getApplicationContext(),
+                    <span class="hljs-string">"Yay, Device registered"</span>, Toast.LENGTH_LONG).show();
+        }
+
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onFailure</span><span class="hljs-params">(Exception e)</span> </span>{
+            Log.e(TAG, e.getMessage(), e);
+            Toast.makeText(getApplicationContext(),
+                    <span class="hljs-string">"Ops, something is wrong :("</span>, Toast.LENGTH_LONG).show();
+        }
+    });
+
+</code></pre>
+<p>Don't forget to configure the Application class in <code>AndroidManifest.xml</code></p>
+<pre><code class="hljs css language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">application</span>
+    <span class="hljs-attr">android:name</span>=<span class="hljs-string">".PushApplication"</span>
+    <span class="hljs-attr">...</span>
+/&gt;</span>
+</code></pre>
+<p>That is all what is needed to register with the UnifiedPush server! Note that we didn't have to write any code to register the device with FCM. The library takes care off all the plumbing to register the device with FCM, obtain the <code>registrationId</code> and submit it to the UnifiedPush server.</p>
+
+    <div class="admonition admonition-note">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16"><path fill-rule="evenodd" d="M6.3 5.69a.942.942 0 0 1-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 0 1-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"/></svg></div> note</h5>
+      </div>
+      <div class="admonition-content">
+    <p>If you don't see the <em>Registration Succeeded</em> popup, means that an error has occurred during the registration. Switch to the LogCat console in Android Studio to locate the exception and act accordingly.</p>
+</div></div><h2><a class="anchor" aria-hidden="true" id="register-message-handlers"></a><a href="#register-message-handlers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Register Message Handlers</h2>
+<p>Classes which implement the MessageHandler interface may be registered with the Unified Push SDK to handle notifications send from the Unified Push Server.  These classes may be executed on the main thread, or in background threads.  You may also provide a default handler that is executed if a message is received while your application is not running.</p>
+<h3><a class="anchor" aria-hidden="true" id="registering-and-unregistering-and-the-activity-life-cycle"></a><a href="#registering-and-unregistering-and-the-activity-life-cycle" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Registering and Unregistering and The Activity life cycle</h3>
+<p>When your Activity comes into the foreground you will want to register any MessageHandlers that need to run in the main thread.  Likewise when your Activity is in the background, you will want to have your main thread handlers disabled.  You may do this by overriding the onPause and onResume methods.</p>
+<p>At a minimum, your code should resemble :</p>
+<pre><code class="hljs css language-java"><span class="hljs-comment">//messageHandler is a field that points to a messageHandler</span>
+
+<span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onResume</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">super</span>.onResume();
+    RegistrarManager.registerMainThreadHandler(messageHandler); 
+}
+
+<span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onPause</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">super</span>.onPause();
+    RegistrarManager.unregisterMainThreadHandler(messageHandler); 
+}
+</code></pre>
+<p>If you wish, you may also have background thread handlers.</p>
+<pre><code class="hljs css language-java">RegistrarManager.unregisterBackgroundThreadHandler(messageHandler);
+</code></pre>
+<pre><code class="hljs"><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">RegistrarManager</span>.</span></span>register<span class="hljs-constructor">BackgroundThreadHandler(<span class="hljs-params">messageHandler</span>)</span>;
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="hello-world-example"></a><a href="#hello-world-example" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Hello World Example</h2>
+<p>The AeroGear project provides an example UnifiedPush application in their <a href="https://github.com/aerogear/unifiedpush-cookbook/tree/master/HelloPush">unifiedpush-cookbook repository</a></p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/variants/webpush"><span class="arrow-prev">← </span><span class="function-name-prevnext">WebPush Variant</span></a><a class="docs-next button" href="/docs/clients/ios-client"><span class="function-name-prevnext">iOS Client</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#overview">Overview</a></li><li><a href="#firebase-configuration-with-android-studio">Firebase Configuration with Android Studio</a></li><li><a href="#configure-the-unified-push-sdk">Configure the Unified Push SDK</a></li><li><a href="#register-with-unified-push">Register With Unified Push</a></li><li><a href="#register-message-handlers">Register Message Handlers</a><ul class="toc-headings"><li><a href="#registering-and-unregistering-and-the-activity-life-cycle">Registering and Unregistering and The Activity life cycle</a></li></ul></li><li><a href="#hello-world-example">Hello World Example</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"></a><div><h5>Docs</h5><a href="/docs/en/introduction/ups-overview.html">Getting Started</a></div><div><h5>Community</h5><a href="//help">Help</a><a href="https://groups.google.com/forum/#!forum/aerogear">AeroGear mailing list</a><a href="https://stackoverflow.com/questions/tagged/aerogear" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>Social</h5><a class="github-button" href="https://github.com/AeroGear/undefined" data-count-href="https://github.com/AeroGear/undefined/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">UnifiedPush Server</a><div class="social"><a href="https://twitter.com/aerogears" class="twitter-follow-button">Follow @aerogears</a></div></div></section><section class="copyright">Copyright © 2020 the AeroGear team</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

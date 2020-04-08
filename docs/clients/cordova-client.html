@@ -1,0 +1,293 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Configuring a Cordova Client · UnifiedPush Server</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content=":::important"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Configuring a Cordova Client · UnifiedPush Server"/><meta property="og:type" content="website"/><meta property="og:url" content="https://aerogear.org/"/><meta property="og:description" content=":::important"/><meta property="og:image" content="https://aerogear.org/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://aerogear.org/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli&amp;display=swap"/><link rel="stylesheet" href="/css/code-blocks-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="UnifiedPush Server"/></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/introduction/ups-overview" target="_self">Documentation</a></li><li class=""><a href="https://github.com/aerogear/aerogear-unifiedpush-server" target="_self">GitHub</a></li><li class=""><a href="/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Configuring Clients</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Introduction<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/introduction/ups-overview">Overview</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/ups-terminology">Useful Terminology</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/push-notifications">Push Notifications</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/how-it-works">How the UnifiedPush Server works</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/use-cases">Use-cases and scenarios</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Running Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/running">Running Unified Push</a></li><li class="navListItem"><a class="navItem" href="/docs/jms">JMS Broker Configuration</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Configuring Variants<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/variants/android">Android Variant</a></li><li class="navListItem"><a class="navItem" href="/docs/variants/ios">iOS Variant</a></li><li class="navListItem"><a class="navItem" href="/docs/variants/webpush">WebPush Variant</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Configuring Clients<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/clients/android-client">Android Client</a></li><li class="navListItem"><a class="navItem" href="/docs/clients/ios-client">iOS Client</a></li><li class="navListItem"><a class="navItem" href="/docs/clients/webpush-client">Webpush Client</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/clients/cordova-client">Cordova Client</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Unified Push Server SDK<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/server_sdk/javasender">Java Sender API</a></li><li class="navListItem"><a class="navItem" href="/docs/server_sdk/nodesender">Node Sender API</a></li><li class="navListItem"><a class="navItem" href="/docs/server_sdk/restfulsender">RESTful Sender API</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Maintaining Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/maintenance">Maintaining Unified Push</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Extending Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/extending">Developing Unified Push</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Configuring a Cordova Client</h1></header><article><div><span>
+    <div class="admonition admonition-important">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"/></svg></div> important</h5>
+      </div>
+      <div class="admonition-content">
+    <p>Before you begin configuring a Cordova application to receive push messages, you should have the following installed, available, or configured as appropriate:</p>
+<ul>
+<li>Java 8 (no newer versions since they would cause errors with the <code>advmanager</code>)</li>
+<li>Node.js</li>
+<li>Cordova (see <a href="https://cordova.apache.org/docs">Cordova Documentation</a>)</li>
+<li><a href="https://developer.android.com/studio">Android Studio</a> if developing for an Android platform</li>
+<li>XCode if developing for an iOS platform</li>
+</ul>
+</div></div><p>In this document we will give step by step instructions to build a very simple application that is able to receive push notifications
+using the <em>aerogear push sdk</em>.</p>
+
+    <div class="admonition admonition-tip">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16"><path fill-rule="evenodd" d="M6.5 0C3.48 0 1 2.19 1 5c0 .92.55 2.25 1 3 1.34 2.25 1.78 2.78 2 4v1h5v-1c.22-1.22.66-1.75 2-4 .45-.75 1-2.08 1-3 0-2.81-2.48-5-5.5-5zm3.64 7.48c-.25.44-.47.8-.67 1.11-.86 1.41-1.25 2.06-1.45 3.23-.02.05-.02.11-.02.17H5c0-.06 0-.13-.02-.17-.2-1.17-.59-1.83-1.45-3.23-.2-.31-.42-.67-.67-1.11C2.44 6.78 2 5.65 2 5c0-2.2 2.02-4 4.5-4 1.22 0 2.36.42 3.22 1.19C10.55 2.94 11 3.94 11 5c0 .66-.44 1.78-.86 2.48zM4 14h5c-.23 1.14-1.3 2-2.5 2s-2.27-.86-2.5-2z"/></svg></div>  Running the samples in the android emulator</h5>
+      </div>
+      <div class="admonition-content">
+    <p>This documentation will use the <code>cordova emulate android</code> command to run the samples. This command expects the emulator to be already up and running.
+To start the emulator use the <code>emulator @AVDMNAME -no-snapshot-load</code> commmand, replacing <em>AVDNAME</em> with your AVD.
+To have the list of AVDS use <code>emulator -list-avds</code></p>
+<p>The <code>emulator</code> command can be found in the <code>emulator</code> folder of the <em>Android SDK</em>.</p>
+</div></div><h2><a class="anchor" aria-hidden="true" id="create-a-new-project"></a><a href="#create-a-new-project" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Create a new project</h2>
+<p>To create a new cordova application, run the following command:</p>
+<pre><code class="hljs css language-bash">cordova create upshello org.aerogear.PushHelloWorld UpsHelloWorld
+<span class="hljs-built_in">cd</span> upshello
+cordova platform add ios
+cordova platform add android
+</code></pre>
+<p>This will create an application named <code>UpsHelloWorld</code> inside the <code>upshello</code> folder with package <code>org.aerogear.PushHelloWorld</code>.
+The two <code>platform add</code> commands will add the platforms we want to target (in this example <em>iOS</em> and <em>Android</em>).</p>
+<p>Now check that all the requirements are installed with:</p>
+<pre><code class="hljs css language-bash">cordova requirements
+</code></pre>
+<p>If any of the requirements is not satisfied, fix them before continuing.</p>
+<p>Two commonly missing requirements are:</p>
+<ul>
+<li>The SDK. To install the SDK:
+<ol>
+<li>Open <em>Android Studio</em></li>
+<li>Click on <em>Tools -&gt; SDK Manager</em></li>
+<li>Select <em>Android SDK</em> and check <em>Android 9.0 Pie</em></li>
+<li>Click on <em>Apply</em></li>
+</ol></li>
+<li>The <code>gradle</code> tool. The installation of <code>gradle</code> depends on the platform you are running on (see <a href="https://gradle.org/install/">Gradle Installation</a>)</li>
+</ul>
+<p>If all the requisites are satisfied, test that everything works by running:</p>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-1-tab-2" class="nav-link active" data-group="group_1" data-tab="tab-group-1-content-2">Android</div><div id="tab-group-1-tab-3" class="nav-link" data-group="group_1" data-tab="tab-group-1-content-3">iOS</div></div><div class="tab-content"><div id="tab-group-1-content-2" class="tab-pane active" data-group="group_1" tabindex="-1"><div><span><pre><code class="hljs css language-bash">cordova build<br />cordova <span class="hljs-built_in">emulate</span> android<br /></code></pre>
+</span></div></div><div id="tab-group-1-content-3" class="tab-pane" data-group="group_1" tabindex="-1"><div><span><pre><code class="hljs css language-bash">cordova build<br />cordova <span class="hljs-built_in">emulate</span> ios<br /></code></pre>
+</span></div></div></div></div>
+
+    <div class="admonition admonition-important">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"/></svg></div> important</h5>
+      </div>
+      <div class="admonition-content">
+    <p>To avoid <em>signing issues</em> when running on iOS, do not connect any iOS device to your development machine.</p>
+</div></div><h3><a class="anchor" aria-hidden="true" id="installing-the-push-libraries"></a><a href="#installing-the-push-libraries" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Installing the push libraries</h3>
+<p>To be able to use the <em>push sdk</em> you will need to install the following packages:</p>
+<ul>
+<li>cordova-plugin-device: this is used by the SDK to detect the platform the sdk is running on</li>
+<li>@aerogear/cordova-plugin-aerogear-push: this is the cordova plugin for the <em>push sdk</em></li>
+<li>@aerogear/push: this is the <em>push sdk</em> package</li>
+</ul>
+<p>To install those packages, run:</p>
+<pre><code class="hljs css language-bash">cordova plugin add @aerogear/cordova-plugin-aerogear-push
+cordova plugin add cordova-plugin-device
+npm install --save @aerogear/push
+</code></pre>
+
+    <div class="admonition admonition-note">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16"><path fill-rule="evenodd" d="M6.3 5.69a.942.942 0 0 1-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 0 1-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"/></svg></div> note</h5>
+      </div>
+      <div class="admonition-content">
+    <p>If you are targeting an android device, you will need to put the <code>google-services.json</code> file into the <code>platforms/android/app</code> folder.</p>
+<p>To get that file, you must create an app in your <em>FireBase</em> account (with package <code>org.aerogear.PushHelloWorld</code>) and download it from there.</p>
+</div></div><h3><a class="anchor" aria-hidden="true" id="installing-webpack"></a><a href="#installing-webpack" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Installing webpack</h3>
+<p>The following steps will be needed to correctly install webpack:</p>
+<ol>
+<li>install the <code>cordova-plugin-webpack</code> plugin
+<pre><code class="hljs css language-bash">$ cordova plugin add cordova-plugin-webpack    
+</code></pre></li>
+<li>create an <code>src</code> folder
+<pre><code class="hljs css language-bash">$ mkdir src
+</code></pre></li>
+<li>move the <code>index.js</code> file from <code>www/js</code> to <code>src</code>
+<pre><code class="hljs css language-bash">$ mv www/js/index.js src
+</code></pre></li>
+<li>create a configuration file for <em>webpack</em>
+<pre><code class="hljs css language-bash">$ <span class="hljs-built_in">echo</span> <span class="hljs-string">"const path = require('path');
+  module.exports = {
+    mode: 'development',
+    entry: './src/index.js',
+    output: {
+      path: path.resolve(__dirname, 'www/js'),
+      filename: 'index.js',
+    },
+    devtool: 'inline-source-map',
+  };"</span> &gt; webpack.config.js
+</code></pre></li>
+</ol>
+<h3><a class="anchor" aria-hidden="true" id="enabling-clear-text-connection"></a><a href="#enabling-clear-text-connection" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Enabling clear-text connection</h3>
+<p>If your <em>UnifiedPush Server</em> is exposed on an <code>http</code> address, you will need to enable <em>clear-text</em> connection in your
+application by editing the <em>Content Security Policy</em> in your <code>www/index.html</code> file</p>
+<p>Change</p>
+<pre><code class="hljs css language-html"><span class="hljs-tag">&lt;<span class="hljs-name">meta</span> 
+    <span class="hljs-attr">http-equiv</span>=<span class="hljs-string">"Content-Security-Policy"</span> 
+    <span class="hljs-attr">content</span>=<span class="hljs-string">"default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;"</span>&gt;</span>
+</code></pre>
+<p>to</p>
+<pre><code class="hljs css language-html"><span class="hljs-tag">&lt;<span class="hljs-name">meta</span> 
+    <span class="hljs-attr">http-equiv</span>=<span class="hljs-string">"Content-Security-Policy"</span> 
+    <span class="hljs-attr">content</span>=<span class="hljs-string">"default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:; connect-src http://*:*"</span>&gt;</span>
+</code></pre>
+
+    <div class="admonition admonition-caution">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16"><path fill-rule="evenodd" d="M5.05.31c.81 2.17.41 3.38-.52 4.31C3.55 5.67 1.98 6.45.9 7.98c-1.45 2.05-1.7 6.53 3.53 7.7-2.2-1.16-2.67-4.52-.3-6.61-.61 2.03.53 3.33 1.94 2.86 1.39-.47 2.3.53 2.27 1.67-.02.78-.31 1.44-1.13 1.81 3.42-.59 4.78-3.42 4.78-5.56 0-2.84-2.53-3.22-1.25-5.61-1.52.13-2.03 1.13-1.89 2.75.09 1.08-1.02 1.8-1.86 1.33-.67-.41-.66-1.19-.06-1.78C8.18 5.31 8.68 2.45 5.05.32L5.03.3l.02.01z"/></svg></div> caution</h5>
+      </div>
+      <div class="admonition-content">
+    <p>In this example, we enabled <em>clear-text</em> on <em>every site</em>. A better choice would be to put the <em>IP Address</em> of your <em>UnifiedPush Server</em> instead of the <em>*</em></p>
+</div></div><p>If you are targeting <em>android</em> you will have to add this to your <code>config.xml</code> file</p>
+<pre><code class="hljs css language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">edit-config</span> <span class="hljs-attr">file</span>=<span class="hljs-string">"app/src/main/AndroidManifest.xml"</span> <span class="hljs-attr">mode</span>=<span class="hljs-string">"merge"</span> <span class="hljs-attr">target</span>=<span class="hljs-string">"/manifest/application"</span> <span class="hljs-attr">xmlns:android</span>=<span class="hljs-string">"http://schemas.android.com/apk/res/android"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">application</span> <span class="hljs-attr">android:usesCleartextTraffic</span>=<span class="hljs-string">"true"</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">edit-config</span>&gt;</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="register-the-application-with-the-unifiedpush-server"></a><a href="#register-the-application-with-the-unifiedpush-server" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Register the application with the UnifiedPush Server</h2>
+<p>To register the application, you must use the <code>PushRegistration</code> object from the <code>@aerogear/push</code> package with a code
+similar to the following:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">register</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Registering...'</span>);
+  <span class="hljs-keyword">new</span> PushRegistration({
+      <span class="hljs-attr">url</span>: <span class="hljs-string">'http://192.168.1.187:9999'</span>,  <span class="hljs-comment">// change this to your UPS URL</span>
+      <span class="hljs-attr">android</span>: { <span class="hljs-comment">// your variant platform (android, ios or webpush)</span>
+          <span class="hljs-attr">senderID</span>: <span class="hljs-string">'829475845435'</span>,  <span class="hljs-comment">// Your senderID as you see it in your Firebase Console</span>
+          <span class="hljs-attr">variantID</span>: <span class="hljs-string">'172bf953-f266-4e32-866b-662ff32d653c'</span>, <span class="hljs-comment">// The id of the variant you created</span>
+          <span class="hljs-attr">variantSecret</span>: <span class="hljs-string">'7680585e-c22e-4105-b0fc-fbcb150036d4'</span> <span class="hljs-comment">// the secret of the variant you created</span>
+      }
+  })
+  .register()
+  .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Registered!'</span>);
+  })
+  .catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Failed: '</span>, error.message, <span class="hljs-built_in">JSON</span>.stringify(error))
+  });
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="receiving-push-notifications"></a><a href="#receiving-push-notifications" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Receiving Push Notifications</h2>
+<p>Receiving <em>Push Notifications</em> is as simple as registering a callback handler:</p>
+<pre><code class="hljs css language-javascript">PushRegistration.onMessageReceived((<span class="hljs-function"><span class="hljs-params">notification</span> =&gt;</span> {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Received push notification: '</span>, notification.message);
+}));
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="complete-code"></a><a href="#complete-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Complete code</h2>
+<p>Change the <code>src/index.js</code> file with the following content:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> { PushRegistration } <span class="hljs-keyword">from</span> <span class="hljs-string">'@aerogear/push'</span>;
+
+<span class="hljs-keyword">var</span> app = {
+  <span class="hljs-comment">// Application Constructor</span>
+  <span class="hljs-attr">initialize</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'deviceready'</span>, <span class="hljs-keyword">this</span>.onDeviceReady.bind(<span class="hljs-keyword">this</span>), <span class="hljs-literal">false</span>);
+  },
+
+  <span class="hljs-comment">// deviceready Event Handler</span>
+  <span class="hljs-comment">//</span>
+  <span class="hljs-comment">// Bind any cordova events here. Common events are:</span>
+  <span class="hljs-comment">// 'pause', 'resume', etc.</span>
+  <span class="hljs-attr">onDeviceReady</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">this</span>.receivedEvent(<span class="hljs-string">'deviceready'</span>);
+  },
+
+  <span class="hljs-comment">// Update DOM on a Received Event</span>
+  <span class="hljs-attr">receivedEvent</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">id</span>) </span>{
+    <span class="hljs-keyword">var</span> parentElement = <span class="hljs-built_in">document</span>.getElementById(id);
+    <span class="hljs-keyword">var</span> listeningElement = parentElement.querySelector(<span class="hljs-string">'.listening'</span>);
+    <span class="hljs-keyword">var</span> receivedElement = parentElement.querySelector(<span class="hljs-string">'.received'</span>);
+
+    listeningElement.setAttribute(<span class="hljs-string">'style'</span>, <span class="hljs-string">'display:none;'</span>);
+    receivedElement.setAttribute(<span class="hljs-string">'style'</span>, <span class="hljs-string">'display:block;'</span>);
+
+    <span class="hljs-keyword">this</span>.registerToUPS();
+
+    PushRegistration.onMessageReceived((<span class="hljs-function"><span class="hljs-params">notification</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Received push notification: '</span>, notification.message);
+    }));
+  },
+
+  <span class="hljs-attr">registerToUPS</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Registering...'</span>);
+    <span class="hljs-keyword">new</span> PushRegistration({
+      <span class="hljs-attr">url</span>: <span class="hljs-string">'http://192.168.1.187:9999'</span>,  <span class="hljs-comment">// change this to your UPS URL</span>
+      <span class="hljs-attr">android</span>: { <span class="hljs-comment">// your variant platform (android, ios or webpush)</span>
+        <span class="hljs-attr">senderID</span>: <span class="hljs-string">'829475845435'</span>,  <span class="hljs-comment">// Your senderID as you see it in your Firebase Console</span>
+        <span class="hljs-attr">variantID</span>: <span class="hljs-string">'172bf953-f266-4e32-866b-662ff32d653c'</span>, <span class="hljs-comment">// The id of the variant you created</span>
+        <span class="hljs-attr">variantSecret</span>: <span class="hljs-string">'7680585e-c22e-4105-b0fc-fbcb150036d4'</span> <span class="hljs-comment">// the secret of the variant you created</span>
+      }
+    })
+    .register()
+    .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Registered!'</span>);
+    })
+    .catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Failed: '</span>, error.message, <span class="hljs-built_in">JSON</span>.stringify(error))
+    });
+  }
+};
+
+app.initialize();
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="running-the-application"></a><a href="#running-the-application" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Running the application</h2>
+<p>The application can run in the emulator for Android, while it needs to run on a real device for iOS (the iOS simulator
+does not support <em>push notifications</em>).</p>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-4-tab-5" class="nav-link active" data-group="group_4" data-tab="tab-group-4-content-5">Android</div><div id="tab-group-4-tab-6" class="nav-link" data-group="group_4" data-tab="tab-group-4-content-6">iOS</div></div><div class="tab-content"><div id="tab-group-4-content-5" class="tab-pane active" data-group="group_4" tabindex="-1"><div><span><ol>
+<li>Be sure that the emulator is already up and running</li>
+<li>Issue <code>cordova emulate android</code></li>
+</ol>
+</span></div></div><div id="tab-group-4-content-6" class="tab-pane" data-group="group_4" tabindex="-1"><div><span><ol>
+<li>Connect an iOS device to the USB port of your mac</li>
+<li>Run <em>XCode</em> with
+<pre><code class="hljs css language-bash">$ open platforms/ios/UpsHelloWorld.xcworkspace<br /></code></pre></li>
+<li>Configure the <em>Signing and Capabilities</em></li>
+<li>Click on the <em>run</em> icon</li>
+</ol>
+</span></div></div></div></div>
+<h3><a class="anchor" aria-hidden="true" id="throubleshooting"></a><a href="#throubleshooting" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Throubleshooting</h3>
+<h4><a class="anchor" aria-hidden="true" id="cordova-emulator-android-takes-forever-to-install-the-app-into-the-emulator"></a><a href="#cordova-emulator-android-takes-forever-to-install-the-app-into-the-emulator" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>cordova emulator android</code> takes forever to install the app into the emulator</h4>
+<p>This can happen when the <code>cordova emulator android</code> command is not able to install the app into the emulator.
+To solve the issue, simply close the emulator and run it again with</p>
+<pre><code class="hljs css language-bash">emulator @AVDNAME -no-snapshot-load
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/clients/webpush-client"><span class="arrow-prev">← </span><span>Webpush Client</span></a><a class="docs-next button" href="/docs/server_sdk/javasender"><span>Java Sender API</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#create-a-new-project">Create a new project</a><ul class="toc-headings"><li><a href="#installing-the-push-libraries">Installing the push libraries</a></li><li><a href="#installing-webpack">Installing webpack</a></li><li><a href="#enabling-clear-text-connection">Enabling clear-text connection</a></li></ul></li><li><a href="#register-the-application-with-the-unifiedpush-server">Register the application with the UnifiedPush Server</a></li><li><a href="#receiving-push-notifications">Receiving Push Notifications</a></li><li><a href="#complete-code">Complete code</a></li><li><a href="#running-the-application">Running the application</a><ul class="toc-headings"><li><a href="#throubleshooting">Throubleshooting</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"></a><div><h5>Docs</h5><a href="/docs/en/introduction/ups-overview.html">Getting Started</a></div><div><h5>Community</h5><a href="//help">Help</a><a href="https://groups.google.com/forum/#!forum/aerogear">AeroGear mailing list</a><a href="https://stackoverflow.com/questions/tagged/aerogear" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>Social</h5><a class="github-button" href="https://github.com/AeroGear/undefined" data-count-href="https://github.com/AeroGear/undefined/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">UnifiedPush Server</a><div class="social"><a href="https://twitter.com/aerogears" class="twitter-follow-button">Follow @aerogears</a></div></div></section><section class="copyright">Copyright © 2020 the AeroGear team</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Configuring a Webpush Client · UnifiedPush Server</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Prerequisites: to be able to follow the instructions below, you must have [Node.js](https://nodejs.org/) installed and "/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Configuring a Webpush Client · UnifiedPush Server"/><meta property="og:type" content="website"/><meta property="og:url" content="https://aerogear.org/"/><meta property="og:description" content="Prerequisites: to be able to follow the instructions below, you must have [Node.js](https://nodejs.org/) installed and "/><meta property="og:image" content="https://aerogear.org/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://aerogear.org/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli&amp;display=swap"/><link rel="stylesheet" href="/css/code-blocks-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="UnifiedPush Server"/></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/introduction/ups-overview" target="_self">Documentation</a></li><li class=""><a href="https://github.com/aerogear/aerogear-unifiedpush-server" target="_self">GitHub</a></li><li class=""><a href="/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Configuring Clients</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Introduction<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/introduction/ups-overview">Overview</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/ups-terminology">Useful Terminology</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/push-notifications">Push Notifications</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/how-it-works">How the UnifiedPush Server works</a></li><li class="navListItem"><a class="navItem" href="/docs/introduction/use-cases">Use-cases and scenarios</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Running Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/running">Running Unified Push</a></li><li class="navListItem"><a class="navItem" href="/docs/jms">JMS Broker Configuration</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Configuring Variants<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/variants/android">Android Variant</a></li><li class="navListItem"><a class="navItem" href="/docs/variants/ios">iOS Variant</a></li><li class="navListItem"><a class="navItem" href="/docs/variants/webpush">WebPush Variant</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Configuring Clients<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/clients/android-client">Android Client</a></li><li class="navListItem"><a class="navItem" href="/docs/clients/ios-client">iOS Client</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/clients/webpush-client">Webpush Client</a></li><li class="navListItem"><a class="navItem" href="/docs/clients/cordova-client">Cordova Client</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Unified Push Server SDK<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/server_sdk/javasender">Java Sender API</a></li><li class="navListItem"><a class="navItem" href="/docs/server_sdk/nodesender">Node Sender API</a></li><li class="navListItem"><a class="navItem" href="/docs/server_sdk/restfulsender">RESTful Sender API</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Maintaining Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/maintenance">Maintaining Unified Push</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Extending Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/docs/extending">Developing Unified Push</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Configuring a Webpush Client</h1></header><article><div><span><p>Prerequisites: to be able to follow the instructions below, you must have <a href="https://nodejs.org/">Node.js</a> installed and
+working and you must have a <a href="/docs/variants/webpush">WebPush Variant</a> already configured.</p>
+<p>The guide below will be a simple step-by-step guide to integrate a sample <code>React</code> application with <em>UnifiedPush Server</em>.</p>
+<h2><a class="anchor" aria-hidden="true" id="create-a-new-project"></a><a href="#create-a-new-project" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Create a new project</h2>
+<p>This guide will walk you through the creation of a <em>typescrypt React</em> application.
+To create one, run:</p>
+<pre><code class="hljs css language-bash">$ npx create-react-app hello-world-webpush --template typescript
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="add-the-required-dependencies"></a><a href="#add-the-required-dependencies" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Add the required dependencies</h2>
+<pre><code class="hljs css language-bash">$ <span class="hljs-built_in">cd</span> hello-world-webpush
+$ npm install --save @aerogear/push
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="add-the-service-worker"></a><a href="#add-the-service-worker" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Add the service worker</h2>
+<p>To be able to handle <em>push notifications</em>, a service worker is needed. In this guide we will provide a very simple implementation,
+for instructions about writing service workers please refer to the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Push_API">official documentation</a>.</p>
+<p>Inside the <code>public</code> folder, create a file named <code>simple-sw.js</code> with the following content:</p>
+<pre><code class="hljs css language-javascript">self.addEventListener(<span class="hljs-string">'install'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+  event.waitUntil(self.skipWaiting());
+});
+
+self.addEventListener(<span class="hljs-string">'push'</span>, event =&gt; {
+  <span class="hljs-keyword">const</span> msg_chan = <span class="hljs-keyword">new</span> MessageChannel();
+  event.waitUntil(
+    self.clients.matchAll().then(<span class="hljs-function"><span class="hljs-params">clientList</span> =&gt;</span> {
+      <span class="hljs-keyword">if</span> (clientList.length === <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">return</span> self.registration.showNotification(data);
+      } <span class="hljs-keyword">else</span> {
+        clientList.forEach(<span class="hljs-function"><span class="hljs-params">client</span> =&gt;</span> {
+          client.postMessage(event.data.text(), [msg_chan.port2]);
+        });
+      }
+    })
+  );
+});
+</code></pre>
+
+    <div class="admonition admonition-important">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"/></svg></div> important</h5>
+      </div>
+      <div class="admonition-content">
+    <p>By default the react template unregisters the <em>service worker</em> automatically. That must be disabled.</p>
+</div></div><p>Edit the <code>src/index.tsx</code> file and comment the <code>serviceWorker.unregister();</code> call.</p>
+<h2><a class="anchor" aria-hidden="true" id="creating-the-_helloworld_-component"></a><a href="#creating-the-_helloworld_-component" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Creating the <em>HelloWorld</em> component</h2>
+<p>We are going to create a very simple component that will display a title ('Hello World') and the messages received by UPS.
+Create a file named <em>HelloWorld.tsx</em> in the <em>src</em> folder:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+
+interface HelloWorldState {
+  message?: string,
+  <span class="hljs-attr">registered</span>: boolean
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HelloWorld</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span>&lt;</span>{}, HelloWorldState&gt; {
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">super</span>({});
+    <span class="hljs-keyword">this</span>.state = { <span class="hljs-attr">registered</span>: <span class="hljs-literal">false</span> };
+  }
+
+  private register = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-comment">// we will implement this later  </span>
+  };
+
+  private unregister = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-comment">// we will implement this later</span>
+  };
+
+  private handleRegistrationStatus = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.registered) {
+      <span class="hljs-keyword">this</span>.unregister();  
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">this</span>.register();
+    }
+  };
+
+  public render = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>{
+    <span class="hljs-keyword">return</span> (
+      <span class="xml"><span class="hljs-tag">&lt;&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello World!!!<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span>/&gt;</span>
+          { this.state.message
+              ? `UPS Says: ${this.state.message}`
+              : 'No messages received yet' }<span class="hljs-tag">&lt;<span class="hljs-name">br</span>/&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.handleRegistrationStatus}</span>&gt;</span>{this.state.registered ? "Unregister" : "Register"}<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+      <span class="hljs-tag">&lt;/&gt;</span>
+    )
+  };
+}
+</span></code></pre>
+<p>From now on, we will add here the code that integrates the <em>UnifiedPush Server</em>.</p>
+<p>We now have the <em>HelloWorld</em> component, but we still don't reference it anywhere. Edit the <code>src/App.tsx</code> file by removing
+all the scaffolding code and add the <em>HelloWorld</em> component to the page body. The result should be a content like the
+following:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'./App.css'</span>;
+
+<span class="hljs-keyword">import</span> { HelloWorld } <span class="hljs-keyword">from</span> <span class="hljs-string">'./HelloWorld'</span>;
+
+<span class="hljs-keyword">const</span> App = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">HelloWorld</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+  );
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> App;
+</code></pre>
+<p>Now we can run the app to see that everything works as expected:</p>
+<pre><code class="hljs css language-bash">$ npm run start
+</code></pre>
+<p>In the browser you should see:</p>
+<blockquote>
+<p><img src="/docs/assets/webpush/hello-world-stage1.png" alt="Stage 1"></p>
+</blockquote>
+<h2><a class="anchor" aria-hidden="true" id="add-_unifiedpush-server-integration_"></a><a href="#add-_unifiedpush-server-integration_" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Add <em>UnifiedPush Server Integration</em></h2>
+<h3><a class="anchor" aria-hidden="true" id="registrationunregistration"></a><a href="#registrationunregistration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Registration/Unregistration</h3>
+<p>The object responsible for the registration/unregistration is the <code>PushRegistration</code> class, which exposes a <code>register</code> method.
+The <code>PushRegistration</code> constructor takes a configuration object as parameters with the following structure:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> push_config = {
+  <span class="hljs-attr">url</span>: <span class="hljs-string">'your unified pushserver URL'</span>,
+  <span class="hljs-attr">webpush</span>: {
+    <span class="hljs-attr">variantID</span>: <span class="hljs-string">'the ID of the WebPush variant you created in UPS'</span>,
+    <span class="hljs-attr">variantSecret</span>: <span class="hljs-string">'the secret of the variant identified by variantID'</span>,
+    <span class="hljs-attr">appServerKey</span>: <span class="hljs-string">'your VAPID public key (you can get it by opening the variant in UPS)'</span>
+  }
+}
+</code></pre>
+<p>The <code>register</code> method takes one parameter also, with the following structure:</p>
+<pre><code class="hljs css language-javascript">{
+    <span class="hljs-attr">serviceWorker</span>: <span class="hljs-string">'service worker name'</span> <span class="hljs-comment">// in this walkthrough, simple-sw.js</span>
+}
+</code></pre>
+<p>Add a configuration object to the HelloWorld class in the <code>src/HelloWorld.tsx</code> file:</p>
+<pre><code class="hljs css language-javascript">private readonly push_config: PushInitConfig = {
+  <span class="hljs-attr">url</span>: <span class="hljs-string">'your unified pushserver URL'</span>,
+  <span class="hljs-attr">webpush</span>: {
+    <span class="hljs-attr">variantID</span>: <span class="hljs-string">'the ID of the WebPush variant you created in UPS'</span>,
+    <span class="hljs-attr">variantSecret</span>: <span class="hljs-string">'the secret of the variant identified by variantID'</span>,
+    <span class="hljs-attr">appServerKey</span>: <span class="hljs-string">'your VAPID public key (you can get it by opening the variant in UPS)'</span>
+  }
+};
+</code></pre>
+<p>Then fill the <code>register</code> and the <code>unregister</code> method:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">/**
+ * Register to the UPS
+ */</span>
+private register = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">new</span> PushRegistration(<span class="hljs-keyword">this</span>.push_config)
+    .register({ <span class="hljs-attr">serviceWorker</span>: <span class="hljs-string">'simple-sw.js'</span> })
+    .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">message</span>: <span class="hljs-string">"Registration successful!"</span>, <span class="hljs-attr">registered</span>: <span class="hljs-literal">true</span> }))
+    .catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">message</span>: <span class="hljs-string">`Registration failed - <span class="hljs-subst">${error}</span>`</span> }))
+};
+
+<span class="hljs-comment">/**
+ * Unregister from UPS
+ */</span>
+private unregister = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">new</span> PushRegistration(<span class="hljs-keyword">this</span>.push_config)
+    .unregister()
+    .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">message</span>: <span class="hljs-string">"Unregistered successfully"</span>, <span class="hljs-attr">registered</span>: <span class="hljs-literal">false</span> }))
+    .catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">message</span>: <span class="hljs-string">`Operation failed - <span class="hljs-subst">${error}</span>`</span> }))
+};
+</code></pre>
+
+    <div class="admonition admonition-important">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"/></svg></div> important</h5>
+      </div>
+      <div class="admonition-content">
+    <p>Note the parameter passed to the <code>register</code> method: the value of the <em>serviceWorker</em> key is exactly the name of the <em>service worker</em> file we created into the <code>public</code> folder.</p>
+</div></div><h3><a class="anchor" aria-hidden="true" id="receiving-the-notifications"></a><a href="#receiving-the-notifications" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Receiving the notifications</h3>
+<p>To be able to receive notifications in your web application, you will need to register a callback that will receive
+the notification object as input:</p>
+<pre><code class="hljs css language-javascript">  PushRegistration.onMessageReceived(<span class="hljs-function"><span class="hljs-params">notification</span> =&gt;</span> {
+    <span class="hljs-keyword">const</span> obj = <span class="hljs-built_in">JSON</span>.parse(notification);
+    <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">message</span>: obj.alert });
+   });
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="putting-it-all-together"></a><a href="#putting-it-all-together" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Putting it all together</h3>
+<p>Edit the constructor of the <code>HelloWorld.tsx</code> class and add the following code:</p>
+<pre><code class="hljs css language-javascript">  PushRegistration.onMessageReceived(<span class="hljs-function"><span class="hljs-params">notification</span> =&gt;</span> {
+    <span class="hljs-keyword">const</span> obj = <span class="hljs-built_in">JSON</span>.parse(notification);
+    <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">message</span>: obj.alert });
+   });
+</code></pre>
+<p>The content of the <code>src/HelloWorld.tsx</code> file should be:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { PushInitConfig, PushRegistration } <span class="hljs-keyword">from</span> <span class="hljs-string">"@aerogear/push"</span>;
+
+interface HelloWorldState {
+  message?: string,
+  <span class="hljs-attr">registered</span>: boolean
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HelloWorld</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span>&lt;</span>{}, HelloWorldState&gt; {
+
+  private readonly push_config: PushInitConfig = {
+    <span class="hljs-attr">url</span>: <span class="hljs-string">'your unified pushserver URL'</span>,
+    <span class="hljs-attr">webpush</span>: {
+      <span class="hljs-attr">variantID</span>: <span class="hljs-string">'the ID of the WebPush variant you created in UPS'</span>,
+      <span class="hljs-attr">variantSecret</span>: <span class="hljs-string">'the secret of the variant identified by variantID'</span>,
+      <span class="hljs-attr">appServerKey</span>: <span class="hljs-string">'your VAPID public key (you can get it by opening the variant in UPS)'</span>
+    }
+  };
+
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">super</span>({});
+    <span class="hljs-keyword">this</span>.state = { <span class="hljs-attr">registered</span>: <span class="hljs-literal">false</span> };
+    PushRegistration.onMessageReceived(<span class="hljs-function"><span class="hljs-params">notification</span> =&gt;</span> {
+      <span class="hljs-keyword">const</span> obj = <span class="hljs-built_in">JSON</span>.parse(notification);
+      <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">message</span>: obj.alert });
+    });
+  }
+
+  <span class="hljs-comment">/**
+   * Register to the UPS
+   */</span>
+  private register = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">new</span> PushRegistration(<span class="hljs-keyword">this</span>.push_config)
+        .register({ <span class="hljs-attr">serviceWorker</span>: <span class="hljs-string">'simple-sw.js'</span> })
+        .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">message</span>: <span class="hljs-string">"Registration successful!"</span>, <span class="hljs-attr">registered</span>: <span class="hljs-literal">true</span> }))
+        .catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">message</span>: <span class="hljs-string">`Registration failed - <span class="hljs-subst">${error}</span>`</span> }))
+  };
+
+  <span class="hljs-comment">/**
+   * Unregister from UPS
+   */</span>
+  private unregister = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">new</span> PushRegistration(<span class="hljs-keyword">this</span>.push_config)
+        .unregister()
+        .then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">message</span>: <span class="hljs-string">"Unregistered successfully"</span>, <span class="hljs-attr">registered</span>: <span class="hljs-literal">false</span> }))
+        .catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">message</span>: <span class="hljs-string">`Operation failed - <span class="hljs-subst">${error}</span>`</span> }))
+  };
+
+  private handleRegistrationStatus = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.state.registered) {
+      <span class="hljs-keyword">this</span>.unregister();
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">this</span>.register();
+    }
+  };
+
+  public render = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> (
+      <span class="xml"><span class="hljs-tag">&lt;&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello World!!!<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span>/&gt;</span>
+          { this.state.message
+              ? `UPS Says: ${this.state.message}`
+              : 'No messages received yet' }<span class="hljs-tag">&lt;<span class="hljs-name">br</span>/&gt;</span>
+              <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.handleRegistrationStatus}</span>&gt;</span>{this.state.registered ? "Unregister" : "Register"}<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+      <span class="hljs-tag">&lt;/&gt;</span>
+    )
+  };
+}
+</span></code></pre>
+<p>If you didn't do already, you can now start the application with:</p>
+<pre><code class="hljs css language-bash">$ npm start
+</code></pre>
+
+    <div class="admonition admonition-important">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"/></svg></div> important</h5>
+      </div>
+      <div class="admonition-content">
+    <p>Remember to edit the <code>push_config</code> variable withe correct values!</p>
+</div></div><p>Click on <em>Register</em>: if everything is ok, you should see a confirmation message.</p>
+<p>Now try to send messages to your variant from the <em>UnifiedPush Server</em>.
+You should see something like this:</p>
+<blockquote>
+<p><img src="/docs/assets/webpush/hello-world-stage2.png" alt="Stage 1"></p>
+</blockquote>
+<p>For a complete example, look at the <a href="https://github.com/aerogear/unifiedpush-cookbook/tree/master/webpush/hello-world-webpush">WebPush HelloWorld</a> example.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/clients/ios-client"><span class="arrow-prev">← </span><span class="function-name-prevnext">iOS Client</span></a><a class="docs-next button" href="/docs/clients/cordova-client"><span>Cordova Client</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#create-a-new-project">Create a new project</a></li><li><a href="#add-the-required-dependencies">Add the required dependencies</a></li><li><a href="#add-the-service-worker">Add the service worker</a></li><li><a href="#creating-the-_helloworld_-component">Creating the <em>HelloWorld</em> component</a></li><li><a href="#add-_unifiedpush-server-integration_">Add <em>UnifiedPush Server Integration</em></a><ul class="toc-headings"><li><a href="#registrationunregistration">Registration/Unregistration</a></li><li><a href="#receiving-the-notifications">Receiving the notifications</a></li><li><a href="#putting-it-all-together">Putting it all together</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"></a><div><h5>Docs</h5><a href="/docs/en/introduction/ups-overview.html">Getting Started</a></div><div><h5>Community</h5><a href="//help">Help</a><a href="https://groups.google.com/forum/#!forum/aerogear">AeroGear mailing list</a><a href="https://stackoverflow.com/questions/tagged/aerogear" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>Social</h5><a class="github-button" href="https://github.com/AeroGear/undefined" data-count-href="https://github.com/AeroGear/undefined/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">UnifiedPush Server</a><div class="social"><a href="https://twitter.com/aerogears" class="twitter-follow-button">Follow @aerogears</a></div></div></section><section class="copyright">Copyright © 2020 the AeroGear team</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>
