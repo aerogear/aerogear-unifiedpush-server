@@ -1,11 +1,12 @@
 name: build
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    env:
+      REF: ${{ github.ref }}
     steps:
     - uses: actions/checkout@v2
 
@@ -30,4 +31,6 @@ jobs:
       run: mvn javadoc:jar
 
     - name: Deploy
-      run: sh ./quay_push '${{secrets.QUAY_USERNAME}}' '${{secrets.QUAY_PASSWORD}}'
+      run: BRANCH_NAME=${REF##*/};sh ./quay_push '${{secrets.QUAY_USERNAME}}' '${{secrets.QUAY_PASSWORD}}' "$BRANCH_NAME"
+      if: github.event_name == 'push'
+      
