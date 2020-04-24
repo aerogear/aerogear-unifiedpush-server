@@ -351,8 +351,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
     private static ResponseBuilder appendPreflightResponseHeaders(final HttpHeaders headers, final ResponseBuilder response) {
         // add response headers for the preflight request
         // required
-        response.header("Access-Control-Allow-Origin", headers.getRequestHeader("Origin").get(0)) // return submitted origin
-                .header("Access-Control-Allow-Methods", "POST, DELETE") // only POST/DELETE are allowed
+        response.header("Access-Control-Allow-Methods", "POST, DELETE") // only POST/DELETE are allowed
                 .header("Access-Control-Allow-Headers", "accept, origin, content-type, authorization") // explicit Headers!
                 .header("Access-Control-Allow-Credentials", "true")
                 // indicates how long the results of a preflight request can be cached (in seconds)
@@ -363,8 +362,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
 
     private static Response appendAllowOriginHeader(final ResponseBuilder rb, final HttpServletRequest request) {
 
-        return rb.header("Access-Control-Allow-Origin", request.getHeader("Origin")) // return submitted origin
-                .header("Access-Control-Allow-Credentials", "true")
+        return rb.header("Access-Control-Allow-Credentials", "true")
                  .build();
     }
 
