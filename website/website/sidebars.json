@@ -19,6 +19,7 @@
       "clients/android-client",
       "clients/ios-client",
       "clients/webpush-client",
+      "clients/reactnative-client",
       "clients/cordova-client"
     ],
     "Unified Push Server SDK": [
