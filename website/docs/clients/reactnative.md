@@ -22,7 +22,105 @@ Open the `android` project found in your React Native project root in Android St
 
 ## iOS Native Project configuration
 
-Run `pod install` from the `ios` project found in your React Native project root from the command line before you open this project in XCode. Now you should follow the [iOS client documentation](./ios-client) to enable APNS push messaging for your project.
+Run `pod install` from the `ios` project found in your React Native project root from the command line before you open this project in XCode. 
+Now you should follow the [iOS client documentation](./ios-client#add-required-capabilities) to enable APNS push messaging for your project.
+
+### Enable React Native Unified Push Integration 
+
+There are two ways to enable the integration:
+* Extending the `UPSEnabledAppDelegate`
+* Manually adding the integration
+
+#### Extending the `UPSEnabledAppDelegate` class
+
+1. Open the iOS project by running `xed ios` from the root of the react-native project
+2. In XCode open your `AppDelegate.h` header file and change its code from
+    ```objective-c
+    #import <React/RCTBridgeDelegate.h>
+    #import <UIKit/UIKit.h>
+
+    @interface AppDelegate : UIResponder <UIApplicationDelegate, RCTBridgeDelegate>
+
+    @property (nonatomic, strong) UIWindow *window;
+
+    @end
+    ```
+    to
+    ```objective-c
+    #import <React/RCTBridgeDelegate.h>
+    #import <UIKit/UIKit.h>
+    #import <UPSEnabledAppDelegate.h>
+
+    @interface AppDelegate : UPSEnabledAppDelegate
+
+    @property (nonatomic, strong) UIWindow *window;
+
+    @end
+    ```
+3. Open your `AppDelegate.m` file and add a call to `[super application:application didFinishLaunchingWithOptions:launchOptions];` into your `didFinishLaunchingWithOptions` method. It should look like:
+    ```objective-c
+    - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+    {
+    #if DEBUG
+      InitializeFlipper(application);
+    #endif
+    
+      RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
+      RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
+                                                       moduleName:@"push"
+                                                initialProperties:nil];
+    
+      rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
+    
+      self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+      UIViewController *rootViewController = [UIViewController new];
+      rootViewController.view = rootView;
+      self.window.rootViewController = rootViewController;
+      [self.window makeKeyAndVisible];
+      
+      
+      // Enable Push Notifications
+      [super application:application didFinishLaunchingWithOptions:launchOptions];
+      
+      return YES;
+    }
+    ```
+   
+#### Manually integrate the Unified Push
+:::warning
+This steps are needed *only* if you are not extending the `UPSEnabledAppDelegate` class
+:::
+
+1. Open the iOS project by running `xed ios` from the root of the react-native project
+2. Open you `AppDelegate.m` file
+3. Add the following code before the end of your `didFinishLaunchingWithOptions` method:
+    ```objective-c
+    - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+    {
+      ...
+      // Enable Push Notifications
+      UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+      [center requestAuthorizationWithOptions:(UNAuthorizationOptionAlert + UNAuthorizationOptionBadge + UNAuthorizationOptionSound) completionHandler:^(BOOL granted, NSError * _Nullable error) {
+      
+      }];
+      [[UIApplication sharedApplication] registerForRemoteNotifications];
+      return YES;
+    }
+    ```
+4. Pass the `deviceToken` to the UnifiedPush library as soon as registration is done by adding the method:
+    ```objective-c
+    - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+      [RnUnifiedPush didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+    }
+    ```
+5. Forward the notifications to the UnifiedPush library by adding the following method:
+    ```objective-c
+    - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+      NSLog(@"Received push %@",userInfo);
+      [RnUnifiedPush didReceiveRemoteNotification:userInfo];
+    }
+    ```
+
 
 ## Configuring Unified Push
 
