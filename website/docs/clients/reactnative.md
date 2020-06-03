@@ -43,7 +43,7 @@ const ups = new RNUnifiedPush();
 ```
 
 We need to call `ups.init` to initialize our library. This method takes one parameter, the `push-config` object and returns a promise. In the following example we are providing the variant registration information for both iOS and Android. 
-
+```javascript
  ups.init(
             { 
               pushServerURL: "http://10.1.10.80:9999/",
@@ -85,5 +85,4 @@ ups.registerMessageHandler(callback);
 ## Hello World Example
 
 The AeroGear project provides an example UnifiedPush application in our [unifiedpush-cookbook repository](https://github.com/aerogear/unifiedpush-cookbook/tree/master/react-native/push)
-
 
