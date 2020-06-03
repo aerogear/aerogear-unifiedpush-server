@@ -36,7 +36,7 @@ To receive messages sent by Unified Push you need to initialize the library, reg
 
 First we'll import the push library and create our Unified Push Server object.
 
-```
+```javascript
 import RNUnifiedPush from '@aerogear/aerogear-reactnative-push';
 
 const ups = new RNUnifiedPush();
@@ -85,4 +85,3 @@ ups.registerMessageHandler(callback);
 ## Hello World Example
 
 The AeroGear project provides an example UnifiedPush application in our [unifiedpush-cookbook repository](https://github.com/aerogear/unifiedpush-cookbook/tree/master/react-native/push)
-
