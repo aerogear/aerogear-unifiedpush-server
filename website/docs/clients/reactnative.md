@@ -56,10 +56,7 @@ We need to call `ups.init` to initialize our library. This method takes one para
                 variantID: "77fc90fa-6c79-4ed7-a699-36861b0d309e",
                 variantSecret: "0625eca0-3b76-4614-bdc6-2d40da6195e4"
               }
-            }).catch(
-            (err) => {
-              console.log("Error Initializing", err)
-            });
+            }).catch(err => console.log("Error Initializing", err));
 ```
 
 With an initialized library, we may now register with the Unified Push server. Registration should be called every time you load your application and any time you wish to change your user's alias or category. As a reminder, an alias is an identifier for your user shared among their devices (such as an email or username), and categories are subscriptions to messages that are sent to groups of users. The following example registers a user with an alias subscribed to two categories.
@@ -88,6 +85,5 @@ ups.registerMessageHandler(callback);
 ## Hello World Example
 
 The AeroGear project provides an example UnifiedPush application in our [unifiedpush-cookbook repository](https://github.com/aerogear/unifiedpush-cookbook/tree/master/react-native/push)
-
 
 
