@@ -75,11 +75,7 @@ A message handler is a function that takes a single parameter, the message. This
 
 ```
 const ups = new RNUnifiedPush();
-let callback = (message)=>{
-  console.log("You have receieved a background push message." + JSON.stringify(message));
-};
-
-ups.registerMessageHandler(callback);
+ups.registerMessageHandler(message => console.log("You have received a push message.",  JSON.stringify(message)));
 ```
 
 ## Hello World Example
