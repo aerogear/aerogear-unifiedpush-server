@@ -11,7 +11,7 @@ You will be guided through how to add the UPS library, configure your native app
 ## React Native Setup
 As our first step we need to install the react library.
 
-```yarn install @aerogear/aerogear-reactnative-push```
+```npm install @aerogear/aerogear-reactnative-push```
 
 Once we've done this we can begin configuring our native projects. 
 
