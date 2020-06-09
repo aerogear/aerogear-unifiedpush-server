@@ -1,0 +1,37 @@
+{
+  "docs": {
+    "Introduction": [
+      "introduction/ups-overview",
+      "introduction/ups-terminology",
+      "introduction/push-notifications",
+      "introduction/how-it-works",
+      "introduction/use-cases"
+    ],
+    "Running Unified Push": ["running", "jms"],
+    "Configuring Variants": [
+      
+      "variants/android",
+      "variants/ios",
+      "variants/webpush"
+    ],
+    "Configuring Clients": [
+     
+      "clients/android-client",
+      "clients/ios-client",
+      "clients/webpush-client",
+      "clients/reactnative-client",
+      "clients/cordova-client"
+    ],
+    "Unified Push Server SDK": [
+      
+      "server_sdk/javasender",
+      "server_sdk/nodesender",
+      "server_sdk/restfulsender"
+    ],
+    "Maintaining Unified Push": ["maintenance"],
+    "Extending Unified Push": ["extending"]
+  },
+  "docs-other": {
+    "First Category": ["doc4", "doc5"]
+  }
+}
