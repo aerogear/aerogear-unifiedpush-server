@@ -72,7 +72,7 @@ class Index extends React.Component {
               title: `<a href="${baseUrl}docs/clients/cordova-client#cordova">Cordova Client SDK</a>`,
             },
             {
-              content: 'A JavaScript library that allows the integration of the UnifiedPush Server into your React NAtive application',
+              content: 'A JavaScript library that allows the integration of the UnifiedPush Server into your React Native application',
               image: `${baseUrl}img/reactnative.svg`,
               imageAlign: 'top',
               imageLink: `${baseUrl}docs/clients/reactnative-client`,

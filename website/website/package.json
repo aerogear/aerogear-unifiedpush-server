@@ -13,5 +13,8 @@
   },
   "dependencies": {
     "remarkable-admonitions": "^0.2.2"
+  },
+  "resolutions": {
+    "babel-plugin-dynamic-import-node": "2.3.0"
   }
 }

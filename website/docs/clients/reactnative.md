@@ -17,7 +17,7 @@ Once we've done this we can begin configuring our native projects.
 
 ## Android Native Project configuration
 
-Open the `android` project found in your React Native project root in Android Studio, and begin integrating Firebase Cloud messaging into the application. This is most easily done using the Firebase Assistant, and you can find that documentation in the [Android client documentation](./android-client)
+Open the `android` project found in your React Native project root in Android Studio, and begin integrating Firebase Cloud Messaging into the application. This is most easily done using the Firebase Assistant, and you can find that documentation in the [Android client documentation](./android-client)
 
 
 ## iOS Native Project configuration
@@ -160,23 +160,41 @@ We need to call `ups.init` to initialize our library. This method takes one para
 
 With an initialized library, we may now register with the Unified Push server. Registration should be called every time you load your application and any time you wish to change your user's alias or category. As a reminder, an alias is an identifier for your user shared among their devices (such as an email or username), and categories are subscriptions to messages that are sent to groups of users. The following example registers a user with an alias subscribed to two categories.
 
-```
+```javascript
 ups.register({
       "alias":"rnAlias",
       "categories":["cat1", "cat2"]
 }).then(()=>{
   //You are registered, inform your app
 })
+```
 
 ## Register Message Handlers
 
-A message handler is a function that takes a single parameter, the message. This message is your push notification data. You can register the message handler with the following code : 
+RNUnifiedPush instances receive messages from the native platform the application is running on. The library passes these messages largely as is and the developer is responsible for ensuring that their application handles both iOS and Android messages. Do this by checking for the `aps` property of the message object, or by using [platform specific code](https://reactnative.dev/docs/platform-specific-code). The following example uses different code files for Android and iOS to define our handler, and then registers to UnifiedPush using a RNUnifiedPush instance.
+
+*handler.android.js*
+```javascript
+//Extract the message text and add it to a state variable in a React application
+export default function(message) { this.setState({messages: [...this.state.messages, message.alert] })}
+```
+
+*handler.ios.js*
+```javascript
+//Extract the message text and add it to a state variable in a React application
+export default function(message) {this.setState({messages: [...this.state.messages, message.aps.alert.body] })};
 
 ```
-const ups = new RNUnifiedPush();
-ups.registerMessageHandler(message => console.log("You have received a push message.",  JSON.stringify(message)));
+
+*app.js*
+```javascript
+    import handler from './handler';
+    /*
+        SNIPPING imports and registration
+    */
+    ups.registerMessageHandler(handler.bind(this));  //.bind(this) allows `this` to work in the above examples
 ```
 
 ## Hello World Example
 
-The AeroGear project provides an example UnifiedPush application in our [unifiedpush-cookbook repository](https://github.com/aerogear/unifiedpush-cookbook/tree/master/react-native/push)
+The AeroGear project provides an example UnifiedPush application in our [unifiedpush-cookbook repository](https://github.com/aerogear/unifiedpush-cookbook/tree/master/react-native/push).
