@@ -31,7 +31,7 @@ WNSTokenBatchConsumer|*deprecated*  This queue will be removed in a future relea
 Additionally, there is a topic which is used by Unified Push to restart connections to APNs.
 Queue Name | Description|
 -----------|------------|
-APNSClient| This signals [APNSClientConsumer](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/push-sender/src/main/java/org/jboss/aerogear/unifiedpush/message/jms/APNSClientConsumer.java_) to reload its configuration and reconnect to APNs.|_
+APNSClient| This signals [APNSClientConsumer](https://github.com/aerogear/aerogear-unifiedpush-server/blob/master/push-sender/src/main/java/org/jboss/aerogear/unifiedpush/message/jms/APNSClientConsumer.java) to reload its configuration and reconnect to APNs.|
 
 ## External AMQP Broker Configuration 
 Unified Push has been tested with EnMasse, AMQ Online, and AMQ Artemis as JMS brokers.  In theory it should work any AMQP broker that supports JMS.  Unified Push's support for external brokers can be enabled and configured by setting the following environment variables at startup:

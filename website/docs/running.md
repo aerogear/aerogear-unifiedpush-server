@@ -23,7 +23,7 @@ podman run -p 9999:8080 -it aerogear/unifiedpush-configurable-container:latest
 docker run -p 9999:8080 -it aerogear/unifiedpush-configurable-container:latest
 ```
 
-You should now be able to access the Unified Push admin ui at http://localhost:9999. This is great for quick tests, demonstrations, etc.  If you would like to keep data between launches of Unified Push, please use the other guides in this document.
+You should now be able to access the Unified Push admin ui at `http://localhost:9999`. This is great for quick tests, demonstrations, etc.  If you would like to keep data between launches of Unified Push, please use the other guides in this document.
 
 ## Running for app developers
 If you are an app developer and wanting to run Unified Push locally on your development machine, you probably want to have your configuration persist between environment restarts. Additionally, you may need to configure SSL certificates for native push on some devices and operating systems.
@@ -258,7 +258,3 @@ These will be ignored if the required CRDs are not installed on the cluster. Res
 ### Further Reading
 
 Further information documenting testing the Operator, publishing images, tagging releases and the operator architecture can be found on the [UnifiedPush Operator Readme on Github](https://github.com/aerogear/unifiedpush-operator/blob/master/README.adoc)
-
-
-## Configuration
- - AEROGEAR-10148

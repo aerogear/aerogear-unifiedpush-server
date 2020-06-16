@@ -160,7 +160,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 If the user grants permissions to receive _push notification_, the next step is to register the app to the _Unified Push Server_.
 To be able to perform such operation, you will need the following information:
   * The _URL_ of the _Unified Push Server_ instance
-  * The _ID_ of an _iOS_ variant you previously created in UPS (to see how, look [here](configuring_variants#ios)) 
+* The _ID_ of an _iOS_ variant you previously created in UPS (to see how, look [here](../variants/ios)) 
   * The _secret_ of the _iOS_ variant
 
 To register the app the SDK offers the `DeviceRegistration` object, which, in turns, offers two different initializers:

@@ -3,7 +3,7 @@ id: reactnative-client
 sidebar_label: React Native Client
 title: Configuring a React Native Client
 ---
-[React Native](reactnative.dev) is a framework that allows you to write mobile applications using React. Much like Cordova, you can access and use UnifiedPush in your React Native source with a single API. Because push networks are platform dependent, there is some native project configuration required. It is also recommended that you familiarize yourself with the [Android client](./android-client) and [iOS client](./ios-client) documentation.
+[React Native](https://reactnative.dev) is a framework that allows you to write mobile applications using React. Much like Cordova, you can access and use UnifiedPush in your React Native source with a single API. Because push networks are platform dependent, there is some native project configuration required. It is also recommended that you familiarize yourself with the [Android client](./android-client) and [iOS client](./ios-client) documentation.
 
 ## Overview
 You will be guided through how to add the UPS library, configure your native applications, connect to UPS, and receive push messages. 

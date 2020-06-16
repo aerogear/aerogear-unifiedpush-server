@@ -6,12 +6,12 @@ title: How the UnifiedPush Server works
 The _AeroGear UnifiedPush Server_ can be seen as a broker that distributes push messages to different **3rd party Push Networks**. 
 The graphic below gives a little overview:
 
-![Load Firebase Assistant](/img/ups-overview.png) 
+![Load Firebase Assistant](../../img/ups-overview.png)
 
-1. One _PushApplication_ and at least one mobile platform variant must be created (see [Configuring Variants](/docs/configuring_variants)).
+1. One _PushApplication_ and at least one mobile platform variant must be created. Per platform documentation is in the **Configuring Variants** section of the sidebar.
 2. The variant credentials that are generated and stored by the _UnifiedPush Server_ must be added to the mobile application 
 source, enabling the application running on the mobile device to register with the _UnifiedPush Server_ once it is 
-installed on mobile devices (see [Configuring Clients](/docs/configuring_clients)).
+installed on mobile devices. The **Configuring Clients** section of the sidebar contains more details.
 3. Sending a push message can happen in different ways:
     * Using the _UnifiedPush Admin UI_
     * Using the _Sender APIs_However
@@ -29,7 +29,7 @@ There can be latency in the actual delivery. Most Push Networks, such as APNs or
 
 ## Privacy Note
 
-As explained in the [How the UnifiedPush Server works](/docs/introduction/how-it-works) section, the payload of the push notification is delivered to 3rd party Push Network providers, like Google or Apple.
+As explained above, the payload of the push notification is delivered to 3rd party Push Network providers, like Google or Apple.
 
 :::warning
 It is highly recommended to not sent any send sensitive personal or confidential information belonging to an individual (e.g. a social security number, financial account or transactional information, or any information where the individual may have a reasonable expectation of secure transmission) as part of any Push Notification!
