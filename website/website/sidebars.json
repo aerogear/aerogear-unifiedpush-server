@@ -28,8 +28,7 @@
       "server_sdk/nodesender",
       "server_sdk/restfulsender"
     ],
-    "Maintaining Unified Push": ["maintenance"],
-    "Extending Unified Push": ["extending"]
+    "Maintaining Unified Push": ["maintenance"]
   },
   "docs-other": {
     "First Category": ["doc4", "doc5"]

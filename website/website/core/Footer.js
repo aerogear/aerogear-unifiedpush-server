@@ -22,7 +22,7 @@ class Footer extends React.Component {
   }
 
   render() {
-    const repoUrl = `https://github.com/${this.props.config.organizationName}/${this.props.config.upsRepoName}`;
+    const repoUrl = `https://github.com/${this.props.config.organizationName}/${this.props.config.projectName}`;
 
     return (
       <footer className="nav-footer" id="footer">
@@ -39,7 +39,7 @@ class Footer extends React.Component {
           </a>
           <div>
             <h5>Docs</h5>
-            <a href={this.docUrl('introduction/ups-overview.html', this.props.language)}>
+            <a href={this.docUrl('introduction/ups-overview.html')}>
               Getting Started
             </a>
           </div>

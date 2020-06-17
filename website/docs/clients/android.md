@@ -182,4 +182,4 @@ RegistrarManager.registerBackgroundThreadHandler(messageHandler);
 
 ## Hello World Example
 
-The AeroGear project provides an example UnifiedPush application in their [unifiedpush-cookbook repository](https://github.com/aerogear/unifiedpush-cookbook/tree/master/HelloPush)
+The AeroGear project provides an example UnifiedPush application in their [unifiedpush-cookbook repository](https://github.com/aerogear/unifiedpush-cookbook/tree/master/android/HelloPush)
