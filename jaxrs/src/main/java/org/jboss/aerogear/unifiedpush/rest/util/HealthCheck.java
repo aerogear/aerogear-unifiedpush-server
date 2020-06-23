@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.rest.util;
 
 import org.jboss.aerogear.unifiedpush.message.HealthNetworkService;
+import org.jboss.aerogear.unifiedpush.rest.util.error.UnifiedPushError;
 import org.jboss.aerogear.unifiedpush.service.HealthDBService;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthStatus;
@@ -102,7 +103,7 @@ public class HealthCheck {
         try (final InputStream manifestStream = context.getResourceAsStream("/META-INF/MANIFEST.MF")) {
             return Response.ok(new Manifest(manifestStream).getMainAttributes()).build();
         } catch (Exception e) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find version information").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new UnifiedPushError("Could not find version information")).build();
         }
     }
 }

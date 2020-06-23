@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
+import org.jboss.aerogear.unifiedpush.rest.util.error.UnifiedPushError;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.aerogear.unifiedpush.rest.annotations.DisabledByEnvironment;
 import javax.validation.ConstraintViolationException;
@@ -68,7 +69,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint<AndroidVaria
         PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp == null) {
-            return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
+            return Response.status(Status.NOT_FOUND).entity(new UnifiedPushError("Could not find requested PushApplicationEntity")).build();
         }
 
         // some validation
@@ -151,7 +152,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint<AndroidVaria
             return Response.ok(androidVariant).build();
         }
 
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
+        return Response.status(Status.NOT_FOUND).entity(new UnifiedPushError("Could not find requested Variant")).build();
     }
 
 }

@@ -21,6 +21,7 @@ import org.jboss.aerogear.unifiedpush.api.iOSVariant;
 import org.jboss.aerogear.unifiedpush.message.jms.APNSClientProducer;
 import org.jboss.aerogear.unifiedpush.rest.annotations.DisabledByEnvironment;
 import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
+import org.jboss.aerogear.unifiedpush.rest.util.error.UnifiedPushError;
 import org.jboss.aerogear.unifiedpush.rest.util.iOSApplicationUploadForm;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
@@ -76,7 +77,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
         PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp == null) {
-            return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
+            return Response.status(Status.NOT_FOUND).entity(new UnifiedPushError("Could not find requested PushApplicationEntity")).build();
         }
 
         // some model validation on the uploaded form
@@ -168,7 +169,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
             variantService.updateVariant(iOSVariant);
             return Response.noContent().build();
         }
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
+        return Response.status(Status.NOT_FOUND).entity(new UnifiedPushError("Could not find requested Variant")).build();
     }
 
     /**
@@ -232,6 +233,6 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
 
             return Response.ok(iOSVariant).build();
         }
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
+        return Response.status(Status.NOT_FOUND).entity(new UnifiedPushError("Could not find requested Variant")).build();
     }
 }

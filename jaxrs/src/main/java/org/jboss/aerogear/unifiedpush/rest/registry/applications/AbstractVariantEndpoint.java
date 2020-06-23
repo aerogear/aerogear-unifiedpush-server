@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.rest.util.error.UnifiedPushError;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
@@ -76,11 +77,11 @@ public abstract class AbstractVariantEndpoint<T extends Variant> extends Abstrac
         Variant variant = variantService.findByVariantID(variantId);
 
         if (variant == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new UnifiedPushError("Could not find requested Variant")).build();
         }
 
         if (!type.isInstance(variant)) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Requested Variant is of another type/platform").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(new UnifiedPushError("Requested Variant is of another type/platform")).build();
         }
 
         logger.trace("Resetting secret for: {}", variant.getName());
@@ -111,11 +112,11 @@ public abstract class AbstractVariantEndpoint<T extends Variant> extends Abstrac
         Variant variant = variantService.findByVariantID(variantId);
 
         if (variant == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new UnifiedPushError("Could not find requested Variant")).build();
         }
 
         if (!type.isInstance(variant)) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Requested Variant is of another type/platform").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(new UnifiedPushError("Requested Variant is of another type/platform")).build();
         }
 
         return Response.ok(variant).build();
@@ -139,11 +140,11 @@ public abstract class AbstractVariantEndpoint<T extends Variant> extends Abstrac
         Variant variant = variantService.findByVariantID(variantId);
 
         if (variant == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new UnifiedPushError("Could not find requested Variant")).build();
         }
 
         if (!type.isInstance(variant)) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Requested Variant is of another type/platform").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(new UnifiedPushError("Requested Variant is of another type/platform")).build();
         }
 
         logger.trace("Deleting: {}", variant.getClass().getSimpleName());

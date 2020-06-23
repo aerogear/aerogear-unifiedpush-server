@@ -6,6 +6,7 @@ import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
+import org.jboss.aerogear.unifiedpush.rest.util.error.UnifiedPushError;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
@@ -181,6 +182,7 @@ public class AndroidVariantEndpointTest {
 
         final Response response = this.endpoint.deleteVariant("foo");
         assertEquals(response.getStatus(), 404);
+        assertEquals("Could not find requested Variant",((UnifiedPushError)response.getEntity()).getMessage());
     }
 
     @Test
