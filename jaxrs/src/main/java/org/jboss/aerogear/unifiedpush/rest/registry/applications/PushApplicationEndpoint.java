@@ -22,7 +22,7 @@ import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dto.Count;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.rest.util.error.UnifiedPushError;
+import org.jboss.aerogear.unifiedpush.rest.util.error.ErrorBuilder;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
@@ -189,7 +189,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             return response.build();
         }
 
-        return Response.status(Status.NOT_FOUND).entity(new UnifiedPushError("Could not find requested PushApplicationEntity")).build();
+        return Response.status(Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
     }
 
     private void putActivityIntoResponseHeaders(PushApplication app, ResponseBuilder response) {
@@ -248,7 +248,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             return Response.noContent().build();
         }
 
-        return Response.status(Status.NOT_FOUND).entity(new UnifiedPushError("Could not find requested PushApplicationEntity")).build();
+        return Response.status(Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
     }
 
     /**
@@ -279,7 +279,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             return Response.ok(pushApp).build();
         }
 
-        return Response.status(Status.NOT_FOUND).entity(new UnifiedPushError("Could not find requested PushApplicationEntity")).build();
+        return Response.status(Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
     }
 
     /**
@@ -303,7 +303,7 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
             pushAppService.removePushApplication(pushApp);
             return Response.noContent().build();
         }
-        return Response.status(Status.NOT_FOUND).entity(new UnifiedPushError("Could not find requested PushApplicationEntity")).build();
+        return Response.status(Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
     }
 
     /**
