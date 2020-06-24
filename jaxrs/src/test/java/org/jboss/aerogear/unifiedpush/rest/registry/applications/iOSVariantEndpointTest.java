@@ -83,12 +83,14 @@ public class iOSVariantEndpointTest {
     @Test
     public void shouldUpdateiOSVariantSuccessfully_withMultiPartData() {
         final iOSVariant original = new iOSVariant();
-
         final iOSApplicationUploadForm update = new iOSApplicationUploadForm();
+        final PushApplication pushApp = new PushApplication();
+
         update.setName("variant name");
         update.setCertificate("certificate".getBytes());
         update.setProduction(false);
 
+        when(searchService.findByPushApplicationIDForDeveloper("push-app-id")).thenReturn(pushApp);
         when(variantService.findByVariantID("variant-id")).thenReturn(original);
         when(validator.validate(update)).thenReturn(Collections.EMPTY_SET);
         when(validator.validate(original)).thenReturn(Collections.EMPTY_SET);
@@ -105,12 +107,14 @@ public class iOSVariantEndpointTest {
     @Test
     public void shouldUpdateiOSVariantSuccessfully_noMultiPartData() {
         final iOSVariant original = new iOSVariant();
-
+        final PushApplication pushApp = new PushApplication();
         final iOSVariant update = new iOSVariant();
+
         update.setName("variant name");
         update.setCertificate("certificate".getBytes());
         update.setProduction(false);
 
+        when(searchService.findByPushApplicationIDForDeveloper("push-app-id")).thenReturn(pushApp);
         when(variantService.findByVariantID("variant-id")).thenReturn(original);
 
         final Response response = this.endpoint.updateiOSVariant("push-app-id", "variant-id", update);

@@ -1,5 +1,7 @@
 package org.jboss.aerogear.unifiedpush.rest.util.error;
 
+import java.util.Map;
+
 public abstract class ErrorBuilder {
     private ErrorBuilder() {
     }
@@ -26,6 +28,14 @@ public abstract class ErrorBuilder {
 
     public static MetricsErrorBuilder forMetrics() {
         return new MetricsErrorBuilder();
+    }
+
+    public static ServerErrorBuilder forServer() {
+        return new ServerErrorBuilder();
+    }
+
+    public static ValidationErrorBuilder forValidation() {
+        return new ValidationErrorBuilder();
     }
 
 
@@ -112,6 +122,23 @@ public abstract class ErrorBuilder {
 
         public HealthCheckErrorBuilder noVersion() {
             return this.setError(new UnifiedPushError("Could not find version information"));
+        }
+    }
+
+    public static class ServerErrorBuilder extends  AbstractErrorBuilder<ServerErrorBuilder> {
+        public ServerErrorBuilder generalException(Exception e) {
+            return this.setError(new UnifiedPushError(e.getMessage()));
+        }
+    }
+
+    public static class ValidationErrorBuilder extends AbstractErrorBuilder<ValidationErrorBuilder> {
+
+        public ValidationErrorBuilder  setMap(Map<String, String> failingFields) {
+
+            var error = new UnifiedPushError("Validation Failure");
+            failingFields.entrySet().forEach(entry -> error.addDetail(entry.getKey(), entry.getValue()));
+
+            return this.setError(error);
         }
     }
 }

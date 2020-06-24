@@ -138,10 +138,12 @@ public class WebPushVariantEndpointTest {
     public void shouldUpdateWebPushVariantSuccessfully() {
         final WebPushVariant originalVariant = new WebPushVariant();
         final WebPushVariant updatedVariant = new WebPushVariant();
+        final PushApplication pushApp = new PushApplication();
 
         originalVariant.setPublicKey("test public Key");
         updatedVariant.setPublicKey("update public Key");
 
+        when(searchService.findByPushApplicationIDForDeveloper("push-app-id")).thenReturn(pushApp);
         when(variantService.findByVariantID("variant-id")).thenReturn(originalVariant);
         when(validator.validate(updatedVariant)).thenReturn(Collections.EMPTY_SET);
 

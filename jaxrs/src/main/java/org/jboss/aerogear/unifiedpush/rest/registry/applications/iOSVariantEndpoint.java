@@ -133,6 +133,10 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAlliOSVariantsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
         return Response.ok(getVariants(application)).build();
     }
 
@@ -155,6 +159,12 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID,
             iOSVariant updatediOSVariant) {
+
+        final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationId);
+
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
 
         iOSVariant iOSVariant = (iOSVariant)variantService.findByVariantID(iOSID);
 
@@ -193,6 +203,12 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
             @MultipartForm iOSApplicationUploadForm updatedForm,
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
+
+        final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationId);
+
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
 
         iOSVariant iOSVariant = (iOSVariant)variantService.findByVariantID(iOSID);
         if (iOSVariant != null) {

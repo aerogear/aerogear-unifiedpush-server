@@ -93,12 +93,13 @@ public class iOSTokenVariantEndpointTest {
     @Test
     public void shouldUpdateiOSTokenVariantSuccessfully_withMultiPartData() {
         final iOSTokenVariant original = new iOSTokenVariant();
-
         final iOSTokenVariant update = new iOSTokenVariant();
+        final PushApplication pushApp = new PushApplication();
         update.setName("variant name");
         update.setPrivateKey("privateKey");
         update.setProduction(false);
 
+        when(searchService.findByPushApplicationIDForDeveloper("push-app-id")).thenReturn(pushApp);
         when(variantService.findByVariantID("variant-id")).thenReturn(original);
         when(validator.validate(update)).thenReturn(Collections.EMPTY_SET);
         when(validator.validate(original)).thenReturn(Collections.EMPTY_SET);
@@ -115,8 +116,9 @@ public class iOSTokenVariantEndpointTest {
     @Test
     public void shouldUpdateiOSTokenVariantSuccessfully_noMultiPartData() {
         final iOSTokenVariant original = new iOSTokenVariant();
-
         final iOSTokenVariant update = new iOSTokenVariant();
+        final PushApplication pushApp = new PushApplication();
+
         update.setName("variant name");
         update.setPrivateKey("certificate");
         update.setTeamId("team id");
@@ -126,6 +128,8 @@ public class iOSTokenVariantEndpointTest {
 
         update.setProduction(false);
 
+
+        when(searchService.findByPushApplicationIDForDeveloper("push-app-id")).thenReturn(pushApp);
         when(variantService.findByVariantID("variant-id")).thenReturn(original);
 
         final Response response = this.endpoint.updateiOSVariant("push-app-id", "variant-id", update);

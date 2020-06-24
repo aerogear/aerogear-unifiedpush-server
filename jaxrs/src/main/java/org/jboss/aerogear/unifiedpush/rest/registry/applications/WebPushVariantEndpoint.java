@@ -101,6 +101,11 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint<WebPushVaria
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllWebPushVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
+
         return Response.ok(getVariants(application)).build();
     }
 
@@ -108,8 +113,15 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint<WebPushVaria
     @Path("/{webPushID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateWebPushVariant(@PathParam("pushAppID") String id,
+    public Response updateWebPushVariant(@PathParam("pushAppID") String pushApplicationID,
                                          @PathParam("webPushID") String webPushID, WebPushVariant updatedVariant) {
+
+        final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
+
         WebPushVariant webPushVariant = (WebPushVariant) variantService.findByVariantID(webPushID);
         if (webPushVariant != null) {
 

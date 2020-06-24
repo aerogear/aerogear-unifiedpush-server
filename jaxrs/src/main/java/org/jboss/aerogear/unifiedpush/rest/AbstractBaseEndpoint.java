@@ -17,6 +17,7 @@
 
 package org.jboss.aerogear.unifiedpush.rest;
 
+import org.jboss.aerogear.unifiedpush.rest.util.error.ErrorBuilder;
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.slf4j.Logger;
@@ -88,7 +89,7 @@ public abstract class AbstractBaseEndpoint {
                 .collect(Collectors.toMap(v -> v.getPropertyPath().toString(), ConstraintViolation::getMessage));
 
         return Response.status(Response.Status.BAD_REQUEST)
-                .entity(responseObj);
+                .entity(ErrorBuilder.forValidation().setMap(responseObj).build());
     }
 
     /**

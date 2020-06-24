@@ -134,10 +134,12 @@ public class AndroidVariantEndpointTest {
     public void shouldUpdateAndroidVariantSuccessfully() {
         final AndroidVariant originalVariant = new AndroidVariant();
         final AndroidVariant updatedVariant = new AndroidVariant();
+        final PushApplication pushApp = new PushApplication();
 
         originalVariant.setGoogleKey("Original Google Key");
         updatedVariant.setGoogleKey("Updated Google Key");
 
+        when(searchService.findByPushApplicationIDForDeveloper("push-app-id")).thenReturn(pushApp);
         when(variantService.findByVariantID("variant-id")).thenReturn(originalVariant);
         when(validator.validate(updatedVariant)).thenReturn(Collections.EMPTY_SET);
 

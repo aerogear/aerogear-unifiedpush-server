@@ -101,13 +101,18 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint<AndroidVaria
     @GET
     @Produces(MediaType.APPLICATION_JSON)    public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
+
         return Response.ok(getVariants(application)).build();
     }
 
     /**
      * Update Android Variant
      *
-     * @param id                        id of {@link PushApplication}
+     * @param pushApplicationId         id of {@link PushApplication}
      * @param androidID                 id of {@link AndroidVariant}
      * @param updatedAndroidApplication new info of {@link AndroidVariant}
      *
@@ -122,9 +127,15 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint<AndroidVaria
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateAndroidVariant(
-            @PathParam("pushAppID") String id,
+            @PathParam("pushAppID") String pushApplicationId,
             @PathParam("androidID") String androidID,
             AndroidVariant updatedAndroidApplication) {
+
+        final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationId);
+
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
 
         AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantID(androidID);
         if (androidVariant != null) {

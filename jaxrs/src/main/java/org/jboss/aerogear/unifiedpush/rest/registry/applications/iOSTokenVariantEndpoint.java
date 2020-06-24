@@ -116,6 +116,11 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAlliOSVariantsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
+
         return Response.ok(getVariants(application)).build();
     }
 
@@ -138,6 +143,12 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID,
             iOSTokenVariant updatediOSVariant) {
+
+        final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationId);
+
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
 
         iOSTokenVariant iOSTokenVariant = (iOSTokenVariant)variantService.findByVariantID(iOSID);
 
@@ -181,6 +192,13 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
             iOSTokenVariant updatediOSVariant,
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
+
+        final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationId);
+
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
+
 
         iOSTokenVariant iOSTokenVariant = (iOSTokenVariant)variantService.findByVariantID(iOSID);
         if (iOSTokenVariant != null) {
