@@ -19,7 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.metrics;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
-import org.jboss.aerogear.unifiedpush.rest.util.error.UnifiedPushError;
+import org.jboss.aerogear.unifiedpush.rest.util.error.ErrorBuilder;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 import javax.inject.Inject;
@@ -74,7 +74,7 @@ public class PushMetricsEndpoint {
         }
 
         if (id == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity(new UnifiedPushError("Could not find requested information")).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forMetrics().notFound().build()).build();
         }
 
         PageResult<FlatPushMessageInformation, MessageMetrics> pageResult =

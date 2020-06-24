@@ -22,7 +22,7 @@ import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.NotificationRouter;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil;
-import org.jboss.aerogear.unifiedpush.rest.util.error.UnifiedPushError;
+import org.jboss.aerogear.unifiedpush.rest.util.error.ErrorBuilder;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PrometheusExporter;
 import org.slf4j.Logger;
@@ -95,7 +95,7 @@ public class PushNotificationSenderEndpoint {
         if (pushApplication == null) {
             return Response.status(Status.UNAUTHORIZED)
                     .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-                    .entity(new UnifiedPushError("Unauthorized Request"))
+                    .entity(ErrorBuilder.forAuth().unauthorized().build())
                     .build();
         }
 

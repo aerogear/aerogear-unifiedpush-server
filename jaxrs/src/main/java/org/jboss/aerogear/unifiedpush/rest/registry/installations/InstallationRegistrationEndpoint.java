@@ -24,7 +24,7 @@ import org.jboss.aerogear.unifiedpush.api.validation.DeviceTokenValidator;
 import org.jboss.aerogear.unifiedpush.auth.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.rest.EmptyJSON;
-import org.jboss.aerogear.unifiedpush.rest.util.error.UnifiedPushError;
+import org.jboss.aerogear.unifiedpush.rest.util.error.ErrorBuilder;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.metrics.PrometheusExporter;
@@ -371,7 +371,7 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
         return appendAllowOriginHeader(
                 Response.status(Status.UNAUTHORIZED)
                         .header("WWW-Authenticate", "Basic realm=\"AeroGear UnifiedPush Server\"")
-                        .entity(new UnifiedPushError("Unauthorized Request")),
+                        .entity(ErrorBuilder.forAuth().unauthorized().build()),
                 request);
     }
 
