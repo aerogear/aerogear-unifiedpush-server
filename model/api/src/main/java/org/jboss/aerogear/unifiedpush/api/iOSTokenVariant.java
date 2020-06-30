@@ -33,7 +33,6 @@ public class iOSTokenVariant extends APNSVariant {
     private static final long serialVersionUID = -889367404039436329L;
 
 
-
     @NotNull
     @Size(max = 10, min = 10, message = "Team ID must be 10 characters long")
     private String teamId;
@@ -117,6 +116,7 @@ public class iOSTokenVariant extends APNSVariant {
 
     /**
      * Bundle ID is the unique identified for your app in APNS.
+     *
      * @return bundle id
      */
     public String getBundleId() {
@@ -125,5 +125,34 @@ public class iOSTokenVariant extends APNSVariant {
 
     public void setBundleId(String bundleId) {
         this.bundleId = bundleId;
+    }
+
+    /**
+     * Applies non null values to the provided iOSTokenVariant
+     * @param iOSTokenVariant a value that will be updated using non null fields of this variant instance
+     */
+    public void merge(iOSTokenVariant iOSTokenVariant) {
+        if (this.getName() != null && !this.getName().isBlank()) {
+            iOSTokenVariant.setName(this.getName());
+        }
+
+        if (this.getDescription() != null && !this.getDescription().isBlank()) {
+            iOSTokenVariant.setDescription(this.getDescription());
+        }
+        if (this.production() != null) {
+            iOSTokenVariant.setProduction(this.isProduction());
+        }
+        if (this.getKeyId() != null && !this.getKeyId().isBlank()) {
+            iOSTokenVariant.setKeyId(this.getKeyId());
+        }
+        if (this.getBundleId() != null && !this.getBundleId().isBlank()) {
+            iOSTokenVariant.setBundleId(this.getBundleId());
+        }
+        if (this.getTeamId() != null && !this.getTeamId().isBlank()) {
+            iOSTokenVariant.setTeamId(this.getTeamId());
+        }
+        if (this.getPrivateKey() != null && !this.getPrivateKey().isBlank()) {
+            iOSTokenVariant.setPrivateKey(this.getPrivateKey());
+        }
     }
 }

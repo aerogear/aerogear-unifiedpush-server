@@ -83,11 +83,11 @@ public class iOSVariantEndpointTest {
     @Test
     public void shouldUpdateiOSVariantSuccessfully_withMultiPartData() {
         final iOSVariant original = new iOSVariant();
+        original.setCertificate("Certificate".getBytes());
         final iOSApplicationUploadForm update = new iOSApplicationUploadForm();
         final PushApplication pushApp = new PushApplication();
 
         update.setName("variant name");
-        update.setCertificate("certificate".getBytes());
         update.setProduction(false);
 
         when(searchService.findByPushApplicationIDForDeveloper("push-app-id")).thenReturn(pushApp);
@@ -99,7 +99,7 @@ public class iOSVariantEndpointTest {
 
         assertEquals(response.getStatus(), 200);
         assertEquals(original.getName(), "variant name");
-
+        assertNotNull(original.getCertificate());
         verify(variantService).updateVariant(original);
         verify(producer).changeAPNClient(original);
     }
@@ -109,9 +109,9 @@ public class iOSVariantEndpointTest {
         final iOSVariant original = new iOSVariant();
         final PushApplication pushApp = new PushApplication();
         final iOSVariant update = new iOSVariant();
+        original.setCertificate("Certificate".getBytes());
 
         update.setName("variant name");
-        update.setCertificate("certificate".getBytes());
         update.setProduction(false);
 
         when(searchService.findByPushApplicationIDForDeveloper("push-app-id")).thenReturn(pushApp);
@@ -121,6 +121,7 @@ public class iOSVariantEndpointTest {
 
         assertEquals(response.getStatus(), 204);
         assertEquals(original.getName(), "variant name");
+        assertNotNull(original.getCertificate());
 
         verify(variantService).updateVariant(original);
     }

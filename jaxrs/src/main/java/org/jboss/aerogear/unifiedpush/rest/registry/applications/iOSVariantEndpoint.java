@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- * 	http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -60,17 +60,40 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
      * @param form              new iOS Variant
      * @param pushApplicationID id of {@link PushApplication}
      * @param uriInfo           uri
-     * @return                  created {@link iOSVariant}
+     * @return created {@link iOSVariant}
+     * @deprecated please use the JSON endpoint with a base64 encoded certificate instead
      *
      * @statuscode 201 The iOS Variant created successfully
      * @statuscode 400 The format of the client request was incorrect
      * @statuscode 404 The requested PushApplication resource does not exist
      */
     @POST
+    @Deprecated
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response registeriOSVariant(
+    public Response registeriOSVariantMultipart(
             @MultipartForm iOSApplicationUploadForm form,
+            @PathParam("pushAppID") String pushApplicationID,
+            @Context UriInfo uriInfo) {
+        return registeriOSVariant(form, pushApplicationID, uriInfo);
+    }
+
+    /**
+     * Add iOS Variant
+     *
+     * @param form              new iOS Variant
+     * @param pushApplicationID id of {@link PushApplication}
+     * @param uriInfo           uri
+     * @return created {@link iOSVariant}
+     * @statuscode 201 The iOS Variant created successfully
+     * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 404 The requested PushApplication resource does not exist
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response registeriOSVariant(
+            iOSApplicationUploadForm form,
             @PathParam("pushAppID") String pushApplicationID,
             @Context UriInfo uriInfo) {
         // find the root push app
@@ -126,8 +149,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
      * List iOS Variants for Push Application
      *
      * @param pushApplicationID id of {@link PushApplication}
-     * @return                  updated {@link iOSVariant}
-     * @return                  list of {@link iOSVariant}s
+     * @return list of {@link iOSVariant}s
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -146,8 +168,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
      * @param pushApplicationId id of {@link PushApplication}
      * @param iOSID             id of {@link iOSVariant}
      * @param updatediOSVariant updated version of {@link iOSVariant}
-     * @return                  updated {@link iOSVariant}
-     *
+     * @return updated {@link iOSVariant}
      * @statuscode 204 The iOS Variant updated successfully
      * @statuscode 404 The requested Variant resource does not exist
      */
@@ -166,7 +187,7 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
             return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
         }
 
-        iOSVariant iOSVariant = (iOSVariant)variantService.findByVariantID(iOSID);
+        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantID(iOSID);
 
         if (iOSVariant != null) {
 
@@ -185,22 +206,44 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
     /**
      * Update iOS Variant
      *
-     * @param pushApplicationId     id of {@link PushApplication}
-     * @param iOSID                 id of {@link iOSVariant}
-     * @param updatedForm           new info of {@link iOSVariant}
+     * @param pushApplicationId id of {@link PushApplication}
+     * @param iOSID             id of {@link iOSVariant}
+     * @param updatedForm       new info of {@link iOSVariant}
+     * @return updated {@link iOSVariant}
+     * @statuscode 200 The iOS Variant updated successfully
+     * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 404 The requested iOS Variant resource does not exist
+     * @deprecated Please use JSON with a base64 encoded certificate
+     */
+    @PUT
+    @Path("/{iOSID}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Deprecated
+    public Response updateiOSVariantMultipart(
+            @MultipartForm iOSApplicationUploadForm updatedForm,
+            @PathParam("pushAppID") String pushApplicationId,
+            @PathParam("iOSID") String iOSID) {
+        return updateiOSVariant(updatedForm, pushApplicationId, iOSID);
+    }
+
+    /**
+     * Update iOS Variant
      *
-     * @return                  updated {@link iOSVariant}
-     *
+     * @param pushApplicationId id of {@link PushApplication}
+     * @param iOSID             id of {@link iOSVariant}
+     * @param updatedForm       new info of {@link iOSVariant}
+     * @return updated {@link iOSVariant}
      * @statuscode 200 The iOS Variant updated successfully
      * @statuscode 400 The format of the client request was incorrect
      * @statuscode 404 The requested iOS Variant resource does not exist
      */
     @PUT
     @Path("/{iOSID}")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateiOSVariant(
-            @MultipartForm iOSApplicationUploadForm updatedForm,
+            iOSApplicationUploadForm updatedForm,
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
 
@@ -210,24 +253,21 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
             return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
         }
 
-        iOSVariant iOSVariant = (iOSVariant)variantService.findByVariantID(iOSID);
+        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantID(iOSID);
         if (iOSVariant != null) {
 
             // some model validation on the uploaded form
             try {
-                validateModelClass(updatedForm);
+
+                // apply update:
+                updatedForm.apply(iOSVariant);
             } catch (ConstraintViolationException cve) {
                 // Build and return the 400 (Bad Request) response
                 ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
                 return builder.build();
             }
 
-            // apply update:
-            iOSVariant.setName(updatedForm.getName());
-            iOSVariant.setDescription(updatedForm.getDescription());
-            iOSVariant.setPassphrase(updatedForm.getPassphrase());
-            iOSVariant.setCertificate(updatedForm.getCertificate());
-            iOSVariant.setProduction(updatedForm.getProduction());
+
 
             // some model validation on the entity:
             try {

@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- * 	http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,7 +42,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 @Path("/applications/{pushAppID}/{ignore:iostoken|ios_token}")
-@DisabledByEnvironment({"ios_token","iostoken"})
+@DisabledByEnvironment({"ios_token", "iostoken"})
 public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVariant> {
 
     @Inject
@@ -64,7 +64,7 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
      * @param iOSVariant         new iOS Token Variant
      * @param pushApplicationID id of {@link PushApplication}
      * @param uriInfo           uri
-     * @return                  created {@link iOSTokenVariant}
+     * @return created {@link iOSTokenVariant}
      *
      * @statuscode 201 The iOS Variant created successfully
      * @statuscode 400 The format of the client request was incorrect
@@ -109,8 +109,8 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
      * List iOS Variants for Push Application
      *
      * @param pushApplicationID id of {@link PushApplication}
-     * @return                  updated {@link iOSTokenVariant}
-     * @return                  list of {@link iOSTokenVariant}s
+     * @return updated {@link iOSTokenVariant}
+     * @return list of {@link iOSTokenVariant}s
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -130,7 +130,7 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
      * @param pushApplicationId id of {@link PushApplication}
      * @param iOSID             id of {@link iOSTokenVariant}
      * @param updatediOSVariant updated version of {@link iOSTokenVariant}
-     * @return                  updated {@link iOSTokenVariant}
+     * @return updated {@link iOSTokenVariant}
      *
      * @statuscode 204 The iOS Variant updated successfully
      * @statuscode 404 The requested Variant resource does not exist
@@ -150,18 +150,22 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
             return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
         }
 
-        iOSTokenVariant iOSTokenVariant = (iOSTokenVariant)variantService.findByVariantID(iOSID);
+        iOSTokenVariant iOSTokenVariant = (iOSTokenVariant) variantService.findByVariantID(iOSID);
 
         if (iOSTokenVariant != null) {
 
             // apply update:
-            iOSTokenVariant.setName(updatediOSVariant.getName());
-            iOSTokenVariant.setDescription(updatediOSVariant.getDescription());
-            iOSTokenVariant.setProduction(updatediOSVariant.isProduction());
-            iOSTokenVariant.setKeyId(updatediOSVariant.getKeyId());
-            iOSTokenVariant.setBundleId(updatediOSVariant.getBundleId());
-            iOSTokenVariant.setTeamId(updatediOSVariant.getTeamId());
-            iOSTokenVariant.setPrivateKey(updatediOSVariant.getPrivateKey());
+
+            // merge the values and validate the new model
+            try {
+                updatediOSVariant.merge(iOSTokenVariant);
+                validateModelClass(iOSTokenVariant);
+            } catch (ConstraintViolationException cve) {
+                // Build and return the 400 (Bad Request) response
+                ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
+                return builder.build();
+            }
+
 
             logger.trace("Updating text details on iOS Variant '{}'", iOSID);
 
@@ -178,7 +182,7 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
      * @param iOSID                 id of {@link iOSTokenVariant}
      * @param updatediOSVariant    new info of {@link iOSTokenVariant}
      *
-     * @return                  updated {@link iOSTokenVariant}
+     * @return updated {@link iOSTokenVariant}
      *
      * @statuscode 200 The iOS Variant updated successfully
      * @statuscode 400 The format of the client request was incorrect
@@ -200,26 +204,18 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
         }
 
 
-        iOSTokenVariant iOSTokenVariant = (iOSTokenVariant)variantService.findByVariantID(iOSID);
+        iOSTokenVariant iOSTokenVariant = (iOSTokenVariant) variantService.findByVariantID(iOSID);
         if (iOSTokenVariant != null) {
 
-            // some model validation on the uploaded form
+            // merge the values and validate the new model
             try {
-                validateModelClass(updatediOSVariant);
+                updatediOSVariant.merge(iOSTokenVariant);
+                validateModelClass(iOSTokenVariant);
             } catch (ConstraintViolationException cve) {
                 // Build and return the 400 (Bad Request) response
                 ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
                 return builder.build();
             }
-
-            // apply update:
-            iOSTokenVariant.setName(updatediOSVariant.getName());
-            iOSTokenVariant.setDescription(updatediOSVariant.getDescription());
-            iOSTokenVariant.setProduction(updatediOSVariant.isProduction());
-            iOSTokenVariant.setKeyId(updatediOSVariant.getKeyId());
-            iOSTokenVariant.setTeamId(updatediOSVariant.getTeamId());
-            iOSTokenVariant.setBundleId(updatediOSVariant.getBundleId());
-            iOSTokenVariant.setPrivateKey(updatediOSVariant.getPrivateKey());
 
             // update performed, we now need to invalidate existing connection w/ APNs:
             logger.trace("Updating iOS Variant '{}'", iOSTokenVariant.getVariantID());
