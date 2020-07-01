@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class iOSVariantEndpointTest {
+    private static final String GOOD_APP_ID = "good_app_id";
     iOSVariantEndpoint endpoint;
 
     @Mock
@@ -52,7 +53,7 @@ public class iOSVariantEndpointTest {
         this.endpoint.pushAppService = pushAppService;
         this.endpoint.variantService = variantService;
         this.endpoint.producer = producer;
-
+        when(searchService.findByPushApplicationIDForDeveloper(GOOD_APP_ID)).thenReturn(new PushApplication());
         when(searchManager.getSearchService()).thenReturn(searchService);
     }
 
@@ -134,7 +135,7 @@ public class iOSVariantEndpointTest {
         final iOSVariant variant = new iOSVariant();
         when(variantService.findByVariantID("123")).thenReturn(variant);
 
-        final Response response = this.endpoint.findVariantById("123");
+        final Response response = this.endpoint.findVariantById(GOOD_APP_ID,"123");
         assertEquals(response.getStatus(), 200);
         assertTrue(variant == response.getEntity());    // identity check
     }
@@ -147,7 +148,7 @@ public class iOSVariantEndpointTest {
         final iOSVariant variant = new iOSVariant();
         when(variantService.findByVariantID("123")).thenReturn(variant);
 
-        final Response response = this.endpoint.deleteVariant("123");
+        final Response response = this.endpoint.deleteVariant(GOOD_APP_ID,"123");
         assertEquals(response.getStatus(), 204);
 
         verify(variantService).removeVariant(variant);
@@ -163,7 +164,7 @@ public class iOSVariantEndpointTest {
 
         when(variantService.findByVariantID("123")).thenReturn(variant);
 
-        final Response response = this.endpoint.resetSecret("123");
+        final Response response = this.endpoint.resetSecret(GOOD_APP_ID,"123");
         assertEquals(response.getStatus(), 200);
 
         verify(variantService).updateVariant(variant);
