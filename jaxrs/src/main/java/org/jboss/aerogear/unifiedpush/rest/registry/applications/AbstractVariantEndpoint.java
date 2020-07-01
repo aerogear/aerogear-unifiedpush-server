@@ -64,7 +64,7 @@ public abstract class AbstractVariantEndpoint<T extends Variant> extends Abstrac
      * @param variantId id of {@link Variant}
      * @return {@link Variant} with new secret
      * @statuscode 200 The secret of Variant reset successfully
-     * @statuscode 400 The requested Variant resource exists but it is not of the given type
+     * @statuscode 404 The requested Variant resource exists but it is not of the given type
      * @statuscode 404 The requested Variant resource does not exist
      */
     @PUT
@@ -87,7 +87,7 @@ public abstract class AbstractVariantEndpoint<T extends Variant> extends Abstrac
         }
 
         if (!type.isInstance(variant)) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(ErrorBuilder.forVariants().wrongType().build()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
         }
 
         logger.trace("Resetting secret for: {}", variant.getName());
@@ -106,7 +106,7 @@ public abstract class AbstractVariantEndpoint<T extends Variant> extends Abstrac
      *
      * @param variantId id of {@link Variant}
      * @return requested {@link Variant}
-     * @statuscode 400 The requested Variant resource exists but it is not of the given type
+     * @statuscode 404 The requested Variant resource exists but it is not of the given type
      * @statuscode 404 The requested Variant resource does not exist
      */
     @GET
@@ -129,7 +129,7 @@ public abstract class AbstractVariantEndpoint<T extends Variant> extends Abstrac
         }
 
         if (!type.isInstance(variant)) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(ErrorBuilder.forVariants().wrongType().build()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
         }
 
         return Response.ok(variant).build();
@@ -141,7 +141,7 @@ public abstract class AbstractVariantEndpoint<T extends Variant> extends Abstrac
      * @param variantId id of {@link Variant}
      * @return no content or 404
      * @statuscode 204 The Variant successfully deleted
-     * @statuscode 400 The requested Variant resource exists but it is not of the given type
+     * @statuscode 404 The requested Variant resource exists but it is not of the given type
      * @statuscode 404 The requested Variant resource does not exist
      */
     @DELETE
@@ -162,7 +162,7 @@ public abstract class AbstractVariantEndpoint<T extends Variant> extends Abstrac
         }
 
         if (!type.isInstance(variant)) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(ErrorBuilder.forVariants().wrongType().build()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
         }
 
         logger.trace("Deleting: {}", variant.getClass().getSimpleName());

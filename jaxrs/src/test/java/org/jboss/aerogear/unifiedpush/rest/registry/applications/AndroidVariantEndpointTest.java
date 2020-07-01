@@ -165,11 +165,11 @@ public class AndroidVariantEndpointTest {
     }
 
     @Test
-    public void shouldReturn400WhenFindVariantByIdFindsVariantOfAnotherPlatform() {
+    public void shouldReturn404WhenFindVariantByIdFindsVariantOfAnotherPlatform() {
         when(variantService.findByVariantID("123")).thenReturn(new iOSVariant());
 
         final Response response = this.endpoint.findVariantById(GOOD_APP_ID,"123");
-        assertEquals(response.getStatus(), 400);
+        assertEquals(response.getStatus(), 404);
     }
 
     @Test
@@ -213,7 +213,7 @@ public class AndroidVariantEndpointTest {
         when(variantService.findByVariantID("123")).thenReturn(new iOSVariant());
 
         final Response response = this.endpoint.deleteVariant(GOOD_APP_ID,"123");
-        assertEquals(response.getStatus(), 400);
+        assertEquals(response.getStatus(), 404);
     }
 
     @Test
@@ -236,11 +236,11 @@ public class AndroidVariantEndpointTest {
     }
 
     @Test
-    public void shouldReturn400WhenResetSecretFindsVariantOfAnotherPlatform() {
+    public void shouldReturn404WhenResetSecretFindsVariantOfAnotherPlatform() {
         when(variantService.findByVariantID("123")).thenReturn(new iOSVariant());
 
         final Response response = this.endpoint.resetSecret(GOOD_APP_ID,"123");
-        assertEquals(response.getStatus(), 400);
+        assertEquals(response.getStatus(), 404);
     }
 
     @Test
