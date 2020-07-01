@@ -127,7 +127,8 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint<WebPushVaria
 
             // some validation
             try {
-                validateModelClass(updatedVariant);
+                updatedVariant.merge(webPushVariant);
+                validateModelClass(webPushVariant);
             } catch (ConstraintViolationException cve) {
                 logger.info("Unable to update WebPush Variant '{}'", webPushVariant.getVariantID());
                 logger.debug("Details: {}", cve);
@@ -138,11 +139,6 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint<WebPushVaria
                 return builder.build();
             }
 
-            // apply updated data:
-            webPushVariant.setPublicKey(updatedVariant.getPublicKey());
-            webPushVariant.setPrivateKey(updatedVariant.getPrivateKey());
-            webPushVariant.setName(updatedVariant.getName());
-            webPushVariant.setDescription(updatedVariant.getDescription());
             logger.trace("Updating WebPush Variant '{}'", webPushID);
             variantService.updateVariant(webPushVariant);
             return Response.ok(webPushVariant).build();

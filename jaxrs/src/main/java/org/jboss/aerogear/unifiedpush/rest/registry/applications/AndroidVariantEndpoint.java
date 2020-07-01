@@ -142,7 +142,8 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint<AndroidVaria
 
             // some validation
             try {
-                validateModelClass(updatedAndroidApplication);
+                updatedAndroidApplication.merge(androidVariant);
+                validateModelClass(androidVariant);
             } catch (ConstraintViolationException cve) {
                 logger.info("Unable to update Android Variant '{}'", androidVariant.getVariantID());
                 logger.debug("Details: {}", cve);
@@ -153,11 +154,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint<AndroidVaria
                 return builder.build();
             }
 
-            // apply updated data:
-            androidVariant.setGoogleKey(updatedAndroidApplication.getGoogleKey());
-            androidVariant.setProjectNumber(updatedAndroidApplication.getProjectNumber());
-            androidVariant.setName(updatedAndroidApplication.getName());
-            androidVariant.setDescription(updatedAndroidApplication.getDescription());
+
             logger.trace("Updating Android Variant '{}'", androidID);
             variantService.updateVariant(androidVariant);
             return Response.ok(androidVariant).build();

@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- * 	http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,6 +53,7 @@ public class WebPushVariant extends Variant {
     /**
      * This is a VAPID public key.  It must match the private key.
      * See https://tools.ietf.org/html/draft-ietf-webpush-vapid-01
+     *
      * @return
      */
     public String getPublicKey() {
@@ -66,6 +67,7 @@ public class WebPushVariant extends Variant {
     /**
      * This is a VAPID private key.  It must match the public key.
      * See https://tools.ietf.org/html/draft-ietf-webpush-vapid-01
+     *
      * @return
      */
     public String getPrivateKey() {
@@ -115,7 +117,7 @@ public class WebPushVariant extends Variant {
                 return false;
             }
             if (alias.toLowerCase().startsWith("mailto:")) {
-                return  alias.contains("@");
+                return alias.contains("@");
             }
             new java.net.URL(alias);
             return true;
@@ -127,4 +129,26 @@ public class WebPushVariant extends Variant {
         }
     }
 
+    /**
+     * Applies the non null values of this class to the webPushVariant param
+     * @param webPushVariant value to have non null values of this instance applied
+     */
+    public void merge(WebPushVariant webPushVariant) {
+        if (getPublicKey() != null && !getPublicKey().isBlank()) {
+            webPushVariant.setPublicKey(getPublicKey());
+        }
+        if (getPrivateKey() != null && !getPrivateKey().isBlank()) {
+            webPushVariant.setPrivateKey(getPrivateKey());
+        }
+        if (getName() != null && !getName().isBlank()) {
+            webPushVariant.setName(getName());
+        }
+        if (getDescription() != null && !getDescription().isBlank()) {
+            webPushVariant.setDescription(getDescription());
+        }
+
+        if (getAlias() != null && !getAlias().isBlank()) {
+            webPushVariant.setAlias(getAlias());
+        }
+    }
 }
