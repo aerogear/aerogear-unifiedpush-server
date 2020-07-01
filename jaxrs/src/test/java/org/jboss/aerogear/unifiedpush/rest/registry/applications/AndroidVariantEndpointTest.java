@@ -149,7 +149,7 @@ public class AndroidVariantEndpointTest {
 
         final Response response = this.endpoint.updateAndroidVariant("push-app-id", "variant-id", updatedVariant);
 
-        assertEquals(response.getStatus(), 200);
+        assertEquals(200,response.getStatus());
         assertTrue(response.getEntity() == originalVariant);        // identity check
         assertEquals(originalVariant.getGoogleKey(), "Updated Google Key");
 

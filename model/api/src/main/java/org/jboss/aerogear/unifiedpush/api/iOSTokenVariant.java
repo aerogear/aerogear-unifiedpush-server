@@ -154,5 +154,6 @@ public class iOSTokenVariant extends APNSVariant {
         if (this.getPrivateKey() != null && !this.getPrivateKey().isBlank()) {
             iOSTokenVariant.setPrivateKey(this.getPrivateKey());
         }
+
     }
 }

@@ -122,9 +122,13 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint<WebPushVaria
             return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
         }
 
-        WebPushVariant webPushVariant = (WebPushVariant) variantService.findByVariantID(webPushID);
-        if (webPushVariant != null) {
+        var variant = variantService.findByVariantID(webPushID);
 
+        if (variant != null) {
+            if (!(variant instanceof WebPushVariant)) {
+                return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
+            }
+            WebPushVariant webPushVariant = (WebPushVariant) variant;
             // some validation
             try {
                 updatedVariant.merge(webPushVariant);

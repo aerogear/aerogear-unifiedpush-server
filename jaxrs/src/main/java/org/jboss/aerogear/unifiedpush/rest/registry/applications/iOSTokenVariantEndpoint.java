@@ -27,13 +27,7 @@ import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -61,11 +55,10 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
     /**
      * Add iOS Variant
      *
-     * @param iOSVariant         new iOS Token Variant
+     * @param iOSVariant        new iOS Token Variant
      * @param pushApplicationID id of {@link PushApplication}
      * @param uriInfo           uri
      * @return created {@link iOSTokenVariant}
-     *
      * @statuscode 201 The iOS Variant created successfully
      * @statuscode 400 The format of the client request was incorrect
      * @statuscode 404 The requested PushApplication resource does not exist
@@ -109,7 +102,6 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
      * List iOS Variants for Push Application
      *
      * @param pushApplicationID id of {@link PushApplication}
-     * @return updated {@link iOSTokenVariant}
      * @return list of {@link iOSTokenVariant}s
      */
     @GET
@@ -131,7 +123,6 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
      * @param iOSID             id of {@link iOSTokenVariant}
      * @param updatediOSVariant updated version of {@link iOSTokenVariant}
      * @return updated {@link iOSTokenVariant}
-     *
      * @statuscode 204 The iOS Variant updated successfully
      * @statuscode 404 The requested Variant resource does not exist
      */
@@ -178,12 +169,10 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
     /**
      * Update iOS Variant
      *
-     * @param pushApplicationId     id of {@link PushApplication}
-     * @param iOSID                 id of {@link iOSTokenVariant}
-     * @param updatediOSVariant    new info of {@link iOSTokenVariant}
-     *
+     * @param pushApplicationId id of {@link PushApplication}
+     * @param iOSID             id of {@link iOSTokenVariant}
+     * @param updatediOSVariant new info of {@link iOSTokenVariant}
      * @return updated {@link iOSTokenVariant}
-     *
      * @statuscode 200 The iOS Variant updated successfully
      * @statuscode 400 The format of the client request was incorrect
      * @statuscode 404 The requested iOS Variant resource does not exist
@@ -204,9 +193,13 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
         }
 
 
-        iOSTokenVariant iOSTokenVariant = (iOSTokenVariant) variantService.findByVariantID(iOSID);
-        if (iOSTokenVariant != null) {
+        var variant = variantService.findByVariantID(iOSID);
 
+        if (variant != null) {
+            if (!(variant instanceof iOSTokenVariant)) {
+                return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
+            }
+            iOSTokenVariant iOSTokenVariant = (iOSTokenVariant) variant;
             // merge the values and validate the new model
             try {
                 updatediOSVariant.merge(iOSTokenVariant);

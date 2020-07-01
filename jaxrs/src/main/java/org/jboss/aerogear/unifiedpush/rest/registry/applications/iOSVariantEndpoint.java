@@ -61,11 +61,10 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
      * @param pushApplicationID id of {@link PushApplication}
      * @param uriInfo           uri
      * @return created {@link iOSVariant}
-     * @deprecated please use the JSON endpoint with a base64 encoded certificate instead
-     *
      * @statuscode 201 The iOS Variant created successfully
      * @statuscode 400 The format of the client request was incorrect
      * @statuscode 404 The requested PushApplication resource does not exist
+     * @deprecated please use the JSON endpoint with a base64 encoded certificate instead
      */
     @POST
     @Deprecated
@@ -253,9 +252,14 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
             return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
         }
 
-        iOSVariant iOSVariant = (iOSVariant) variantService.findByVariantID(iOSID);
-        if (iOSVariant != null) {
 
+        var variant = variantService.findByVariantID(iOSID);
+
+        if (variant != null) {
+            if (!(variant instanceof iOSVariant)) {
+                return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
+            }
+            iOSVariant iOSVariant = (iOSVariant) variant;
             // some model validation on the uploaded form
             try {
 
@@ -266,7 +270,6 @@ public class iOSVariantEndpoint extends AbstractVariantEndpoint<iOSVariant> {
                 ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
                 return builder.build();
             }
-
 
 
             // some model validation on the entity:
