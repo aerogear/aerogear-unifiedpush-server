@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- * 	http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,7 +50,7 @@ public class AndroidVariant extends Variant {
     /**
      * The Server Key from the Firebase Console of a project which has been enabled for FCM.
      *
-      @return the Server key
+     @return the Server key
      */
     public String getGoogleKey() {
         return this.googleKey;
@@ -63,5 +63,22 @@ public class AndroidVariant extends Variant {
     @Override
     public VariantType getType() {
         return VariantType.ANDROID;
+    }
+
+    public void merge(AndroidVariant androidVariant) {
+        // apply updated data:
+        if (getGoogleKey() != null && !getGoogleKey().isBlank()) {
+            androidVariant.setGoogleKey(getGoogleKey());
+        }
+
+        if (getProjectNumber() != null && !getProjectNumber().isBlank()) {
+            androidVariant.setProjectNumber(getProjectNumber());
+        }
+        if (getName() != null && !getName().isBlank()) {
+            androidVariant.setName(getName());
+        }
+        if (getDescription() != null && !getDescription().isBlank()) {
+            androidVariant.setDescription(getDescription());
+        }
     }
 }

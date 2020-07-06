@@ -35,6 +35,7 @@ import static org.mockito.Mockito.never;
 @RunWith(MockitoJUnitRunner.class)
 public class WebPushVariantEndpointTest {
 
+    private static final String GOOD_APP_ID = "good_app_id";
     WebPushVariantEndpoint endpoint;
 
 
@@ -61,7 +62,7 @@ public class WebPushVariantEndpointTest {
 
         this.endpoint.pushAppService = pushAppService;
         this.endpoint.variantService = variantService;
-
+        when(searchService.findByPushApplicationIDForDeveloper(GOOD_APP_ID)).thenReturn(new PushApplication());
         when(searchManager.getSearchService()).thenReturn(searchService);
     }
 
@@ -138,10 +139,12 @@ public class WebPushVariantEndpointTest {
     public void shouldUpdateWebPushVariantSuccessfully() {
         final WebPushVariant originalVariant = new WebPushVariant();
         final WebPushVariant updatedVariant = new WebPushVariant();
+        final PushApplication pushApp = new PushApplication();
 
         originalVariant.setPublicKey("test public Key");
         updatedVariant.setPublicKey("update public Key");
 
+        when(searchService.findByPushApplicationIDForDeveloper("push-app-id")).thenReturn(pushApp);
         when(variantService.findByVariantID("variant-id")).thenReturn(originalVariant);
         when(validator.validate(updatedVariant)).thenReturn(Collections.EMPTY_SET);
 
@@ -158,16 +161,16 @@ public class WebPushVariantEndpointTest {
     public void shouldReturn404WhenFindVariantByIdCannotFindAnyVariants() {
         when(variantService.findByVariantID("foo")).thenReturn(null);
 
-        final Response response = this.endpoint.findVariantById("foo");
+        final Response response = this.endpoint.findVariantById("","foo");
         assertEquals(response.getStatus(), 404);
     }
 
     @Test
-    public void shouldReturn400WhenFindVariantByIdFindsVariantOfAnotherPlatform() {
+    public void shouldReturn404WhenFindVariantByIdFindsVariantOfAnotherPlatform() {
         when(variantService.findByVariantID("123")).thenReturn(new iOSVariant());
 
-        final Response response = this.endpoint.findVariantById("123");
-        assertEquals(response.getStatus(), 400);
+        final Response response = this.endpoint.findVariantById(GOOD_APP_ID,"123");
+        assertEquals(response.getStatus(), 404);
     }
 
     @Test
@@ -175,7 +178,7 @@ public class WebPushVariantEndpointTest {
         final WebPushVariant variant = new WebPushVariant();
         when(variantService.findByVariantID("123")).thenReturn(variant);
 
-        final Response response = this.endpoint.findVariantById("123");
+        final Response response = this.endpoint.findVariantById(GOOD_APP_ID,"123");
         assertEquals(response.getStatus(), 200);
         assertTrue(variant == response.getEntity());    // identity check
     }
@@ -184,16 +187,16 @@ public class WebPushVariantEndpointTest {
     public void shouldReturn404WhenDeleteVariantCannotFindAnyVariants() {
         when(variantService.findByVariantID("foo")).thenReturn(null);
 
-        final Response response = this.endpoint.deleteVariant("foo");
+        final Response response = this.endpoint.deleteVariant(GOOD_APP_ID,"foo");
         assertEquals(response.getStatus(), 404);
     }
 
     @Test
-    public void shouldReturn400WhenDeleteVariantFindsVariantOfAnotherPlatform() {
+    public void shouldReturn404WhenDeleteVariantFindsVariantOfAnotherPlatform() {
         when(variantService.findByVariantID("123")).thenReturn(new iOSVariant());
 
-        final Response response = this.endpoint.deleteVariant("123");
-        assertEquals(response.getStatus(), 400);
+        final Response response = this.endpoint.deleteVariant(GOOD_APP_ID,"123");
+        assertEquals(response.getStatus(), 404);
     }
 
     @Test
@@ -201,7 +204,7 @@ public class WebPushVariantEndpointTest {
         final WebPushVariant variant = new WebPushVariant();
         when(variantService.findByVariantID("123")).thenReturn(variant);
 
-        final Response response = this.endpoint.deleteVariant("123");
+        final Response response = this.endpoint.deleteVariant(GOOD_APP_ID,"123");
         assertEquals(response.getStatus(), 204);
 
         verify(variantService).removeVariant(variant);
@@ -211,16 +214,16 @@ public class WebPushVariantEndpointTest {
     public void shouldReturn404WhenResetSecretCannotFindAnyVariants() {
         when(variantService.findByVariantID("foo")).thenReturn(null);
 
-        final Response response = this.endpoint.resetSecret("foo");
+        final Response response = this.endpoint.resetSecret(GOOD_APP_ID,"foo");
         assertEquals(response.getStatus(), 404);
     }
 
     @Test
-    public void shouldReturn400WhenResetSecretFindsVariantOfAnotherPlatform() {
+    public void shouldReturn404WhenResetSecretFindsVariantOfAnotherPlatform() {
         when(variantService.findByVariantID("123")).thenReturn(new iOSVariant());
 
-        final Response response = this.endpoint.resetSecret("123");
-        assertEquals(response.getStatus(), 400);
+        final Response response = this.endpoint.resetSecret(GOOD_APP_ID,"123");
+        assertEquals(response.getStatus(), 404);
     }
 
     @Test
@@ -230,7 +233,7 @@ public class WebPushVariantEndpointTest {
 
         when(variantService.findByVariantID("123")).thenReturn(variant);
 
-        final Response response = this.endpoint.resetSecret("123");
+        final Response response = this.endpoint.resetSecret(GOOD_APP_ID,"123");
         assertEquals(response.getStatus(), 200);
 
         verify(variantService).updateVariant(variant);

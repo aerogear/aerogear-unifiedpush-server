@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class iOSTokenVariantEndpointTest {
+    private static final String GOOD_APP_ID = "good_app_id";
     iOSTokenVariantEndpoint endpoint;
 
     @Mock
@@ -55,6 +56,7 @@ public class iOSTokenVariantEndpointTest {
         this.endpoint.producer = producer;
 
         when(searchManager.getSearchService()).thenReturn(searchService);
+        when(searchService.findByPushApplicationIDForDeveloper(GOOD_APP_ID)).thenReturn(new PushApplication());
     }
 
     @Test
@@ -93,12 +95,13 @@ public class iOSTokenVariantEndpointTest {
     @Test
     public void shouldUpdateiOSTokenVariantSuccessfully_withMultiPartData() {
         final iOSTokenVariant original = new iOSTokenVariant();
-
         final iOSTokenVariant update = new iOSTokenVariant();
+        final PushApplication pushApp = new PushApplication();
         update.setName("variant name");
         update.setPrivateKey("privateKey");
         update.setProduction(false);
 
+        when(searchService.findByPushApplicationIDForDeveloper("push-app-id")).thenReturn(pushApp);
         when(variantService.findByVariantID("variant-id")).thenReturn(original);
         when(validator.validate(update)).thenReturn(Collections.EMPTY_SET);
         when(validator.validate(original)).thenReturn(Collections.EMPTY_SET);
@@ -115,8 +118,9 @@ public class iOSTokenVariantEndpointTest {
     @Test
     public void shouldUpdateiOSTokenVariantSuccessfully_noMultiPartData() {
         final iOSTokenVariant original = new iOSTokenVariant();
-
         final iOSTokenVariant update = new iOSTokenVariant();
+        final PushApplication pushApp = new PushApplication();
+
         update.setName("variant name");
         update.setPrivateKey("certificate");
         update.setTeamId("team id");
@@ -126,6 +130,8 @@ public class iOSTokenVariantEndpointTest {
 
         update.setProduction(false);
 
+
+        when(searchService.findByPushApplicationIDForDeveloper("push-app-id")).thenReturn(pushApp);
         when(variantService.findByVariantID("variant-id")).thenReturn(original);
 
         final Response response = this.endpoint.updateiOSVariant("push-app-id", "variant-id", update);
@@ -149,7 +155,7 @@ public class iOSTokenVariantEndpointTest {
         final iOSTokenVariant variant = new iOSTokenVariant();
         when(variantService.findByVariantID("123")).thenReturn(variant);
 
-        final Response response = this.endpoint.findVariantById("123");
+        final Response response = this.endpoint.findVariantById(GOOD_APP_ID,"123");
         assertEquals(response.getStatus(), 200);
         assertTrue(variant == response.getEntity());    // identity check
     }
@@ -162,7 +168,7 @@ public class iOSTokenVariantEndpointTest {
         final iOSTokenVariant variant = new iOSTokenVariant();
         when(variantService.findByVariantID("123")).thenReturn(variant);
 
-        final Response response = this.endpoint.deleteVariant("123");
+        final Response response = this.endpoint.deleteVariant(GOOD_APP_ID,"123");
         assertEquals(response.getStatus(), 204);
 
         verify(variantService).removeVariant(variant);
@@ -178,7 +184,7 @@ public class iOSTokenVariantEndpointTest {
 
         when(variantService.findByVariantID("123")).thenReturn(variant);
 
-        final Response response = this.endpoint.resetSecret("123");
+        final Response response = this.endpoint.resetSecret(GOOD_APP_ID,"123");
         assertEquals(response.getStatus(), 200);
 
         verify(variantService).updateVariant(variant);

@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class iOSVariantEndpointTest {
+    private static final String GOOD_APP_ID = "good_app_id";
     iOSVariantEndpoint endpoint;
 
     @Mock
@@ -52,7 +53,7 @@ public class iOSVariantEndpointTest {
         this.endpoint.pushAppService = pushAppService;
         this.endpoint.variantService = variantService;
         this.endpoint.producer = producer;
-
+        when(searchService.findByPushApplicationIDForDeveloper(GOOD_APP_ID)).thenReturn(new PushApplication());
         when(searchManager.getSearchService()).thenReturn(searchService);
     }
 
@@ -83,12 +84,14 @@ public class iOSVariantEndpointTest {
     @Test
     public void shouldUpdateiOSVariantSuccessfully_withMultiPartData() {
         final iOSVariant original = new iOSVariant();
-
+        original.setCertificate("Certificate".getBytes());
         final iOSApplicationUploadForm update = new iOSApplicationUploadForm();
+        final PushApplication pushApp = new PushApplication();
+
         update.setName("variant name");
-        update.setCertificate("certificate".getBytes());
         update.setProduction(false);
 
+        when(searchService.findByPushApplicationIDForDeveloper("push-app-id")).thenReturn(pushApp);
         when(variantService.findByVariantID("variant-id")).thenReturn(original);
         when(validator.validate(update)).thenReturn(Collections.EMPTY_SET);
         when(validator.validate(original)).thenReturn(Collections.EMPTY_SET);
@@ -97,7 +100,7 @@ public class iOSVariantEndpointTest {
 
         assertEquals(response.getStatus(), 200);
         assertEquals(original.getName(), "variant name");
-
+        assertNotNull(original.getCertificate());
         verify(variantService).updateVariant(original);
         verify(producer).changeAPNClient(original);
     }
@@ -105,18 +108,21 @@ public class iOSVariantEndpointTest {
     @Test
     public void shouldUpdateiOSVariantSuccessfully_noMultiPartData() {
         final iOSVariant original = new iOSVariant();
-
+        final PushApplication pushApp = new PushApplication();
         final iOSVariant update = new iOSVariant();
+        original.setCertificate("Certificate".getBytes());
+
         update.setName("variant name");
-        update.setCertificate("certificate".getBytes());
         update.setProduction(false);
 
+        when(searchService.findByPushApplicationIDForDeveloper("push-app-id")).thenReturn(pushApp);
         when(variantService.findByVariantID("variant-id")).thenReturn(original);
 
         final Response response = this.endpoint.updateiOSVariant("push-app-id", "variant-id", update);
 
         assertEquals(response.getStatus(), 204);
         assertEquals(original.getName(), "variant name");
+        assertNotNull(original.getCertificate());
 
         verify(variantService).updateVariant(original);
     }
@@ -129,7 +135,7 @@ public class iOSVariantEndpointTest {
         final iOSVariant variant = new iOSVariant();
         when(variantService.findByVariantID("123")).thenReturn(variant);
 
-        final Response response = this.endpoint.findVariantById("123");
+        final Response response = this.endpoint.findVariantById(GOOD_APP_ID,"123");
         assertEquals(response.getStatus(), 200);
         assertTrue(variant == response.getEntity());    // identity check
     }
@@ -142,7 +148,7 @@ public class iOSVariantEndpointTest {
         final iOSVariant variant = new iOSVariant();
         when(variantService.findByVariantID("123")).thenReturn(variant);
 
-        final Response response = this.endpoint.deleteVariant("123");
+        final Response response = this.endpoint.deleteVariant(GOOD_APP_ID,"123");
         assertEquals(response.getStatus(), 204);
 
         verify(variantService).removeVariant(variant);
@@ -158,7 +164,7 @@ public class iOSVariantEndpointTest {
 
         when(variantService.findByVariantID("123")).thenReturn(variant);
 
-        final Response response = this.endpoint.resetSecret("123");
+        final Response response = this.endpoint.resetSecret(GOOD_APP_ID,"123");
         assertEquals(response.getStatus(), 200);
 
         verify(variantService).updateVariant(variant);

@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- * 	http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,8 +18,10 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
-import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.aerogear.unifiedpush.rest.annotations.DisabledByEnvironment;
+import org.jboss.aerogear.unifiedpush.rest.util.error.ErrorBuilder;
+import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
+
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.ws.rs.*;
@@ -50,7 +52,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint<AndroidVaria
      * @param androidVariant    new {@link AndroidVariant}
      * @param pushApplicationID id of {@link PushApplication}
      * @param uriInfo           the uri
-     * @return                  created {@link AndroidVariant}
+     * @return created {@link AndroidVariant}
      *
      * @statuscode 201 The Android Variant created successfully
      * @statuscode 400 The format of the client request was incorrect
@@ -68,7 +70,7 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint<AndroidVaria
         PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp == null) {
-            return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
+            return Response.status(Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
         }
 
         // some validation
@@ -95,22 +97,28 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint<AndroidVaria
      * List Android Variants for Push Application
      *
      * @param pushApplicationID id of {@link PushApplication}
-     * @return                  list of {@link AndroidVariant}s
+     * @return list of {@link AndroidVariant}s
      */
     @GET
-    @Produces(MediaType.APPLICATION_JSON)    public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listAllAndroidVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
+
         return Response.ok(getVariants(application)).build();
     }
 
     /**
      * Update Android Variant
      *
-     * @param id                        id of {@link PushApplication}
+     * @param pushApplicationId         id of {@link PushApplication}
      * @param androidID                 id of {@link AndroidVariant}
      * @param updatedAndroidApplication new info of {@link AndroidVariant}
      *
-     * @return                  updated {@link AndroidVariant}
+     * @return updated {@link AndroidVariant}
      *
      * @statuscode 200 The Android Variant updated successfully
      * @statuscode 400 The format of the client request was incorrect
@@ -121,16 +129,27 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint<AndroidVaria
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateAndroidVariant(
-            @PathParam("pushAppID") String id,
+            @PathParam("pushAppID") String pushApplicationId,
             @PathParam("androidID") String androidID,
             AndroidVariant updatedAndroidApplication) {
 
-        AndroidVariant androidVariant = (AndroidVariant) variantService.findByVariantID(androidID);
-        if (androidVariant != null) {
+        final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationId);
 
-            // some validation
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
+
+        // some validation
+        var variant = variantService.findByVariantID(androidID);
+
+        if (variant != null) {
+            if (!(variant instanceof AndroidVariant)) {
+                return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
+            }
+            AndroidVariant androidVariant = (AndroidVariant) variant;
             try {
-                validateModelClass(updatedAndroidApplication);
+                updatedAndroidApplication.merge(androidVariant);
+                validateModelClass(androidVariant);
             } catch (ConstraintViolationException cve) {
                 logger.info("Unable to update Android Variant '{}'", androidVariant.getVariantID());
                 logger.debug("Details: {}", cve);
@@ -141,17 +160,13 @@ public class AndroidVariantEndpoint extends AbstractVariantEndpoint<AndroidVaria
                 return builder.build();
             }
 
-            // apply updated data:
-            androidVariant.setGoogleKey(updatedAndroidApplication.getGoogleKey());
-            androidVariant.setProjectNumber(updatedAndroidApplication.getProjectNumber());
-            androidVariant.setName(updatedAndroidApplication.getName());
-            androidVariant.setDescription(updatedAndroidApplication.getDescription());
+
             logger.trace("Updating Android Variant '{}'", androidID);
             variantService.updateVariant(androidVariant);
             return Response.ok(androidVariant).build();
         }
 
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
+        return Response.status(Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
     }
 
 }

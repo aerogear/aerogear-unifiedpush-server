@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- * 	http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.rest.util;
 
 import org.jboss.aerogear.unifiedpush.message.HealthNetworkService;
+import org.jboss.aerogear.unifiedpush.rest.util.error.ErrorBuilder;
 import org.jboss.aerogear.unifiedpush.service.HealthDBService;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthDetails;
 import org.jboss.aerogear.unifiedpush.service.impl.health.HealthStatus;
@@ -102,7 +103,7 @@ public class HealthCheck {
         try (final InputStream manifestStream = context.getResourceAsStream("/META-INF/MANIFEST.MF")) {
             return Response.ok(new Manifest(manifestStream).getMainAttributes()).build();
         } catch (Exception e) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find version information").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forHealthCheck().noVersion().build()).build();
         }
     }
 }

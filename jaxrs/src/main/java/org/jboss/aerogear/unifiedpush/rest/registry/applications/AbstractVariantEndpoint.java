@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
+import org.jboss.aerogear.unifiedpush.rest.util.error.ErrorBuilder;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
@@ -52,7 +53,7 @@ public abstract class AbstractVariantEndpoint<T extends Variant> extends Abstrac
     }
 
     // required for tests
-    AbstractVariantEndpoint(Validator validator, SearchManager searchManager, Class<T> type ) {
+    AbstractVariantEndpoint(Validator validator, SearchManager searchManager, Class<T> type) {
         super(validator, searchManager);
         this.type = type;
     }
@@ -61,26 +62,32 @@ public abstract class AbstractVariantEndpoint<T extends Variant> extends Abstrac
      * Secret Reset
      *
      * @param variantId id of {@link Variant}
-     * @return          {@link Variant} with new secret
-     *
+     * @return {@link Variant} with new secret
      * @statuscode 200 The secret of Variant reset successfully
-     * @statuscode 400 The requested Variant resource exists but it is not of the given type
+     * @statuscode 404 The requested Variant resource exists but it is not of the given type
      * @statuscode 404 The requested Variant resource does not exist
      */
     @PUT
     @Path("/{variantId}/reset")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response resetSecret(@PathParam("variantId") String variantId) {
+    public Response resetSecret(@PathParam("pushAppID") String pushApplicationID,
+                                @PathParam("variantId") String variantId) {
+        // find the root push app
+        PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+
+        if (pushApp == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
 
         Variant variant = variantService.findByVariantID(variantId);
 
         if (variant == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
         }
 
         if (!type.isInstance(variant)) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Requested Variant is of another type/platform").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
         }
 
         logger.trace("Resetting secret for: {}", variant.getName());
@@ -98,24 +105,31 @@ public abstract class AbstractVariantEndpoint<T extends Variant> extends Abstrac
      * Get Variant
      *
      * @param variantId id of {@link Variant}
-     * @return          requested {@link Variant}
-     *
-     * @statuscode 400 The requested Variant resource exists but it is not of the given type
+     * @return requested {@link Variant}
+     * @statuscode 404 The requested Variant resource exists but it is not of the given type
      * @statuscode 404 The requested Variant resource does not exist
      */
     @GET
     @Path("/{variantId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findVariantById(@PathParam("variantId") String variantId) {
+    public Response findVariantById(@PathParam("pushAppID") String pushApplicationID,
+                                    @PathParam("variantId") String variantId) {
+
+        // find the root push app
+        PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+
+        if (pushApp == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
 
         Variant variant = variantService.findByVariantID(variantId);
 
         if (variant == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
         }
 
         if (!type.isInstance(variant)) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Requested Variant is of another type/platform").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
         }
 
         return Response.ok(variant).build();
@@ -125,25 +139,30 @@ public abstract class AbstractVariantEndpoint<T extends Variant> extends Abstrac
      * Delete Variant
      *
      * @param variantId id of {@link Variant}
-     *
      * @return no content or 404
-     *
      * @statuscode 204 The Variant successfully deleted
-     * @statuscode 400 The requested Variant resource exists but it is not of the given type
+     * @statuscode 404 The requested Variant resource exists but it is not of the given type
      * @statuscode 404 The requested Variant resource does not exist
      */
     @DELETE
     @Path("/{variantId}")
-    public Response deleteVariant(@PathParam("variantId") String variantId) {
+    public Response deleteVariant(@PathParam("pushAppID") String pushApplicationID,
+                                  @PathParam("variantId") String variantId) {
+        // find the root push app
+        PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+
+        if (pushApp == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
 
         Variant variant = variantService.findByVariantID(variantId);
 
         if (variant == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
         }
 
         if (!type.isInstance(variant)) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Requested Variant is of another type/platform").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
         }
 
         logger.trace("Deleting: {}", variant.getClass().getSimpleName());

@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- * 	http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,18 +21,13 @@ import org.jboss.aerogear.unifiedpush.api.iOSTokenVariant;
 import org.jboss.aerogear.unifiedpush.message.jms.APNSClientProducer;
 import org.jboss.aerogear.unifiedpush.rest.annotations.DisabledByEnvironment;
 import org.jboss.aerogear.unifiedpush.rest.annotations.PATCH;
+import org.jboss.aerogear.unifiedpush.rest.util.error.ErrorBuilder;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -41,7 +36,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 @Path("/applications/{pushAppID}/{ignore:iostoken|ios_token}")
-@DisabledByEnvironment({"ios_token","iostoken"})
+@DisabledByEnvironment({"ios_token", "iostoken"})
 public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVariant> {
 
     @Inject
@@ -60,11 +55,10 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
     /**
      * Add iOS Variant
      *
-     * @param iOSVariant         new iOS Token Variant
+     * @param iOSVariant        new iOS Token Variant
      * @param pushApplicationID id of {@link PushApplication}
      * @param uriInfo           uri
-     * @return                  created {@link iOSTokenVariant}
-     *
+     * @return created {@link iOSTokenVariant}
      * @statuscode 201 The iOS Variant created successfully
      * @statuscode 400 The format of the client request was incorrect
      * @statuscode 404 The requested PushApplication resource does not exist
@@ -80,7 +74,7 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
         PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp == null) {
-            return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
+            return Response.status(Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
         }
 
         // some model validation on the entity:
@@ -108,13 +102,17 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
      * List iOS Variants for Push Application
      *
      * @param pushApplicationID id of {@link PushApplication}
-     * @return                  updated {@link iOSTokenVariant}
-     * @return                  list of {@link iOSTokenVariant}s
+     * @return list of {@link iOSTokenVariant}s
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAlliOSVariantsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
+
         return Response.ok(getVariants(application)).build();
     }
 
@@ -124,8 +122,7 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
      * @param pushApplicationId id of {@link PushApplication}
      * @param iOSID             id of {@link iOSTokenVariant}
      * @param updatediOSVariant updated version of {@link iOSTokenVariant}
-     * @return                  updated {@link iOSTokenVariant}
-     *
+     * @return updated {@link iOSTokenVariant}
      * @statuscode 204 The iOS Variant updated successfully
      * @statuscode 404 The requested Variant resource does not exist
      */
@@ -138,36 +135,44 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
             @PathParam("iOSID") String iOSID,
             iOSTokenVariant updatediOSVariant) {
 
-        iOSTokenVariant iOSTokenVariant = (iOSTokenVariant)variantService.findByVariantID(iOSID);
+        final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationId);
+
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
+
+        iOSTokenVariant iOSTokenVariant = (iOSTokenVariant) variantService.findByVariantID(iOSID);
 
         if (iOSTokenVariant != null) {
 
             // apply update:
-            iOSTokenVariant.setName(updatediOSVariant.getName());
-            iOSTokenVariant.setDescription(updatediOSVariant.getDescription());
-            iOSTokenVariant.setProduction(updatediOSVariant.isProduction());
-            iOSTokenVariant.setKeyId(updatediOSVariant.getKeyId());
-            iOSTokenVariant.setBundleId(updatediOSVariant.getBundleId());
-            iOSTokenVariant.setTeamId(updatediOSVariant.getTeamId());
-            iOSTokenVariant.setPrivateKey(updatediOSVariant.getPrivateKey());
+
+            // merge the values and validate the new model
+            try {
+                updatediOSVariant.merge(iOSTokenVariant);
+                validateModelClass(iOSTokenVariant);
+            } catch (ConstraintViolationException cve) {
+                // Build and return the 400 (Bad Request) response
+                ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
+                return builder.build();
+            }
+
 
             logger.trace("Updating text details on iOS Variant '{}'", iOSID);
 
             variantService.updateVariant(iOSTokenVariant);
             return Response.noContent().build();
         }
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
+        return Response.status(Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
     }
 
     /**
      * Update iOS Variant
      *
-     * @param pushApplicationId     id of {@link PushApplication}
-     * @param iOSID                 id of {@link iOSTokenVariant}
-     * @param updatediOSVariant    new info of {@link iOSTokenVariant}
-     *
-     * @return                  updated {@link iOSTokenVariant}
-     *
+     * @param pushApplicationId id of {@link PushApplication}
+     * @param iOSID             id of {@link iOSTokenVariant}
+     * @param updatediOSVariant new info of {@link iOSTokenVariant}
+     * @return updated {@link iOSTokenVariant}
      * @statuscode 200 The iOS Variant updated successfully
      * @statuscode 400 The format of the client request was incorrect
      * @statuscode 404 The requested iOS Variant resource does not exist
@@ -181,26 +186,29 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
             @PathParam("pushAppID") String pushApplicationId,
             @PathParam("iOSID") String iOSID) {
 
-        iOSTokenVariant iOSTokenVariant = (iOSTokenVariant)variantService.findByVariantID(iOSID);
-        if (iOSTokenVariant != null) {
+        final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationId);
 
-            // some model validation on the uploaded form
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
+
+
+        var variant = variantService.findByVariantID(iOSID);
+
+        if (variant != null) {
+            if (!(variant instanceof iOSTokenVariant)) {
+                return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
+            }
+            iOSTokenVariant iOSTokenVariant = (iOSTokenVariant) variant;
+            // merge the values and validate the new model
             try {
-                validateModelClass(updatediOSVariant);
+                updatediOSVariant.merge(iOSTokenVariant);
+                validateModelClass(iOSTokenVariant);
             } catch (ConstraintViolationException cve) {
                 // Build and return the 400 (Bad Request) response
                 ResponseBuilder builder = createBadRequestResponse(cve.getConstraintViolations());
                 return builder.build();
             }
-
-            // apply update:
-            iOSTokenVariant.setName(updatediOSVariant.getName());
-            iOSTokenVariant.setDescription(updatediOSVariant.getDescription());
-            iOSTokenVariant.setProduction(updatediOSVariant.isProduction());
-            iOSTokenVariant.setKeyId(updatediOSVariant.getKeyId());
-            iOSTokenVariant.setTeamId(updatediOSVariant.getTeamId());
-            iOSTokenVariant.setBundleId(updatediOSVariant.getBundleId());
-            iOSTokenVariant.setPrivateKey(updatediOSVariant.getPrivateKey());
 
             // update performed, we now need to invalidate existing connection w/ APNs:
             logger.trace("Updating iOS Variant '{}'", iOSTokenVariant.getVariantID());
@@ -209,6 +217,6 @@ public class iOSTokenVariantEndpoint extends AbstractVariantEndpoint<iOSTokenVar
 
             return Response.ok(iOSTokenVariant).build();
         }
-        return Response.status(Status.NOT_FOUND).entity("Could not find requested Variant").build();
+        return Response.status(Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
     }
 }

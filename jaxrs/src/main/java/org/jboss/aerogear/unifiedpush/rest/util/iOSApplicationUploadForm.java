@@ -157,4 +157,28 @@ public class iOSApplicationUploadForm {
             return false;
         }
     }
+
+    /**
+     * This method will apply non null fields to the iOSVariant.
+     * @param iOSVariant an iOS Variant to have its fields replaced
+     */
+    public void apply(iOSVariant iOSVariant) {
+        if (name != null && !name.isBlank()) {
+            iOSVariant.setName(name);
+        }
+
+        if (description != null && !description.isBlank()) {
+            iOSVariant.setDescription(description);
+        }
+        if (passphrase != null && !passphrase.isBlank()) {
+            iOSVariant.setPassphrase(passphrase);
+        }
+        if (certificate != null && certificate.length != 0) {
+            iOSVariant.setCertificate(certificate);
+        }
+        if (production != null) {
+            iOSVariant.setProduction(production);
+        }
+
+    }
 }

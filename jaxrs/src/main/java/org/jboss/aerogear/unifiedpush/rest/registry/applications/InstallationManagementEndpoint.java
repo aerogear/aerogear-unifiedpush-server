@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dto.Count;
+import org.jboss.aerogear.unifiedpush.rest.util.error.ErrorBuilder;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 import org.jboss.resteasy.spi.Link;
@@ -81,7 +82,7 @@ public class InstallationManagementEndpoint {
 
         //Find the variant using the variantID
         if (!searchManager.getSearchService().existsVariantIDForDeveloper(variantId)) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
         }
 
         //Find the installations using the variantID
@@ -135,7 +136,7 @@ public class InstallationManagementEndpoint {
         Installation installation = clientInstallationService.findById(installationId);
 
         if (installation == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Installation").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forInstallations().notFound().build()).build();
         }
 
         return Response.ok(installation).build();
@@ -161,7 +162,7 @@ public class InstallationManagementEndpoint {
         Installation installation = clientInstallationService.findById(installationId);
 
         if (installation == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Installation").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forInstallations().notFound().build()).build();
         }
 
         clientInstallationService.updateInstallation(installation, entity);
@@ -188,7 +189,7 @@ public class InstallationManagementEndpoint {
         Installation installation = clientInstallationService.findById(installationId);
 
         if (installation == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Installation").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forInstallations().notFound().build()).build();
         }
 
         // remove it

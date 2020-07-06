@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.api.WebPushVariant;
 import org.jboss.aerogear.unifiedpush.rest.annotations.DisabledByEnvironment;
+import org.jboss.aerogear.unifiedpush.rest.util.error.ErrorBuilder;
 import org.jboss.aerogear.unifiedpush.service.impl.SearchManager;
 
 import javax.validation.ConstraintViolationException;
@@ -66,7 +67,7 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint<WebPushVaria
         PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
 
         if (pushApp == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
         }
 
         // some validation
@@ -100,6 +101,11 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint<WebPushVaria
     @Produces(MediaType.APPLICATION_JSON)
     public Response listAllWebPushVariationsForPushApp(@PathParam("pushAppID") String pushApplicationID) {
         final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
+
         return Response.ok(getVariants(application)).build();
     }
 
@@ -107,14 +113,26 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint<WebPushVaria
     @Path("/{webPushID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateWebPushVariant(@PathParam("pushAppID") String id,
+    public Response updateWebPushVariant(@PathParam("pushAppID") String pushApplicationID,
                                          @PathParam("webPushID") String webPushID, WebPushVariant updatedVariant) {
-        WebPushVariant webPushVariant = (WebPushVariant) variantService.findByVariantID(webPushID);
-        if (webPushVariant != null) {
 
+        final PushApplication application = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
+
+        if (application == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forPushApplications().notFound().build()).build();
+        }
+
+        var variant = variantService.findByVariantID(webPushID);
+
+        if (variant != null) {
+            if (!(variant instanceof WebPushVariant)) {
+                return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
+            }
+            WebPushVariant webPushVariant = (WebPushVariant) variant;
             // some validation
             try {
-                validateModelClass(updatedVariant);
+                updatedVariant.merge(webPushVariant);
+                validateModelClass(webPushVariant);
             } catch (ConstraintViolationException cve) {
                 logger.info("Unable to update WebPush Variant '{}'", webPushVariant.getVariantID());
                 logger.debug("Details: {}", cve);
@@ -125,16 +143,11 @@ public class WebPushVariantEndpoint extends AbstractVariantEndpoint<WebPushVaria
                 return builder.build();
             }
 
-            // apply updated data:
-            webPushVariant.setPublicKey(updatedVariant.getPublicKey());
-            webPushVariant.setPrivateKey(updatedVariant.getPrivateKey());
-            webPushVariant.setName(updatedVariant.getName());
-            webPushVariant.setDescription(updatedVariant.getDescription());
             logger.trace("Updating WebPush Variant '{}'", webPushID);
             variantService.updateVariant(webPushVariant);
             return Response.ok(webPushVariant).build();
         }
 
-        return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested Variant").build();
+        return Response.status(Response.Status.NOT_FOUND).entity(ErrorBuilder.forVariants().notFound().build()).build();
     }
 }
