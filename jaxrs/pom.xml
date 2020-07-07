@@ -76,6 +76,7 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-multipart-provider</artifactId>
             <scope>provided</scope>
+            <version>${resteasy.version}</version>
         </dependency>
 
         <dependency>
