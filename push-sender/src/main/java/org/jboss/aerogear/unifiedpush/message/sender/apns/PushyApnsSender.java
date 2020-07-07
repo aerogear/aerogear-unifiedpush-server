@@ -16,16 +16,13 @@
  */
 package org.jboss.aerogear.unifiedpush.message.sender.apns;
 
-import com.turo.pushy.apns.ApnsClient;
-import com.turo.pushy.apns.ApnsClientBuilder;
-import com.turo.pushy.apns.DeliveryPriority;
-import com.turo.pushy.apns.PushNotificationResponse;
-import com.turo.pushy.apns.PushType;
-import com.turo.pushy.apns.proxy.HttpProxyHandlerFactory;
-import com.turo.pushy.apns.proxy.Socks5ProxyHandlerFactory;
-import com.turo.pushy.apns.util.ApnsPayloadBuilder;
-import com.turo.pushy.apns.util.SimpleApnsPushNotification;
-import io.netty.util.concurrent.Future;
+import com.eatthepath.pushy.apns.*;
+import com.eatthepath.pushy.apns.proxy.HttpProxyHandlerFactory;
+import com.eatthepath.pushy.apns.proxy.Socks5ProxyHandlerFactory;
+import com.eatthepath.pushy.apns.util.ApnsPayloadBuilder;
+import com.eatthepath.pushy.apns.util.SimpleApnsPayloadBuilder;
+import com.eatthepath.pushy.apns.util.SimpleApnsPushNotification;
+import com.eatthepath.pushy.apns.util.concurrent.PushNotificationFuture;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
 import org.jboss.aerogear.unifiedpush.api.iOSVariant;
@@ -136,15 +133,18 @@ public class PushyApnsSender implements PushNotificationSender {
 
             tokens.forEach(token -> {
                 final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token,
-                        defaultApnsTopic, payload, expireDate, DeliveryPriority.IMMEDIATE,
+                        defaultApnsTopic, payload, expireDate.toInstant(), DeliveryPriority.IMMEDIATE,
                         determinePushType(pushMessage.getMessage()), null, null);
-                final Future<PushNotificationResponse<SimpleApnsPushNotification>> notificationSendFuture = apnsClient
+                PushNotificationFuture<SimpleApnsPushNotification, PushNotificationResponse<SimpleApnsPushNotification>> notificationSendFuture = apnsClient
                         .sendNotification(pushNotification);
 
-                notificationSendFuture.addListener(future -> {
-
-                    if (future.isSuccess()) {
-                        handlePushNotificationResponsePerToken(notificationSendFuture.get());
+                notificationSendFuture.whenComplete((pushNotificationResponse, cause)-> {
+                    if (pushNotificationResponse != null) {
+                        handlePushNotificationResponsePerToken(pushNotificationResponse);
+                    } else {
+                        logger.error("Unable to send notifications", cause);
+                        senderCallback.onError("Unable to send notifications: " + cause.getMessage());
+                        variantUpdateEventEvent.fire(new APNSVariantUpdateEvent(iOSVariant));
                     }
                 });
             });
@@ -163,7 +163,7 @@ public class PushyApnsSender implements PushNotificationSender {
     private Date createFutureDateBasedOnTTL(int ttl) {
         // no TTL was specified on the payload, we use the Default from the APNs library:
         if (ttl < 0) {
-            return new Date(System.currentTimeMillis() + SimpleApnsPushNotification.DEFAULT_EXPIRATION_PERIOD_MILLIS);
+            return new Date(System.currentTimeMillis() + SimpleApnsPushNotification.DEFAULT_EXPIRATION_PERIOD.toMillis());
         } else {
             // apply the given TTL to the current time
             return new Date(System.currentTimeMillis() + ttl * 1000L);
@@ -203,7 +203,7 @@ public class PushyApnsSender implements PushNotificationSender {
     }
 
     private String createPushPayload(final Message message, final String pushMessageInformationId) {
-        final ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
+        final ApnsPayloadBuilder payloadBuilder = new SimpleApnsPayloadBuilder();
         final APNs apns = message.getApns();
 
         // only set badge if needed/included in user's payload
@@ -223,7 +223,7 @@ public class PushyApnsSender implements PushNotificationSender {
             payloadBuilder.addCustomProperty(entry.getKey(), entry.getValue());
         }
 
-        return payloadBuilder.buildWithDefaultMaximumLength();
+        return payloadBuilder.build();
     }
 
     private synchronized ApnsClient receiveApnsConnection(final iOSVariant apnsVariant) {

@@ -16,13 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.message.cache;
 
-import com.turo.pushy.apns.ApnsClient;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
+import com.eatthepath.pushy.apns.ApnsClient;
 import net.jodah.expiringmap.ExpirationListener;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
-import org.jboss.aerogear.unifiedpush.api.APNSVariant;
 import org.jboss.aerogear.unifiedpush.api.APNSVariant;
 import org.jboss.aerogear.unifiedpush.event.APNSVariantUpdateEvent;
 import org.slf4j.Logger;
@@ -32,6 +29,7 @@ import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.enterprise.event.Observes;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
@@ -53,14 +51,14 @@ public class SimpleApnsClientCache {
                     if (apnsClient != null) {
                         logger.info("APNs connection for iOS Variant ({}) was inactive last 12 hours, disconnecting...", variantID);
 
-                        final Future<Void> disconnectFuture = apnsClient.close();
+                        final CompletableFuture<Void> disconnectFuture = apnsClient.close();
 
-                        disconnectFuture.addListener(future -> {
+                        disconnectFuture.whenComplete((result, cause) -> {
 
-                            if (future.isSuccess()) {
+                            if (result != null) {
                                 logger.debug("Disconnected from APNS due to inactive connection for iOS Variant ({})", variantID);
                             } else {
-                                final Throwable t = future.cause();
+                                final Throwable t = cause;
                                 logger.warn(t.getMessage(), t);
                             }
                         });
@@ -91,6 +89,7 @@ public class SimpleApnsClientCache {
 
     /**
      * Receives iOS variant change event to remove client from the cache and also tear down the connection.
+     *
      * @param variant event fired when updating the variant
      */
     public void disconnectOnChange(final APNSVariant variant) {
@@ -137,20 +136,18 @@ public class SimpleApnsClientCache {
     private void tearDownApnsHttp2Connection(final ApnsClient client) {
         if (client != null) {
             logger.trace("Tearing down connection to APNs for the given client");
-            client.close().addListener(new ApnsDisconnectFutureListener());
+            client.close().whenComplete((result, cause) -> {
+                        if (result != null) {
+                            logger.debug("Successfully disconnected connection...");
+                        } else if (cause != null) {
+                            final Throwable t = cause;
+                            logger.warn(t.getMessage(), t);
+                        }
+
+                    }
+
+            );
         }
     }
 
-    private class ApnsDisconnectFutureListener implements GenericFutureListener<Future<? super Void>> {
-        @Override
-        public void operationComplete(Future<? super Void> future) throws Exception {
-            if (future.isSuccess()) {
-                logger.debug("Successfully disconnected connection...");
-            } else {
-                final Throwable t = future.cause();
-                logger.warn(t.getMessage(), t);
-            }
-
-        }
-    }
 }
