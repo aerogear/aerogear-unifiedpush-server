@@ -44,6 +44,7 @@
     <url>https://travis-ci.org/aerogear/aerogear-unifiedpush-server</url>
   </ciManagement>
 
+
   <modules>
     <module>common</module>
     <module>model</module>
@@ -134,8 +135,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.2.0</version>
         <configuration>
-          <source>8</source>
+          <source>11</source>
+           <additionalparam>-Xdoclint:none</additionalparam>
+           <additionalOptions>-Xdoclint:none</additionalOptions>
+           <additionalJOption>-Xdoclint:none</additionalJOption>
         </configuration>
         <executions>
           <execution>
@@ -183,6 +188,65 @@
     </plugins>
     <pluginManagement>
       <plugins>
+       <plugin>
+                <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+                <artifactId>maven-java-formatter-plugin</artifactId>
+                <configuration>
+                    <configFile>/eclipse-formatting.xml</configFile>
+                    <lineEnding>LF</lineEnding>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jboss.aerogear</groupId>
+                        <artifactId>aerogear-misc</artifactId>
+                        <version>${aerogear-misc.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <header>/al_v2_license_header.txt</header>
+                    <includes>
+                        <include>src/**</include>
+                        <include>test/**</include>
+                    </includes>
+                    <strictCheck>true</strictCheck>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jboss.aerogear</groupId>
+                        <artifactId>aerogear-misc</artifactId>
+                        <version>${aerogear-misc.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <source>11</source>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
+                </configuration>
+            </plugin>
         <!-- Override the actual checkstyle version to support Java 1.8 -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -201,6 +265,8 @@
   </build>
 
   <properties>
+    <java-formatter.plugin.version>0.4</java-formatter.plugin.version>
+    <license.plugin.version>1.9.0</license.plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- Define the version of JBoss' Java EE 6 APIs we want to import. Any dependencies from org.jboss.spec will have their

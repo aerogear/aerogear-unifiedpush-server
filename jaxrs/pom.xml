@@ -113,29 +113,6 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <tags>
-                        <tag>
-                            <name>statuscode</name>
-                            <placement>m</placement>
-                            <head>Status codes:</head>
-                        </tag>
-                        <tag>
-                            <name>requestheader</name>
-                            <placement>m</placement>
-                            <head>Request headers:</head>
-                        </tag>
-                        <tag>
-                            <name>responseheader</name>
-                            <placement>m</placement>
-                            <head>Response headers:</head>
-                        </tag>
-                    </tags>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>11</source>
