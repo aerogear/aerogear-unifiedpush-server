@@ -124,7 +124,7 @@
       <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>1.13</version>
+      <version>1.14</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -295,11 +295,11 @@
     <org.jacoco.agent.version>0.7.9</org.jacoco.agent.version>
     <org.jacoco.jacoco-maven-plugin.version>0.7.9</org.jacoco.jacoco-maven-plugin.version>
     <ant.contrib.version>20020829</ant.contrib.version>
-    <aerogear.crypto.version>0.1.5</aerogear.crypto.version>
+    <aerogear.crypto.version>0.1.6</aerogear.crypto.version>
     <org.mockito.version>1.9.5</org.mockito.version>
     <prometheus.simpleclient.version>0.6.0</prometheus.simpleclient.version>
-    <com.google.code.gson.version>2.2.4</com.google.code.gson.version>
-    <jackson.version>2.10.4</jackson.version>
+    <com.google.code.gson.version>2.8.6</com.google.code.gson.version>
+    <jackson.version>2.11.1</jackson.version>
     <ups.ddl_value>update</ups.ddl_value>
     <org.assertj.version>1.5.0</org.assertj.version>
   </properties>
