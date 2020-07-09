@@ -126,7 +126,7 @@ public class JPAPushApplicationDao extends JPABaseDao<PushApplication, String> i
 
         Long count = entityManager.createQuery("select count(*) " + select, Long.class).getSingleResult();
 
-        List<PushApplication> entities = entityManager.createQuery("select pa " + select, PushApplication.class)
+        List<PushApplication> entities = entityManager.createQuery("select pa " + select + " order by pa.name, pa.id", PushApplication.class)
                 .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
 
         return new PageResult<>(entities, new Count(count));
