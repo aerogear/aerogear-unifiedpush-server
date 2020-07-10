@@ -17,12 +17,6 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.jboss.aerogear</groupId>
-    <artifactId>aerogear-parent</artifactId>
-    <!-- NOTE: if updated for version of UPS dependencies, please update the 'aerogear.bom.version' as well -->
-    <version>1.1.15</version>
-  </parent>
 
   <groupId>org.jboss.aerogear.unifiedpush</groupId>
   <artifactId>unifiedpush-parent</artifactId>
@@ -49,6 +43,7 @@
     <system>travis-ci</system>
     <url>https://travis-ci.org/aerogear/aerogear-unifiedpush-server</url>
   </ciManagement>
+
 
   <modules>
     <module>common</module>
@@ -96,15 +91,6 @@
         <version>4.2.15.Final</version>
       </dependency>
 
-      <!-- AeroGear Dependencies BOM Imports -->
-      <dependency>
-        <groupId>org.jboss.aerogear</groupId>
-        <artifactId>aerogear-unifiedpush-bom</artifactId>
-        <version>${aerogear.bom.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
       <!-- using latest of OpenEJB -->
       <dependency>
         <groupId>org.apache.openejb</groupId>
@@ -128,12 +114,17 @@
       <dependency>
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcprov-jdk15on</artifactId>
-        <version>1.63</version>
+        <version>1.66</version>
       </dependency>
       <dependency>
         <groupId>nl.martijndwars</groupId>
         <artifactId>web-push</artifactId>
-        <version>5.0.2</version>
+        <version>5.1.0</version>
+      </dependency>
+      <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.14</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -144,8 +135,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.2.0</version>
         <configuration>
-          <source>8</source>
+          <source>11</source>
+           <additionalparam>-Xdoclint:none</additionalparam>
+           <additionalOptions>-Xdoclint:none</additionalOptions>
+           <additionalJOption>-Xdoclint:none</additionalJOption>
         </configuration>
         <executions>
           <execution>
@@ -193,6 +188,65 @@
     </plugins>
     <pluginManagement>
       <plugins>
+       <plugin>
+                <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+                <artifactId>maven-java-formatter-plugin</artifactId>
+                <configuration>
+                    <configFile>/eclipse-formatting.xml</configFile>
+                    <lineEnding>LF</lineEnding>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jboss.aerogear</groupId>
+                        <artifactId>aerogear-misc</artifactId>
+                        <version>${aerogear-misc.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <header>/al_v2_license_header.txt</header>
+                    <includes>
+                        <include>src/**</include>
+                        <include>test/**</include>
+                    </includes>
+                    <strictCheck>true</strictCheck>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jboss.aerogear</groupId>
+                        <artifactId>aerogear-misc</artifactId>
+                        <version>${aerogear-misc.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <source>11</source>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
+                </configuration>
+            </plugin>
         <!-- Override the actual checkstyle version to support Java 1.8 -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -211,6 +265,8 @@
   </build>
 
   <properties>
+    <java-formatter.plugin.version>0.4</java-formatter.plugin.version>
+    <license.plugin.version>1.9.0</license.plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- Define the version of JBoss' Java EE 6 APIs we want to import. Any dependencies from org.jboss.spec will have their
@@ -224,23 +280,28 @@
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <wildfly-maven-plugin.version>1.2.0.Final</wildfly-maven-plugin.version>
-
-    <aerogear.bom.version>1.1.15</aerogear.bom.version>
+    <gcm-server.version>1.0.0</gcm-server.version>
+    <keycloak.version>10.0.2</keycloak.version>
     <admin-ui.version>2.2.5</admin-ui.version>
-
-    <!-- Override versions of AeroGear BOMs-->
+    <resteasy.version>3.12.1.Final</resteasy.version>
+    
     <junit.version>4.12</junit.version>
     <slfj4.version>1.7.26</slfj4.version>
     <arquillian.version>1.4.1.Final</arquillian.version>
+    <org.jboss.arquillian.version>1.4.1.Final</org.jboss.arquillian.version>
 
     <!-- Code coverage -->
     <org.jacoco.ant.version>0.7.9</org.jacoco.ant.version>
     <org.jacoco.agent.version>0.7.9</org.jacoco.agent.version>
     <org.jacoco.jacoco-maven-plugin.version>0.7.9</org.jacoco.jacoco-maven-plugin.version>
     <ant.contrib.version>20020829</ant.contrib.version>
-    <aerogear.crypto.version>0.1.5</aerogear.crypto.version>
+    <aerogear.crypto.version>0.1.6</aerogear.crypto.version>
+    <org.mockito.version>1.9.5</org.mockito.version>
     <prometheus.simpleclient.version>0.6.0</prometheus.simpleclient.version>
+    <com.google.code.gson.version>2.8.6</com.google.code.gson.version>
+    <jackson.version>2.11.1</jackson.version>
     <ups.ddl_value>update</ups.ddl_value>
+    <org.assertj.version>1.5.0</org.assertj.version>
   </properties>
 
   <profiles>
@@ -252,14 +313,20 @@
 
       <dependencyManagement>
         <dependencies>
-          <!-- AeroGear Test Dependencies BOM Imports -->
-          <dependency>
-            <groupId>org.jboss.aerogear</groupId>
-            <artifactId>aerogear-test-bom</artifactId>
-            <version>${aerogear.bom.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-          </dependency>
+          
+      <dependency>
+          <groupId>org.assertj</groupId>
+          <artifactId>assertj-core</artifactId>
+          <version>${org.assertj.version}</version>
+      </dependency>
+
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${org.mockito.version}</version>
+            </dependency>
+
         </dependencies>
       </dependencyManagement>
     </profile>

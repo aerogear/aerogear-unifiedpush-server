@@ -43,6 +43,9 @@ import static org.jboss.aerogear.unifiedpush.utils.KeyUtils.loadPublicKey;
 
 @Stateless
 @SenderType(VariantType.WEB_PUSH)
+/**
+ * This class sends web push messages.
+ */
 public class WebPushSender implements PushNotificationSender {
 
     private static final Logger logger = LoggerFactory.getLogger(WebPushSender.class);

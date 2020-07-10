@@ -25,7 +25,7 @@ public interface ResultsStream<T> {
      * Advance to the next result
      *
      * @throws org.jboss.aerogear.unifiedpush.dao.ResultStreamException for any exception while processing
-     * @return <tt>true</tt> if there is another result
+     * @return true if there is another result
      */
     boolean next() throws ResultStreamException;
 

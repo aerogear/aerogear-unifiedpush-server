@@ -18,7 +18,7 @@ package org.jboss.aerogear.unifiedpush.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.turo.pushy.apns.auth.ApnsSigningKey;
+import com.eatthepath.pushy.apns.auth.ApnsSigningKey;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;

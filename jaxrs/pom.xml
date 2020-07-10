@@ -76,6 +76,7 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-multipart-provider</artifactId>
             <scope>provided</scope>
+            <version>${resteasy.version}</version>
         </dependency>
 
         <dependency>
@@ -97,7 +98,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>27.0.1-jre</version>
+            <version>29.0-jre</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.spec.javax.jms</groupId>
@@ -110,29 +111,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <tags>
-                        <tag>
-                            <name>statuscode</name>
-                            <placement>m</placement>
-                            <head>Status codes:</head>
-                        </tag>
-                        <tag>
-                            <name>requestheader</name>
-                            <placement>m</placement>
-                            <head>Request headers:</head>
-                        </tag>
-                        <tag>
-                            <name>responseheader</name>
-                            <placement>m</placement>
-                            <head>Response headers:</head>
-                        </tag>
-                    </tags>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

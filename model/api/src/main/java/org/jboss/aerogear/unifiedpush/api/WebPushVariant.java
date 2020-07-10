@@ -54,7 +54,7 @@ public class WebPushVariant extends Variant {
      * This is a VAPID public key.  It must match the private key.
      * See https://tools.ietf.org/html/draft-ietf-webpush-vapid-01
      *
-     * @return
+     * @return the public key
      */
     public String getPublicKey() {
         return publicKey;
@@ -68,7 +68,7 @@ public class WebPushVariant extends Variant {
      * This is a VAPID private key.  It must match the public key.
      * See https://tools.ietf.org/html/draft-ietf-webpush-vapid-01
      *
-     * @return
+     * @return the private key
      */
     public String getPrivateKey() {
         return privateKey;

@@ -59,6 +59,11 @@ public class KeyUtils {
 
     /**
      * Returns the base64 encoded public key as a PublicKey object
+     * 
+     * @param registration the registration to get the key from
+     * @return the key for registration
+     * @throws NoSuchAlgorithmException if the key algorithm does not exist
+     * @throws InvalidKeySpecException if the key spec is invalid
      */
     public static PublicKey getUserPublicKey(WebPushRegistration registration) throws NoSuchAlgorithmException, InvalidKeySpecException {
 
