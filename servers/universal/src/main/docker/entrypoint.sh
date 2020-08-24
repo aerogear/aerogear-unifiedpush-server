@@ -43,7 +43,7 @@ rm -rf /opt/jboss/wildfly/standalone/deployments/ROOT
 cd -
 
 if [ !  -z "${KEYCLOAK_SERVICE_HOST}" ]; then
-  /opt/jboss/wildfly/bin/standalone.sh -Dups.realm.name=aerogear -Dups.auth.server.url=http://${KEYCLOAK_SERVICE_HOST}:${KEYCLOAK_SERVICE_PORT}/auth -b 0.0.0.0
+  /opt/jboss/wildfly/bin/standalone.sh -Dups.realm.name=aerogear -Dups.auth.server.url=https://${KEYCLOAK_SERVICE_HOST}:${KEYCLOAK_SERVICE_PORT}/auth -b 0.0.0.0
 else
   /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0
 fi

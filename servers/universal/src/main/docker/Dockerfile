@@ -27,8 +27,8 @@ USER jboss
 WORKDIR /opt/jboss/wildfly
 
 # WildFly module
-COPY keycloak-wildfly-adapter-dist-6.0.1.tar.gz $JBOSS_HOME
-RUN tar xf keycloak-wildfly-adapter-dist-6.0.1.tar.gz
+COPY keycloak-wildfly-adapter-dist-11.0.0.tar.gz $JBOSS_HOME
+RUN tar xf keycloak-wildfly-adapter-dist-11.0.0.tar.gz
  #RUN ./bin/jboss-cli.sh --file=bin/adapter-elytron-install-offline.cli
 
 # Switch to the working dir $JBOSS_HOME/standalone/deployments
