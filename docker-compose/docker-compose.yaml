@@ -17,15 +17,12 @@ services:
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_SERVICE_PORT: ${POSTGRES_SERVICE_PORT}
         POSTGRES_DATABASE: ${POSTGRES_DATABASE}
-        ARTEMIS_USER: ${ARTEMIS_USER}
-        ARTEMIS_PASSWORD: ${ARTEMIS_PASSWORD}
-        ARTEMIS_SERVICE_HOST: ${ARTEMIS_SERVICE_HOST}
-        ARTEMIS_SERVICE_PORT: ${ARTEMIS_SERVICE_PORT}
         AMQ_MAX_RETRIES: ${AMQ_MAX_RETRIES}
         AMQ_BACKOFF_SECONDS: ${AMQ_BACKOFF_SECONDS}
     links:
       - unifiedpushDB:unifiedpush
       - artemis:artemis
+      - keycloakServer:keycloak
     ports:
       - 9999:8080
   unifiedpushDB:
@@ -41,7 +38,7 @@ services:
     ports:
       - 5432:5432
   keycloakServer:
-    image: docker.io/jboss/keycloak:latest
+    image: docker.io/jboss/keycloak:11.0.0
     command: "-b 0.0.0.0 -Dkeycloak.import=/ups-keycloak-config/ups-realm-sample.json"
     volumes:
       - ./keycloak-realm:/ups-keycloak-config:z
@@ -50,6 +47,7 @@ services:
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
     ports:
       - 8080:8080
+      - 8443:8443
   artemis:
     environment:
       ARTEMIS_USERNAME: ${ARTEMIS_USER}

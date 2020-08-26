@@ -29,7 +29,7 @@
     <name>Configurable Container for UnifiedPush Server</name>
 
     <properties>
-        <base>jboss/wildfly:17.0.1.Final</base>
+        <base>jboss/wildfly:20.0.1.Final</base>
         <project.artifactId>${project.artifactId}</project.artifactId>
     </properties>
 
