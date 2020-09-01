@@ -1,0 +1,217 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Configuring a React Native Client · UnifiedPush Server</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="[React Native](https://reactnative.dev) is a framework that allows you to write mobile applications using React. Much like Cordova, you can access and use UnifiedPush in your React Native source with a single API. Because push networks are platform dependent, there is some native project configuration required. It is also recommended that you familiarize yourself with the [Android client](./android-client) and [iOS client](./ios-client) documentation."/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Configuring a React Native Client · UnifiedPush Server"/><meta property="og:type" content="website"/><meta property="og:url" content="https://aerogear.org/aerogear-unifiedpush-server/"/><meta property="og:description" content="[React Native](https://reactnative.dev) is a framework that allows you to write mobile applications using React. Much like Cordova, you can access and use UnifiedPush in your React Native source with a single API. Because push networks are platform dependent, there is some native project configuration required. It is also recommended that you familiarize yourself with the [Android client](./android-client) and [iOS client](./ios-client) documentation."/><meta property="og:image" content="https://aerogear.org/aerogear-unifiedpush-server/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://aerogear.org/aerogear-unifiedpush-server/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/aerogear-unifiedpush-server/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli&amp;display=swap"/><link rel="stylesheet" href="/css/code-blocks-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/aerogear-unifiedpush-server/js/scrollSpy.js"></script><link rel="stylesheet" href="/aerogear-unifiedpush-server/css/main.css"/><script src="/aerogear-unifiedpush-server/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/aerogear-unifiedpush-server/"><img class="logo" src="/aerogear-unifiedpush-server/img/logo.png" alt="UnifiedPush Server"/></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/aerogear-unifiedpush-server/docs/introduction/ups-overview" target="_self">Documentation</a></li><li class=""><a href="https://github.com/aerogear/aerogear-unifiedpush-server" target="_self">GitHub</a></li><li class=""><a href="/aerogear-unifiedpush-server/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Configuring Clients</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Introduction<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/introduction/ups-overview">Overview</a></li><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/introduction/ups-terminology">Useful Terminology</a></li><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/introduction/push-notifications">Push Notifications</a></li><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/introduction/how-it-works">How the UnifiedPush Server works</a></li><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/introduction/use-cases">Use-cases and scenarios</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Running Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/running">Running Unified Push</a></li><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/jms">JMS Broker Configuration</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Configuring Variants<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/variants/android">Android Variant</a></li><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/variants/ios">iOS Variant</a></li><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/variants/webpush">WebPush Variant</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Configuring Clients<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/clients/android-client">Android Client</a></li><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/clients/ios-client">iOS Client</a></li><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/clients/webpush-client">Webpush Client</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/aerogear-unifiedpush-server/docs/clients/reactnative-client">React Native Client</a></li><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/clients/cordova-client">Cordova Client</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Unified Push Server SDK<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/server_sdk/javasender">Java Sender API</a></li><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/server_sdk/nodesender">Node Sender API</a></li><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/server_sdk/restfulsender">RESTful Sender API</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Maintaining Unified Push<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/aerogear-unifiedpush-server/docs/maintenance">Maintaining Unified Push</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Configuring a React Native Client</h1></header><article><div><span><p><a href="https://reactnative.dev">React Native</a> is a framework that allows you to write mobile applications using React. Much like Cordova, you can access and use UnifiedPush in your React Native source with a single API. Because push networks are platform dependent, there is some native project configuration required. It is also recommended that you familiarize yourself with the <a href="./android-client">Android client</a> and <a href="./ios-client">iOS client</a> documentation.</p>
+<h2><a class="anchor" aria-hidden="true" id="overview"></a><a href="#overview" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Overview</h2>
+<p>You will be guided through how to add the UPS library, configure your native applications, connect to UPS, and receive push messages.</p>
+<h2><a class="anchor" aria-hidden="true" id="react-native-setup"></a><a href="#react-native-setup" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>React Native Setup</h2>
+<p>As our first step we need to install the react library.</p>
+<p><code>npm install @aerogear/aerogear-reactnative-push</code></p>
+<p>Once we've done this we can begin configuring our native projects.</p>
+<h2><a class="anchor" aria-hidden="true" id="android-native-project-configuration"></a><a href="#android-native-project-configuration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Android Native Project configuration</h2>
+<p>Open the <code>android</code> project found in your React Native project root in Android Studio, and begin integrating Firebase Cloud Messaging into the application. This is most easily done using the Firebase Assistant, and you can find that documentation in the <a href="./android-client">Android client documentation</a></p>
+<h2><a class="anchor" aria-hidden="true" id="ios-native-project-configuration"></a><a href="#ios-native-project-configuration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>iOS Native Project configuration</h2>
+<p>Run <code>pod install</code> from the <code>ios</code> project found in your React Native project root from the command line before you open this project in XCode.
+Now you should follow the <a href="./ios-client#add-required-capabilities">iOS client documentation</a> to enable APNS push messaging for your project.</p>
+<h3><a class="anchor" aria-hidden="true" id="enable-react-native-unified-push-integration"></a><a href="#enable-react-native-unified-push-integration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Enable React Native Unified Push Integration</h3>
+<p>There are two ways to enable the integration:</p>
+<ul>
+<li>Extending the <code>UPSEnabledAppDelegate</code></li>
+<li>Manually adding the integration</li>
+</ul>
+<h4><a class="anchor" aria-hidden="true" id="extending-the-upsenabledappdelegate-class"></a><a href="#extending-the-upsenabledappdelegate-class" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Extending the <code>UPSEnabledAppDelegate</code> class</h4>
+<ol>
+<li>Open the iOS project by running <code>xed ios</code> from the root of the react-native project</li>
+<li>In XCode open your <code>AppDelegate.h</code> header file and change its code from
+<pre><code class="hljs css language-objective-c"><span class="hljs-meta">#import <span class="hljs-meta-string">&lt;React/RCTBridgeDelegate.h&gt;</span></span>
+<span class="hljs-meta">#import <span class="hljs-meta-string">&lt;UIKit/UIKit.h&gt;</span></span>
+
+<span class="hljs-class"><span class="hljs-keyword">@interface</span> <span class="hljs-title">AppDelegate</span> : <span class="hljs-title">UIResponder</span> &lt;<span class="hljs-title">UIApplicationDelegate</span>, <span class="hljs-title">RCTBridgeDelegate</span>&gt;</span>
+
+<span class="hljs-keyword">@property</span> (<span class="hljs-keyword">nonatomic</span>, <span class="hljs-keyword">strong</span>) <span class="hljs-built_in">UIWindow</span> *window;
+
+<span class="hljs-keyword">@end</span>
+</code></pre>
+to
+<pre><code class="hljs css language-objective-c"><span class="hljs-meta">#import <span class="hljs-meta-string">&lt;React/RCTBridgeDelegate.h&gt;</span></span>
+<span class="hljs-meta">#import <span class="hljs-meta-string">&lt;UIKit/UIKit.h&gt;</span></span>
+<span class="hljs-meta">#import <span class="hljs-meta-string">&lt;UPSEnabledAppDelegate.h&gt;</span></span>
+
+<span class="hljs-class"><span class="hljs-keyword">@interface</span> <span class="hljs-title">AppDelegate</span> : <span class="hljs-title">UPSEnabledAppDelegate</span></span>
+
+<span class="hljs-keyword">@property</span> (<span class="hljs-keyword">nonatomic</span>, <span class="hljs-keyword">strong</span>) <span class="hljs-built_in">UIWindow</span> *window;
+
+<span class="hljs-keyword">@end</span>
+</code></pre></li>
+<li>Open your <code>AppDelegate.m</code> file and add a call to <code>[super application:application didFinishLaunchingWithOptions:launchOptions];</code> into your <code>didFinishLaunchingWithOptions</code> method. It should look like:
+<pre><code class="hljs css language-objective-c">- (<span class="hljs-built_in">BOOL</span>)application:(<span class="hljs-built_in">UIApplication</span> *)application didFinishLaunchingWithOptions:(<span class="hljs-built_in">NSDictionary</span> *)launchOptions
+{
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> DEBUG</span>
+  InitializeFlipper(application);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:<span class="hljs-keyword">self</span> launchOptions:launchOptions];
+  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
+                                                   moduleName:<span class="hljs-string">@"push"</span>
+                                            initialProperties:<span class="hljs-literal">nil</span>];
+
+  rootView.backgroundColor = [[<span class="hljs-built_in">UIColor</span> alloc] initWithRed:<span class="hljs-number">1.0</span>f green:<span class="hljs-number">1.0</span>f blue:<span class="hljs-number">1.0</span>f alpha:<span class="hljs-number">1</span>];
+
+  <span class="hljs-keyword">self</span>.window = [[<span class="hljs-built_in">UIWindow</span> alloc] initWithFrame:[<span class="hljs-built_in">UIScreen</span> mainScreen].bounds];
+  <span class="hljs-built_in">UIViewController</span> *rootViewController = [<span class="hljs-built_in">UIViewController</span> new];
+  rootViewController.view = rootView;
+  <span class="hljs-keyword">self</span>.window.rootViewController = rootViewController;
+  [<span class="hljs-keyword">self</span>.window makeKeyAndVisible];
+  
+  
+  <span class="hljs-comment">// Enable Push Notifications</span>
+  [<span class="hljs-keyword">super</span> application:application didFinishLaunchingWithOptions:launchOptions];
+  
+  <span class="hljs-keyword">return</span> <span class="hljs-literal">YES</span>;
+}
+</code></pre></li>
+</ol>
+<h4><a class="anchor" aria-hidden="true" id="manually-integrate-the-unified-push"></a><a href="#manually-integrate-the-unified-push" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Manually integrate the Unified Push</h4>
+
+    <div class="admonition admonition-warning">
+      <div class="admonition-heading">
+        <h5><div class="admonition-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.893 1.5c-.183-.31-.52-.5-.887-.5s-.703.19-.886.5L.138 13.499a.98.98 0 0 0 0 1.001c.193.31.53.501.886.501h13.964c.367 0 .704-.19.877-.5a1.03 1.03 0 0 0 .01-1.002L8.893 1.5zm.133 11.497H6.987v-2.003h2.039v2.003zm0-3.004H6.987V5.987h2.039v4.006z"/></svg></div> warning</h5>
+      </div>
+      <div class="admonition-content">
+    <p>This steps are needed <em>only</em> if you are not extending the <code>UPSEnabledAppDelegate</code> class</p>
+</div></div><ol>
+<li>Open the iOS project by running <code>xed ios</code> from the root of the react-native project</li>
+<li>Open you <code>AppDelegate.m</code> file</li>
+<li>Add the following code before the end of your <code>didFinishLaunchingWithOptions</code> method:
+<pre><code class="hljs css language-objective-c">- (<span class="hljs-built_in">BOOL</span>)application:(<span class="hljs-built_in">UIApplication</span> *)application didFinishLaunchingWithOptions:(<span class="hljs-built_in">NSDictionary</span> *)launchOptions
+{
+  ...
+  ...
+  <span class="hljs-comment">// This is the code to be added:</span>
+  <span class="hljs-comment">// Enable Push Notifications</span>
+  UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+  [center requestAuthorizationWithOptions:(UNAuthorizationOptionAlert + UNAuthorizationOptionBadge + UNAuthorizationOptionSound) completionHandler:^(<span class="hljs-built_in">BOOL</span> granted, <span class="hljs-built_in">NSError</span> * _Nullable error) {
+  
+  }];
+  [[<span class="hljs-built_in">UIApplication</span> sharedApplication] registerForRemoteNotifications];
+  <span class="hljs-keyword">return</span> <span class="hljs-literal">YES</span>;
+}
+</code></pre></li>
+<li>Pass the <code>deviceToken</code> to the UnifiedPush library as soon as registration is done by adding the method:
+<pre><code class="hljs css language-objective-c">- (<span class="hljs-keyword">void</span>)<span class="hljs-string">application:</span>(UIApplication *)application <span class="hljs-string">didRegisterForRemoteNotificationsWithDeviceToken:</span>(NSData *)deviceToken {
+  [RnUnifiedPush <span class="hljs-string">didRegisterForRemoteNotificationsWithDeviceToken:</span>deviceToken];
+}
+</code></pre></li>
+<li>Forward the notifications to the UnifiedPush library by adding the following method:
+<pre><code class="hljs css language-objective-c"><span class="hljs-selector-tag">-</span> (void)<span class="hljs-selector-tag">application</span><span class="hljs-selector-pseudo">:(UIApplication</span> *)<span class="hljs-selector-tag">application</span> <span class="hljs-selector-tag">didReceiveRemoteNotification</span><span class="hljs-selector-pseudo">:(NSDictionary</span> *)<span class="hljs-selector-tag">userInfo</span> <span class="hljs-selector-tag">fetchCompletionHandler</span><span class="hljs-selector-pseudo">:(void</span> (^)(UIBackgroundFetchResult))<span class="hljs-selector-tag">completionHandler</span> {
+  <span class="hljs-selector-attr">[RnUnifiedPush didReceiveRemoteNotification:userInfo]</span>;
+}
+</code></pre></li>
+</ol>
+<h2><a class="anchor" aria-hidden="true" id="configuring-unified-push"></a><a href="#configuring-unified-push" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Configuring Unified Push</h2>
+<p>Unified Push requires an Android or iOS variant to be configured before it can send push messages to your React Native application. Please refer to the <a href="../variants/android">Android</a> and <a href="../variants/ios">iOS</a> variant configuration sections for step by step guides.</p>
+<h2><a class="anchor" aria-hidden="true" id="integrating-unified-push-into-your-application"></a><a href="#integrating-unified-push-into-your-application" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Integrating Unified Push into Your Application.</h2>
+<p>To receive messages sent by Unified Push you need to initialize the library, register your device, and then register a message handler. This process will be detailed in the next few sections.</p>
+<h3><a class="anchor" aria-hidden="true" id="initialize-the-library"></a><a href="#initialize-the-library" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Initialize the Library</h3>
+<p>First we'll import the push library and create our Unified Push Server object.</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> RNUnifiedPush <span class="hljs-keyword">from</span> <span class="hljs-string">'@aerogear/aerogear-reactnative-push'</span>;
+
+<span class="hljs-keyword">const</span> ups = <span class="hljs-keyword">new</span> RNUnifiedPush();
+</code></pre>
+<p>We need to call <code>ups.init</code> to initialize our library. This method takes one parameter, the <code>push-config</code> object and returns a promise. In the following example we are providing the variant registration information for both iOS and Android.</p>
+<pre><code class="hljs css language-javascript"> ups.init(
+            { 
+              <span class="hljs-attr">pushServerURL</span>: <span class="hljs-string">"http://10.1.10.80:9999/"</span>,
+              <span class="hljs-attr">ios</span>: {
+                <span class="hljs-attr">variantID</span>: <span class="hljs-string">"91c039f9-d657-49cd-b507-cb78bea786e3"</span>,
+                <span class="hljs-attr">variantSecret</span>: <span class="hljs-string">"4b7fd0b4-58b5-46e8-80ef-08a6b8d449cd"</span>
+              }, 
+              <span class="hljs-attr">android</span>: {
+                <span class="hljs-attr">senderID</span>: <span class="hljs-string">"1234567890"</span>,
+                <span class="hljs-attr">variantID</span>: <span class="hljs-string">"77fc90fa-6c79-4ed7-a699-36861b0d309e"</span>,
+                <span class="hljs-attr">variantSecret</span>: <span class="hljs-string">"0625eca0-3b76-4614-bdc6-2d40da6195e4"</span>
+              }
+            }).catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Error Initializing"</span>, err));
+</code></pre>
+<p>With an initialized library, we may now register with the Unified Push server. Registration should be called every time you load your application and any time you wish to change your user's alias or category. As a reminder, an alias is an identifier for your user shared among their devices (such as an email or username), and categories are subscriptions to messages that are sent to groups of users. The following example registers a user with an alias subscribed to two categories.</p>
+<pre><code class="hljs css language-javascript">ups.register({
+      <span class="hljs-string">"alias"</span>:<span class="hljs-string">"rnAlias"</span>,
+      <span class="hljs-string">"categories"</span>:[<span class="hljs-string">"cat1"</span>, <span class="hljs-string">"cat2"</span>]
+}).then(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{
+  <span class="hljs-comment">//You are registered, inform your app</span>
+})
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="register-message-handlers"></a><a href="#register-message-handlers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Register Message Handlers</h2>
+<p>RNUnifiedPush instances receive messages from the native platform the application is running on. The library passes these messages largely as is and the developer is responsible for ensuring that their application handles both iOS and Android messages. Do this by checking for the <code>aps</code> property of the message object, or by using <a href="https://reactnative.dev/docs/platform-specific-code">platform specific code</a>. The following example uses different code files for Android and iOS to define our handler, and then registers to UnifiedPush using a RNUnifiedPush instance.</p>
+<p><em>handler.android.js</em></p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">//Extract the message text and add it to a state variable in a React application</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">message</span>) </span>{ <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">messages</span>: [...this.state.messages, message.alert] })}
+</code></pre>
+<p><em>handler.ios.js</em></p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">//Extract the message text and add it to a state variable in a React application</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">message</span>) </span>{<span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">messages</span>: [...this.state.messages, message.aps.alert.body] })};
+
+</code></pre>
+<p><em>app.js</em></p>
+<pre><code class="hljs css language-javascript">    <span class="hljs-keyword">import</span> handler <span class="hljs-keyword">from</span> <span class="hljs-string">'./handler'</span>;
+    <span class="hljs-comment">/*
+        SNIPPING imports and registration
+    */</span>
+    ups.registerMessageHandler(handler.bind(<span class="hljs-keyword">this</span>));  <span class="hljs-comment">//.bind(this) allows `this` to work in the above examples</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="hello-world-example"></a><a href="#hello-world-example" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Hello World Example</h2>
+<p>The AeroGear project provides an example UnifiedPush application in our <a href="https://github.com/aerogear/unifiedpush-cookbook/tree/master/react-native/push">unifiedpush-cookbook repository</a>.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/aerogear-unifiedpush-server/docs/clients/webpush-client"><span class="arrow-prev">← </span><span>Webpush Client</span></a><a class="docs-next button" href="/aerogear-unifiedpush-server/docs/clients/cordova-client"><span>Cordova Client</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#overview">Overview</a></li><li><a href="#react-native-setup">React Native Setup</a></li><li><a href="#android-native-project-configuration">Android Native Project configuration</a></li><li><a href="#ios-native-project-configuration">iOS Native Project configuration</a><ul class="toc-headings"><li><a href="#enable-react-native-unified-push-integration">Enable React Native Unified Push Integration</a></li></ul></li><li><a href="#configuring-unified-push">Configuring Unified Push</a></li><li><a href="#integrating-unified-push-into-your-application">Integrating Unified Push into Your Application.</a><ul class="toc-headings"><li><a href="#initialize-the-library">Initialize the Library</a></li></ul></li><li><a href="#register-message-handlers">Register Message Handlers</a></li><li><a href="#hello-world-example">Hello World Example</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/aerogear-unifiedpush-server/" class="nav-home"></a><div><h5>Docs</h5><a href="/aerogear-unifiedpush-server/docs/introduction/ups-overview.html">Getting Started</a></div><div><h5>Community</h5><a href="/aerogear-unifiedpush-server//help">Help</a><a href="https://groups.google.com/forum/#!forum/aerogear">AeroGear mailing list</a><a href="https://stackoverflow.com/questions/tagged/aerogear" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>Social</h5><a class="github-button" href="https://github.com/AeroGear/aerogear-unifiedpush-server" data-count-href="https://github.com/AeroGear/aerogear-unifiedpush-server/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">UnifiedPush Server</a><div class="social"><a href="https://twitter.com/aerogears" class="twitter-follow-button">Follow @aerogears</a></div></div></section><section class="copyright">Copyright © 2020 the AeroGear team</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>
