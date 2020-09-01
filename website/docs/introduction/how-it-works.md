@@ -6,7 +6,7 @@ title: How the UnifiedPush Server works
 The _AeroGear UnifiedPush Server_ can be seen as a broker that distributes push messages to different **3rd party Push Networks**. 
 The graphic below gives a little overview:
 
-![Load Firebase Assistant](../../img/ups-overview.png)
+![UnifiedPushServer Overview](../../img/ups-overview.png)
 
 1. One _PushApplication_ and at least one mobile platform variant must be created. Per platform documentation is in the **Configuring Variants** section of the sidebar.
 2. The variant credentials that are generated and stored by the _UnifiedPush Server_ must be added to the mobile application 
@@ -14,7 +14,8 @@ source, enabling the application running on the mobile device to register with t
 installed on mobile devices. The **Configuring Clients** section of the sidebar contains more details.
 3. Sending a push message can happen in different ways:
     * Using the _UnifiedPush Admin UI_
-    * Using the _Sender APIs_However
+    * Using the _Sender APIs_
+    
     The former can be used to send test messages, while the latter should be used in a real-world scenarios where 
     the _Push Notification Message_ request is triggered from a backend application. 
     Different SDKs for different languages are supported.
