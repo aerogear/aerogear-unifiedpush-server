@@ -9,6 +9,8 @@
     "register-device-ios": "https://aerogear.github.io/aerogear-unifiedpush-server/docs/variants/ios",
     "build-and-deploy-android": "https://aerogear.github.io/aerogear-unifiedpush-server/docs/clients/android-client",
     "build-and-deploy-ios": "https://aerogear.github.io/aerogear-unifiedpush-server/docs/clients/ios-client",
+    "build-and-deploy-ios_token": "https://aerogear.github.io/aerogear-unifiedpush-server/docs/clients/ios-client",
+    "build-and-deploy-web_push": "https://aerogear.github.io/aerogear-unifiedpush-server/docs/clients/webpush-client",
     "sender-api": "https://aerogear.org/docs/specs/#push",
     "sender-api-java": "https://aerogear.github.io/aerogear-unifiedpush-server/docs/server_sdk/javasender",
     "sender-api-nodejs": "https://aerogear.github.io/aerogear-unifiedpush-server/docs/server_sdk/nodesender",
