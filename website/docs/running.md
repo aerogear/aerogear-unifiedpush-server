@@ -16,11 +16,11 @@ Unified Push is released as a Docker formatted container on [quay.io](https://qu
 All you need is a container manager tool like podman or the Docker CLI.
 
 ```podman
-podman run -p 9999:8080 -it aerogear/unifiedpush-configurable-container:latest
+podman run -p 9999:8080 -it quay.io/aerogear/unifiedpush-configurable-container:master
 ```
 
 ```podman
-docker run -p 9999:8080 -it aerogear/unifiedpush-configurable-container:latest
+docker run -p 9999:8080 -it quay.io/aerogear/unifiedpush-configurable-container:master
 ```
 
 You should now be able to access the Unified Push admin ui at `http://localhost:9999`. This is great for quick tests, demonstrations, etc.  If you would like to keep data between launches of Unified Push, please use the other guides in this document.
