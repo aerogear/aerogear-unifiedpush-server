@@ -37,6 +37,12 @@ services:
       retries: 10
     ports:
       - 5432:5432
+  adminUi:
+        image: quay.io/aerogear/unifiedpush-admin-ui:3.0.0
+        environment:
+          UPS_HOST: http://localhost:9999
+        ports:
+          - 8081:80      
   keycloakServer:
     image: docker.io/jboss/keycloak:11.0.0
     command: "-b 0.0.0.0 -Dkeycloak.import=/ups-keycloak-config/ups-realm-sample.json"
