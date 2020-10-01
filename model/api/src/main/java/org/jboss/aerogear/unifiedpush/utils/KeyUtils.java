@@ -13,11 +13,7 @@ import org.bouncycastle.util.BigIntegers;
 import org.jboss.aerogear.unifiedpush.api.WebPushRegistration;
 
 import java.math.BigInteger;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.Provider;
-import java.security.PublicKey;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 
 
@@ -59,7 +55,7 @@ public class KeyUtils {
 
     /**
      * Returns the base64 encoded public key as a PublicKey object
-     * 
+     *
      * @param registration the registration to get the key from
      * @return the key for registration
      * @throws NoSuchAlgorithmException if the key algorithm does not exist
@@ -75,5 +71,19 @@ public class KeyUtils {
         return kf.generatePublic(pubSpec);
     }
 
+    /**
+     * Generate an EC keypair on the prime256v1 curve.
+     *
+     * @return the newly generated keypair
+     * @throws InvalidAlgorithmParameterException the algorithm parameters are wrong
+     * @throws NoSuchAlgorithmException algorithm does not exists
+     */
+    public static KeyPair generateKeyPair() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+        ECNamedCurveParameterSpec parameterSpec = ECNamedCurveTable.getParameterSpec(CURVE);
 
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(ALGORITHM, PROVIDER);
+        keyPairGenerator.initialize(parameterSpec);
+
+        return keyPairGenerator.generateKeyPair();
+    }
 }
