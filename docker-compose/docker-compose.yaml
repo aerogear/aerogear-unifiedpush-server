@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   unifiedpushserver:
-    image: aerogear/unifiedpush-configurable-container:2.5.1-SNAPSHOT
+    image: quay.io/aerogear/unifiedpush-configurable-container:master
     volumes:
        - ./helper:/ups-helper:z
     entrypoint: "/ups-helper/exportKeycloakHost.sh"
@@ -38,7 +38,7 @@ services:
     ports:
       - 5432:5432
   adminUi:
-        image: quay.io/aerogear/unifiedpush-admin-ui:3.0.0
+        image: quay.io/aerogear/unifiedpush-admin-ui:3.0.1
         environment:
           UPS_HOST: http://localhost:9999
         ports:

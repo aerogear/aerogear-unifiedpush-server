@@ -69,7 +69,7 @@ By the following commands you will create a local directory and clone this proje
 ----
 mvn clean install -DskipTests;
 docker run -p 9999:8080 -it quay.io/aerogear/unifiedpush-configurable-container:master;
-docker run -p 8081:80   -it quay.io/aerogear/unifiedpush-admin-ui:3.0.0;
+docker run -p 8081:80   -it quay.io/aerogear/unifiedpush-admin-ui:3.0.1;
 ----
 
 To access this server go to `http://localhost:8081/`.
