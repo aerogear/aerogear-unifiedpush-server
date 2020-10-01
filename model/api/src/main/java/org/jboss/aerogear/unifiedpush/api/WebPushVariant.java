@@ -18,6 +18,7 @@
 package org.jboss.aerogear.unifiedpush.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import nl.martijndwars.webpush.Utils;
 import org.jboss.aerogear.unifiedpush.utils.KeyUtils;
 
@@ -43,6 +44,7 @@ public class WebPushVariant extends Variant {
      * TODO: Find a way to store this securely
      */
     @NotNull
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Size(max = 255, message = "Private Key must be max. 255 chars long")
     private String privateKey;
 
