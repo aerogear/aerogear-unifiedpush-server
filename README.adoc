@@ -67,11 +67,12 @@ By the following commands you will create a local directory and clone this proje
 
 [source,shell]
 ----
-mvn clean install -DskipTests
-docker run -p 9999:8080 -it aerogear/unifiedpush-configurable-container:latest
+mvn clean install -DskipTests;
+docker run -p 9999:8080 -it quay.io/aerogear/unifiedpush-configurable-container:master;
+docker run -p 8081:80   -it quay.io/aerogear/unifiedpush-admin-ui:3.0.1;
 ----
 
-To access this server go to `http://localhost:9999/`.
+To access this server go to `http://localhost:8081/`.
 
 NOTE: The standalone is going to use H2 as database, AMQ provides for the Wildfly using to run the UPS and it will not use the https://www.keycloak.org/[Keycloak].
 
@@ -81,7 +82,7 @@ NOTE: If you would like to use Docker-Compose see link:./docker-compose/README.a
 
 === Container Configuration
 
-The Unified Push Server build by default creates and registers a Docker formatted container image, aerogear/unifiedpush-configurable-container.  By default this container uses an in-memory database, in-vm amq messaging, and no authentication.  While ideal for testing, for actual use the following environment variables should be set
+The Unified Push Server build by default creates and registers a Docker formatted container image, quay.io/aerogear/unifiedpush-configurable-container.  By default this container uses an in-memory database, in-vm amq messaging, and no authentication.  While ideal for testing, for actual use the following environment variables should be set
 
 |===
 | *Environment Variable*    | *Description*

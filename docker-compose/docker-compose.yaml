@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   unifiedpushserver:
-    image: aerogear/unifiedpush-configurable-container:2.5.1-SNAPSHOT
+    image: quay.io/aerogear/unifiedpush-configurable-container:master
     volumes:
        - ./helper:/ups-helper:z
     entrypoint: "/ups-helper/exportKeycloakHost.sh"
@@ -37,6 +37,12 @@ services:
       retries: 10
     ports:
       - 5432:5432
+  adminUi:
+        image: quay.io/aerogear/unifiedpush-admin-ui:3.0.1
+        environment:
+          UPS_HOST: http://localhost:9999
+        ports:
+          - 8081:80      
   keycloakServer:
     image: docker.io/jboss/keycloak:11.0.0
     command: "-b 0.0.0.0 -Dkeycloak.import=/ups-keycloak-config/ups-realm-sample.json"
