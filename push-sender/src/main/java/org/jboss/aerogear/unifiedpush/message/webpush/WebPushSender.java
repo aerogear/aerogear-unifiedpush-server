@@ -100,7 +100,7 @@ public class WebPushSender implements PushNotificationSender {
 
                 try {
                     final Notification notification = new Notification(registration.getEndpoint(), getUserPublicKey(registration),
-                            registration.getAuthAsBytes(), gson.toJson(pushMessage.getMessage()).getBytes());
+                            registration.getAuthAsBytes(), gson.toJson(pushMessage.getMessage()).getBytes("UTF-8"));
 
                     final HttpResponse response = webPushService.send(notification);
                     final int responseCode = response.getStatusLine().getStatusCode();
