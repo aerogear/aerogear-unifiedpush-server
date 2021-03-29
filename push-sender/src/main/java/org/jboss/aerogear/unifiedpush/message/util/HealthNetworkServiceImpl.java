@@ -51,7 +51,8 @@ public class HealthNetworkServiceImpl implements HealthNetworkService {
     private static final List<PushNetwork> PUSH_NETWORKS = new ArrayList<>(Arrays.asList(
             new PushNetwork[]{
                     new PushNetwork("Firebase Cloud Messaging", FCM_SEND_ENDPOINT, 443),
-                    new PushNetwork("Apple Push Network Sandbox", ApnsClientBuilder.DEVELOPMENT_APNS_HOST, ApnsClientBuilder.DEFAULT_APNS_PORT),
+                    // new PushNetwork("Apple Push Network Sandbox", ApnsClientBuilder.DEVELOPMENT_APNS_HOST, ApnsClientBuilder.DEFAULT_APNS_PORT),
+                    new PushNetwork("Apple Push Network Sandbox", "api.sandbox.push.apple.com", ApnsClientBuilder.DEFAULT_APNS_PORT),
                     new PushNetwork("Apple Push Network Production", ApnsClientBuilder.PRODUCTION_APNS_HOST, ApnsClientBuilder.DEFAULT_APNS_PORT),
                     new PushNetwork("Windows Push Network", WNS_SEND_ENDPOINT, 443)
             }
