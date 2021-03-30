@@ -62,7 +62,8 @@ public class PushyApnsSender implements PushNotificationSender {
 
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_HOST = "custom.aerogear.apns.push.host";
     public static final String CUSTOM_AEROGEAR_APNS_PUSH_PORT = "custom.aerogear.apns.push.port";
-    private static final String customAerogearApnsPushHost = tryGetGlobalProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
+
+    private static final String customAerogearApnsPushHost =  tryGetGlobalProperty(CUSTOM_AEROGEAR_APNS_PUSH_HOST);
     private static final Integer customAerogearApnsPushPort = tryGetGlobalIntegerProperty(CUSTOM_AEROGEAR_APNS_PUSH_PORT);
 
     private final ConcurrentSkipListSet<String> invalidTokens = new ConcurrentSkipListSet();
@@ -290,7 +291,8 @@ public class PushyApnsSender implements PushNotificationSender {
         if (iOSVariant.isProduction()) {
             apnsHost = ApnsClientBuilder.PRODUCTION_APNS_HOST;
         } else {
-            apnsHost = ApnsClientBuilder.DEVELOPMENT_APNS_HOST;
+            // apnsHost = ApnsClientBuilder.DEVELOPMENT_APNS_HOST;
+            apnsHost = "api.sandbox.push.apple.com";
         }
 
         // Or is there even a custom ost&port provided by a system property, for tests ?
@@ -301,6 +303,10 @@ public class PushyApnsSender implements PushNotificationSender {
                 apnsPort = customAerogearApnsPushPort;
             }
         }
+
+        logger.info("apnsHost:::: " + apnsHost);
+        logger.info("apnsPort:::: " + apnsPort);
+
         builder.setApnsServer(apnsHost, apnsPort);
     }
 }
