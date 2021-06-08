@@ -215,7 +215,7 @@
                     <groupId>org.keycloak</groupId>
                     <artifactId>keycloak-core</artifactId>
                     <!-- this is for tests, hence version override-->
-                    <version>7.0.0</version>
+                    <version>13.0.0</version>
                     <scope>test</scope>
                     <exclusions>
                         <exclusion>
